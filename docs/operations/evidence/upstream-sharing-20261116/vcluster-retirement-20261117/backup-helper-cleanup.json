@@ -1,0 +1,18 @@
+{
+  "observed": "2026-11-17T13:57:47.235958+00:00",
+  "resources": [
+    {
+      "kind": "Pod",
+      "name": "cps-vcluster-retirement-backup-20261117",
+      "uid": "05e7ac6a-e907-43d0-96d6-a67a6407da15",
+      "delete_requested_with_uid_rv": true
+    },
+    {
+      "kind": "NetworkPolicy",
+      "name": "cps-vcluster-retirement-backup-20261117",
+      "uid": "2f0b7dc4-c996-4253-8220-3f953b49d48a",
+      "delete_requested_with_uid_rv": true
+    }
+  ],
+  "forced": false
+}

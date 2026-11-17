@@ -1,0 +1,59 @@
+{
+  "observed": "2026-11-17T13:44:07.680746+00:00",
+  "host_running_pod_reference_matches": [
+    {
+      "namespace": "vcluster-ckf",
+      "name": "coredns-744d9bd8bf-4k5td-x-kube-system-x-vcluster-ckf",
+      "references": [
+        {
+          "field": "volumes.config-volume.configMap",
+          "reference": "coredns-x-kube-system-x-vcluster-ckf"
+        },
+        {
+          "field": "volumes.custom-config-volume.configMap",
+          "reference": "coredns-custom-x-kube-system-x-vcluster-ckf"
+        }
+      ]
+    },
+    {
+      "namespace": "vcluster-ckf",
+      "name": "vcluster-ckf-0",
+      "references": [
+        {
+          "field": "volumes.data.persistentVolumeClaim",
+          "reference": "data-vcluster-ckf-0"
+        },
+        {
+          "field": "volumes.vcluster-config.secret",
+          "reference": "vc-config-vcluster-ckf"
+        },
+        {
+          "field": "container.syncer.env.VCLUSTER_NAME",
+          "literal_reference_match": true
+        }
+      ]
+    }
+  ],
+  "cross_namespace_pod_reference_matches": [],
+  "vcluster_bundles": [
+    {
+      "namespace": "fleet-local",
+      "name": "vcluster-ckf",
+      "uid": "ce6a7335-d2c3-4ef8-ae9a-d37ef1a6f4e8",
+      "owners": [],
+      "source_git_repo": "cluster-maintenance",
+      "helm": {
+        "chart": "vcluster",
+        "repo": "https://charts.loft.sh",
+        "version": "0.28.0",
+        "releaseName": "vcluster-ckf"
+      },
+      "ready": 1,
+      "desiredReady": 1
+    }
+  ],
+  "host_ingress_matches": [],
+  "pod_annotations_inspected": false,
+  "environment_values_recorded": false,
+  "production_mutations": false
+}

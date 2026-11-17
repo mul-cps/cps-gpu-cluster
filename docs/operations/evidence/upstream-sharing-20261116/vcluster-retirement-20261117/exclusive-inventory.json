@@ -1,0 +1,219 @@
+{
+  "observed": "2026-11-17T14:01:42.997209+00:00",
+  "namespace": {
+    "name": "vcluster-ckf",
+    "uid": "74c4c4ba-9a84-4594-ba4c-66b08f4f4844"
+  },
+  "clusterrolebindings": [
+    {
+      "name": "vc-vcluster-ckf-v-vcluster-ckf",
+      "uid": "3d0a55ee-8314-4559-a1db-26acd8dd8f9b",
+      "resourceVersion": "91380375",
+      "role": "vc-vcluster-ckf-v-vcluster-ckf",
+      "exclusive_subjects": true,
+      "subjects": [
+        {
+          "kind": "ServiceAccount",
+          "name": "vc-vcluster-ckf",
+          "namespace": "vcluster-ckf"
+        }
+      ]
+    }
+  ],
+  "clusterroles": [
+    {
+      "name": "vc-vcluster-ckf-v-vcluster-ckf",
+      "uid": "52b97fcb-7387-43cc-ad1d-dd7c95bcf07c",
+      "resourceVersion": "91380371",
+      "all_clusterrolebindings": [
+        "vc-vcluster-ckf-v-vcluster-ckf"
+      ],
+      "namespaced_rolebindings": [],
+      "aggregate_role": false,
+      "helm_release": "vcluster-ckf",
+      "helm_namespace": "vcluster-ckf"
+    }
+  ],
+  "webhook_consumers": [],
+  "apiservice_consumers": [],
+  "namespaced_inventory": [
+    {
+      "kind": "Service",
+      "name": "kube-dns-x-kube-system-x-vcluster-ckf",
+      "uid": "ec114841-3c7b-4edf-acad-e708a469567f",
+      "resourceVersion": "91381577",
+      "secret_type": null
+    },
+    {
+      "kind": "Service",
+      "name": "vcluster-ckf",
+      "uid": "df6d7d8a-8d46-4625-a4f1-6501c2fe6129",
+      "resourceVersion": "91381264",
+      "secret_type": null
+    },
+    {
+      "kind": "Service",
+      "name": "vcluster-ckf-headless",
+      "uid": "08242c0c-436b-4c26-87a2-1795efa3e22a",
+      "resourceVersion": "91380385",
+      "secret_type": null
+    },
+    {
+      "kind": "ServiceAccount",
+      "name": "default",
+      "uid": "97f55a28-40d3-4e51-a189-8c059be945cc",
+      "resourceVersion": "63068786",
+      "secret_type": null
+    },
+    {
+      "kind": "ServiceAccount",
+      "name": "vc-vcluster-ckf",
+      "uid": "e11ac1b5-ef39-4d39-b35b-39b90128e207",
+      "resourceVersion": "91380363",
+      "secret_type": null
+    },
+    {
+      "kind": "ServiceAccount",
+      "name": "vc-workload-vcluster-ckf",
+      "uid": "336c7c19-67fe-46cf-a53e-de77d3481cd2",
+      "resourceVersion": "91380364",
+      "secret_type": null
+    },
+    {
+      "kind": "Role",
+      "name": "vc-vcluster-ckf",
+      "uid": "6f4d0adc-5970-4e55-9a63-4afbe0abb623",
+      "resourceVersion": "91380380",
+      "secret_type": null
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "vc-vcluster-ckf",
+      "uid": "fb8fde77-e8b4-436b-b512-199476ab4b22",
+      "resourceVersion": "91380382",
+      "secret_type": null
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "coredns-x-kube-system-x-vcluster-ckf",
+      "uid": "b419abbc-dfbd-4cb3-a5fa-99579d216735",
+      "resourceVersion": "407651910",
+      "secret_type": null
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "harica-ca",
+      "uid": "fe21fc50-2048-4698-9788-15e1318f22b0",
+      "resourceVersion": "253333503",
+      "secret_type": null
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "kube-root-ca.crt",
+      "uid": "45875bec-b92e-4c5c-a134-03d8797787f3",
+      "resourceVersion": "63068784",
+      "secret_type": null
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "kube-root-ca.crt-x-kube-system-x-vcluster-ckf",
+      "uid": "a55e15b5-22d3-42f9-a200-3cab95f5cf7f",
+      "resourceVersion": "91381568",
+      "secret_type": null
+    },
+    {
+      "kind": "Secret",
+      "name": "sh.helm.release.v1.vcluster-ckf.v96",
+      "uid": "9f8c6ae4-df85-4ebe-825b-e25026e42f96",
+      "resourceVersion": "406578413",
+      "secret_type": "helm.sh/release.v1"
+    },
+    {
+      "kind": "Secret",
+      "name": "sh.helm.release.v1.vcluster-ckf.v97",
+      "uid": "7aa1af86-0ad7-49e1-825e-645f4cbf613c",
+      "resourceVersion": "406578416",
+      "secret_type": "helm.sh/release.v1"
+    },
+    {
+      "kind": "Secret",
+      "name": "vc-config-vcluster-ckf",
+      "uid": "2d964d98-72f0-4c73-8839-67c4a145cc24",
+      "resourceVersion": "407343018",
+      "secret_type": "Opaque"
+    },
+    {
+      "kind": "Secret",
+      "name": "vc-vcluster-ckf",
+      "uid": "f4655671-0955-4828-80f6-c5a995ae57c1",
+      "resourceVersion": "91381578",
+      "secret_type": "Opaque"
+    },
+    {
+      "kind": "Secret",
+      "name": "vcluster-ckf-certs",
+      "uid": "0d1e95c9-8ab1-4366-a3e2-726f5580e36b",
+      "resourceVersion": "91381404",
+      "secret_type": "Opaque"
+    },
+    {
+      "kind": "PersistentVolumeClaim",
+      "name": "data-vcluster-ckf-0",
+      "uid": "36c97400-db9e-41a6-b337-23d25b74f176",
+      "resourceVersion": "63068893",
+      "secret_type": null
+    },
+    {
+      "kind": "StatefulSet",
+      "name": "vcluster-ckf",
+      "uid": "4b945f8d-03bf-4bc3-ad81-12b6f687e304",
+      "resourceVersion": "406311538",
+      "secret_type": null
+    }
+  ],
+  "data_pvc": {
+    "name": "data-vcluster-ckf-0",
+    "uid": "36c97400-db9e-41a6-b337-23d25b74f176",
+    "volume": "pvc-36c97400-db9e-41a6-b337-23d25b74f176",
+    "pv_uid": "35fdfe2b-b01e-4995-a17e-e15a6b76b485",
+    "reclaim": "Delete",
+    "node_affinity": {
+      "required": {
+        "nodeSelectorTerms": [
+          {
+            "matchExpressions": [
+              {
+                "key": "kubernetes.io/hostname",
+                "operator": "In",
+                "values": [
+                  "k3s-wk-gpu4"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "local_path": null
+  },
+  "bundle": {
+    "namespace": "fleet-local",
+    "name": "vcluster-ckf",
+    "uid": "ce6a7335-d2c3-4ef8-ae9a-d37ef1a6f4e8",
+    "resourceVersion": "407617811",
+    "keepResources": null,
+    "deleteNamespace": null,
+    "paused": null
+  },
+  "bundledeployments": [
+    {
+      "namespace": "cluster-fleet-local-local-1a3d67d0a899",
+      "name": "vcluster-ckf",
+      "uid": "50328c40-ee8b-4ff5-a28a-7e7ee8480a1b",
+      "resourceVersion": "407617815",
+      "spec_paused": null,
+      "options_keepResources": null,
+      "options_deleteNamespace": null
+    }
+  ]
+}

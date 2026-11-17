@@ -1,0 +1,13 @@
+{
+  "argo_host": "cps-argo-argo-workflows-server.cps-argo.svc.cluster.local",
+  "hubs": {
+    "cit": {
+      "namespace": "cit-jhub",
+      "host": "hub.cit-jhub.svc.cluster.local"
+    },
+    "cps": {
+      "namespace": "jupyterhub",
+      "host": "hub.jupyterhub.svc.cluster.local"
+    }
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "namespace_or_pvc_or_pv_in_manifest": false,
+  "resources": [
+    {
+      "kind": "ServiceAccount",
+      "namespace": "vcluster-ckf",
+      "name": "vc-vcluster-ckf"
+    },
+    {
+      "kind": "ServiceAccount",
+      "namespace": "vcluster-ckf",
+      "name": "vc-workload-vcluster-ckf"
+    },
+    {
+      "kind": "Secret",
+      "namespace": "vcluster-ckf",
+      "name": "vc-config-vcluster-ckf"
+    },
+    {
+      "kind": "ClusterRole",
+      "namespace": null,
+      "name": "vc-vcluster-ckf-v-vcluster-ckf"
+    },
+    {
+      "kind": "ClusterRoleBinding",
+      "namespace": null,
+      "name": "vc-vcluster-ckf-v-vcluster-ckf"
+    },
+    {
+      "kind": "Role",
+      "namespace": "vcluster-ckf",
+      "name": "vc-vcluster-ckf"
+    },
+    {
+      "kind": "RoleBinding",
+      "namespace": "vcluster-ckf",
+      "name": "vc-vcluster-ckf"
+    },
+    {
+      "kind": "Service",
+      "namespace": "vcluster-ckf",
+      "name": "vcluster-ckf-headless"
+    },
+    {
+      "kind": "Service",
+      "namespace": "vcluster-ckf",
+      "name": "vcluster-ckf"
+    },
+    {
+      "kind": "StatefulSet",
+      "namespace": "vcluster-ckf",
+      "name": "vcluster-ckf"
+    }
+  ]
+}

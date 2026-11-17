@@ -1,0 +1,11 @@
+# Legacy vcluster-ckf retirement preparation
+
+The former Charmed Kubeflow bootstrap is unused: fresh tenant inventory has only the four default namespaces, CoreDNS Pod/Deployment and two Kubernetes/DNS Services. There are no tenant user workloads, Jobs, PVCs/PVs, Ingresses or CRDs. No current in-cluster cross-namespace consumer was found. CPS/CIT Hubs, Gateway, Argo and the qualified shared5 workflow run in host namespaces independently.
+
+The user authorized full removal. This source change removes only the old `.vcluster-ckf` bundle/bootstrap configuration. The parent GitRepo path still exists; no GitRepo.paths change is required. Historical evidence remains in Git. Actual target removal has **not** been applied by this preparation commit.
+
+A native read-only SQLite snapshot plus stable PKI/non-database files was verified before preparation:706307bytes, SHA256 `1e0fe1ed95be0f15ac8f8951a23b3cf07359ab359dc29d0bbcac1a2bfe52099b`. Quick/full integrity and catalog/row counts pass in the helper and host copies. Secret configuration/PKI is retained only in a private0600 recovery archive outside Git. No full restore rehearsal is claimed. The bounded CPU-only read-only helper and its deny-network policy were cleaned normally.
+
+Root must first hold only the exact Fleet Bundle and BundleDeployment with paused=true, keepResources=true and deleteNamespace=false, verify retention, then pin the reviewed source removal. This prevents Fleet recreation or accidental namespace/PVC cascade. The Helm manifest does not own the Namespace/PVC/PV. Normal exact-name Helm uninstall is followed by exclusive residue reconciliation. Namespace and PVC/PV/local-path removal require root's reviewed backup/exclusivity gate; namespace is last. No forced deletion, finalizer stripping, upgrade, broad RBAC deletion or changes to other workloads are part of this source commit.
+
+The sole cluster role/binding is `vc-vcluster-ckf-v-vcluster-ckf`; its only subject is the vcluster namespace service account and there are no shared/aggregate consumers. The5Gi local-path control-plane PVC is onGPU4 and uses Delete reclaim policy. Its data is not removed by this preparation commit. See the safe inventory and backup records here; the guarded operator packet and raw recovery configuration remain private.

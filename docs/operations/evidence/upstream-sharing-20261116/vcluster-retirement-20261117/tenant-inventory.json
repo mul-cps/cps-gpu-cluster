@@ -1,0 +1,112 @@
+{
+  "observed": "2026-11-17T13:41:54.561125+00:00",
+  "access": "Existing operator client certificate; private ephemeral kubeconfig; verified TLS over bounded local forward; no new credential",
+  "namespaces": [
+    "default",
+    "kube-node-lease",
+    "kube-public",
+    "kube-system"
+  ],
+  "counts": {
+    "Pod": 1,
+    "Deployment": 1,
+    "Service": 2
+  },
+  "resources": [
+    {
+      "kind": "Pod",
+      "namespace": "kube-system",
+      "name": "coredns-744d9bd8bf-4k5td",
+      "uid": "7bb19066-5907-4084-ad7b-876afd727b5c",
+      "created": "2026-11-17T13:38:15Z",
+      "phase": "Running",
+      "owners": [
+        {
+          "kind": "ReplicaSet",
+          "name": "coredns-744d9bd8bf"
+        }
+      ],
+      "containers": [
+        {
+          "name": "coredns",
+          "image": "coredns/coredns:1.12.0"
+        }
+      ],
+      "conditions": [
+        {
+          "type": "PodReadyToStartContainers",
+          "status": "True"
+        },
+        {
+          "type": "Initialized",
+          "status": "True"
+        },
+        {
+          "type": "Ready",
+          "status": "True"
+        },
+        {
+          "type": "ContainersReady",
+          "status": "True"
+        },
+        {
+          "type": "PodScheduled",
+          "status": "True"
+        }
+      ],
+      "annotation_keys": []
+    },
+    {
+      "kind": "Deployment",
+      "namespace": "kube-system",
+      "name": "coredns",
+      "uid": "65b96acf-ee2e-4d1e-afd3-313721c13fe6",
+      "created": "2026-02-02T18:50:06Z",
+      "replicas": 1,
+      "status": {
+        "readyReplicas": 1,
+        "replicas": 1
+      }
+    },
+    {
+      "kind": "Service",
+      "namespace": "default",
+      "name": "kubernetes",
+      "uid": "7285012c-9027-407b-9ae7-2e44f17a7f5a",
+      "created": "2026-02-28T13:01:22Z",
+      "type": "ClusterIP",
+      "ports": [
+        {
+          "port": 443,
+          "protocol": "TCP"
+        }
+      ]
+    },
+    {
+      "kind": "Service",
+      "namespace": "kube-system",
+      "name": "kube-dns",
+      "uid": "9ea7366b-3b3a-4067-b831-d611cfadd604",
+      "created": "2026-02-28T13:01:23Z",
+      "type": "ClusterIP",
+      "ports": [
+        {
+          "port": 53,
+          "protocol": "UDP"
+        },
+        {
+          "port": 53,
+          "protocol": "TCP"
+        },
+        {
+          "port": 9153,
+          "protocol": "TCP"
+        }
+      ]
+    }
+  ],
+  "persistentvolumes": [],
+  "crds": [],
+  "production_mutations": false,
+  "credential_values_recorded": false
+}

@@ -1,0 +1,17 @@
+{
+  "observed": "2026-11-17T13:57:13.271322+00:00",
+  "archive_mode": "0600",
+  "archive_size": 706307,
+  "archive_sha256": "1e0fe1ed95be0f15ac8f8951a23b3cf07359ab359dc29d0bbcac1a2bfe52099b",
+  "native_sqlite_readonly_backup": true,
+  "standalone_snapshot_journal_mode": "delete(copy only)",
+  "non_db_pki_unchanged_during_snapshot": true,
+  "pod_and_host_integrity_check": "ok",
+  "catalog_files": 30,
+  "sqlite_table_count": 2,
+  "sqlite_row_counts_verified": true,
+  "backup_config_and_rbac_private": true,
+  "pod_metadata_or_token_annotations_dumped": false,
+  "source_data_modified": false,
+  "restore_rehearsal_performed": false
+}
