@@ -11,14 +11,14 @@
         cps.compute/qualification-recovery: '2026-10-16T23:18:30.578793+00:00'
         cps.unileoben.ac.at/cpu-addon-values-sha256: ca45d2b26ad4b0d8208d70dd14bcfcacc9ce4df368e503c5d7c5ab481900b5d5
         cps.unileoben.ac.at/current-custody-request-sha256: 83312908e3e4bf45b674e31dec9a52195dc074d505382657dedbd59039911594
+        cps.unileoben.ac.at/gpu3-source-qa-module: 0da43f168270900591a10a31f3650ab2b3778e2f175a7b63df55e78ad274e203
+        cps.unileoben.ac.at/gpu3-source-qa-permit: 9c3b5232382b774baa034485c4a5ca15c5778c7ea799ba28128680fa5552462f
         cps.unileoben.ac.at/native-approval-stage: sdk-156c6f5b
         cps.unileoben.ac.at/personal-spawn-ui-sha256: b048ab982036edc8fc3d21ea1afd9d7978f4aee429e99c3ad149ea353afaee0e
         cps.unileoben.ac.at/upstream-helper-settings: a3eff91b1c4c2f27931fa3dafbb7a510f35a4e9423e36cc1610dda089099a92b
         cps.unileoben.ac.at/upstream-policy-hash: sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb
         cps.unileoben.ac.at/upstream-runtime-bootstrap: 0d9c42a691fcdd5c26ddcc4f7b1f3ba63c351dd377043e802f3dc1baf2b7bd52
         kubectl.kubernetes.io/restartedAt: '2026-11-17T13:11:20.023255+00:00'
-        cps.unileoben.ac.at/gpu3-source-qa-module: 0da43f168270900591a10a31f3650ab2b3778e2f175a7b63df55e78ad274e203
-        cps.unileoben.ac.at/gpu3-source-qa-permit: d8843e285cd376854f28e7e0c779353309abb3c426cb9ef1dfbf8b8bf82190e3
       labels:
         app: jupyterhub
         app.kubernetes.io/component: hub
@@ -223,8 +223,8 @@
         - mountPath: /etc/cps-upstream-hub
           name: upstream-policy
           readOnly: true
-        - name: cps-gpu3-source-qa
-          mountPath: /etc/cps-gpu3-source-qa
+        - mountPath: /etc/cps-gpu3-source-qa
+          name: cps-gpu3-source-qa
           readOnly: true
       dnsPolicy: ClusterFirst
       imagePullSecrets:
@@ -303,7 +303,7 @@
       - name: secret
         secret:
           defaultMode: 420
-          secretName: cps-hub-gpu3-qa-6757afbf445f
+          secretName: cps-hub-gpu3-qa-34075bd999cb
       - emptyDir: {}
         name: ca-bundle
       - configMap:
@@ -398,10 +398,10 @@
           defaultMode: 292
           name: cps-upstream-policy-2b2ad6ce656d
         name: upstream-policy
-      - name: cps-gpu3-source-qa
-        configMap:
-          name: cps-gpu3-source-qa-d8843e285cd3
+      - configMap:
           defaultMode: 420
+          name: cps-gpu3-source-qa-9c3b5232382b
+        name: cps-gpu3-source-qa
 - op: replace
   path: /spec/strategy
   value:
