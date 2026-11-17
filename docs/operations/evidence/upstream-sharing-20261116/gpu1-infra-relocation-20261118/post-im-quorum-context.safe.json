@@ -1,0 +1,19 @@
+{
+  "observed": "2026-11-17T23:32:19.661827+00:00",
+  "activeVolumes": 17,
+  "robustnessCounts": {
+    "degraded": 17
+  },
+  "allAtLeastTwoDistinctCurrentNonGPU1RW": true,
+  "selectionCriteria": "engine currentState=running, replica mode RW, replica currentState=running, failedAt empty, distinct nodeID != k3s-wk-gpu1",
+  "registryVolume": {
+    "name": "pvc-1651fba7-6ecd-4615-92f5-8780f1f3857e",
+    "robustness": "degraded",
+    "state": "attached",
+    "currentRemoteRWNodes": [
+      "k3s-wk-gpu2",
+      "k3s-wk-gpu4"
+    ]
+  },
+  "context": "Root separately completed ordinary GPU1 IM eviction; IM/replica actions were outside this executor ownership. This snapshot does not claim 3-copy healthy state."
+}

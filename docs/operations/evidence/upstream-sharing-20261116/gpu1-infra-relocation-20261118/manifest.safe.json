@@ -1,0 +1,27 @@
+{
+  "created": "2026-11-17T23:33:06.887446+00:00",
+  "scope": "Harbor portal+registry and four cps-compute UI Pods only; read-only Longhorn context",
+  "files": {
+    "normal-evictions.safe.json": {
+      "sha256": "ba497ec6a734c050dd199989022ba92cef1cb5ad58e4c95f0688a307a16b6789",
+      "bytes": 5413
+    },
+    "registry-csi-handoff.safe.json": {
+      "sha256": "ca96f6be6bdc5cc1fb7f390d84090b9786045226b99ea4e818bedbdafe7beb70",
+      "bytes": 1276
+    },
+    "registry-preflight-activity.safe.json": {
+      "sha256": "8c7fe92a632c7e68dd684c74757375a17140f61969e7e6f7b24da3ce03f319a4",
+      "bytes": 398
+    },
+    "post-im-quorum-context.safe.json": {
+      "sha256": "cd4ccb411d177cdb2f9592bcda2f11259d7a23310199fdacfd30aadf119d86ad",
+      "bytes": 714
+    },
+    "README.md": {
+      "sha256": "a839a07c3a1f451495675130a1c0b1354459dec073d566be0a4043f583ae7c50",
+      "bytes": 2322
+    }
+  },
+  "privateMaterialExcluded": true
+}

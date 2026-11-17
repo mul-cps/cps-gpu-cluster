@@ -1,0 +1,34 @@
+{
+  "observed": "2026-11-17T23:27:34.578150+00:00",
+  "portalPASS": true,
+  "registryPASS": true,
+  "oldRegistryUID": "1e589880-f887-4317-9a3b-517e68766991",
+  "newRegistryUID": "941001df-7d5e-4092-a45c-870acb383b26",
+  "newNode": "k3s-wk-gpu3",
+  "samePVCUID": "1651fba7-6ecd-4615-92f5-8780f1f3857e",
+  "samePVUID": "0a712d1b-8593-4aca-a46b-fc276df80e3e",
+  "sameContainerAndVolumeSpec": true,
+  "oldCIDsRuntimeNotFoundBeforeEarliestNewWriterStart": true,
+  "oldCIDNotFoundTimesUTC": {
+    "a85e729c636ad4059f8e816f712c3fcba0bbd06b7073b4d16413b877e4167298": "2026-11-17T23:26:14.420639+00:00",
+    "0fd5af082c6818fbf30e8acbedb060d69a387914bc599027599468759b41e99f": "2026-11-17T23:26:14.420262+00:00"
+  },
+  "earliestNewContainerStartedAt": "2026-11-17T23:26:27+00:00",
+  "newContainers": [
+    {
+      "name": "registry",
+      "CID": "containerd://6eb9c1e3c58e25d07e05a26d38baec3f2c04d3ccbd1f4b24e30772d329ad6d39",
+      "startedAt": "2026-11-17T23:26:27Z",
+      "ready": true
+    },
+    {
+      "name": "registryctl",
+      "CID": "containerd://e00b02d17ffb61ef58c5c35a0076f44163ea828aa56df7786d0bb1040dc06509",
+      "startedAt": "2026-11-17T23:26:28Z",
+      "ready": true
+    }
+  ],
+  "LHstate": "attached",
+  "LHrobustness": "healthy",
+  "onlyNormalEviction": true
+}

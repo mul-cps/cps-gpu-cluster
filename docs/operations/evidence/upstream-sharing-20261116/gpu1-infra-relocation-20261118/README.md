@@ -1,0 +1,11 @@
+# GPU1 Harbor and UI relocation — 2026-11-18 local date
+
+Six authorized normal relocations completed: Harbor portal then registry, followed by cit-argo-ui, cit-compute-ui, cps-argo-ui and cps-compute-ui. Each used exactly one policy/v1 Eviction with fresh selected Node/Pod UID, Pod resourceVersion, known owner, activity/PVC/PDB guards and unchanged normal grace. No force/direct Pod deletion, storage mutation, image/config change, PDB change, or automatic retry. Each old Pod disappeared and its replacement became Ready off GPU1; matching Service endpoints and controller/PDB readiness were verified before continuing. Stateful CIT/head/IM operations belonged to other owners.
+
+Harbor registry retained PVCUID1651fba7-6ecd-4615-92f5-8780f1f3857e / PVUID0a712d1b-8593-4aca-a46b-fc276df80e3e and exact original container/volume specs. Its two old GPU1 container IDs were already runtime-NotFound at23:26:14.420UTC, before new GPU3 containers started23:26:27/28UTC. New PodUID941001df-7d5e-4092-a45c-870acb383b26 was Ready on GPU3; same Longhorn volume attached/healthy at the23:27:34 handoff observation.
+
+The pre-eviction registry TCP connection was an idle Harbor-core keepalive (queues0/0). The corrected combined-access-log parser matched36/36 requests over120seconds: allGET /, status200, no mutating or nonroot requests. These are bounded activity observations, not a permanent client-admission fence. Normal graceful HTTP shutdown was used.
+
+Later, Root independently evicted the GPU1 Longhorn instance manager. At23:32:19UTC all17 attached volumes reported degraded, and all17 still had at least two distinct non-GPU1 current-running, nonfailed engine-RW copies. This is explicitly a different observation from the earlier healthy Harbor handoff; no three-copy healthy claim is made after IM shutdown. The registry's current remote RW nodes are included in post-im-quorum-context.safe.json. No storage remediation was performed by this executor.
+
+Receipts contain only identities, timings, guards and health summaries. Raw configuration, private logs, database snapshots, credentials and archives are excluded. UTC dates remain2026-11-17 during these observations; the artifact directory uses2026-11-18 local date (Europe/Vienna). No unrelated current-status or configuration file was edited for this handoff.

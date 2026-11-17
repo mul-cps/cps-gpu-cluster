@@ -1,0 +1,17 @@
+{
+  "observed": "2026-11-17T23:25:42.471972+00:00",
+  "format": "combined HTTPaccess log",
+  "lines": 36,
+  "parsedRequests": 36,
+  "last120sMethodCounts": {
+    "GET": 36
+  },
+  "rootHealthGETs": 36,
+  "nonRootRequestCount": 0,
+  "mutationCount": 0,
+  "statusCounts": {
+    "200": 36
+  },
+  "connectionPeer": "harbor-core; observedqueues0/0",
+  "priorHTTPMethodRegexDidNotMatchThisFormat": true
+}

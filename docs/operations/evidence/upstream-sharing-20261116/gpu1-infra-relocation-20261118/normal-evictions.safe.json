@@ -1,0 +1,176 @@
+{
+  "selectedNode": "k3s-wk-gpu1",
+  "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "count": 6,
+  "method": "policy/v1 Eviction; UID/resourceVersion preconditions; default termination grace; no direct deletion, force, retries, PDB or storage modification",
+  "receipts": [
+    {
+      "namespace": "harbor",
+      "oldName": "harbor-portal-66b5d45fc5-59hfw",
+      "oldUID": "41ca0471-988c-4cf3-be7a-a12a0f64969e",
+      "oldRV": "406315928",
+      "controller": "harbor-portal",
+      "controllerUID": "0ffc1c60-a796-4692-826a-707df0c07764",
+      "desired": 1,
+      "normalGrace": 30,
+      "started": "2026-11-17T23:24:35.006392+00:00",
+      "completed": "2026-11-17T23:24:38.483308+00:00",
+      "oldGone": true,
+      "replacements": [
+        {
+          "name": "harbor-portal-66b5d45fc5-2s5n2",
+          "uid": "ee673ab4-17f2-4dd8-900e-2f54effa83ee",
+          "node": "k3s-wk-gpu3",
+          "Ready": true
+        }
+      ],
+      "controllerReadyCount": 1,
+      "PDBreplenished": true,
+      "matchingServicesReady": true,
+      "matchingServices": [
+        "harbor-portal"
+      ],
+      "PDBs": []
+    },
+    {
+      "namespace": "harbor",
+      "oldName": "harbor-registry-676446887d-nhqjl",
+      "oldUID": "1e589880-f887-4317-9a3b-517e68766991",
+      "oldRV": "406579906",
+      "controller": "harbor-registry",
+      "controllerUID": "b3cf3373-0076-4903-ab0a-5b4ab8991dee",
+      "desired": 1,
+      "normalGrace": 120,
+      "started": "2026-11-17T23:26:13.556975+00:00",
+      "completed": "2026-11-17T23:26:32.866182+00:00",
+      "oldGone": true,
+      "replacements": [
+        {
+          "name": "harbor-registry-676446887d-6n772",
+          "uid": "941001df-7d5e-4092-a45c-870acb383b26",
+          "node": "k3s-wk-gpu3",
+          "Ready": true
+        }
+      ],
+      "controllerReadyCount": 1,
+      "PDBreplenished": true,
+      "matchingServicesReady": true,
+      "matchingServices": [
+        "harbor-registry"
+      ],
+      "PDBs": []
+    },
+    {
+      "namespace": "cps-compute",
+      "oldName": "cit-argo-ui-6ff4d956c4-b9shq",
+      "oldUID": "82ca88ed-e5f6-4eef-83a2-942b9c4acb3e",
+      "oldRV": "406315576",
+      "controller": "cit-argo-ui",
+      "controllerUID": "f12deafb-3df5-4f5a-a896-05995c8da901",
+      "desired": 1,
+      "normalGrace": 40,
+      "started": "2026-11-17T23:27:57.632840+00:00",
+      "completed": "2026-11-17T23:28:01.141066+00:00",
+      "oldGone": true,
+      "replacements": [
+        {
+          "name": "cit-argo-ui-6ff4d956c4-g42x4",
+          "uid": "0945554a-3367-4092-b46d-2f4b49a57c20",
+          "node": "k3s-wk-gpu3",
+          "Ready": true
+        }
+      ],
+      "controllerReadyCount": 1,
+      "PDBreplenished": true,
+      "matchingServicesReady": true,
+      "matchingServices": [
+        "cit-argo-ui"
+      ],
+      "PDBs": []
+    },
+    {
+      "namespace": "cps-compute",
+      "oldName": "cit-compute-ui-74d7ddc48c-vrtqm",
+      "oldUID": "abea30c3-a4a6-4cca-96ef-40424fa4f5f3",
+      "oldRV": "406315582",
+      "controller": "cit-compute-ui",
+      "controllerUID": "dc93dfdb-d448-4a81-a556-492d531cd49a",
+      "desired": 1,
+      "normalGrace": 100,
+      "started": "2026-11-17T23:28:02.088395+00:00",
+      "completed": "2026-11-17T23:29:44.554746+00:00",
+      "oldGone": true,
+      "replacements": [
+        {
+          "name": "cit-compute-ui-74d7ddc48c-2cswd",
+          "uid": "089ffc78-8f5e-494b-b603-18bfeaa68d48",
+          "node": "k3s-wk-gpu2",
+          "Ready": true
+        }
+      ],
+      "controllerReadyCount": 1,
+      "PDBreplenished": true,
+      "matchingServicesReady": true,
+      "matchingServices": [
+        "cit-compute-ui"
+      ],
+      "PDBs": []
+    },
+    {
+      "namespace": "cps-compute",
+      "oldName": "cps-argo-ui-96c7fdd6c-xkcmp",
+      "oldUID": "e0461992-0b54-46fa-a35e-004ceb61a056",
+      "oldRV": "406315623",
+      "controller": "cps-argo-ui",
+      "controllerUID": "1186bdd0-7aba-4293-84a1-ad82f0c4bf93",
+      "desired": 1,
+      "normalGrace": 40,
+      "started": "2026-11-17T23:29:45.429317+00:00",
+      "completed": "2026-11-17T23:29:48.918536+00:00",
+      "oldGone": true,
+      "replacements": [
+        {
+          "name": "cps-argo-ui-96c7fdd6c-kjrh6",
+          "uid": "976954cd-2fce-4224-b7d9-0dece2a9813f",
+          "node": "k3s-wk-gpu3",
+          "Ready": true
+        }
+      ],
+      "controllerReadyCount": 1,
+      "PDBreplenished": true,
+      "matchingServicesReady": true,
+      "matchingServices": [
+        "cps-argo-ui"
+      ],
+      "PDBs": []
+    },
+    {
+      "namespace": "cps-compute",
+      "oldName": "cps-compute-ui-5b8c8f469b-r8x6x",
+      "oldUID": "b192705d-008d-482d-ac52-a87fda46e555",
+      "oldRV": "406315938",
+      "controller": "cps-compute-ui",
+      "controllerUID": "a6b7171e-8471-442f-8b7c-cabb3d3da35b",
+      "desired": 1,
+      "normalGrace": 100,
+      "started": "2026-11-17T23:29:49.834289+00:00",
+      "completed": "2026-11-17T23:31:32.314759+00:00",
+      "oldGone": true,
+      "replacements": [
+        {
+          "name": "cps-compute-ui-5b8c8f469b-65pbq",
+          "uid": "0da3b66c-bf23-4079-9ff7-272a7303c5df",
+          "node": "k3s-wk-gpu2",
+          "Ready": true
+        }
+      ],
+      "controllerReadyCount": 1,
+      "PDBreplenished": true,
+      "matchingServicesReady": true,
+      "matchingServices": [
+        "cps-compute-ui"
+      ],
+      "PDBs": []
+    }
+  ]
+}
