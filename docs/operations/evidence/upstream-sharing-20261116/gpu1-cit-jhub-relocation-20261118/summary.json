@@ -1,0 +1,89 @@
+{
+  "observed": "2026-11-17T23:40:05.646994+00:00",
+  "scope": "CIT-JHUB only; Root-released serial PostgreSQL, Hub, proxy ordinary policy/v1 Evictions",
+  "namespace": "cit-jhub",
+  "evictions": {
+    "postgresql": 1,
+    "hub": 1,
+    "proxy": 1
+  },
+  "PDB_and_native_grace_respected": true,
+  "old_actual_CRI_stop_before_each_new_container_start": true,
+  "Pod_direct_delete_force_or_finalizer_change": false,
+  "postgresql": {
+    "version": "18.4",
+    "permanent_image_digest": "sha256:256bf40a7343862b9a66d1d27cd34599e80dad99284fc5450b24cb02e26ff34e",
+    "new_node": "k3s-wk-gpu3",
+    "new_UID": "72006ee3-dc4b-4ea0-bd44-fbbf52186e9e",
+    "same_PVC_UID": "764c6600-0466-4f6e-9f4a-e1badf8c1022",
+    "same_PV_UID": "bbcaab63-21fe-4925-bbcc-ad5c3354e151",
+    "temporary_OnDelete_removed": true,
+    "current_strategy": {
+      "rollingUpdate": {
+        "partition": 0
+      },
+      "type": "RollingUpdate"
+    },
+    "no_additional_restart_after_strategy_restore": true
+  },
+  "hub": {
+    "generation": 320,
+    "new_node": "k3s-wk-gpu2",
+    "new_UID": "da0ba4c0-0c19-443f-87e9-2957b887685d",
+    "image_digest": "bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6",
+    "same_entire_original_spec_and_config": true,
+    "cleanup_servers": false
+  },
+  "proxy": {
+    "new_node": "k3s-wk-gpu3",
+    "new_UID": "e85399a2-1cfc-4bb3-9d1b-a29674b5cdaa",
+    "same_imageID": true,
+    "public_TLS_health": 200
+  },
+  "database": {
+    "public_tables_checked": 21,
+    "strict_all_table_equality": false,
+    "unchanged_table_hashes": 19,
+    "changed_tables": [
+      "api_tokens",
+      "oauth_clients"
+    ],
+    "expected_specific_service_delta_only": true,
+    "users_all26_and_roles_custody_accounts_groups_spawners_shares_exact": true,
+    "schema_exact": true,
+    "active_spawners": 0,
+    "backup": "native209464B/PG18.4/catalog21tabledata/private0600/no fullrestoreclaim"
+  },
+  "inputs": {
+    "Secrets": 9,
+    "ConfigMaps": 13,
+    "UID_and_data_exact": true,
+    "original_SourceRegistry_and_no_QA": true
+  },
+  "Longhorn": {
+    "robustness": "degraded",
+    "remote_RW_nodes": [
+      "k3s-wk-gpu4",
+      "k3s-wk-gpu2"
+    ],
+    "Root_authorized_selected_IM_maintenance": true,
+    "healthy3_claim": false
+  },
+  "source_delivery": {
+    "initial_approved_pin_commit": "40d182dc5207ccd575d4a45b55b05bee88ae7fc4",
+    "final_strategy_restore_commit": "dc14b6586b9527011b1c48a4d25852ea696695c3",
+    "remote_SHAs_verified": true,
+    "Root_Fleet_revision_CAS_only": true,
+    "other_GitRepo_fields_paths_unchanged": true,
+    "chart": "Bitnami PostgreSQL16.2.5",
+    "Hub_Gateway_Source_images_credentials_unchanged": true
+  },
+  "Source_API_or_membership_grant_IdP_writes": false,
+  "notebook_or_job_stop": false,
+  "worker_OS_actions_by_this_task": false,
+  "limits": [
+    "Native backup catalog verified; no full restore rehearsal claim.",
+    "Longhorn expected degraded while Root stopped selected GPU1 instance-manager; two actual current remoteRW replicas preserved; not claimed healthy3.",
+    "No new user-login/browser/RTC/GPU-runtime qualification from this infrastructure handoff."
+  ]
+}

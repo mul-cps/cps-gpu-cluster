@@ -1,0 +1,24 @@
+{
+  "observed": "2026-11-17T23:31:56.687636+00:00",
+  "target": "hub",
+  "oldUID": "1fe4e6e6-5f78-4d35-9e2b-5686e36140c9",
+  "oldCID": "eb9dc51ba7b62fe7345ad1ac1b7e2c846f26d816e0fd14072c24d74d1883df03",
+  "old_actual_CRI_stopped": true,
+  "old_first_observed_stopped": "2026-11-17T23:31:46.930391+00:00",
+  "old_stop_observed_before_new_container_start": true,
+  "oldCRI_finished_before_new_start": false,
+  "new": {
+    "name": "hub-ddf455d78-qtdpt",
+    "uid": "da0ba4c0-0c19-443f-87e9-2957b887685d",
+    "node": "k3s-wk-gpu2",
+    "deleting": false,
+    "phase": "Running",
+    "Ready": true,
+    "CID": "containerd://559fcd575eb55700e0a5b0314e25d50bc2496059d365279d1c508ff18a0b87f4",
+    "imageID": "ghcr.io/mul-cps/cps-compute@sha256:bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6",
+    "startedAt": "2026-11-17T23:31:47Z"
+  },
+  "eviction_count": 1,
+  "natural_grace_PDB_respected": true,
+  "log": "hub-handoff-20261117T233143Z.safe.jsonl"
+}

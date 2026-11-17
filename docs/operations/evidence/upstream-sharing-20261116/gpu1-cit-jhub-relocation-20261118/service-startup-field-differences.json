@@ -1,0 +1,81 @@
+{
+  "observed": "2026-11-17T23:32:23.051552+00:00",
+  "tables": {
+    "users": {
+      "before_count": 26,
+      "after_count": 26,
+      "added_ids": [],
+      "removed_ids": [],
+      "changes": []
+    },
+    "api_tokens": {
+      "before_count": 257,
+      "after_count": 258,
+      "added_ids": [
+        "745"
+      ],
+      "removed_ids": [],
+      "changes": [
+        {
+          "id": "326",
+          "fields": [
+            "last_activity"
+          ],
+          "field_hashes": {
+            "last_activity": {
+              "before": "dfb41debaac6a3837a33eeb841008d993c5fe71d519963b66efdf0984638dd2b",
+              "after": "3241dff6c4263a9883980eda82145397388e6a289df29599a50987ecbfa34280"
+            }
+          },
+          "activity_timestamps": {
+            "last_activity": {
+              "before": "2026-11-17 23:12:27.350604",
+              "after": "2026-11-17 23:32:19.6676"
+            }
+          }
+        },
+        {
+          "id": "744",
+          "fields": [
+            "last_activity"
+          ],
+          "field_hashes": {
+            "last_activity": {
+              "before": "540ceb079c50d4bea349634b66243e6d5411421b443936d02b1f433d3e2b80c8",
+              "after": "f244a76ee273dabfd0061aa29d258a64c322c7119775c63f0df432fea599765e"
+            }
+          },
+          "activity_timestamps": {
+            "last_activity": {
+              "before": "2026-11-17 23:12:38.316282",
+              "after": "2026-11-17 23:27:38.252752"
+            }
+          }
+        }
+      ]
+    },
+    "oauth_clients": {
+      "before_count": 4,
+      "after_count": 4,
+      "added_ids": [],
+      "removed_ids": [],
+      "changes": [
+        {
+          "id": "135",
+          "fields": [
+            "secret"
+          ],
+          "field_hashes": {
+            "secret": {
+              "before": "7069e601cc466f98c2e7e744600e70bc2070664d13b593a8a2c6f2503b6977b7",
+              "after": "36461e37002d1d2564e9eee41ebdb6a33d6b5107e75f039662e54087455d65a9"
+            }
+          },
+          "activity_timestamps": {}
+        }
+      ]
+    }
+  },
+  "values_not_output_except_activity_times": true,
+  "no_mutations": true
+}

@@ -1,0 +1,20 @@
+{
+  "observed": "2026-11-17T23:40:05.068090+00:00",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "e5a3e0f3-6463-49cd-9947-6a2ffb357437",
+  "nomination": "gpu1-ubuntu-20261117",
+  "taints": [
+    {
+      "effect": "NoSchedule",
+      "key": "node.kubernetes.io/unschedulable",
+      "timeAdded": "2026-11-17T21:42:02Z"
+    },
+    {
+      "effect": "NoSchedule",
+      "key": "cps.unileoben.ac.at/os-upgrade",
+      "value": "gpu1-ubuntu-20261117"
+    }
+  ],
+  "cordonRetained": true,
+  "onlyApprovedSpecDelta": true
+}

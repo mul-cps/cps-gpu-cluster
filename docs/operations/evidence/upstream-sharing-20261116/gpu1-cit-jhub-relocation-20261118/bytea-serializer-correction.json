@@ -1,0 +1,13 @@
+{
+  "native_archive_sha256": "385c258d63c53f4420b55b7e4983ba12550c62e9b4df954d7d53ebdb842d2e6f",
+  "archive_unchanged": true,
+  "initial_defect": "default=str serialized PostgreSQL bytea memoryview object addresses, producing non-deterministic users hashes",
+  "original_flawed_users_hash": "db87cac95b5ec7cbfa466ca00e3ec774c7fc0134a856496603629e98a8c4d55f",
+  "deterministic_users_hash": "e3982c3faf685f6069d0d78d8e4eb305c21c216e09e1cd6766730365a2809c47",
+  "postmove_users_hash": "e3982c3faf685f6069d0d78d8e4eb305c21c216e09e1cd6766730365a2809c47",
+  "correction": "bytes(v).hex() inside deterministic JSON serialization; reconstructed original users rows from unchanged native archive; no rebaseline from mutated database",
+  "independent_all26users_allcolumns_native_comparison_equal": true,
+  "boolean_text_comparison_normalized": "native COPY t/f and PostgreSQL ::text true/false describe same boolean; initial comparator false positives retained privately",
+  "no_database_role_or_auth_state_mutation": true,
+  "corrected_snapshot_reader_sha256": "67313bfba231b30662d3511d2b746b7bdccf52730a4bc97cd716fa8ef7147536"
+}

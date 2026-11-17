@@ -1,0 +1,24 @@
+{
+  "observed": "2026-11-17T23:27:01.891748+00:00",
+  "target": "pg",
+  "oldUID": "3e525936-7ac4-45d0-902c-cb473a37f0af",
+  "oldCID": "5ae08b08deb50f93ed649be50ecb7102cee0c956a6e61d415e8b57012f9dfd0d",
+  "old_actual_CRI_stopped": true,
+  "old_first_observed_stopped": "2026-11-17T23:26:32.143460+00:00",
+  "old_stop_observed_before_new_container_start": true,
+  "oldCRI_finished_before_new_start": false,
+  "new": {
+    "name": "jupyterhub-postgresql-0",
+    "uid": "72006ee3-dc4b-4ea0-bd44-fbbf52186e9e",
+    "node": "k3s-wk-gpu3",
+    "deleting": false,
+    "phase": "Running",
+    "Ready": true,
+    "CID": "containerd://2d7912258c7f1cd10111f28a1babfcdea5d92f7d4b8829de87d7fd508c1d05fd",
+    "imageID": "docker.io/bitnami/postgresql@sha256:256bf40a7343862b9a66d1d27cd34599e80dad99284fc5450b24cb02e26ff34e",
+    "startedAt": "2026-11-17T23:26:49Z"
+  },
+  "eviction_count": 1,
+  "natural_grace_PDB_respected": true,
+  "log": "pg-handoff-20261117T232559Z.safe.jsonl"
+}

@@ -1,0 +1,12 @@
+{
+  "proxy_API_status": 200,
+  "route_keys": [
+    "/",
+    "/services/cit-admin",
+    "/services/cit-compute-ui"
+  ],
+  "token_not_output": true,
+  "observed": "2026-11-17T23:34:41.608753+00:00",
+  "scope": "Actual native proxy API200 and observed route keys; no generic claim deriving every route from configured OAuth service rows",
+  "native_services_servers_tables_unchanged": true
+}

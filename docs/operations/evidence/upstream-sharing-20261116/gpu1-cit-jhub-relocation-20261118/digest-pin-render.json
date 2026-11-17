@@ -1,0 +1,30 @@
+{
+  "observed": "2026-11-17T23:20:54.628580+00:00",
+  "base_commit": "193747673c91a64787b6c9683020c07fc6a03f56",
+  "source_file": "bundles/20-jupyterhub-postgres/fleet.yaml",
+  "source_sha256": "8bfaed624f182602010805a944be05d1185b929df04f08c987f3cf87f2834757",
+  "source_delta": [
+    "helm.values.image.digest",
+    "helm.values.primary.updateStrategy.type",
+    "helm.values.primary.updateStrategy.rollingUpdate=null (required chart-default removal)"
+  ],
+  "full_chart_resources": 6,
+  "full_chart_diff": {
+    "StatefulSet/jupyterhub-postgresql": [
+      "/spec/template/spec/containers",
+      "/spec/updateStrategy/rollingUpdate",
+      "/spec/updateStrategy/type"
+    ]
+  },
+  "fresh_baseline_admitted_entire_spec_exact_live": true,
+  "candidate_admitted_entire_spec_exact_two_field_desired": true,
+  "all_other_resources_exact": true,
+  "chart_version": "16.2.5",
+  "chart_sha256": "f78d5673f475f55194388f0314aad143a406aef22651a7993f16e3f9665382d2",
+  "existing_image_digest_available": true,
+  "old_PG_UID_CID_unchanged": true,
+  "old_PG_UID": "3e525936-7ac4-45d0-902c-cb473a37f0af",
+  "old_PG_CID": "containerd://5ae08b08deb50f93ed649be50ecb7102cee0c956a6e61d415e8b57012f9dfd0d",
+  "dry_run_only": true,
+  "no_live_mutations": true
+}

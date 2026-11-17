@@ -1,0 +1,11 @@
+{
+  "observed": "2026-11-17T23:25:14.095673+00:00",
+  "archive": "root-current-os-config.private.tar.gz",
+  "size": 767376,
+  "mode": "0o600",
+  "sha256": "4727c91c814fe9412f3490cefa49d1e36e0f9e720344fdcfd22afc64f1e6df6f",
+  "members": 1867,
+  "catalog_and_all_member_reads_verified": true,
+  "restorationRehearsed": false,
+  "scope": "current OS configuration and package state, not full VM backup"
+}

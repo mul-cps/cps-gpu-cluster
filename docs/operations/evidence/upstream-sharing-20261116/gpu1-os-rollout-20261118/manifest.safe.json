@@ -1,0 +1,17 @@
+{
+  "scope": "GPU1 prerequisite and release-operation start, not OS or worker acceptance",
+  "files": {
+    "README.md": "106a6624dd7a9984fdac0a8f3782a052cfc8b269d2dd17cdd42a63ae7aac8b35",
+    "authorization.safe.json": "ae02f2774478580f2125f7776a8731db8e0be410d6a3da18574f7f930faedd9e",
+    "configuration-backup-metadata.safe.json": "ed913ea034e2f68a84f98fc36942fa815a42ef60860695ec843317b8392879bd",
+    "console-access.safe.json": "5d1a07a2d28dab10319f13aed35fdd0167c20cc0144d86ca5c1cd2ab7fafdf36",
+    "current-vm-configuration-metadata.safe.json": "2f02bc702caa1ff5ec7eb4d6c2a5273eeedf87363ca08da0b6b2796a21a67349",
+    "final-drain.safe.json": "35435039a520f6dc53f3de5eb19ffe6105db7bce5fa3677aca95069f5d98c876",
+    "legacy-owner-quiesce.safe.json": "bea2e749728406d115026ee7d41ba2145fbd2119281201740bbf4285fd7db0e7",
+    "nomination.safe.json": "65738bdc4dd22bd9525cc38aeaf0a9ce1cb3fc8d9dcdd003327d5eab3eaadb12",
+    "owner-staged.safe.json": "5e38329c0bd98fb3d59837578d7332e7b2643ae44bb59d9fb4ae0cc31636e3c3",
+    "pre-release-guards.safe.json": "7fa8e7b2e039e171e4437db4835d21ddfb4c28cf1893411e546152c4c4c7fb04",
+    "prerequisite-reboot-verified.safe.json": "af9b611ed354e3e0eccb49c7992dd73df55294b66162c6a758fe84f5e476fa0a",
+    "running.safe.json": "c2480ed393021b74f65dd7d8b0d3ec39327fda83442325a3dcbf26b03b227166"
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "observed": "2026-11-17T23:41:26.225277+00:00",
+  "state": {
+    "status": "running",
+    "operation": "gpu1-ubuntu-20261117",
+    "node": "k3s-wk-gpu1",
+    "target": "26.04.1",
+    "boot_id": "e5a3e0f3-6463-49cd-9947-6a2ffb357437",
+    "payload_sha256": "9fdc8214a86c822d6a68c8b646ce39a8f5dba4cca9d456097b15bdd190ca72d2",
+    "updated_at": 1794958807.234086
+  },
+  "unit": {
+    "Result": "success",
+    "ExecMainStatus": "0",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "hostOperationActuallyRunning": true,
+  "SUCSubmissionJobSucceeded": true,
+  "workerAccepted": false,
+  "fullPlatformAccepted": false
+}

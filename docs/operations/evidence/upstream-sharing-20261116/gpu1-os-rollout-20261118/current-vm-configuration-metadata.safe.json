@@ -1,0 +1,17 @@
+{
+  "sha256": "6f32e4824688f2be6d0e3f65ec5b9433474fccbb8db9a510478950f5addad76f",
+  "guestAgentPingReturncode": 0,
+  "vmStatus": "status: running",
+  "currentConfigAllowlist": [
+    "agent: 1",
+    "hostpci0: mapping=NVIDIA-A100-40GB,pcie=1",
+    "hostpci1: mapping=NVIDIA-A100-40GB,pcie=1",
+    "memory: 393216",
+    "name: k3s-wk-gpu1",
+    "scsi0: NvmeZFSstorage:108/vm-108-disk-0.raw,replicate=0,size=500G",
+    "scsi1: NvmeZFSstorage:108/vm-108-disk-2.raw,replicate=0,size=1000G",
+    "serial0: socket",
+    "vga: serial0"
+  ],
+  "observed": "2026-11-17T23:25:35.974385+00:00"
+}

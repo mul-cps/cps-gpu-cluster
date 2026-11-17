@@ -1,0 +1,24 @@
+{
+  "observed": "2026-11-17T23:33:00.369555+00:00",
+  "target": "proxy",
+  "oldUID": "343a8435-a216-4645-abf7-68f75770aa3b",
+  "oldCID": "be0cccbee1bdb776569e35d19ccd122c4121a4951b2b4e0e983a2e85e4af87ac",
+  "old_actual_CRI_stopped": true,
+  "old_first_observed_stopped": "2026-11-17T23:32:55.872630+00:00",
+  "old_stop_observed_before_new_container_start": true,
+  "oldCRI_finished_before_new_start": false,
+  "new": {
+    "name": "proxy-86f4955947-k8h49",
+    "uid": "e85399a2-1cfc-4bb3-9d1b-a29674b5cdaa",
+    "node": "k3s-wk-gpu3",
+    "deleting": false,
+    "phase": "Running",
+    "Ready": true,
+    "CID": "containerd://ac778540458cb12f78dfa28eb4cf49f251b35abbd1b4042a8e6731d8aa20f7b7",
+    "imageID": "quay.io/jupyterhub/configurable-http-proxy@sha256:522738d5285e4be758da5023194cbc95249efdadaa62a0998c8ed1aa2890b2da",
+    "startedAt": "2026-11-17T23:32:58Z"
+  },
+  "eviction_count": 1,
+  "natural_grace_PDB_respected": true,
+  "log": "proxy-handoff-20261117T233254Z.safe.jsonl"
+}

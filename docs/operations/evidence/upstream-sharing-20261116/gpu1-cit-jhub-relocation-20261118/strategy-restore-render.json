@@ -1,0 +1,17 @@
+{
+  "observed": "2026-11-17T23:35:38.461798+00:00",
+  "base_commit": "40d182dc5207ccd575d4a45b55b05bee88ae7fc4",
+  "source_file": "bundles/20-jupyterhub-postgres/fleet.yaml",
+  "source_sha256": "0e2ce8abdc552badda061fcd9c4b8a4c7b103b29e916cb97ee906d496cd7c2b0",
+  "source_only_change": "remove temporary primary.updateStrategy override; keep image.digest",
+  "full_chart_resources": 6,
+  "full_chart_only_updateStrategy_diff": true,
+  "Pod_template_byte_for_byte_equal": true,
+  "baseline_admitted_spec_exact_live": true,
+  "restored_admitted_spec_exact_strategy_only": true,
+  "permanent_digest_retained": true,
+  "same_new_PG_UID_CID_Ready": true,
+  "PG_UID": "72006ee3-dc4b-4ea0-bd44-fbbf52186e9e",
+  "PG_CID": "containerd://2d7912258c7f1cd10111f28a1babfcdea5d92f7d4b8829de87d7fd508c1d05fd",
+  "no_live_apply": true
+}

@@ -1,0 +1,29 @@
+{
+  "observed": "2026-11-17T23:33:03.841524+00:00",
+  "name": "upstream-gpu1-os-pilot",
+  "uid": "9d16e5f2-4120-4ce3-89a5-8f1512045ed5",
+  "spec": {
+    "paths": [
+      "platform-staging/gpu/upstream-sharing/os-plan-gpu1"
+    ],
+    "repo": "https://github.com/mul-cps/cps-gpu-cluster.git",
+    "revision": "8d10f58527c7d10593da76f3463bfa30e520f7c8",
+    "targets": [
+      {
+        "clusterSelector": {
+          "matchExpressions": [
+            {
+              "key": "provider.cattle.io",
+              "operator": "NotIn",
+              "values": [
+                "harvester"
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "workerNominated": false,
+  "authorizationWritten": false
+}

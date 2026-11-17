@@ -1,0 +1,200 @@
+{
+  "observed": "2026-11-17T23:37:46.323101+00:00",
+  "stage": "proxy",
+  "no_mutations": true,
+  "restored_strategy": true,
+  "no_extra_Pod_or_CID_after_strategy_restore": true,
+  "actual_PG_updateStrategy": {
+    "rollingUpdate": {
+      "partition": 0
+    },
+    "type": "RollingUpdate"
+  },
+  "PG_pod_revision": "jupyterhub-postgresql-679fc9f478",
+  "PG_STS_currentRevision": "jupyterhub-postgresql-679fc9f478",
+  "PG_STS_updateRevision": "jupyterhub-postgresql-679fc9f478",
+  "controllers_spec_exact_except_approved_PG_pin_strategy": true,
+  "pods": {
+    "jupyterhub-postgresql": {
+      "pod": "jupyterhub-postgresql-0",
+      "uid": "72006ee3-dc4b-4ea0-bd44-fbbf52186e9e",
+      "node": "k3s-wk-gpu3",
+      "expected_moved": true,
+      "imageIDs_exact": true,
+      "CID": [
+        "containerd://2d7912258c7f1cd10111f28a1babfcdea5d92f7d4b8829de87d7fd508c1d05fd"
+      ],
+      "Ready": true
+    },
+    "hub": {
+      "pod": "hub-ddf455d78-qtdpt",
+      "uid": "da0ba4c0-0c19-443f-87e9-2957b887685d",
+      "node": "k3s-wk-gpu2",
+      "expected_moved": true,
+      "imageIDs_exact": true,
+      "CID": [
+        "containerd://559fcd575eb55700e0a5b0314e25d50bc2496059d365279d1c508ff18a0b87f4"
+      ],
+      "Ready": true
+    },
+    "proxy": {
+      "pod": "proxy-86f4955947-k8h49",
+      "uid": "e85399a2-1cfc-4bb3-9d1b-a29674b5cdaa",
+      "node": "k3s-wk-gpu3",
+      "expected_moved": true,
+      "imageIDs_exact": true,
+      "CID": [
+        "containerd://ac778540458cb12f78dfa28eb4cf49f251b35abbd1b4042a8e6731d8aa20f7b7"
+      ],
+      "Ready": true
+    }
+  },
+  "all9Secrets13ConfigMaps_UID_and_data_exact": true,
+  "same_PVC_PV_UID_CSI_attachment_and_2_remote_RW": true,
+  "Longhorn_actual": {
+    "robustness": "degraded",
+    "remote_RW_nodes": [
+      "k3s-wk-gpu4",
+      "k3s-wk-gpu2"
+    ],
+    "Root_authorized_selected_IM_maintenance": true,
+    "healthy3_claim": false
+  },
+  "PostgreSQL_version_exact": true,
+  "schema_exact": true,
+  "strict_21_tables_equal": false,
+  "changed_tables": [
+    "api_tokens",
+    "oauth_clients"
+  ],
+  "all_custody_accounts_roles_groups_users_spawners_shares_exact": true,
+  "logical": {
+    "observed": "2026-11-17T23:37:45.752040+00:00",
+    "backend": "PostgreSQL",
+    "server_version": "18.4",
+    "transaction": "REPEATABLE READ READ ONLY",
+    "schema_sha256": "f009345135cb46cb9caed40f0ea2fee2f5a6993933f315f02941afc60db96d3b",
+    "tables": {
+      "alembic_version": {
+        "count": 1,
+        "row_multiset_sha256": "8ad5b1d0bcdc34924f9e60042ab341d08a80ea4fd14ffd2807a1a485ef1599a3"
+      },
+      "api_tokens": {
+        "count": 258,
+        "row_multiset_sha256": "5850be8c7c4ade8f2952ba7a47c3de15f9e2675bfe4b14f7ba7eab7cc6a41dc7"
+      },
+      "cps_workspace_accounts": {
+        "count": 6,
+        "row_multiset_sha256": "fcce60d5055e9b003967bedf817a3c5ecf8bc18e89370fa6ee48dc9ba98b5895"
+      },
+      "cps_workspace_controls": {
+        "count": 6,
+        "row_multiset_sha256": "9d3cdafcd0f0eda57932f5dca1ee99d7bf78ccca9b263e14bc66ef8fda7d27c9"
+      },
+      "cps_workspace_groups": {
+        "count": 6,
+        "row_multiset_sha256": "3a7ad608fdade9b978e63679e4b49f9cf3bbddd4b4947869c1f1e610112d8917"
+      },
+      "cps_workspace_legacy_runtime": {
+        "count": 1,
+        "row_multiset_sha256": "0977c1a63e1fe74eb5f6fcaa8b149ebb23bdfa450b41a925598af8dafc97f3d5"
+      },
+      "group_role_map": {
+        "count": 1,
+        "row_multiset_sha256": "a8777b3851006ce85fd8251837f5cf38120c97312e21921de16ffa2a4277fdfc"
+      },
+      "groups": {
+        "count": 32,
+        "row_multiset_sha256": "86fc5d31ae98923cf4fba1b2867b5e782f03f0fd6d1de26403beb2152ceb88d2"
+      },
+      "oauth_clients": {
+        "count": 4,
+        "row_multiset_sha256": "8a369666d95da7c407bfa610d6bb0dd46d935b20f328569d2be66e4446a1c204"
+      },
+      "oauth_codes": {
+        "count": 0,
+        "row_multiset_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "roles": {
+        "count": 25,
+        "row_multiset_sha256": "223f3fd3465cd292c8559f839550a729287c0352a5fd943ae85a34e32a1b2207"
+      },
+      "servers": {
+        "count": 2,
+        "row_multiset_sha256": "3384846d7dabf480f7b03439998cd87088f349658c7d4aeb00422a1050d35b13"
+      },
+      "service_role_map": {
+        "count": 13,
+        "row_multiset_sha256": "dc3aaa68c90f60a6b090f899e47e53006d7490d8940282e8f82c3e89f8de6d10"
+      },
+      "services": {
+        "count": 7,
+        "row_multiset_sha256": "1173501bc3b104163228aa8d5ea8442813e73fff87a4df51c947174a6075ee6a"
+      },
+      "share_codes": {
+        "count": 0,
+        "row_multiset_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "shares": {
+        "count": 0,
+        "row_multiset_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "spawners": {
+        "count": 33,
+        "row_multiset_sha256": "4c0c1fbad2de535f4f738f34b69561de6ddc016c361fa4ac234912718bf42346"
+      },
+      "user_group_map": {
+        "count": 72,
+        "row_multiset_sha256": "dc63a00d635c4063a082d44565274bbc2cd32b6fb7ebef5afd71a328998df557"
+      },
+      "user_role_map": {
+        "count": 37,
+        "row_multiset_sha256": "d0d92b387f275f8986bd7b5fd5c94a31b29ed5e1b206b77a4f7fdda97cc6d0e8"
+      },
+      "users": {
+        "count": 26,
+        "row_multiset_sha256": "e3982c3faf685f6069d0d78d8e4eb305c21c216e09e1cd6766730365a2809c47"
+      },
+      "users_info": {
+        "count": 0,
+        "row_multiset_sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      }
+    },
+    "custody_tables": [
+      "cps_workspace_accounts",
+      "cps_workspace_controls",
+      "cps_workspace_groups",
+      "cps_workspace_legacy_runtime"
+    ],
+    "active_spawners": [],
+    "database_connection_states": [
+      {
+        "state": "idle",
+        "count": 1
+      },
+      {
+        "state": "idle in transaction",
+        "count": 1
+      }
+    ]
+  },
+  "runtime": {
+    "fragment_hashes": {
+      "99-personal-argo-service": "bfae189700e1c76a01d73df5ff09498093479019ca852f3fad68902daae301dd",
+      "http_timeout": "f8dfa4dcea0657e0283f348c3ae1d15d7d31083e1270d83333cccb82e416cb4e",
+      "pre_spawn_hook": "a980957122fdcdbb916ae0db04d3b4419526372ca81231c41118e28a82a5f581",
+      "profile_list_hook": "c45cbb27c6a56182d68ebaf0905a26a0bd1bc56f5af3ead617fb7e081b8a8242",
+      "zy-native-group-access": "6c841a343c3cc4e0dbe0faa66bcd0b72062e159fbb9de1cacc4b7b3e69468db8",
+      "zz-native-group-pilot": "efec1ac6a4d95932857bd6ab5b37779e76d69a4f744a8b1a3089732c87ce1102",
+      "zzz-reviewed-workspace-account-adoption": "ca2d9f6edfd4362649f618414bd60eeb7d6bc27304a4bedc63a0e53a9cf3a296",
+      "zyz-reviewed-profile-lifetime": "574aaa3fb76a69dd0d7d27969da63eee6ad7e6ceb0af32d006f82b963f2c7b53",
+      "zzzz-lifecycle147-owner-overlay": "6f4f7cf9442a5645b37f43d3f9d68aa22dbd9b78b65cdbaf35e7492184edbdd8",
+      "zzzzzz-upstream-sharing-pilot-20261116": "8a93e2f5604be8d8f0b28f0b7f0284b01d71ff60a02701df732cbc5bb1bb96c5"
+    },
+    "health": 200,
+    "no_QA": true,
+    "SourceRegistry": true
+  },
+  "oldCRI_gone_before_newwriter": "Requires separate actual Root/authorized observer receipt; API absence alone is insufficient",
+  "acceptance": "Root must review any changed table; no automatic startup-delta waiver"
+}

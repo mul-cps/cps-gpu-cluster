@@ -1,0 +1,19 @@
+{
+  "files": {
+    "README.md": "6bffb761a98e2990119a1055a3a48f543de4e5a632fad800ce5fc7aff6948418",
+    "bytea-serializer-correction.json": "93db5cc76545b3fdb7e89f5dc18a5c6475c40421e3ca0291e761c890208c4c5f",
+    "digest-pin-render.json": "fbaac87195e38f7c8b180969969050445ac2a86be0b28355597c165bf6e98756",
+    "hub-handoff.json": "528237cc5dc4f2713a491b1f4cf4509808f8fd43dacf414b66809e1dddbf6843",
+    "native-backup.json": "f4c9921d1ad9fecf90fa3ba63eb490586967103f0375b5dac9194963e75255f0",
+    "post-relocation.json": "2f7bfadcab91226dd83dc4435547568508a598dc6adaaa8da66ce330e07aa403",
+    "postgresql-handoff.json": "6c3ff947fbbb48d8dc96aea37f78fdad39b079bdaa5a8017365f509c067d61b3",
+    "proxy-handoff.json": "e91372403ded4ea1ba7069f3e1af8dee9507179d3d22914476a8d0efffea5b24",
+    "proxy-routes.json": "7edf50e26247fe253532eb9a256d92023694ed2d556263ed92e3bcbfc8a6613f",
+    "public-health.json": "76fa531a7e18c273f82306e6e8d6459ea8e66e94afaf9bdde514fa127e944666",
+    "service-startup-field-differences.json": "6b3d9b5367601d762669b2c31799a28b2c025bc57b64656560a4d26f11aec301",
+    "service-startup-identities.json": "2d13b5f3d4afcdffdb149baa87ff5d27cf2ab5afcb7e98bab0675e19b8a102b5",
+    "strategy-restore-render.json": "5dca72a0434e833b515a2d88d0db1590c3367416600ce1ae599fe4e5428f3bff",
+    "summary.json": "2e0d1dc4aca459f922cb9460e14e2440c69c82bd3c96f36806ef9069d321dab2"
+  },
+  "no_private_inputs_or_backups_in_directory": true
+}

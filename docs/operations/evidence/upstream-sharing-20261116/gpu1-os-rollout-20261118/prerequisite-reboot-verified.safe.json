@@ -1,0 +1,65 @@
+{
+  "boot": "e5a3e0f3-6463-49cd-9947-6a2ffb357437",
+  "kernel": "6.8.0-149-generic",
+  "osRelease": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+  "mounts": {
+    "/": {
+      "target": "/",
+      "source": "/dev/sda1",
+      "fstype": "ext4",
+      "uuid": "ffe7eb40-94f7-473b-b336-935460126345",
+      "options": "rw,relatime,discard,errors=remount-ro,commit=30"
+    },
+    "/mnt/nvme/scratch": {
+      "target": "/mnt/nvme/scratch",
+      "source": "/dev/sdb",
+      "fstype": "ext4",
+      "uuid": "730ffc3a-3d42-41b7-a2b8-f7237c0f6cd0",
+      "options": "rw,relatime"
+    }
+  },
+  "fstabSha256": "2436bae3284a71ac5fb049b072b380b70cb514a5e38c6e87bd643419086a5363",
+  "packageState": {
+    "status": "completed",
+    "boot_id": "b7aef52b-199b-48d2-a0f5-f584174dbcb6",
+    "payload_sha256": "8051889e0c96ee9d0c84cb047cab5cf7ee2c252e007f642818fdf5d4c1526d20",
+    "policy": {
+      "apt-daily.timer": {
+        "ActiveState": "active",
+        "UnitFileState": "enabled"
+      },
+      "apt-daily-upgrade.timer": {
+        "ActiveState": "active",
+        "UnitFileState": "enabled"
+      },
+      "apt-daily.service": {
+        "ActiveState": "inactive",
+        "UnitFileState": "static"
+      },
+      "apt-daily-upgrade.service": {
+        "ActiveState": "inactive",
+        "UnitFileState": "static"
+      },
+      "unattended-upgrades.service": {
+        "ActiveState": "active",
+        "UnitFileState": "enabled"
+      }
+    },
+    "config_archive": "/var/lib/cps-maintenance/gpu1-config-recovery-20261118/config.tar.gz",
+    "config_sha256": "4727c91c814fe9412f3490cefa49d1e36e0f9e720344fdcfd22afc64f1e6df6f",
+    "updated_at": 1794958653.0292919,
+    "started_at": 1794958305.0096157,
+    "timers_suspended": true,
+    "completed_at": 1794958367.7454789,
+    "completion_boot_id": "b7aef52b-199b-48d2-a0f5-f584174dbcb6",
+    "reboot_required": true,
+    "verified_boot_id": "e5a3e0f3-6463-49cd-9947-6a2ffb357437",
+    "prerequisite_reboot_verified": true,
+    "policy_restored": true,
+    "policy_restored_at": 1794958653.029152
+  },
+  "dpkgAuditClean": true,
+  "aptCheck": 0,
+  "rebootRequired": false,
+  "observed": "2026-11-17T23:37:33.622406+00:00"
+}

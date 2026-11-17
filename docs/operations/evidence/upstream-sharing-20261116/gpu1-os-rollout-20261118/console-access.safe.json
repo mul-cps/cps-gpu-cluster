@@ -1,0 +1,12 @@
+{
+  "observed": "2026-11-17T23:26:54.535079+00:00",
+  "vmid": 108,
+  "host": "cit-gpu-01.unileoben.ac.at",
+  "serialConsoleOpened": true,
+  "terminalBanner": "starting serial terminal on interface serial0 (press Ctrl+O to exit)",
+  "boundedReadOnlyAttachSeconds": 5,
+  "sshTimeoutExit": 124,
+  "guestAgentPingReturncode": 0,
+  "guestCommandsSent": false,
+  "fullRestoreTested": false
+}

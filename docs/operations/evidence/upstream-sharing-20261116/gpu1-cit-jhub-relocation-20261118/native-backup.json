@@ -1,0 +1,14 @@
+{
+  "observed": "2026-11-17T23:13:44.770824+00:00",
+  "archive": "cit-hub-before-handoff.dump",
+  "bytes": 209464,
+  "sha256": "385c258d63c53f4420b55b7e4983ba12550c62e9b4df954d7d53ebdb842d2e6f",
+  "mode": "0o600",
+  "server_version": "18.4",
+  "client_version": "pg_dump (PostgreSQL) 18.4",
+  "catalog_verified": true,
+  "TABLE_DATA_entries": 21,
+  "noncomment_catalog_entries": 154,
+  "full_restore_tested": false,
+  "catalog_stream_transport_note": "initial directpg_restore stdin timeout; existingarchive verified via private/tmp file and cleaned; dump not repeated"
+}

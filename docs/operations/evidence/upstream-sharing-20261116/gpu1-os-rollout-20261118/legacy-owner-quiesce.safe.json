@@ -1,0 +1,13 @@
+{
+  "observed": "2026-11-17T23:28:51.271302+00:00",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "b7aef52b-199b-48d2-a0f5-f584174dbcb6",
+  "noComputeClients": true,
+  "noActivePodGPURequests": true,
+  "oldOwnerLabelsRemovedForSelectedNodeOnly": true,
+  "peerLegacyDriverPodUIDs": {
+    "cps-r615-driver-hn2gs": "dedb32d5-dc6f-4a3b-a53a-58b6fbd17f26"
+  },
+  "forcedModuleOperation": false,
+  "OSNominated": false
+}

@@ -1,0 +1,43 @@
+{
+  "tokens": [
+    {
+      "id": 326,
+      "user_id": null,
+      "service_id": 7,
+      "service_name": "cit-compute-metrics",
+      "client_id": "jupyterhub",
+      "note": "from config",
+      "scopes": "[\"inherit\"]",
+      "created": "2026-10-05 21:36:42.919907"
+    },
+    {
+      "id": 744,
+      "user_id": null,
+      "service_id": 1,
+      "service_name": "jupyterhub-idle-culler",
+      "client_id": "jupyterhub",
+      "note": "generated at startup",
+      "scopes": "[\"inherit\"]",
+      "created": "2026-11-17 21:22:37.336065"
+    },
+    {
+      "id": 745,
+      "user_id": null,
+      "service_id": 1,
+      "service_name": "jupyterhub-idle-culler",
+      "client_id": "jupyterhub",
+      "note": "generated at startup",
+      "scopes": "[\"inherit\"]",
+      "created": "2026-11-17 23:31:54.015895"
+    }
+  ],
+  "OAuthClient": [
+    {
+      "id": 135,
+      "identifier": "service-cit-argo-ui",
+      "description": "JupyterHub service cit-argo-ui",
+      "redirect_uri": "https://jhub.dshl.unileoben.ac.at/argo/oauth_callback"
+    }
+  ],
+  "observed": "2026-11-17T23:32:42.628987+00:00"
+}
