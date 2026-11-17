@@ -1,0 +1,14 @@
+{
+  "observed": "2026-11-17T18:16:28.216620+00:00",
+  "auditSeq": 7667,
+  "outcome": "operator_resolved_no_create",
+  "actor": "operator:root-cps-gpu3-precreate-reconcile-20261117",
+  "target": "cps:upstream-registry-qualification-20261116-cps",
+  "planSHA256": "1fb71bdd1d0c72f5c2138a802e55dcf36cd3a3d05276e9b426d70af6e366219e",
+  "exactPreviousAttemptPeopleBinding": true,
+  "newIsNull": true,
+  "fourEvidenceReferences": true,
+  "reasonPresent": true,
+  "time": "2026-11-17T18:14:58.704850+00:00",
+  "authorityChangedByVerifier": false
+}

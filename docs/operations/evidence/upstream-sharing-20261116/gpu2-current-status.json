@@ -1,9 +1,9 @@
 {
-  "as_of": "2026-11-17T16:09:31.556933+00:00",
+  "as_of": "2026-11-17T18:17:23.788005+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2 accepted; GPU3 hardware, storage, coldboot, stock KAI and monitoring restored; real CPS/CIT Source acceptance pending",
-  "gpu_eligibility": "qualified and schedulable; legacy accelerator fence retained; QA grants revoked; old OS nomination cleared",
+  "phase": "GPU2 accepted; GPU3 hardware/runtime/KAI passed; exact failed QA no-CREATE reservation reconciled, test RBAC fixed, real Source acceptance pending",
+  "gpu_eligibility": "GPU2 qualified and schedulable; GPU3 maintenance-tainted for QA only; current GPU3 QA grants/permit expired and not yet retired; GPU2 historical cleanup remains recorded separately",
   "driver": {
     "version": "620.70.06",
     "image": "sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
@@ -55,13 +55,17 @@
     "source": "1c160751676bce808fe8a2ae86b0a495b61c0f72",
     "cps_image": "sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097",
     "cit_image": "sha256:bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6",
-    "cps_gitops_pin": "df0eaa883106d9d7ad4b6ae901ba926a9907dd0e",
-    "cit_gitops_pin": "9bab4508e28858934a3873072806d28b6b44c1b6",
+    "cps_gitops_pin": "64f2318fe65415f48fb823e40716abe0fc87a988",
+    "cit_gitops_pin": "4cc4a50bdf4a6e73a0782bb10f8bd688d485ab29",
     "fleet_both_ready": false,
     "live_catalog": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
     "sdk_repair_candidate": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
     "live_hubs_ready": true,
-    "fleet_note": "CPS UI Fleet Bundle verified Ready1/1 on0f; same-image Hub cache restart375Ready preserved recovered custody. No overall Fleet acceptance claimed during staged worker rollout."
+    "fleet_note": "Current temporary QA template pins recorded; overall Fleet acceptance remains open during staged rollout.",
+    "temporary_qa_generations": {
+      "jupyterhub": 377,
+      "cit-jhub": 316
+    }
   },
   "full_platform_acceptance": false,
   "worker_receipt": "gpu2-worker-acceptance-20261117.json",
@@ -75,7 +79,7 @@
   "usability": {
     "actual_shared_launch_verified": true,
     "cps_form_script_sha256": "b048ab982036edc8fc3d21ea1afd9d7978f4aee429e99c3ad149ea353afaee0e",
-    "cps_hub_generation": 375,
+    "cps_hub_generation": 377,
     "form": "Blocked legacy personal shared options removed; Shared workspaces link deployed.",
     "existing_access": "One existing 5GiB one-workspace grant and matching bjoern Source membership renewed with user authorization until 2026-11-24T10:19:00.235897+00:00; other grants unchanged.",
     "blocker": null,
@@ -93,8 +97,7 @@
       "maintenance_tainted": false,
       "os": "Ubuntu 24.04.4 LTS",
       "kernel": "6.8.0-149-generic",
-      "boot_id": "db237e6c-5f5c-401a-9f08-8bae2ce804f7",
-      "os_nomination": null
+      "boot_id": "db237e6c-5f5c-401a-9f08-8bae2ce804f7"
     },
     {
       "name": "k3s-cp2",
@@ -103,8 +106,7 @@
       "maintenance_tainted": false,
       "os": "Ubuntu 24.04.4 LTS",
       "kernel": "6.8.0-149-generic",
-      "boot_id": "d6fd3938-0340-4821-a87c-5b8fe77164bc",
-      "os_nomination": null
+      "boot_id": "d6fd3938-0340-4821-a87c-5b8fe77164bc"
     },
     {
       "name": "k3s-cp3",
@@ -113,8 +115,7 @@
       "maintenance_tainted": false,
       "os": "Ubuntu 24.04.4 LTS",
       "kernel": "6.8.0-149-generic",
-      "boot_id": "ca372986-f7bc-41f9-969e-22d274d64aa5",
-      "os_nomination": null
+      "boot_id": "ca372986-f7bc-41f9-969e-22d274d64aa5"
     },
     {
       "name": "k3s-wk-gpu1",
@@ -123,8 +124,7 @@
       "maintenance_tainted": false,
       "os": "Ubuntu 24.04.4 LTS",
       "kernel": "6.8.0-149-generic",
-      "boot_id": "b7aef52b-199b-48d2-a0f5-f584174dbcb6",
-      "os_nomination": null
+      "boot_id": "b7aef52b-199b-48d2-a0f5-f584174dbcb6"
     },
     {
       "name": "k3s-wk-gpu2",
@@ -133,8 +133,7 @@
       "maintenance_tainted": false,
       "os": "Ubuntu 26.04.1 LTS",
       "kernel": "7.0.0-43-generic",
-      "boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
-      "os_nomination": null
+      "boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5"
     },
     {
       "name": "k3s-wk-gpu3",
@@ -143,8 +142,7 @@
       "maintenance_tainted": true,
       "os": "Ubuntu 26.04.1 LTS",
       "kernel": "7.0.0-43-generic",
-      "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
-      "os_nomination": null
+      "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a"
     },
     {
       "name": "k3s-wk-gpu4",
@@ -153,8 +151,7 @@
       "maintenance_tainted": false,
       "os": "Ubuntu 24.04.3 LTS",
       "kernel": "6.8.0-149-generic",
-      "boot_id": "21aa4a49-9e79-4194-8d26-830debb6ce2e",
-      "os_nomination": null
+      "boot_id": "21aa4a49-9e79-4194-8d26-830debb6ce2e"
     }
   ],
   "gpu3_maintenance": {
@@ -217,5 +214,17 @@
     "kai_acceptance": true,
     "source_acceptance": false,
     "kai_evidence": "gpu3-kai-qualification-20261117/summary.json"
+  },
+  "gpu3_source_qa": {
+    "worker_acceptance": false,
+    "real_gpu_source_acceptance": false,
+    "failed_precreate_attempt_reconciled": true,
+    "normal_source_stop_reconciliation_pending": true,
+    "temporary_node_get_rbac_verified": true,
+    "temporary_node_get_rbac_cleanup_pending": true,
+    "fresh_qa_epoch_required": true,
+    "evidence": "gpu3-source-recovery-20261117/README.md",
+    "postcommit_exact_audit_verified": true,
+    "qa_containers_absent_and_gpu_idle_after_commit": true
   }
 }

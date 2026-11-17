@@ -1,0 +1,101 @@
+{
+  "observed": "2026-11-17T18:15:50.195776+00:00",
+  "rootCommitNotification": "Root acknowledged18:14:58 exit0 completedtrue planSHA1fb71bdd1d0c72f5c2138a802e55dcf36cd3a3d05276e9b426d70af6e366219e",
+  "sameGatewayPodUIDAndContainerIDs": true,
+  "expectedLogicalDeltaOnly": true,
+  "databases": {
+    "reservations.sqlite": {
+      "schemaExact": true,
+      "quickAndFullIntegrity": "ok",
+      "tables": {
+        "reservation": {
+          "beforeRows": 1,
+          "afterRows": 0,
+          "removed": 1,
+          "added": 0,
+          "beforeLogicalSHA256": "ff63fa73e1e43a33a6316bb20058a03e97013193ddd2d77cf64a087c416ff1b4",
+          "afterLogicalSHA256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "reservation_binding": {
+          "beforeRows": 1,
+          "afterRows": 0,
+          "removed": 1,
+          "added": 0,
+          "beforeLogicalSHA256": "64431827fb4e983bfa477cd7a0477ecbf7db09fce94a134255e6977d3d0c6452",
+          "afterLogicalSHA256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    "control.sqlite": {
+      "schemaExact": true,
+      "quickAndFullIntegrity": "ok",
+      "tables": {
+        "audit_record": {
+          "beforeRows": 7666,
+          "afterRows": 7667,
+          "removed": 0,
+          "added": 1,
+          "beforeLogicalSHA256": "4a4f5551bae3d8e573e03b443840ffa6181c798d019037e310abb69aa74fe272",
+          "afterLogicalSHA256": "9fc46a06c85eb3989fb7f7cf093881a4372bc5335677e8715854f9b1c5250c21"
+        },
+        "grant_record": {
+          "beforeRows": 58,
+          "afterRows": 58,
+          "removed": 0,
+          "added": 0,
+          "beforeLogicalSHA256": "d0533a667efbdca44680bf79e69bb183c9f7644863d3d901f3dc76a197792d15",
+          "afterLogicalSHA256": "d0533a667efbdca44680bf79e69bb183c9f7644863d3d901f3dc76a197792d15"
+        },
+        "native_group_approval_head": {
+          "beforeRows": 1,
+          "afterRows": 1,
+          "removed": 0,
+          "added": 0,
+          "beforeLogicalSHA256": "34d9f677e242f72216d1e690cea251164e08f7d92b1f05644f15876818cd80c2",
+          "afterLogicalSHA256": "34d9f677e242f72216d1e690cea251164e08f7d92b1f05644f15876818cd80c2"
+        },
+        "native_group_approval_head_cdbe7a3426f70c3650c90eb550b93f56b25c3216c68b39c349ab20621f7e446f": {
+          "beforeRows": 1,
+          "afterRows": 1,
+          "removed": 0,
+          "added": 0,
+          "beforeLogicalSHA256": "c34a64d0ec6dfacd81d29ba86dff0c4565b27eb8d6cbcaf6648c4ace1ab3e0b5",
+          "afterLogicalSHA256": "c34a64d0ec6dfacd81d29ba86dff0c4565b27eb8d6cbcaf6648c4ace1ab3e0b5"
+        },
+        "native_group_approval_revision": {
+          "beforeRows": 10,
+          "afterRows": 10,
+          "removed": 0,
+          "added": 0,
+          "beforeLogicalSHA256": "60f5902b7aad02d3b1b05a6aebc256daaca64c0981198585fdfdb5c52819efa3",
+          "afterLogicalSHA256": "60f5902b7aad02d3b1b05a6aebc256daaca64c0981198585fdfdb5c52819efa3"
+        },
+        "native_group_approval_revision_cdbe7a3426f70c3650c90eb550b93f56b25c3216c68b39c349ab20621f7e446f": {
+          "beforeRows": 54,
+          "afterRows": 54,
+          "removed": 0,
+          "added": 0,
+          "beforeLogicalSHA256": "75027d91358c9ff6ed5f2e9218e0552ae1cab24e06047867dab4cd3bba0e97d8",
+          "afterLogicalSHA256": "75027d91358c9ff6ed5f2e9218e0552ae1cab24e06047867dab4cd3bba0e97d8"
+        },
+        "storage_lifecycle": {
+          "beforeRows": 21,
+          "afterRows": 21,
+          "removed": 0,
+          "added": 0,
+          "beforeLogicalSHA256": "e47d4e6d110841f197446000f10825a0ce8b4baf3ab0c646c39a9a37876a63f2",
+          "afterLogicalSHA256": "e47d4e6d110841f197446000f10825a0ce8b4baf3ab0c646c39a9a37876a63f2"
+        },
+        "workspace_record": {
+          "beforeRows": 21,
+          "afterRows": 21,
+          "removed": 0,
+          "added": 0,
+          "beforeLogicalSHA256": "e7f42187338ad25d9a0996e38f758c11f93f5faacea238dcacdb5e3eaff1e666",
+          "afterLogicalSHA256": "e7f42187338ad25d9a0996e38f758c11f93f5faacea238dcacdb5e3eaff1e666"
+        }
+      }
+    }
+  },
+  "noAuthorityOrSourceDBChangesByThisHelper": true
+}
