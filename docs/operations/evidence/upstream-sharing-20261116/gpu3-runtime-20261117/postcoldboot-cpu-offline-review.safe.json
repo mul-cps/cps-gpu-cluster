@@ -1,0 +1,9 @@
+{
+  "expectedBoot": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+  "expectedNodeUID": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+  "probeSHA256": "23ffe82b21aa91face3a3017b725393ba3e998d9d83a882d8306a050fcc072b4",
+  "exactSameProbeBytes": true,
+  "freshUniqueNames": true,
+  "serverDryrunPassed": true,
+  "noGPUStorageOrRequiredPlugin": true
+}

@@ -55,10 +55,14 @@
       "case": "cpu-apparmor-and-storage",
       "status": "PASS",
       "actual_boot": "3fe87b77-467a-4f6d-beed-47316853e181"
+    },
+    {
+      "case": "coldboot-runtime-marker-mounts-and-NRI-faults",
+      "status": "PASS",
+      "actual_boot": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a"
     }
   ],
   "pending": [
-    "coldboot",
     "KAI",
     "CPS/CIT",
     "monitoring-restoration"

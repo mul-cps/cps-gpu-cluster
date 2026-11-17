@@ -1,0 +1,19 @@
+{
+  "node": "k3s-wk-gpu3",
+  "node_uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+  "node_ip": "10.21.0.40",
+  "gpu_uuids": [
+    "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+    "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a"
+  ],
+  "expected_boot_id": null,
+  "driver_pod": null,
+  "driver_pod_uid": null,
+  "driver_cid": null,
+  "fractiond_pod": null,
+  "fractiond_pod_uid": null,
+  "fractiond_cid": null,
+  "release_reference": null,
+  "ssh_target": "ubuntu@10.21.0.40",
+  "ssh_key": "/home/bjoern/.ssh/id_ed25519"
+}

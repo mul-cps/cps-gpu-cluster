@@ -1,0 +1,13 @@
+--- original/selected_guard.py
++++ candidate/candidate_guard.py
+@@ -23,8 +23,9 @@
+  require(any(c.get('type')=='Ready' and c.get('status')=='True'for c in st.get('conditions',[])),'Ready required')
+  require(any(a.get('type')=='InternalIP' and a.get('address')==IP for a in st.get('addresses',[])),'Node IP changed')
+  require(ni.get('bootID')==s['expected_boot_id'] and ni.get('kernelVersion')==KERNEL and ni.get('osImage')=='Ubuntu 26.04.1 LTS','Node boot/kernel/OS mismatch')
+- require(sp.get('unschedulable') is True and 'cps.unileoben.ac.at/upstream-gpu-sharing'not in m.get('labels',{}),'cordoned/unqualified worker required')
++ require(not sp.get('unschedulable',False) and 'cps.unileoben.ac.at/upstream-gpu-sharing'not in m.get('labels',{}),'uncordoned/unqualified candidate required')
+  require(any(t.get('key')=='cps.unileoben.ac.at/maintenance' and t.get('value')=='upstream-pilot' and t.get('effect')=='NoSchedule'for t in sp.get('taints',[])),'exact maintenance taint required')
++ require(all(t.get('effect') not in ('NoSchedule','NoExecute') or t.get('key')=='nvidia.com/gpu' or t=={'key':'cps.unileoben.ac.at/maintenance','value':'upstream-pilot','effect':'NoSchedule'} for t in sp.get('taints',[])),'unexpected scheduling fence')
+ def validate_host(h,s,gpu):
+  require(gpu in GPUS and h.get('node')==NODE and h.get('boot_id')==s['expected_boot_id'],'host node/boot changed')
+  rows=[v.strip()for v in h['gpu'].split(',')];require(rows[0]==gpu and rows[1]=='620.70.06' and int(rows[3])==40960,'host GPU UUID/version/capacity mismatch')

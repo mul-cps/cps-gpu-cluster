@@ -1,0 +1,16 @@
+test_candidate_node_rejects_all_identity_and_fence_changes (test_candidate.Candidate.test_candidate_node_rejects_all_identity_and_fence_changes) ... ok
+test_cli_default_render_has_no_transport_and_release_mismatch_refuses (test_candidate.Candidate.test_cli_default_render_has_no_transport_and_release_mismatch_refuses) ... ok
+test_only_exact_accepted_peer_allowed_without_selected_qualification (test_candidate.Candidate.test_only_exact_accepted_peer_allowed_without_selected_qualification) ... ok
+test_operand_replacement_refused (test_candidate.Candidate.test_operand_replacement_refused) ... ok
+test_payload_all_manifests_and_sequence_unchanged_except_admin_scheduling (test_candidate.Candidate.test_payload_all_manifests_and_sequence_unchanged_except_admin_scheduling) ... ok
+test_reject_qualified_selected_replaced_unready_extra_peer (test_candidate.Candidate.test_reject_qualified_selected_replaced_unready_extra_peer) ... ok
+test_render_exact_candidate_selector_taint_and_payload (test_candidate.Candidate.test_render_exact_candidate_selector_taint_and_payload) ... ok
+test_accepts_actual_scheduler_binding (kai_placement_safety_test.Safety.test_accepts_actual_scheduler_binding) ... ok
+test_cleanup_refuses_same_name_replacement (kai_placement_safety_test.Safety.test_cleanup_refuses_same_name_replacement) ... ok
+test_raw_watch_encodes_namespace_and_resource_version_without_unsupported_flag (kai_placement_safety_test.Safety.test_raw_watch_encodes_namespace_and_resource_version_without_unsupported_flag) ... ok
+test_rejects_wrong_slot_node_owner_and_extra_device (kai_placement_safety_test.Safety.test_rejects_wrong_slot_node_owner_and_extra_device) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.104s
+
+OK

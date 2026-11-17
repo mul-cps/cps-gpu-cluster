@@ -1,0 +1,14 @@
+{
+  "operation": "cps-gpu3-runtime-coldboot-20261117",
+  "source_boot": "3fe87b77-467a-4f6d-beed-47316853e181",
+  "submitted_at": "2026-11-17T15:42:44.920493+00:00",
+  "status": "new-boot-and-runtime-verified",
+  "purpose": "selected worker final runtime reboot qualification; no peer operation",
+  "returncode": 0,
+  "stdout": "",
+  "stderr": "Running timer as unit: cps-gpu3-runtime-coldboot-20261117.timer\nWill run service as unit: cps-gpu3-runtime-coldboot-20261117.service\n",
+  "reconciled_boot": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+  "reconciled_at": "2026-11-17T15:52:38.457551+00:00",
+  "worker_acceptance": false,
+  "postcoldboot_nri_summary_sha256": "7bfd6cd706ea55e1bee3b9e2a8717717b67930e1099bef09622404b8f6fd989c"
+}

@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-11-17T15:05:32.402653+00:00",
+  "as_of": "2026-11-17T16:00:44.191209+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2 accepted; GPU3 Ubuntu26.04.1 OS verified; selected runtime transfer and qualification underway",
+  "phase": "GPU2 accepted; GPU3 hardware, storage, coldboot and stock KAI passed; CPS/CIT Source acceptance and monitoring restoration pending",
   "gpu_eligibility": "qualified and schedulable; legacy accelerator fence retained; QA grants revoked; old OS nomination cleared",
   "driver": {
     "version": "620.70.06",
@@ -45,7 +45,7 @@
     "Existing real bjoern shared-gpu-lab5GiB SourceStart200/Ready onGPU2 with2b2 policy and current member only; nonroot64MiB CUDA fill/sync/free; confirmed normalstop/Podgone/leaseinactive/shares0/temporarycredentialclosed. Original neutral identity/receipt and both PVCs preserved through reviewed operator-only recovery and actual Hub restart."
   ],
   "remaining": [
-    "GPU3 complete hardware, restart/coldboot, KAI and CPS/CIT acceptance plus monitoring restoration; OS and selected upstream runtime installed, initial NRI fault and both-card recovery tests passed. GPU1 thenGPU4 remain unchanged until explicit serial promotion.",
+    "GPU3 real CPS/CIT Source lifecycle acceptance and monitoring restoration; hardware, storage, coldboot/NRI/CPU and full stock KAI placement passed. GPU1 thenGPU4 remain unchanged until explicit serial promotion.",
     "Genuine CIT nonadministrator IdP/browser/two-human access; QA aliases have no SSO identity and cannot prove this gate.",
     "Remaining original advanced-feature, ordinary/distributed, startup/defrag, teaching, controllercutover and matching restore gates.",
     "Turtles same-image memory-only override is healthy; Helm revision2 still records the hardcoded old memory values. Future owner-chart normalization/replay is explicitly documented, no false Helm convergence claim."
@@ -90,6 +90,7 @@
       "name": "k3s-cp1",
       "ready": "True",
       "cordoned": false,
+      "maintenance_tainted": false,
       "os": "Ubuntu 24.04.4 LTS",
       "kernel": "6.8.0-149-generic",
       "boot_id": "db237e6c-5f5c-401a-9f08-8bae2ce804f7",
@@ -99,6 +100,7 @@
       "name": "k3s-cp2",
       "ready": "True",
       "cordoned": false,
+      "maintenance_tainted": false,
       "os": "Ubuntu 24.04.4 LTS",
       "kernel": "6.8.0-149-generic",
       "boot_id": "d6fd3938-0340-4821-a87c-5b8fe77164bc",
@@ -108,6 +110,7 @@
       "name": "k3s-cp3",
       "ready": "True",
       "cordoned": false,
+      "maintenance_tainted": false,
       "os": "Ubuntu 24.04.4 LTS",
       "kernel": "6.8.0-149-generic",
       "boot_id": "ca372986-f7bc-41f9-969e-22d274d64aa5",
@@ -117,6 +120,7 @@
       "name": "k3s-wk-gpu1",
       "ready": "True",
       "cordoned": false,
+      "maintenance_tainted": false,
       "os": "Ubuntu 24.04.4 LTS",
       "kernel": "6.8.0-149-generic",
       "boot_id": "b7aef52b-199b-48d2-a0f5-f584174dbcb6",
@@ -126,6 +130,7 @@
       "name": "k3s-wk-gpu2",
       "ready": "True",
       "cordoned": false,
+      "maintenance_tainted": false,
       "os": "Ubuntu 26.04.1 LTS",
       "kernel": "7.0.0-43-generic",
       "boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
@@ -134,16 +139,18 @@
     {
       "name": "k3s-wk-gpu3",
       "ready": "True",
-      "cordoned": true,
+      "cordoned": false,
+      "maintenance_tainted": true,
       "os": "Ubuntu 26.04.1 LTS",
       "kernel": "7.0.0-43-generic",
-      "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+      "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
       "os_nomination": null
     },
     {
       "name": "k3s-wk-gpu4",
       "ready": "True",
       "cordoned": false,
+      "maintenance_tainted": false,
       "os": "Ubuntu 24.04.3 LTS",
       "kernel": "6.8.0-149-generic",
       "boot_id": "21aa4a49-9e79-4194-8d26-830debb6ce2e",
@@ -193,12 +200,17 @@
   "gpu3_runtime": {
     "installed": true,
     "worker_acceptance": false,
-    "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+    "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
     "fractiond_ready": true,
     "mpsd_ready": true,
     "metrics_ready": true,
     "initial_nri_fault_receipt": "gpu3-runtime-20261117/nri-summary.json",
-    "coldboot_acceptance": false,
-    "evidence": "gpu3-runtime-20261117/README.md"
+    "coldboot_acceptance": true,
+    "evidence": "gpu3-runtime-20261117/README.md",
+    "coldboot_acceptance_scope": "OS/mounts/loaded final driver and actual NRI binaries, startup marker/metrics, both-card NRI fault/OOM recovery and fresh CPU/AppArmor repeat; stock KAI subsequently passed on sameboot.",
+    "pre_coldboot_hardware": "gpu3-runtime-20261117/hardware-progress.safe.json",
+    "kai_acceptance": true,
+    "source_acceptance": false,
+    "kai_evidence": "gpu3-kai-qualification-20261117/summary.json"
   }
 }

@@ -1,0 +1,25 @@
+{
+  "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+  "kernel": "7.0.0-43-generic",
+  "os_release": "PRETTY_NAME=\"Ubuntu 26.04.1 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"26.04\"\nVERSION=\"26.04.1 LTS (Resolute Raccoon)\"\nVERSION_CODENAME=resolute\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=resolute\nLOGO=ubuntu-logo\n",
+  "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+  "operation": {
+    "operation": "cps-gpu3-runtime-coldboot-20261117",
+    "source_boot": "3fe87b77-467a-4f6d-beed-47316853e181",
+    "submitted_at": "2026-11-17T15:42:44.920493+00:00",
+    "status": "timer-submission-returned",
+    "purpose": "selected worker final runtime reboot qualification; no peer operation",
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "Running timer as unit: cps-gpu3-runtime-coldboot-20261117.timer\nWill run service as unit: cps-gpu3-runtime-coldboot-20261117.service\n"
+  },
+  "apparmor_profile_exists": true,
+  "nri": {
+    "disable": false,
+    "socket_path": "/var/run/nri/nri.sock",
+    "default_validator": {
+      "enable": true,
+      "required_plugins": []
+    }
+  }
+}

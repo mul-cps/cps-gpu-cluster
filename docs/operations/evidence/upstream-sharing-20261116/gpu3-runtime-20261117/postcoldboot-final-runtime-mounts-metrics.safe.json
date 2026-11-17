@@ -1,0 +1,49 @@
+{
+  "boot": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+  "misc": true,
+  "nri": {
+    "disable": false,
+    "socket_path": "/var/run/nri/nri.sock",
+    "default_validator": {
+      "enable": true,
+      "required_plugins": []
+    }
+  },
+  "nri_socket_exists": true,
+  "apparmor_sha256": "30e2fc1210fc99c4e7060ea6bf7f931f6d6c03fbdc499f5f0584fb5c01c92875",
+  "driver_ready_mtime": 1794930480.7145646,
+  "root_mount": {
+    "filesystems": [
+      {
+        "target": "/",
+        "source": "/dev/sda1",
+        "uuid": "ffe7eb40-94f7-473b-b336-935460126345",
+        "fstype": "ext4"
+      }
+    ]
+  },
+  "scratch_mount": {
+    "filesystems": [
+      {
+        "target": "/mnt/nvme/scratch",
+        "source": "/dev/sdb",
+        "uuid": "7d6c1e7d-1031-4213-a3d8-5dff61b4a9c9",
+        "fstype": "ext4"
+      }
+    ]
+  },
+  "fstab_sha256": "2436bae3284a71ac5fb049b072b380b70cb514a5e38c6e87bd643419086a5363",
+  "k3s_apparmor_order": "Requires=system.slice sysinit.target apparmor.service\nAfter=sysinit.target systemd-journald.socket apparmor.service basic.target network-online.target system.slice\n",
+  "metricsd": {
+    "containerID": "containerd://43fbee63e07d21e9b7d282163066dc46f2c6eab7b8aba4f56b6ae6b2fef2b8f6",
+    "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/metricsd@sha256:7a619c92651d0744bcd80745be264f3b6c213ad4f3a12fef19a339df422af2bf",
+    "state": {
+      "running": {
+        "startedAt": "2026-11-17T15:48:16Z"
+      }
+    },
+    "ready": true,
+    "restartCount": 1
+  },
+  "metrics_log": "{\"time\":\"2026-11-17T15:48:16.849589836Z\",\"level\":\"INFO\",\"msg\":\"starting gpu-fractioning-metrics\",\"version\":\"v0.1.9\",\"commit\":\"fb75540\",\"date\":\"2026-11-11T07:34:48Z\"}\n{\"time\":\"2026-11-17T15:48:16.849924414Z\",\"level\":\"INFO\",\"msg\":\"container->pod mapping handoff directory\",\"mapDir\":\"/var/run/gpu-fractioning/map\"}\n{\"time\":\"2026-11-17T15:48:17.3196442Z\",\"level\":\"INFO\",\"msg\":\"NVML initialized; GPU process metrics enabled\"}\n{\"time\":\"2026-11-17T15:48:17.319892471Z\",\"level\":\"INFO\",\"msg\":\"starting GPU metrics exporter\",\"address\":\":2112\"}\n"
+}

@@ -1,0 +1,7 @@
+{"event": "identity", "pid": 7, "uid": 1000, "profile": "cri-containerd.apparmor.d//&unconfined (enforce)", "cgroup": "0::/"}
+{"event": "signal_received", "pid": 8}
+{"event": "signal_send", "result": "pass", "child": 8}
+{"event": "ptrace_attach_detach", "result": "pass"}
+{"event": "sigkill", "result": "pass"}
+{"event": "reaped", "status": 9, "result": "pass"}
+{"event": "mount_negative", "result": "pass", "errno": 1, "uid": 1000, "profile": "cri-containerd.apparmor.d//&unconfined (enforce)", "probeSHA256": "23ffe82b21aa91face3a3017b725393ba3e998d9d83a882d8306a050fcc072b4", "nvidiaDevices": [], "mountDenialIsNotUniquelyAttributedToAppArmor": true}

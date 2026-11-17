@@ -1,0 +1,62 @@
+--- original/kai_placement_render.py
++++ candidate/kai_placement_render.py
+@@ -9,9 +9,12 @@
+ import uuid
+ 
+ import yaml
++import candidate_guard as candidate
++
++ACCEPTED_PEERS={'k3s-wk-gpu2':'3336cdd5-d245-436e-b57c-2f66c6dcaa41'}
+ 
+ ROOT = Path(__file__).resolve().parents[3]
+-HISTORICAL = ROOT / 'docs/operations/evidence/upstream-sharing-20261116/mixed-profiles'
++HISTORICAL = Path(__file__).with_name('inputs')
+ PROBE_SHA = 'd2a4f4cdb9ee1e6c09622a3277fffc711d0be0a2ddd140e74b03e0a20dd02515'
+ DRIVER = 'ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73'
+ OUTER = '6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c'
+@@ -58,8 +61,9 @@
+         s.pop('runtimeClassName', None)
+         s.update(schedulerName='kai-scheduler', priorityClassName='cps-peer-protocol-20261108',
+                  preemptionPolicy='Never', automountServiceAccountToken=False,
+-                 nodeSelector={'kubernetes.io/hostname': a.node,
+-                               'cps.unileoben.ac.at/upstream-gpu-sharing': 'qualified'},
++                 nodeSelector={'kubernetes.io/hostname': a.node},
++                 tolerations=[{'key':'cps.unileoben.ac.at/maintenance','operator':'Equal',
++                               'value':'upstream-pilot','effect':'NoSchedule'}],
+                  activeDeadlineSeconds=900)
+         s['volumes'][0]['configMap']['name'] = a.run_id
+         c = s['containers'][0]
+@@ -97,7 +101,8 @@
+         {'release_delete': ['r1-b-20', 'r1-b-10', 'r1-b-5', 'guard-b', 'r1-a-20', 'r1-a-10', 'r1-a-5'],
+          'expect': 'all owned Pods/CM gone; no owned BindRequests/reservations; no CUDA clients; <=1MiB/card'},
+     ]
+-    provenance = {'status': 'render-only-not-executed', 'node': a.node,
++    provenance = {'status': 'render-only-not-executed', 'mode':'unqualified-candidate-admin-only',
++                  'candidate_selection': a.candidate_selection, 'node': a.node,
+                   'node_ip': a.node_ip, 'operator_selected_worker': a.operator_selected_worker,
+                   'accepted_qualified_peers': dict(sorted(a.accepted_qualified_peers.items())),
+                   'allowed_gpu_uuids': [a.gpu_a, a.gpu_b], 'expected_boot_id': a.expected_boot_id,
+@@ -113,6 +118,7 @@
+ 
+ def arguments(argv=None, execution=False):
+     p = argparse.ArgumentParser(description=__doc__)
++    p.add_argument('--candidate-selection',type=Path,required=True,help='Explicit closed unqualified GPU3 admin selection JSON')
+     p.add_argument('--node', required=True, choices=[f'k3s-wk-gpu{i}' for i in range(1, 5)])
+     p.add_argument('--operator-selected-worker', required=True)
+     p.add_argument('--accepted-qualified-peer', action='append', default=[],
+@@ -158,6 +164,15 @@
+     uuid.UUID(a.expected_boot_id)
+     if a.gpu_a == a.gpu_b or not re.fullmatch('[0-9a-fA-F]{1,24}', a.expected_module_srcversion):
+         p.error('distinct GPU UUIDs and exact loaded module identity required')
++    a.candidate_selection=candidate.read_selection(a.candidate_selection)
++    s=a.candidate_selection
++    candidate.require((a.node,a.node_ip,a.gpu_a,a.gpu_b,a.expected_boot_id,a.expected_module_srcversion)==
++                      (candidate.NODE,candidate.IP,*candidate.GPUS,s['expected_boot_id'],candidate.UVM),
++                      'candidate CLI tuple differs from closed selection')
++    candidate.require(a.accepted_qualified_peers==ACCEPTED_PEERS,'exact accepted GPU2 peer required')
++    if execution and a.execute:
++        candidate.require((a.parent_idle_release,a.ssh_target,str(a.ssh_key))==
++                          (s['release_reference'],s['ssh_target'],s['ssh_key']),'candidate release/SSH mismatch')
+     return a
+ 
+ 

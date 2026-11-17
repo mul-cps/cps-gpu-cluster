@@ -1,0 +1,65 @@
+--- original/kai_placement_run.py
++++ candidate/kai_placement_run.py
+@@ -11,6 +11,7 @@
+ from urllib.parse import quote, urlencode
+ 
+ import kai_placement_render as renderer
++import candidate_guard as candidate
+ 
+ 
+ def require_uid(resource, uid):
+@@ -19,10 +20,12 @@
+ 
+ 
+ def validate_qualified_nodes(nodes, selected, selected_uid, accepted_peers):
+-    expected = {selected: selected_uid, **accepted_peers}
++    if selected != candidate.NODE or selected_uid != candidate.UID or accepted_peers != renderer.ACCEPTED_PEERS:
++        raise RuntimeError('Exact candidate and accepted GPU2 identities required')
++    expected = dict(accepted_peers)
+     names = [node['metadata']['name'] for node in nodes]
+     if selected in accepted_peers or len(names) != len(set(names)) or set(names) != set(expected):
+-        raise RuntimeError('Qualified workers must be exactly selected worker plus accepted peers')
++        raise RuntimeError('Qualified workers must be exactly accepted GPU2; selected candidate remains unqualified')
+     observed = []
+     for node in nodes:
+         meta = node['metadata']
+@@ -83,7 +86,15 @@
+     kube = ['kubectl', '--request-timeout=15s']
+     cleanup_mode = False
+ 
++    def candidate_window():
++        s=a.candidate_selection
++        candidate.check_node(s)
++        validate_qualified_nodes(candidate.kube('get','nodes','-l','cps.unileoben.ac.at/upstream-gpu-sharing=qualified')['items'],a.node,candidate.UID,a.accepted_qualified_peers)
++        for kind,ns in [('driver','gpu-operator'),('fractiond','gpu-fractioning')]:
++            candidate.validate_operand(candidate.kube('get','pod',s[kind+'_pod'],'-n',ns),s,kind)
++
+     def command(argv, data=None, timeout=25):
++        if not cleanup_mode and argv[0]=='kubectl' and ('create' in argv or 'exec' in argv):candidate_window()
+         if not cleanup_mode:
+             remaining = deadline - time.monotonic()
+             if remaining <= 0: raise TimeoutError('Overall600s run bound reached')
+@@ -140,12 +151,9 @@
+ 
+     node = get('node', a.node)
+     node_uid = node['metadata']['uid']
+-    if (node['spec'].get('unschedulable') or node['metadata']['labels'].get('cps.unileoben.ac.at/upstream-gpu-sharing') != 'qualified'
+-            or any(x['effect'] in ('NoSchedule','NoExecute') and x['key'] != 'nvidia.com/gpu' for x in node['spec'].get('taints',[]))
+-            or not any(x['type']=='Ready' and x['status']=='True' for x in node['status']['conditions'])
+-            or not any(x['type']=='InternalIP' and x['address']==a.node_ip for x in node['status']['addresses'])
+-            or node['metadata']['labels'].get('nvidia.com/gpu.memory') != '40960'):
+-        raise RuntimeError('Root must open only selected Ready matching worker for scheduling')
++    candidate.validate_node(node,a.candidate_selection)
++    candidate_window()
++    if node['metadata']['labels'].get('nvidia.com/gpu.memory')!='40960':raise RuntimeError('Selected card memory label changed')
+     qualified = get('nodes','-l','cps.unileoben.ac.at/upstream-gpu-sharing=qualified')['items']
+     summary['qualified_workers_before'] = validate_qualified_nodes(
+         qualified, a.node, node_uid, a.accepted_qualified_peers)
+@@ -360,6 +368,7 @@
+             leftovers=get('pods','-n',a.namespace,'-l','cps.unileoben.ac.at/kai-placement-run='+a.run_id)['items']
+             if leftovers:raise RuntimeError('Owned-prefix Pods remain, including possible uncertain CREATE response; no adoption/force deletion')
+             save('final-idle.json',idle())
++            candidate_window()
+             summary['cleanup']='PASS'
+         except BaseException as error:
+             summary.update(status='FAIL',cleanup='FAIL',cleanup_error=str(error));raise

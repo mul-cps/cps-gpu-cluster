@@ -1,0 +1,6 @@
+{"event": "created", "kind": "ConfigMap", "name": "gpu3-aa-probe-1fcf5b3e", "uid": "67a5f2ec-c5d0-4569-ac56-4befc23bbf09", "at": "2026-11-17T15:52:22.928640+00:00"}
+{"event": "created", "kind": "Pod", "name": "gpu3-apparmor-coldboot-1fcf5b3e", "uid": "c2487cd4-861a-44cb-aea4-320249d84b56", "at": "2026-11-17T15:52:23.225298+00:00"}
+{"event": "CPU-AA-PASS", "podUID": "c2487cd4-861a-44cb-aea4-320249d84b56", "events": ["identity", "signal_received", "signal_send", "ptrace_attach_detach", "sigkill", "reaped", "mount_negative"], "mountErrno": 1, "profile": "cri-containerd.apparmor.d//&unconfined (enforce)", "at": "2026-11-17T15:52:26.912247+00:00"}
+{"event": "deleted-normal", "kind": "Pod", "name": "gpu3-apparmor-coldboot-1fcf5b3e", "uid": "c2487cd4-861a-44cb-aea4-320249d84b56", "at": "2026-11-17T15:52:27.136038+00:00"}
+{"event": "deleted-normal", "kind": "ConfigMap", "name": "gpu3-aa-probe-1fcf5b3e", "uid": "67a5f2ec-c5d0-4569-ac56-4befc23bbf09", "at": "2026-11-17T15:52:27.330608+00:00"}
+{"event": "RESULT", "AppArmorCPU": "PASS", "ownedRemaining": [], "at": "2026-11-17T15:52:27.330869+00:00"}

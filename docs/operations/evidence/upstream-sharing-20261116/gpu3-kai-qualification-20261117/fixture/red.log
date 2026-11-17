@@ -1,0 +1,67 @@
+test_candidate_node_rejects_all_identity_and_fence_changes (test_candidate.Candidate.test_candidate_node_rejects_all_identity_and_fence_changes) ... ERROR
+test_only_exact_accepted_peer_allowed_without_selected_qualification (test_candidate.Candidate.test_only_exact_accepted_peer_allowed_without_selected_qualification) ... ERROR
+test_reject_qualified_selected_replaced_unready_extra_peer (test_candidate.Candidate.test_reject_qualified_selected_replaced_unready_extra_peer) ... 
+  test_reject_qualified_selected_replaced_unready_extra_peer (test_candidate.Candidate.test_reject_qualified_selected_replaced_unready_extra_peer) (change='selected') ... FAIL
+test_render_exact_candidate_selector_taint_and_payload (test_candidate.Candidate.test_render_exact_candidate_selector_taint_and_payload) ... usage: python3 -m unittest [-h]
+                           --node {k3s-wk-gpu1,k3s-wk-gpu2,k3s-wk-gpu3,k3s-wk-gpu4}
+                           --operator-selected-worker OPERATOR_SELECTED_WORKER
+                           [--accepted-qualified-peer NAME=NODE_UID]
+                           --node-ip NODE_IP --gpu-a GPU_A --gpu-b GPU_B
+                           --expected-boot-id EXPECTED_BOOT_ID
+                           --expected-module-srcversion EXPECTED_MODULE_SRCVERSION
+                           [--namespace NAMESPACE] [--queue QUEUE]
+                           [--run-id RUN_ID] --output OUTPUT
+python3 -m unittest: error: unrecognized arguments: --candidate-selection /tmp/tmpur26qv0n/selection.json
+ERROR
+
+======================================================================
+ERROR: test_candidate_node_rejects_all_identity_and_fence_changes (test_candidate.Candidate.test_candidate_node_rejects_all_identity_and_fence_changes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu3-kai-candidate-20261117/test_candidate.py", line 39, in test_candidate_node_rejects_all_identity_and_fence_changes
+    import candidate_guard as g
+ModuleNotFoundError: No module named 'candidate_guard'
+
+======================================================================
+ERROR: test_only_exact_accepted_peer_allowed_without_selected_qualification (test_candidate.Candidate.test_only_exact_accepted_peer_allowed_without_selected_qualification)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu3-kai-candidate-20261117/test_candidate.py", line 17, in test_only_exact_accepted_peer_allowed_without_selected_qualification
+    self.assertEqual(q.validate_qualified_nodes(peers(),NODE,UID,PEERS),[{'name':'k3s-wk-gpu2','uid':PEERS['k3s-wk-gpu2'],'ready':True}])
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu3-kai-candidate-20261117/kai_placement_run.py", line 25, in validate_qualified_nodes
+    raise RuntimeError('Qualified workers must be exactly selected worker plus accepted peers')
+RuntimeError: Qualified workers must be exactly selected worker plus accepted peers
+
+======================================================================
+ERROR: test_render_exact_candidate_selector_taint_and_payload (test_candidate.Candidate.test_render_exact_candidate_selector_taint_and_payload)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu3-kai-candidate-20261117/test_candidate.py", line 31, in test_render_exact_candidate_selector_taint_and_payload
+    a=r.arguments(args);cm,pods,summary=r.render(a)
+  File "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu3-kai-candidate-20261117/kai_placement_render.py", line 135, in arguments
+    a = p.parse_args(argv)
+  File "/home/bjoern/miniforge3/lib/python3.13/argparse.py", line 1930, in parse_args
+    self.error(msg)
+    ~~~~~~~~~~^^^^^
+  File "/home/bjoern/miniforge3/lib/python3.13/argparse.py", line 2686, in error
+    self.exit(2, _('%(prog)s: error: %(message)s\n') % args)
+    ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bjoern/miniforge3/lib/python3.13/argparse.py", line 2673, in exit
+    _sys.exit(status)
+    ~~~~~~~~~^^^^^^^^
+SystemExit: 2
+
+======================================================================
+FAIL: test_reject_qualified_selected_replaced_unready_extra_peer (test_candidate.Candidate.test_reject_qualified_selected_replaced_unready_extra_peer) (change='selected')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu3-kai-candidate-20261117/test_candidate.py", line 26, in test_reject_qualified_selected_replaced_unready_extra_peer
+    with self.subTest(change=change),self.assertRaises((RuntimeError,ValueError)):q.validate_qualified_nodes(rows,NODE,UID,PEERS)
+                                     ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: (<class 'RuntimeError'>, <class 'ValueError'>) not raised
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.010s
+
+FAILED (failures=1, errors=3)

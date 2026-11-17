@@ -1,0 +1,39 @@
+{
+  "name": "gpu3-apparmor-coldboot-1fcf5b3e",
+  "uid": "c2487cd4-861a-44cb-aea4-320249d84b56",
+  "node": "k3s-wk-gpu3",
+  "phase": "Succeeded",
+  "containerID": "containerd://bf52dcd30e3a350ee2db530681b26ba5b8e768977e26250f075832ec0138ab56",
+  "imageID": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+  "terminated": {
+    "containerID": "containerd://bf52dcd30e3a350ee2db530681b26ba5b8e768977e26250f075832ec0138ab56",
+    "exitCode": 0,
+    "finishedAt": "2026-11-17T15:52:24Z",
+    "reason": "Completed",
+    "startedAt": "2026-11-17T15:52:23Z"
+  },
+  "actualSecurityContext": {
+    "appArmorProfile": {
+      "type": "RuntimeDefault"
+    },
+    "fsGroup": 1000,
+    "runAsGroup": 1000,
+    "runAsNonRoot": true,
+    "runAsUser": 1000,
+    "seccompProfile": {
+      "type": "RuntimeDefault"
+    }
+  },
+  "actualResources": {
+    "limits": {
+      "cpu": "1",
+      "memory": "256Mi"
+    },
+    "requests": {
+      "cpu": "100m",
+      "memory": "64Mi"
+    }
+  },
+  "automountServiceAccountToken": false,
+  "annotationsPresent": []
+}

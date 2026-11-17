@@ -1,0 +1,23 @@
+{
+  "README.md": "9a4b22071310ced4786a3c230935d2b54010d93f35391c617d279519762df8af",
+  "candidate_guard.py": "18d20cdf8b87ce0d2ade543fef31122b2259ab9761563ead68a426d1f0c020d3",
+  "candidate_guard.py.diff": "3fc6f387f4666f63d75604296236b492348361b243d8810684d34b0dc431b44b",
+  "extended_host_observer.py": "3c9ecb1801af97ef27c9542a55105953d0204cc553ad21b31606e18a64945fd6",
+  "green.log": "7a4bfe0bf5041d7d285b63d27c430993964ab10951e82b00bb317c39b991fe49",
+  "inputs/gpu2-mixed-a-5.yaml": "b68926bb0c1a18338000a851b207c4516b168b52c68b20256bc88cea038f1b12",
+  "inputs/probe.py": "d2a4f4cdb9ee1e6c09622a3277fffc711d0be0a2ddd140e74b03e0a20dd02515",
+  "kai_placement_render.py": "e41aef998e885dfac2038853681e90009e1aa3b820800bb91251e78d4d6f5e74",
+  "kai_placement_render.py.diff": "9ce3325cbcc24d9e65d3d460c3cb5bdaa588e574d82e641096454917109c46dd",
+  "kai_placement_run.py": "b0eb45a0b88f6592b43918620001c3ed4fa63623bee2905fdb06325d3661d567",
+  "kai_placement_run.py.diff": "1154d40ad81d702ed6bb0fb2a95f3638ce08803c07c6b68c138995b3f1aa1386",
+  "kai_placement_safety_test.py": "d8c8b2adffb80b3e1548e3a83ac6d11c350594166fbba7b9c12b1e45bb3043f4",
+  "originals/extended_host_observer.py": "3c9ecb1801af97ef27c9542a55105953d0204cc553ad21b31606e18a64945fd6",
+  "originals/kai_placement_render.py": "46aa83c1ffc881184b1601cbd35598696e66be93db9b898ba957c7ca6e9ded26",
+  "originals/kai_placement_run.py": "81a53f28f22e7df1d9a2aad314d2e51959f497d63cac14ff78b18e7b0726ea1b",
+  "originals/kai_placement_safety_test.py": "d8c8b2adffb80b3e1548e3a83ac6d11c350594166fbba7b9c12b1e45bb3043f4",
+  "originals/selected_guard.py": "79852761c5f387b11db967685f9c432dd8124e3b653bbefa7ec2bbbd1a298fc5",
+  "red.log": "086e38b076e256db0af73f6bd53ac13147c6b8d2d733df92a7fd6dd14b2fafcc",
+  "selection.template.json": "72c31fb7458e331b1d3689998923cecee99685dc43fdc62270d257ff9e88b5cf",
+  "source-hashes.json": "7fa72676b2429d637664f53f6de81192aaefc49b5c127546eaf97e9eca76e1cf",
+  "test_candidate.py": "c39f9cba61d331b297eee6b0d0605535820c0685b5e7611216489842947ecab9"
+}

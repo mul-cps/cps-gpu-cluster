@@ -1,0 +1,954 @@
+{
+  "status": "PASS",
+  "mode": "unqualified-candidate-admin-only",
+  "candidate_selection": {
+    "node": "k3s-wk-gpu3",
+    "node_uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+    "node_ip": "10.21.0.40",
+    "gpu_uuids": [
+      "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a"
+    ],
+    "expected_boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+    "driver_pod": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf-6qg4x",
+    "driver_pod_uid": "e116edfb-f35d-4e0c-9d90-af7e894716b6",
+    "driver_cid": "c1d52793056ff119d8d7427a5764c4bb3cde96689f6f39ff9ec185702ce78fe5",
+    "fractiond_pod": "gpu-fractioning-fractiond-wnv4l",
+    "fractiond_pod_uid": "ffd1f1d0-90bc-43ea-b194-61d4d4836ac3",
+    "fractiond_cid": "59e587094b5d982fc37638bb65390899f2787a5a0f0d4356ab3a907ac1e799bf",
+    "release_reference": "root-gpu3-postcoldboot-20261117-boot1fcf5",
+    "ssh_target": "ubuntu@10.21.0.40",
+    "ssh_key": "/home/bjoern/.ssh/id_ed25519"
+  },
+  "node": "k3s-wk-gpu3",
+  "node_ip": "10.21.0.40",
+  "operator_selected_worker": "k3s-wk-gpu3",
+  "accepted_qualified_peers": {
+    "k3s-wk-gpu2": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+  },
+  "allowed_gpu_uuids": [
+    "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+    "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a"
+  ],
+  "expected_boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+  "expected_module_srcversion": "10301D70B8ED1758BC717E9",
+  "driver_image": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+  "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+  "k3s_outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+  "k3s_inner_containerd_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+  "historical_probe_sha256": "d2a4f4cdb9ee1e6c09622a3277fffc711d0be0a2ddd140e74b03e0a20dd02515",
+  "derived_probe_sha256": "9ef2c893dfebcc5d63b053cccbddd7e4379df5957adfa4d097789e72d5c72a14",
+  "roles_to_pod_names": {
+    "seed-exclusive": "kai-gpu3-final-1-seed-exclusive",
+    "r0-a-5": "kai-gpu3-final-1-r0-a-5",
+    "r0-a-10": "kai-gpu3-final-1-r0-a-10",
+    "r0-a-20": "kai-gpu3-final-1-r0-a-20",
+    "r0-b-5": "kai-gpu3-final-1-r0-b-5",
+    "r0-b-10": "kai-gpu3-final-1-r0-b-10",
+    "r0-b-20": "kai-gpu3-final-1-r0-b-20",
+    "r1-b-20": "kai-gpu3-final-1-r1-b-20",
+    "r1-b-10": "kai-gpu3-final-1-r1-b-10",
+    "r1-b-5": "kai-gpu3-final-1-r1-b-5",
+    "r1-a-20": "kai-gpu3-final-1-r1-a-20",
+    "r1-a-10": "kai-gpu3-final-1-r1-a-10",
+    "r1-a-5": "kai-gpu3-final-1-r1-a-5",
+    "guard-a": "kai-gpu3-final-1-guard-a",
+    "guard-b": "kai-gpu3-final-1-guard-b"
+  },
+  "sequence": [
+    {
+      "create": [
+        "seed-exclusive"
+      ],
+      "expect": "KAI selects one UUID; discover it as B; other allowed UUID is A"
+    },
+    {
+      "create": [
+        "r0-a-5",
+        "r0-a-10",
+        "r0-a-20",
+        "guard-a"
+      ],
+      "expect": "all A; logical reservation 40GiB on A, seed exclusively reserves B"
+    },
+    {
+      "release_delete": [
+        "seed-exclusive"
+      ],
+      "expect": "UID-guarded seed release; B is available"
+    },
+    {
+      "create": [
+        "r0-b-5",
+        "r0-b-10",
+        "r0-b-20"
+      ],
+      "expect": "all B; A logical40GiB; both cards profiles5/10/20 coexist and independently progress"
+    },
+    {
+      "checkpoint": "round0-AB: physical32GiB/card +1MiB guard; capture BindRequests, leaf limits, progress and NVML"
+    },
+    {
+      "release_delete": [
+        "r0-b-5",
+        "r0-b-10",
+        "r0-b-20"
+      ],
+      "expect": "B payload stops before refill; preserve original A logical40GiB"
+    },
+    {
+      "create": [
+        "r1-b-20",
+        "r1-b-10",
+        "r1-b-5",
+        "guard-b"
+      ],
+      "expect": "all original B; B logical40GiB; reverse profile order"
+    },
+    {
+      "release_delete": [
+        "r0-a-5",
+        "r0-a-10",
+        "r0-a-20",
+        "guard-a"
+      ],
+      "expect": "original A becomes free while B remains booked40GiB"
+    },
+    {
+      "create": [
+        "r1-a-20",
+        "r1-a-10",
+        "r1-a-5"
+      ],
+      "expect": "all original A; both cards profiles20/10/5 coexist and independently progress"
+    },
+    {
+      "checkpoint": "round1-BA: physical32GiB/card +1MiB guard; same witness set"
+    },
+    {
+      "release_delete": [
+        "r1-b-20",
+        "r1-b-10",
+        "r1-b-5",
+        "guard-b",
+        "r1-a-20",
+        "r1-a-10",
+        "r1-a-5"
+      ],
+      "expect": "all owned Pods/CM gone; no owned BindRequests/reservations; no CUDA clients; <=1MiB/card"
+    }
+  ],
+  "parent_idle_release": "root-gpu3-postcoldboot-20261117-boot1fcf5",
+  "observations": {
+    "seed-exclusive": {
+      "uid": "641a98c7-64c2-431c-a748-10820c71aaea",
+      "container_id": "379d212c723aa4d04d2a3abcdb8bd01aeb9a1ea160961a94886a09d96409867e",
+      "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "observation": {
+        "time": 1794930859.3240683,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06, 425, 40960",
+        "compute_processes": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 43395, 418",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "379d212c723aa4d04d2a3abcdb8bd01aeb9a1ea160961a94886a09d96409867e",
+        "init_pid": 43395,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod641a98c7_64c2_431c_a748_10820c71aaea.slice/cri-containerd-379d212c723aa4d04d2a3abcdb8bd01aeb9a1ea160961a94886a09d96409867e.scope\n",
+        "cgroup_inode": 25022,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "34770944\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 43395,
+            "stat": "43395 (python3) S 43343 43395 43395 0 -1 4194560 10291 6176 0 0 7 22 1 4 20 0 4 0 47942 5351116800 53222 18446744073709551615 4325376 7352253 140730128411872 0 0 0 0 16781312 2 0 0 0 17 22 0 0 0 0 0 10653128 12216448 755806208 140730128419571 140730128419624 140730128419624 140730128420839 0\n",
+            "nspid": [
+              "NSpid:\t43395\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 398342057984
+        },
+        "oci_devices": [
+          {
+            "fileMode": 438,
+            "gid": 1000,
+            "major": 195,
+            "minor": 254,
+            "path": "/dev/nvidia-modeset",
+            "type": "c",
+            "uid": 1000
+          },
+          {
+            "fileMode": 438,
+            "gid": 1000,
+            "major": 508,
+            "minor": 0,
+            "path": "/dev/nvidia-uvm",
+            "type": "c",
+            "uid": 1000
+          },
+          {
+            "fileMode": 438,
+            "gid": 1000,
+            "major": 508,
+            "minor": 1,
+            "path": "/dev/nvidia-uvm-tools",
+            "type": "c",
+            "uid": 1000
+          },
+          {
+            "fileMode": 438,
+            "gid": 1000,
+            "major": 195,
+            "minor": 255,
+            "path": "/dev/nvidiactl",
+            "type": "c",
+            "uid": 1000
+          },
+          {
+            "fileMode": 438,
+            "gid": 1000,
+            "major": 195,
+            "minor": 0,
+            "path": "/dev/nvidia0",
+            "type": "c",
+            "uid": 1000
+          }
+        ],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "r0-a-5": {
+      "uid": "7e4ff050-c30a-4ee5-b6a3-163c87068cc9",
+      "container_id": "b9a2bc606a16c4c786f49badf646e01e797dd1c905df6e7f013abba482b272f9",
+      "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "observation": {
+        "time": 1794930867.2271473,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 620.70.06, 4519, 40960",
+        "compute_processes": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 44333, 4512",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "b9a2bc606a16c4c786f49badf646e01e797dd1c905df6e7f013abba482b272f9",
+        "init_pid": 44333,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod7e4ff050_c30a_4ee5_b6a3_163c87068cc9.slice/cri-containerd-b9a2bc606a16c4c786f49badf646e01e797dd1c905df6e7f013abba482b272f9.scope\n",
+        "cgroup_inode": 25595,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "109830144\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 44333,
+            "stat": "44333 (python3) S 44257 44333 44333 0 -1 4194560 10188 6153 0 0 7 27 1 4 20 0 4 0 48682 9646084096 53244 18446744073709551615 4325376 7352253 140724362812960 0 0 0 0 16781312 2 0 0 0 17 22 0 0 0 0 0 10653128 12216448 939003904 140724362820252 140724362820300 140724362820300 140724362821607 0\n",
+            "nspid": [
+              "NSpid:\t44333\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397884104704
+        },
+        "memory_limits": "GPU 1: NVIDIA A100-PCIE-40GB (UUID: GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod7e4ff050_c30a_4ee5_b6a3_163c87068cc9.slice/cri-containerd-b9a2bc606a16c4c786f49badf646e01e797dd1c905df6e7f013abba482b272f9.scope\n  soft limit:     5120 MiB\n  hard limit:     5120 MiB\n  current used:   4511 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "r0-a-10": {
+      "uid": "1de060da-762e-4a19-b5b8-d20710c2e415",
+      "container_id": "e538becdf5170be8e20fef3b8f2e86cc817f78e7a8b82bda04b21252a9a9a7a5",
+      "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "observation": {
+        "time": 1794930874.2897701,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 620.70.06, 14155, 40960",
+        "compute_processes": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 44333, 4512\nGPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 45146, 9632",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "e538becdf5170be8e20fef3b8f2e86cc817f78e7a8b82bda04b21252a9a9a7a5",
+        "init_pid": 45146,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod1de060da_762e_4a19_b5b8_d20710c2e415.slice/cri-containerd-e538becdf5170be8e20fef3b8f2e86cc817f78e7a8b82bda04b21252a9a9a7a5.scope\n",
+        "cgroup_inode": 25958,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "108826624\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 45146,
+            "stat": "45146 (python3) S 45072 45146 45146 0 -1 4194560 10186 6183 0 0 7 20 1 3 20 0 4 0 49357 15014793216 48086 18446744073709551615 4325376 7352253 140733835503712 0 0 0 0 16781312 2 0 0 0 17 33 0 0 0 0 0 10653128 12216448 707805184 140733835512472 140733835512521 140733835512521 140733835513831 0\n",
+            "nspid": [
+              "NSpid:\t45146\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397658697728
+        },
+        "memory_limits": "GPU 1: NVIDIA A100-PCIE-40GB (UUID: GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod1de060da_762e_4a19_b5b8_d20710c2e415.slice/cri-containerd-e538becdf5170be8e20fef3b8f2e86cc817f78e7a8b82bda04b21252a9a9a7a5.scope\n  soft limit:     10240 MiB\n  hard limit:     10240 MiB\n  current used:   9631 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "r0-a-20": {
+      "uid": "b4b354bc-02c3-4771-bd20-bf18623afcf4",
+      "container_id": "22b342577e9a1036c69079bc16a8086c9a04620297f81150c31ba31bd7a33edd",
+      "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "observation": {
+        "time": 1794930880.2838225,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 620.70.06, 34030, 40960",
+        "compute_processes": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 44333, 4512\nGPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 45146, 9632\nGPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 45926, 19872",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "22b342577e9a1036c69079bc16a8086c9a04620297f81150c31ba31bd7a33edd",
+        "init_pid": 45926,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podb4b354bc_02c3_4771_bd20_bf18623afcf4.slice/cri-containerd-22b342577e9a1036c69079bc16a8086c9a04620297f81150c31ba31bd7a33edd.scope\n",
+        "cgroup_inode": 26321,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "109260800\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 45926,
+            "stat": "45926 (python3) S 45853 45926 45926 0 -1 4194560 10192 6124 0 0 8 21 0 4 20 0 4 0 49966 25752211456 48007 18446744073709551615 4325376 7352253 140734980165648 0 0 0 0 16781312 2 0 0 0 17 22 0 0 0 0 0 10653128 12216448 924008448 140734980172439 140734980172489 140734980172489 140734980173799 0\n",
+            "nspid": [
+              "NSpid:\t45926\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397401149440
+        },
+        "memory_limits": "GPU 1: NVIDIA A100-PCIE-40GB (UUID: GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podb4b354bc_02c3_4771_bd20_bf18623afcf4.slice/cri-containerd-22b342577e9a1036c69079bc16a8086c9a04620297f81150c31ba31bd7a33edd.scope\n  soft limit:     20480 MiB\n  hard limit:     20480 MiB\n  current used:   19871 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "guard-a": {
+      "uid": "42a18a13-6ea8-4447-a21a-75b227413f3b",
+      "container_id": "458ec7765caade5766d3e4f13d002251078bd60b9f75fd6b42eb3a92accdd93e",
+      "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "observation": {
+        "time": 1794930887.3567617,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 620.70.06, 34452, 40960",
+        "compute_processes": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 44333, 4512\nGPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 45146, 9632\nGPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 45926, 19872\nGPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 46761, 418",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "458ec7765caade5766d3e4f13d002251078bd60b9f75fd6b42eb3a92accdd93e",
+        "init_pid": 46761,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod42a18a13_6ea8_4447_a21a_75b227413f3b.slice/cri-containerd-458ec7765caade5766d3e4f13d002251078bd60b9f75fd6b42eb3a92accdd93e.scope\n",
+        "cgroup_inode": 26684,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "109105152\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 46761,
+            "stat": "46761 (python3) S 46681 46761 46761 0 -1 4194560 10184 6163 0 0 6 22 1 3 20 0 4 0 50679 5351116800 47968 18446744073709551615 4325376 7352253 140731666631296 0 0 0 0 16781312 2 0 0 0 17 39 0 0 0 0 0 10653128 12216448 115830784 140731666639517 140731666639563 140731666639563 140731666640871 0\n",
+            "nspid": [
+              "NSpid:\t46761\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397341876224
+        },
+        "memory_limits": "GPU 1: NVIDIA A100-PCIE-40GB (UUID: GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod42a18a13_6ea8_4447_a21a_75b227413f3b.slice/cri-containerd-458ec7765caade5766d3e4f13d002251078bd60b9f75fd6b42eb3a92accdd93e.scope\n  soft limit:     5120 MiB\n  hard limit:     5120 MiB\n  current used:   417 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "r0-b-5": {
+      "uid": "e797642a-3be7-4626-b8dc-a501d2e5087b",
+      "container_id": "4efc46805683a10d4e8fb2d6c5f251be7d98e600fe5a2ed0a7c3337b673575e5",
+      "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "observation": {
+        "time": 1794930897.7358875,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06, 4519, 40960",
+        "compute_processes": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 48066, 4512",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "4efc46805683a10d4e8fb2d6c5f251be7d98e600fe5a2ed0a7c3337b673575e5",
+        "init_pid": 48066,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pode797642a_3be7_4626_b8dc_a501d2e5087b.slice/cri-containerd-4efc46805683a10d4e8fb2d6c5f251be7d98e600fe5a2ed0a7c3337b673575e5.scope\n",
+        "cgroup_inode": 27308,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "34152448\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 48066,
+            "stat": "48066 (python3) S 47969 48066 48066 0 -1 4194560 10197 6194 0 0 7 28 1 4 20 0 4 0 51674 9646084096 53244 18446744073709551615 4325376 7352253 140727815471072 0 0 0 0 16781312 2 0 0 0 17 18 0 0 0 0 0 10653128 12216448 1029914624 140727815477916 140727815477964 140727815477964 140727815479271 0\n",
+            "nspid": [
+              "NSpid:\t48066\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397437865984
+        },
+        "memory_limits": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pode797642a_3be7_4626_b8dc_a501d2e5087b.slice/cri-containerd-4efc46805683a10d4e8fb2d6c5f251be7d98e600fe5a2ed0a7c3337b673575e5.scope\n  soft limit:     5120 MiB\n  hard limit:     5120 MiB\n  current used:   4511 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "r0-b-10": {
+      "uid": "66b9fd84-604a-4a53-9446-513845e6585d",
+      "container_id": "47971afaabf9ef9d4859f726570edf7e08b50b02807cc52e7375eb012f12fd3a",
+      "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "observation": {
+        "time": 1794930904.4635446,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06, 14155, 40960",
+        "compute_processes": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 48066, 4512\nGPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 48927, 9632",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "47971afaabf9ef9d4859f726570edf7e08b50b02807cc52e7375eb012f12fd3a",
+        "init_pid": 48927,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod66b9fd84_604a_4a53_9446_513845e6585d.slice/cri-containerd-47971afaabf9ef9d4859f726570edf7e08b50b02807cc52e7375eb012f12fd3a.scope\n",
+        "cgroup_inode": 27671,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "109203456\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 48927,
+            "stat": "48927 (python3) S 48854 48927 48927 0 -1 4194560 10187 6154 0 0 7 23 1 4 20 0 4 0 52407 15014793216 48056 18446744073709551615 4325376 7352253 140727315610384 0 0 0 0 16781312 2 0 0 0 17 24 0 0 0 0 0 10653128 12216448 468668416 140727315614360 140727315614409 140727315614409 140727315615719 0\n",
+            "nspid": [
+              "NSpid:\t48927\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397263577088
+        },
+        "memory_limits": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod66b9fd84_604a_4a53_9446_513845e6585d.slice/cri-containerd-47971afaabf9ef9d4859f726570edf7e08b50b02807cc52e7375eb012f12fd3a.scope\n  soft limit:     10240 MiB\n  hard limit:     10240 MiB\n  current used:   9631 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "r0-b-20": {
+      "uid": "b3c6b106-8e0f-4e65-b6eb-090b9ee57616",
+      "container_id": "1e78549931691b6b149739614f3b80cafc74e783f7d8834b1b937babee596caf",
+      "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "observation": {
+        "time": 1794930910.5892756,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06, 34030, 40960",
+        "compute_processes": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 48066, 4512\nGPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 48927, 9632\nGPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 49799, 19872",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "1e78549931691b6b149739614f3b80cafc74e783f7d8834b1b937babee596caf",
+        "init_pid": 49799,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podb3c6b106_8e0f_4e65_b6eb_090b9ee57616.slice/cri-containerd-1e78549931691b6b149739614f3b80cafc74e783f7d8834b1b937babee596caf.scope\n",
+        "cgroup_inode": 28034,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "109133824\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 49799,
+            "stat": "49799 (python3) S 49723 49799 49799 0 -1 4194560 10189 6078 0 0 8 22 1 3 20 0 4 0 53016 25752211456 48062 18446744073709551615 4325376 7352253 140720946441104 0 0 0 0 16781312 2 0 0 0 17 40 0 0 0 0 0 10653128 12216448 435888128 140720946444951 140720946445001 140720946445001 140720946446311 0\n",
+            "nspid": [
+              "NSpid:\t49799\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397163008000
+        },
+        "memory_limits": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-podb3c6b106_8e0f_4e65_b6eb_090b9ee57616.slice/cri-containerd-1e78549931691b6b149739614f3b80cafc74e783f7d8834b1b937babee596caf.scope\n  soft limit:     20480 MiB\n  hard limit:     20480 MiB\n  current used:   19871 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "r1-b-20": {
+      "uid": "8c8dc427-f141-46d5-b70d-4126f8792fef",
+      "container_id": "3c1fc27dfcd6489bffa3cb410b4f9f5b4b950158129183934c0663fefbab0db4",
+      "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "observation": {
+        "time": 1794930935.779516,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06, 19879, 40960",
+        "compute_processes": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 52926, 19872",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "3c1fc27dfcd6489bffa3cb410b4f9f5b4b950158129183934c0663fefbab0db4",
+        "init_pid": 52926,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod8c8dc427_f141_46d5_b70d_4126f8792fef.slice/cri-containerd-3c1fc27dfcd6489bffa3cb410b4f9f5b4b950158129183934c0663fefbab0db4.scope\n",
+        "cgroup_inode": 28964,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "33980416\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 52926,
+            "stat": "52926 (python3) S 52847 52926 52926 0 -1 4194560 10197 6098 0 0 8 28 1 4 20 0 4 0 55537 25752211456 53274 18446744073709551615 4325376 7352253 140732695191328 0 0 0 0 16781312 2 0 0 0 17 22 0 0 0 0 0 10653128 12216448 908091392 140732695198359 140732695198409 140732695198409 140732695199719 0\n",
+            "nspid": [
+              "NSpid:\t52926\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397207351296
+        },
+        "memory_limits": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod8c8dc427_f141_46d5_b70d_4126f8792fef.slice/cri-containerd-3c1fc27dfcd6489bffa3cb410b4f9f5b4b950158129183934c0663fefbab0db4.scope\n  soft limit:     20480 MiB\n  hard limit:     20480 MiB\n  current used:   19871 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "r1-b-10": {
+      "uid": "85cb458f-fb97-4884-8d2d-ffdb0afd78cd",
+      "container_id": "211b954535571fc5efe4ebeb373334e6f069eca8dbd0a1712020d709b7c82d05",
+      "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "observation": {
+        "time": 1794930940.8595545,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06, 29515, 40960",
+        "compute_processes": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 52926, 19872\nGPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 53712, 9632",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "211b954535571fc5efe4ebeb373334e6f069eca8dbd0a1712020d709b7c82d05",
+        "init_pid": 53712,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod85cb458f_fb97_4884_8d2d_ffdb0afd78cd.slice/cri-containerd-211b954535571fc5efe4ebeb373334e6f069eca8dbd0a1712020d709b7c82d05.scope\n",
+        "cgroup_inode": 29327,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "33820672\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 53712,
+            "stat": "53712 (python3) S 53638 53712 53712 0 -1 4194560 10189 6137 0 0 8 20 1 3 20 0 4 0 56063 15014793216 48099 18446744073709551615 4325376 7352253 140728751470336 0 0 0 0 16781312 2 0 0 0 17 1 0 0 0 0 0 10653128 12216448 199499776 140728751471256 140728751471305 140728751471305 140728751472615 0\n",
+            "nspid": [
+              "NSpid:\t53712\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397069496320
+        },
+        "memory_limits": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod85cb458f_fb97_4884_8d2d_ffdb0afd78cd.slice/cri-containerd-211b954535571fc5efe4ebeb373334e6f069eca8dbd0a1712020d709b7c82d05.scope\n  soft limit:     10240 MiB\n  hard limit:     10240 MiB\n  current used:   9631 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "r1-b-5": {
+      "uid": "30764346-c8bb-4a39-b429-d85e545822b7",
+      "container_id": "ab90fef8b940edad8cb5d25991509d5de124a82f98bef2def35ab3404cfb3c14",
+      "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "observation": {
+        "time": 1794930945.8728125,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06, 34030, 40960",
+        "compute_processes": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 52926, 19872\nGPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 53712, 9632\nGPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 54497, 4512",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "ab90fef8b940edad8cb5d25991509d5de124a82f98bef2def35ab3404cfb3c14",
+        "init_pid": 54497,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod30764346_c8bb_4a39_b429_d85e545822b7.slice/cri-containerd-ab90fef8b940edad8cb5d25991509d5de124a82f98bef2def35ab3404cfb3c14.scope\n",
+        "cgroup_inode": 29690,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "33533952\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 54497,
+            "stat": "54497 (python3) S 54422 54497 54497 0 -1 4194560 10294 6185 0 0 6 21 1 4 20 0 4 0 56571 9646084096 48126 18446744073709551615 4325376 7352253 140720537165744 0 0 0 0 16781312 2 0 0 0 17 3 0 0 0 0 0 10653128 12216448 100753408 140720537172636 140720537172684 140720537172684 140720537173991 0\n",
+            "nspid": [
+              "NSpid:\t54497\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397016924160
+        },
+        "memory_limits": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod30764346_c8bb_4a39_b429_d85e545822b7.slice/cri-containerd-ab90fef8b940edad8cb5d25991509d5de124a82f98bef2def35ab3404cfb3c14.scope\n  soft limit:     5120 MiB\n  hard limit:     5120 MiB\n  current used:   4511 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "guard-b": {
+      "uid": "a177d0a8-b57f-46ec-8f87-d13b2d1483d2",
+      "container_id": "0404ae6318a2da75ab7de327261cd5bf2b87c6476bb8777341abfffdc206ef8e",
+      "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "observation": {
+        "time": 1794930951.8862143,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06, 34452, 40960",
+        "compute_processes": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 52926, 19872\nGPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 53712, 9632\nGPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 54497, 4512\nGPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 55350, 418",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "0404ae6318a2da75ab7de327261cd5bf2b87c6476bb8777341abfffdc206ef8e",
+        "init_pid": 55350,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-poda177d0a8_b57f_46ec_8f87_d13b2d1483d2.slice/cri-containerd-0404ae6318a2da75ab7de327261cd5bf2b87c6476bb8777341abfffdc206ef8e.scope\n",
+        "cgroup_inode": 30053,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "109486080\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 55350,
+            "stat": "55350 (python3) S 55276 55350 55350 0 -1 4194560 10187 6140 0 0 6 23 1 3 20 0 4 0 57183 5351116800 48066 18446744073709551615 4325376 7352253 140734356907920 0 0 0 0 16781312 2 0 0 0 17 16 0 0 0 0 0 10653128 12216448 1033199616 140734356912797 140734356912843 140734356912843 140734356914151 0\n",
+            "nspid": [
+              "NSpid:\t55350\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 396823207936
+        },
+        "memory_limits": "GPU 0: NVIDIA A100-PCIE-40GB (UUID: GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-poda177d0a8_b57f_46ec_8f87_d13b2d1483d2.slice/cri-containerd-0404ae6318a2da75ab7de327261cd5bf2b87c6476bb8777341abfffdc206ef8e.scope\n  soft limit:     5120 MiB\n  hard limit:     5120 MiB\n  current used:   417 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "r1-a-20": {
+      "uid": "38adb1e9-619c-4c14-b129-9051efb77987",
+      "container_id": "f4487e4726e578ed64dc33991d1f985fdcc2b389380594bcc53dee51446619ef",
+      "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "observation": {
+        "time": 1794930966.763332,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 620.70.06, 19879, 40960",
+        "compute_processes": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 57539, 19872",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "f4487e4726e578ed64dc33991d1f985fdcc2b389380594bcc53dee51446619ef",
+        "init_pid": 57539,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod38adb1e9_619c_4c14_b129_9051efb77987.slice/cri-containerd-f4487e4726e578ed64dc33991d1f985fdcc2b389380594bcc53dee51446619ef.scope\n",
+        "cgroup_inode": 30721,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "33988608\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 57539,
+            "stat": "57539 (python3) S 57452 57539 57539 0 -1 4194560 10186 6140 0 0 8 27 1 4 20 0 4 0 58582 25752211456 53145 18446744073709551615 4325376 7352253 140732971303808 0 0 0 0 16781312 2 0 0 0 17 32 0 0 0 0 0 10653128 12216448 258633728 140732971309719 140732971309769 140732971309769 140732971311079 0\n",
+            "nspid": [
+              "NSpid:\t57539\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397419540480
+        },
+        "memory_limits": "GPU 1: NVIDIA A100-PCIE-40GB (UUID: GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod38adb1e9_619c_4c14_b129_9051efb77987.slice/cri-containerd-f4487e4726e578ed64dc33991d1f985fdcc2b389380594bcc53dee51446619ef.scope\n  soft limit:     20480 MiB\n  hard limit:     20480 MiB\n  current used:   19871 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "r1-a-10": {
+      "uid": "75cbaad9-3f71-4a58-ab5a-5ea4a1292cf5",
+      "container_id": "68520c28d84954b5a93d094cdeab942619c5d37a56de5e254f6428fdb3290161",
+      "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "observation": {
+        "time": 1794930973.0808072,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 620.70.06, 29515, 40960",
+        "compute_processes": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 57539, 19872\nGPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 58436, 9632",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "68520c28d84954b5a93d094cdeab942619c5d37a56de5e254f6428fdb3290161",
+        "init_pid": 58436,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod75cbaad9_3f71_4a58_ab5a_5ea4a1292cf5.slice/cri-containerd-68520c28d84954b5a93d094cdeab942619c5d37a56de5e254f6428fdb3290161.scope\n",
+        "cgroup_inode": 31515,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "33906688\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 58436,
+            "stat": "58436 (python3) S 58363 58436 58436 0 -1 4194560 10193 6146 0 0 7 20 1 4 20 0 4 0 59213 15014793216 48175 18446744073709551615 4325376 7352253 140720490108896 0 0 0 0 16781312 2 0 0 0 17 33 0 0 0 0 0 10653128 12216448 240054272 140720490113688 140720490113737 140720490113737 140720490115047 0\n",
+            "nspid": [
+              "NSpid:\t58436\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397274136576
+        },
+        "memory_limits": "GPU 1: NVIDIA A100-PCIE-40GB (UUID: GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod75cbaad9_3f71_4a58_ab5a_5ea4a1292cf5.slice/cri-containerd-68520c28d84954b5a93d094cdeab942619c5d37a56de5e254f6428fdb3290161.scope\n  soft limit:     10240 MiB\n  hard limit:     10240 MiB\n  current used:   9631 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    },
+    "r1-a-5": {
+      "uid": "5c791f5a-b799-4353-bcd3-e91a189a3e79",
+      "container_id": "737fb856b8e31a17d4a0e96c5f162bae2089a0546e875c2ddd6675bd57164e71",
+      "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "observation": {
+        "time": 1794930979.1199536,
+        "node": "k3s-wk-gpu3",
+        "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+        "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 620.70.06, 34030, 40960",
+        "compute_processes": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 57539, 19872\nGPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 58436, 9632\nGPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 59278, 4512",
+        "uvm": {
+          "srcversion": "10301D70B8ED1758BC717E9",
+          "parameters/uvm_reject_managed_memory": "Y",
+          "parameters/uvm_disable_hmm": "Y"
+        },
+        "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+        "container_id": "737fb856b8e31a17d4a0e96c5f162bae2089a0546e875c2ddd6675bd57164e71",
+        "init_pid": 59278,
+        "cgroup": "0::/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod5c791f5a_b799_4353_bcd3_e91a189a3e79.slice/cri-containerd-737fb856b8e31a17d4a0e96c5f162bae2089a0546e875c2ddd6675bd57164e71.scope\n",
+        "cgroup_inode": 31878,
+        "accounting": {
+          "misc.current": "",
+          "misc.max": "",
+          "memory.current": "33992704\n",
+          "memory.max": "17179869184\n",
+          "cgroup.events": "populated 1\nfrozen 0\n"
+        },
+        "processes": [
+          {
+            "pid": 59278,
+            "stat": "59278 (python3) S 59204 59278 59278 0 -1 4194560 10271 6071 0 0 7 21 2 4 20 0 4 0 59823 9646084096 48141 18446744073709551615 4325376 7352253 140723248779312 0 0 0 0 16781312 2 0 0 0 17 5 0 0 0 0 0 10653128 12216448 947855360 140723248786076 140723248786124 140723248786124 140723248787431 0\n",
+            "nspid": [
+              "NSpid:\t59278\t1"
+            ]
+          }
+        ],
+        "runtime": {
+          "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+          "containerd_pid": 25725,
+          "containerd_exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+          "inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+          "kernel": "7.0.0-43-generic",
+          "k3s_version": "k3s version v1.34.9+k3s1 (5f72184f)\ngo version go1.25.11",
+          "mem_available_bytes": 397210791936
+        },
+        "memory_limits": "GPU 1: NVIDIA A100-PCIE-40GB (UUID: GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a)\n  namespace:      /sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod5c791f5a_b799_4353_bcd3_e91a189a3e79.slice/cri-containerd-737fb856b8e31a17d4a0e96c5f162bae2089a0546e875c2ddd6675bd57164e71.scope\n  soft limit:     5120 MiB\n  hard limit:     5120 MiB\n  current used:   4511 MiB",
+        "oci_devices": [],
+        "oci_gpu_annotations": {}
+      }
+    }
+  },
+  "qualified_workers_before": [
+    {
+      "name": "k3s-wk-gpu2",
+      "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "ready": true
+    }
+  ],
+  "node_uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+  "driver_pod_uid": "e116edfb-f35d-4e0c-9d90-af7e894716b6",
+  "physical_order_mapping": {
+    "b": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+    "a": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a"
+  },
+  "cleanup": "PASS",
+  "elapsed_seconds": 158.15221724892035
+}
