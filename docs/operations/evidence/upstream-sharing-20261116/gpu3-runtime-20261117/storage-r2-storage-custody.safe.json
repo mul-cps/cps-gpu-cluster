@@ -1,0 +1,19 @@
+{
+  "PVCuid": "63cc2224-59c2-42f3-a4cb-5d8928d0598c",
+  "PVuid": "32e2e8fd-1c0c-459e-96ef-40e962a76d69",
+  "volume": "pvc-63cc2224-59c2-42f3-a4cb-5d8928d0598c",
+  "volumeUID": "a093c576-d495-4485-8536-627f52f9ca8e",
+  "currentNode": "k3s-wk-gpu3",
+  "robustness": "healthy",
+  "engineRWNodes": [
+    "k3s-wk-gpu1",
+    "k3s-wk-gpu2",
+    "k3s-wk-gpu4"
+  ],
+  "probe": {
+    "bytes": 4194324,
+    "sha256": "d87a6c613644fa29a9cca71766c283f0ead7a19c5f9df1e5ab954c08a669515c",
+    "uid": 1000,
+    "result": "RW_FSYNC_PASS"
+  }
+}

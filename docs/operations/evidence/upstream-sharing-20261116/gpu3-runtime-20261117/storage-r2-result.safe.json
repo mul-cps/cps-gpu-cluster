@@ -1,0 +1,21 @@
+{
+  "IMbefore": {
+    "podUID": "e0878635-9b5b-4cff-af86-01f58df26810",
+    "containers": [
+      {
+        "name": "instance-manager",
+        "containerID": "containerd://c8c14cb4e0c7f93c1bab5ab2764d70a7eabc84df9b3a697c8900b1dbac903f88",
+        "imageID": "docker.io/longhornio/longhorn-instance-manager@sha256:b0d45a6fadbef8f16ac168e06cbae7ae02e46eae9359b95e16ef1ce537069d81"
+      }
+    ]
+  },
+  "StorageRWFSYNC": "PASS",
+  "storageVolume": "pvc-63cc2224-59c2-42f3-a4cb-5d8928d0598c",
+  "storageEngineRWNodes": [
+    "k3s-wk-gpu1",
+    "k3s-wk-gpu2",
+    "k3s-wk-gpu4"
+  ],
+  "ownedRemaining": [],
+  "at": "2026-11-17T15:40:37.627387+00:00"
+}

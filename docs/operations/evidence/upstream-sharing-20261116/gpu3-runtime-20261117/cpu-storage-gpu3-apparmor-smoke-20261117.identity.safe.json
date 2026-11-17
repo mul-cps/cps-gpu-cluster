@@ -1,0 +1,39 @@
+{
+  "name": "gpu3-apparmor-smoke-20261117",
+  "uid": "2898a2ec-6a42-4491-bc28-308d18412028",
+  "node": "k3s-wk-gpu3",
+  "phase": "Succeeded",
+  "containerID": "containerd://6cec73b7f34bc84f28ea0eb407119090f62508d7340cc609ccdc46192b74e661",
+  "imageID": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+  "terminated": {
+    "containerID": "containerd://6cec73b7f34bc84f28ea0eb407119090f62508d7340cc609ccdc46192b74e661",
+    "exitCode": 0,
+    "finishedAt": "2026-11-17T15:26:05Z",
+    "reason": "Completed",
+    "startedAt": "2026-11-17T15:26:05Z"
+  },
+  "actualSecurityContext": {
+    "appArmorProfile": {
+      "type": "RuntimeDefault"
+    },
+    "fsGroup": 1000,
+    "runAsGroup": 1000,
+    "runAsNonRoot": true,
+    "runAsUser": 1000,
+    "seccompProfile": {
+      "type": "RuntimeDefault"
+    }
+  },
+  "actualResources": {
+    "limits": {
+      "cpu": "1",
+      "memory": "256Mi"
+    },
+    "requests": {
+      "cpu": "100m",
+      "memory": "64Mi"
+    }
+  },
+  "automountServiceAccountToken": false,
+  "annotationsPresent": []
+}

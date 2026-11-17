@@ -1,0 +1,8 @@
+{
+  "status": "PASS",
+  "same_pod_uid_cid_cgroup": true,
+  "cuda_quota_progress_after_restart": true,
+  "cpu_progress_after_restart": true,
+  "artifact_downloads_identity_unchanged": true,
+  "restart_unit": "cps-nri-hotfix-runtime-continuity"
+}

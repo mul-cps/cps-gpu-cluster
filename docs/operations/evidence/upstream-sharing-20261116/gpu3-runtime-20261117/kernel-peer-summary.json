@@ -1,0 +1,53 @@
+{
+  "status": "PASS",
+  "pod_uid": "7684c18a-d421-4b6b-b474-83456d1dee15",
+  "driver_uid": "e116edfb-f35d-4e0c-9d90-af7e894716b6",
+  "results": [
+    {
+      "step": "kernel-reference-pass",
+      "time": 1794929660.8025823,
+      "pid": 51,
+      "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "values": 256,
+      "explicit_device_bytes": 2048
+    },
+    {
+      "step": "kernel-reference-pass",
+      "time": 1794929660.9450235,
+      "pid": 51,
+      "gpu_uuid": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "values": 256,
+      "explicit_device_bytes": 2048
+    },
+    {
+      "step": "peer-capability",
+      "time": 1794929660.9450982,
+      "pid": 51,
+      "destination": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "source": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "supported": true
+    },
+    {
+      "step": "direct-peer-copy-and-kernel-mapping-pass",
+      "time": 1794929660.9460974,
+      "pid": 51,
+      "source": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "destination": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5"
+    },
+    {
+      "step": "peer-capability",
+      "time": 1794929660.946274,
+      "pid": 51,
+      "destination": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "source": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "supported": true
+    },
+    {
+      "step": "direct-peer-copy-and-kernel-mapping-pass",
+      "time": 1794929660.94708,
+      "pid": 51,
+      "source": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "destination": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "at": "2026-11-17T15:33:29.611371+00:00",
+  "allOwnedStorageResourcesGone": true,
+  "absent": {
+    "pod": true,
+    "pvc": true,
+    "pv": true,
+    "volumes.longhorn.io": true,
+    "engines.longhorn.io": true,
+    "replicas.longhorn.io": true
+  },
+  "noForcedCleanup": true
+}

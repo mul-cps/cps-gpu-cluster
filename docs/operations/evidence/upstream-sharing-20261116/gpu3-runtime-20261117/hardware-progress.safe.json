@@ -1,0 +1,66 @@
+{
+  "worker": "k3s-wk-gpu3",
+  "worker_acceptance": false,
+  "completed": [
+    {
+      "case": "extended-a",
+      "status": "hardware-cases-passed",
+      "summary_sha256": "61bb581ab98c7fcff616eda7585253dd5e6ca65a993eadb866356753b91737a8",
+      "actual_boot": "3fe87b77-467a-4f6d-beed-47316853e181"
+    },
+    {
+      "case": "extended-b",
+      "status": "hardware-cases-passed",
+      "summary_sha256": "fa5ebb60607473cea99d7e27a9461fdba61d001570d8fe24ae9cd7472ee3f21e",
+      "actual_boot": "3fe87b77-467a-4f6d-beed-47316853e181"
+    },
+    {
+      "case": "mixed",
+      "status": "passed",
+      "summary_sha256": "ff3ac712e6fe0b4239ee1929946ec6604b71930f040703779af25fc9b8c39030",
+      "actual_boot": "3fe87b77-467a-4f6d-beed-47316853e181"
+    },
+    {
+      "case": "child",
+      "status": "PASS",
+      "summary_sha256": "1b250c9d868996abbe2470098871ea08c344a0fd5c8c41d6a17fc1e510bf8c68",
+      "actual_boot": "3fe87b77-467a-4f6d-beed-47316853e181"
+    },
+    {
+      "case": "managed-policy",
+      "status": "PASS",
+      "actual_boot": "3fe87b77-467a-4f6d-beed-47316853e181"
+    },
+    {
+      "case": "kernel-peer",
+      "status": "PASS",
+      "actual_boot": "3fe87b77-467a-4f6d-beed-47316853e181"
+    },
+    {
+      "case": "managed-rejection-peer-progress",
+      "status": "PASS",
+      "actual_boot": "3fe87b77-467a-4f6d-beed-47316853e181"
+    },
+    {
+      "case": "required-missing",
+      "status": "PASS",
+      "actual_boot": "3fe87b77-467a-4f6d-beed-47316853e181"
+    },
+    {
+      "case": "runtime-continuity",
+      "status": "PASS",
+      "actual_boot": "3fe87b77-467a-4f6d-beed-47316853e181"
+    },
+    {
+      "case": "cpu-apparmor-and-storage",
+      "status": "PASS",
+      "actual_boot": "3fe87b77-467a-4f6d-beed-47316853e181"
+    }
+  ],
+  "pending": [
+    "coldboot",
+    "KAI",
+    "CPS/CIT",
+    "monitoring-restoration"
+  ]
+}

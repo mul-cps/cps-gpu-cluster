@@ -1,0 +1,235 @@
+{
+  "worker": "k3s-wk-gpu3",
+  "boot": "3fe87b77-467a-4f6d-beed-47316853e181",
+  "scope": "Both cards x both arrival orders, ordinary20GiB peer, managed36GiB borrower rejected at driver boundary; ordinary5/10/20 coexistence covered separately by mixed receipt. Managed borrowing success is not claimed.",
+  "cases": [
+    {
+      "case": "gpu3-pressure-a-borrower-first-20261117-boot3fe87",
+      "peer_profile_gib": 20,
+      "result": {
+        "protected_peer_progress": true,
+        "borrower_survival_required": false,
+        "idle_borrowing_allowed": true,
+        "managed_rejection_required": true
+      },
+      "progress": {
+        "started_at": 1794929702.6294262,
+        "finished_at": 1794929714.785508,
+        "before": {
+          "uid": "342a7d31-223f-4776-bd05-b420f6244695",
+          "container_id": "containerd://b1a8ff54fb1f481366ef12befb1bfbb06bb46430a0618818dd3b4057d568fc13",
+          "successful_progress": 0
+        },
+        "after": {
+          "uid": "342a7d31-223f-4776-bd05-b420f6244695",
+          "container_id": "containerd://b1a8ff54fb1f481366ef12befb1bfbb06bb46430a0618818dd3b4057d568fc13",
+          "successful_progress": 2
+        },
+        "wait_seconds": 12
+      },
+      "cleanup": {
+        "errors": [],
+        "remaining_owned": []
+      },
+      "after": [
+        {
+          "time": 1794929720.261933,
+          "node": "k3s-wk-gpu3",
+          "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+          "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06, 1, 40960",
+          "compute_processes": "",
+          "uvm": {
+            "srcversion": "10301D70B8ED1758BC717E9",
+            "parameters/uvm_reject_managed_memory": "Y",
+            "parameters/uvm_disable_hmm": "Y"
+          },
+          "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+        },
+        {
+          "time": 1794929720.6063497,
+          "node": "k3s-wk-gpu3",
+          "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+          "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 620.70.06, 1, 40960",
+          "compute_processes": "",
+          "uvm": {
+            "srcversion": "10301D70B8ED1758BC717E9",
+            "parameters/uvm_reject_managed_memory": "Y",
+            "parameters/uvm_disable_hmm": "Y"
+          },
+          "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+        }
+      ]
+    },
+    {
+      "case": "gpu3-pressure-a-peer-first-20261117-boot3fe87",
+      "peer_profile_gib": 20,
+      "result": {
+        "protected_peer_progress": true,
+        "borrower_survival_required": false,
+        "idle_borrowing_allowed": true,
+        "managed_rejection_required": true
+      },
+      "progress": {
+        "started_at": 1794929738.8627334,
+        "finished_at": 1794929751.0429204,
+        "before": {
+          "uid": "067275b3-87a0-4ce9-9a48-548f74dd6af7",
+          "container_id": "containerd://aa8bbdbc9c93a77a80c60c41409841e8df688ea675b8257dffbef4d532897432",
+          "successful_progress": 1
+        },
+        "after": {
+          "uid": "067275b3-87a0-4ce9-9a48-548f74dd6af7",
+          "container_id": "containerd://aa8bbdbc9c93a77a80c60c41409841e8df688ea675b8257dffbef4d532897432",
+          "successful_progress": 3
+        },
+        "wait_seconds": 12
+      },
+      "cleanup": {
+        "errors": [],
+        "remaining_owned": []
+      },
+      "after": [
+        {
+          "time": 1794929756.200145,
+          "node": "k3s-wk-gpu3",
+          "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+          "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06, 1, 40960",
+          "compute_processes": "",
+          "uvm": {
+            "srcversion": "10301D70B8ED1758BC717E9",
+            "parameters/uvm_reject_managed_memory": "Y",
+            "parameters/uvm_disable_hmm": "Y"
+          },
+          "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+        },
+        {
+          "time": 1794929756.5499823,
+          "node": "k3s-wk-gpu3",
+          "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+          "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 620.70.06, 1, 40960",
+          "compute_processes": "",
+          "uvm": {
+            "srcversion": "10301D70B8ED1758BC717E9",
+            "parameters/uvm_reject_managed_memory": "Y",
+            "parameters/uvm_disable_hmm": "Y"
+          },
+          "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+        }
+      ]
+    },
+    {
+      "case": "gpu3-pressure-b-borrower-first-20261117-boot3fe87",
+      "peer_profile_gib": 20,
+      "result": {
+        "protected_peer_progress": true,
+        "borrower_survival_required": false,
+        "idle_borrowing_allowed": true,
+        "managed_rejection_required": true
+      },
+      "progress": {
+        "started_at": 1794929775.1179883,
+        "finished_at": 1794929787.2910109,
+        "before": {
+          "uid": "b91450fe-e9f7-4de2-bddf-4fb915d78cd6",
+          "container_id": "containerd://6684f4e10c5661faea0732dbe8ea171bfe247653859f4c57c297e56f46818d3a",
+          "successful_progress": 0
+        },
+        "after": {
+          "uid": "b91450fe-e9f7-4de2-bddf-4fb915d78cd6",
+          "container_id": "containerd://6684f4e10c5661faea0732dbe8ea171bfe247653859f4c57c297e56f46818d3a",
+          "successful_progress": 2
+        },
+        "wait_seconds": 12
+      },
+      "cleanup": {
+        "errors": [],
+        "remaining_owned": []
+      },
+      "after": [
+        {
+          "time": 1794929792.8055677,
+          "node": "k3s-wk-gpu3",
+          "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+          "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06, 1, 40960",
+          "compute_processes": "",
+          "uvm": {
+            "srcversion": "10301D70B8ED1758BC717E9",
+            "parameters/uvm_reject_managed_memory": "Y",
+            "parameters/uvm_disable_hmm": "Y"
+          },
+          "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+        },
+        {
+          "time": 1794929793.1562562,
+          "node": "k3s-wk-gpu3",
+          "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+          "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 620.70.06, 1, 40960",
+          "compute_processes": "",
+          "uvm": {
+            "srcversion": "10301D70B8ED1758BC717E9",
+            "parameters/uvm_reject_managed_memory": "Y",
+            "parameters/uvm_disable_hmm": "Y"
+          },
+          "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+        }
+      ]
+    },
+    {
+      "case": "gpu3-pressure-b-peer-first-20261117-boot3fe87",
+      "peer_profile_gib": 20,
+      "result": {
+        "protected_peer_progress": true,
+        "borrower_survival_required": false,
+        "idle_borrowing_allowed": true,
+        "managed_rejection_required": true
+      },
+      "progress": {
+        "started_at": 1794929811.3468113,
+        "finished_at": 1794929823.510925,
+        "before": {
+          "uid": "3fa5ad2c-f97f-4541-bf13-ca24f527cf3b",
+          "container_id": "containerd://0c3378447b4e81aa899f4215bcdcfb6c0b374c6ee11265ea68f478b56eab59df",
+          "successful_progress": 1
+        },
+        "after": {
+          "uid": "3fa5ad2c-f97f-4541-bf13-ca24f527cf3b",
+          "container_id": "containerd://0c3378447b4e81aa899f4215bcdcfb6c0b374c6ee11265ea68f478b56eab59df",
+          "successful_progress": 3
+        },
+        "wait_seconds": 12
+      },
+      "cleanup": {
+        "errors": [],
+        "remaining_owned": []
+      },
+      "after": [
+        {
+          "time": 1794929828.6804361,
+          "node": "k3s-wk-gpu3",
+          "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+          "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06, 1, 40960",
+          "compute_processes": "",
+          "uvm": {
+            "srcversion": "10301D70B8ED1758BC717E9",
+            "parameters/uvm_reject_managed_memory": "Y",
+            "parameters/uvm_disable_hmm": "Y"
+          },
+          "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+        },
+        {
+          "time": 1794929829.0275266,
+          "node": "k3s-wk-gpu3",
+          "boot_id": "3fe87b77-467a-4f6d-beed-47316853e181",
+          "gpu": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a, 620.70.06, 1, 40960",
+          "compute_processes": "",
+          "uvm": {
+            "srcversion": "10301D70B8ED1758BC717E9",
+            "parameters/uvm_reject_managed_memory": "Y",
+            "parameters/uvm_disable_hmm": "Y"
+          },
+          "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "probeSHA256": "23ffe82b21aa91face3a3017b725393ba3e998d9d83a882d8306a050fcc072b4",
+  "exactRepoProbeBytes": true,
+  "immutableImage": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+  "nodeUID": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+  "expectedBoot": "3fe87b77-467a-4f6d-beed-47316853e181",
+  "expectedKernel": "7.0.0-43-generic",
+  "expectedFence": "maintenance=upstream-pilot:NoSchedule + cordon + noqualification",
+  "noGPUresourceRequiredPluginDeviceMountOrSAToken": true,
+  "newStoragePVC": "100Mi longhorn RWO; own namespace/name only",
+  "storagePayloadBytes": 4194324,
+  "storagePayloadSHA256": "d87a6c613644fa29a9cca71766c283f0ead7a19c5f9df1e5ab954c08a669515c",
+  "allManifestsParsedAndScopeAssertionsPassed": true
+}
