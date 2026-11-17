@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-11-17T09:14:22.657162+00:00",
+  "as_of": "2026-11-17T12:40:00.605817+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2 scoped fixed-profile worker accepted; eligibility/storage scheduling restored; GPU3 safety prerequisites next",
+  "phase": "GPU2 scoped worker accepted; real CPS shared launch blocked by missing neutral-account custody roles; GPU3 upgrade held",
   "gpu_eligibility": "qualified and schedulable; legacy accelerator fence retained; QA grants revoked; old OS nomination cleared",
   "driver": {
     "version": "620.70.06",
@@ -44,7 +44,8 @@
     "CIT Source memberships/Hub group/Shares0, QA Pods absent, all5QAgrants revoked/original49unchanged, authoritative global person/binding rows0, all owned credentials revoked and raw copies unlinked."
   ],
   "remaining": [
-    "GPU3 maintenance safety: two detached volumes need a second current copy outside GPU3; activator HPA floor/PDB must permit normal drain. Then GPU3/GPU1/GPU4 serial OS/runtime/worker acceptance.",
+    "Restore the existing shared-gpu-lab neutral account permissions through reviewed operator recovery, then verify actual bjoern Source launch/CUDA/stop. Normal provisioning correctly rejects missing roles; recovery not yet applied.",
+    "GPU3 serial maintenance: detached-volume extra copies and activator PDB prerequisite repaired; six infrastructure workloads relocated. Prometheus retains a local PV on GPU3 and is Ready there after uncordoning; resolve its maintenance availability before fresh workload checks/drain/OS nomination. GPU1/GPU4 follow after GPU3 acceptance.",
     "Genuine CIT nonadministrator IdP/browser/two-human access; QA aliases have no SSO identity and cannot prove this gate.",
     "Remaining original advanced-feature, ordinary/distributed, startup/defrag, teaching, controllercutover and matching restore gates."
   ],
@@ -53,14 +54,83 @@
     "source": "1c160751676bce808fe8a2ae86b0a495b61c0f72",
     "cps_image": "sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097",
     "cit_image": "sha256:bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6",
-    "cps_gitops_pin": "3fe2e2aed589c2b747502ef86b88dd8c74290cda",
+    "cps_gitops_pin": "0f4f8bf903e9e20118e6897daa60741fe57338ad",
     "cit_gitops_pin": "9bab4508e28858934a3873072806d28b6b44c1b6",
     "fleet_both_ready": false,
     "live_catalog": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
     "sdk_repair_candidate": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
     "live_hubs_ready": true,
-    "fleet_note": "CIT GitRepo9/9; cluster-maintenance31Ready/5modified/2notReady. Selected GPU2 operands Ready; global Operator notReady during staged OnDelete peer rollout. No overall Fleet green claim."
+    "fleet_note": "Reviewed UI persistence pushed and cluster-maintenance revision pinned to0f4f8bf; reconciliation acceptance pending. No overall Fleet acceptance claimed."
   },
   "full_platform_acceptance": false,
-  "worker_receipt": "gpu2-worker-acceptance-20261117.json"
+  "worker_receipt": "gpu2-worker-acceptance-20261117.json",
+  "gateway": {
+    "image": "sha256:6e647f2ade167c36a6649242ff23e7f74435d500ce41dbb7328b8dbdc8b7fd67",
+    "source": "cef384b3558eb958c137f6ff25c03733cd18e087",
+    "deployment_generation": 439,
+    "ready": true,
+    "change": "Upstream workspace preview skips the legacy native-group roster rule; canonical identity, Source authorization and grant checks remain."
+  },
+  "usability": {
+    "actual_shared_launch_verified": false,
+    "cps_form_script_sha256": "b048ab982036edc8fc3d21ea1afd9d7978f4aee429e99c3ad149ea353afaee0e",
+    "cps_hub_generation": 374,
+    "form": "Blocked legacy personal shared options removed; Shared workspaces link deployed.",
+    "existing_access": "One existing 5GiB one-workspace grant and matching bjoern Source membership renewed with user authorization until 2026-11-24T10:19:00.235897+00:00; other grants unchanged.",
+    "blocker": "Same original neutral user18 matches its receipt; runtime/control roles absent. No automatic regrant; reviewed recovery in preparation.",
+    "last_verified_attempt": "Source preview200; account provisioning409; Pod absent; reservation inactive.",
+    "custody_observation": "2026-11-17T11:05:57.902117+00:00",
+    "operator_preparation": "Small Hub PostgreSQL backup saved and archive catalog verified (full restore separately rehearsed locally); exact four stale neutral-account server tokens revoked through Hub API, current API-token count0. No role restoration yet."
+  },
+  "current_nodes": [
+    {
+      "name": "k3s-cp1",
+      "ready": "True",
+      "cordoned": false,
+      "os": "Ubuntu 24.04.4 LTS",
+      "os_nomination": null
+    },
+    {
+      "name": "k3s-cp2",
+      "ready": "True",
+      "cordoned": false,
+      "os": "Ubuntu 24.04.4 LTS",
+      "os_nomination": null
+    },
+    {
+      "name": "k3s-cp3",
+      "ready": "True",
+      "cordoned": false,
+      "os": "Ubuntu 24.04.4 LTS",
+      "os_nomination": null
+    },
+    {
+      "name": "k3s-wk-gpu1",
+      "ready": "True",
+      "cordoned": false,
+      "os": "Ubuntu 24.04.4 LTS",
+      "os_nomination": null
+    },
+    {
+      "name": "k3s-wk-gpu2",
+      "ready": "True",
+      "cordoned": false,
+      "os": "Ubuntu 26.04.1 LTS",
+      "os_nomination": null
+    },
+    {
+      "name": "k3s-wk-gpu3",
+      "ready": "True",
+      "cordoned": false,
+      "os": "Ubuntu 24.04.3 LTS",
+      "os_nomination": null
+    },
+    {
+      "name": "k3s-wk-gpu4",
+      "ready": "True",
+      "cordoned": false,
+      "os": "Ubuntu 24.04.3 LTS",
+      "os_nomination": null
+    }
+  ]
 }
