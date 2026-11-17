@@ -1,0 +1,17 @@
+{
+  "scope": "Actual runtime head-delivery preservation, not legacy functional qualification",
+  "source_operation_manifest_sha256": "5ac79ff95d01e02f04df109881dd51011c0fc2fe9a82e996b49576575404ee52",
+  "private_data_excluded": true,
+  "files": {
+    "README.md": "50566a7594bc345374d779da28ca5af6e1935efffb98d4d6bc74d18c33203e67",
+    "main-capture-after.safe.json": "6f7fafa31904b687181abf80e5c5865755caa790f1dc37749f0c9fc8b5c6537f",
+    "mutation-reconciled.safe.json": "5de0462fe32a399b1232bed651c2202c172e9dbb8c4f9566740f6a10306c242d",
+    "native-backup-verified.safe.json": "866eff92e024f77c0093255be0e89b4ff03d18a84f04568fd2ce72f5424a5a95",
+    "placement-and-source.safe.json": "82c56058dfeb767a3ccbf1389649183b6969dc7c5ef643095e85dfbb613b97d8",
+    "postmove-preservation.safe.json": "bc68e0bfd2d319a05b930bb0edc103fc0f7be7c44d8d7957b49417a4ff829d36",
+    "server-dryrun.safe.json": "be7e4278a923d3b923a9acedb1cad3f411f491f69e476e205f3006fcd2f20750",
+    "storage-identities.safe.json": "9e2eb707db352dbaec7c01a557418468ab020883b5203f8ea5a2fba0c73bd6d0",
+    "transport-correction.safe.json": "ffcf9053bd854f58402a6c62c3fbde212d6805b917ef5133819b052f4e724bd8",
+    "writer-order.safe.json": "3d97a3935c72a8028a7378666f8d8619a3e5dda80b86812ef44869a0f2fed562"
+  }
+}

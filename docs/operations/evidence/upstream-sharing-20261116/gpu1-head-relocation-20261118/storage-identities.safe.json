@@ -1,0 +1,14 @@
+{
+  "claim": "cps-gwd-journal-9e695015-c2cc6779",
+  "pvc_uid": "9e3d0ef6-9ffe-4171-a572-88423c9b01b9",
+  "pv": "pvc-9e3d0ef6-9ffe-4171-a572-88423c9b01b9",
+  "pv_uid": "f08c70d7-62a3-4b5d-9a0e-3298e9c5e578",
+  "native_store": "JSON atomic-file journal, not SQLite",
+  "journal_files": 169,
+  "journal_bytes": 5053730,
+  "input_files": 4,
+  "postmove_same_uid_bound": true,
+  "postmove_sole_attachment_node": "k3s-wk-gpu2",
+  "postmove_longhorn_healthy": true,
+  "no_clone_or_force": true
+}

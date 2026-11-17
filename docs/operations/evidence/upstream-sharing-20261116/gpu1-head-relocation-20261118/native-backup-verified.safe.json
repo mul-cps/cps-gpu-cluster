@@ -1,0 +1,12 @@
+{
+  "completed_at": "2026-11-17T23:26:21.183435+00:00",
+  "tar_members": 174,
+  "journal_files": 169,
+  "input_files": 4,
+  "archive_sha256": "cfc8c18925ea672defb0afbca4cc9011fad49ab66d7c859574cc7aceda3f6117",
+  "archive_bytes": 5242880,
+  "archive_mode": "0o600",
+  "all_member_hashes_exact": true,
+  "original_pod_cid_unchanged": true,
+  "source_writes": false
+}

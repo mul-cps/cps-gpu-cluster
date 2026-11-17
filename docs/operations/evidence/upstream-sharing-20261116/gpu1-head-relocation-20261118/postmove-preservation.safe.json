@@ -1,0 +1,64 @@
+{
+  "completed_at": "2026-11-17T23:29:10.374706+00:00",
+  "preservation_passed": true,
+  "deployment_uid": "8ce340ca-cead-4c57-9012-39e061ada61b",
+  "generation": 83,
+  "new_pod": "cps-runtime-head-delivery-74d95897d7-spss4",
+  "new_uid": "14e9fefe-be47-488b-aff8-3f5af56f7c05",
+  "new_cid": "containerd://a52af0c6d4379dfe3d1db8952fde734ccf49c700bc946221eac244e3e9c69cf9",
+  "node": "k3s-wk-gpu2",
+  "old_cri_stopped_before_new_start": true,
+  "old_pod_absent": true,
+  "all169_journal_files_byte_exact": true,
+  "all4_regenerated_inputs_byte_exact": true,
+  "all4_heads_uid_data_exact": true,
+  "all8_rolebindings_and_roles_exact": true,
+  "seed_secret_uid_data_exact": true,
+  "both_main_init_imageIDs_exact": true,
+  "same_pvc_pv_uid_bound": true,
+  "sole_attachment_healthy_on_gpu2": true,
+  "transition": null,
+  "completed_publications": 53,
+  "retained_rotations": 33,
+  "legacy_loop": [
+    {
+      "phase": "blocked",
+      "ready": false
+    },
+    {
+      "phase": "blocked",
+      "ready": false
+    },
+    {
+      "phase": "blocked",
+      "ready": false
+    },
+    {
+      "phase": "blocked",
+      "ready": false
+    },
+    {
+      "phase": "blocked",
+      "ready": false
+    },
+    {
+      "phase": "blocked",
+      "ready": false
+    },
+    {
+      "phase": "blocked",
+      "ready": false
+    },
+    {
+      "phase": "blocked",
+      "ready": false
+    },
+    {
+      "phase": "blocked",
+      "ready": false
+    }
+  ],
+  "legacy_functional_qualification": false,
+  "only_deployment_delta": "Removed GPU1 hostname nodeSelector under Recreate",
+  "no_force_or_clone_or_ack_write": true
+}

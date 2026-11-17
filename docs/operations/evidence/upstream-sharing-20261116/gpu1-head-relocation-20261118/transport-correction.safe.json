@@ -1,0 +1,11 @@
+{
+  "observed_at": "2026-11-17T23:25:56.339694+00:00",
+  "failure": "nginx HTTP414 Request-URI Too Large",
+  "manifest_argument_bytes": 23126,
+  "original_archive_bytes": 0,
+  "remote_backup_started": false,
+  "deployment_mutation_sent": false,
+  "causal_probe": "Harmless python pass with same oversized argument reproduced414",
+  "correction": "Same tested helper and manifest delivered over stdin; fresh guards, new exclusive output, verified174 members",
+  "mutating_operation_replayed": false
+}

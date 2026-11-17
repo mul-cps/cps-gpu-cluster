@@ -1,0 +1,37 @@
+{
+  "observed_at": "2026-11-17T23:29:14.418216+00:00",
+  "pod_uid": "a07310b9-07a3-4fca-8417-848f45dd6e53",
+  "container_ids_unchanged": true,
+  "capture_routes": {
+    "strict_tls": true,
+    "trust_env": false,
+    "follow_redirects": false,
+    "results": [
+      {
+        "endpoint": "capture",
+        "http_status": 200,
+        "top_keys": [
+          "version",
+          "source_raw",
+          "source_sha256",
+          "trusted_revision",
+          "captured_at"
+        ],
+        "source_sha256": "sha256:992ae99b027bccef76a537ce91fd6f249f48df6f6263523652ae54fc8985b863",
+        "trusted_revision": "sha256:992ae99b027bccef76a537ce91fd6f249f48df6f6263523652ae54fc8985b863",
+        "captured_at": "2026-11-17T23:29:15.494026+00:00"
+      },
+      {
+        "endpoint": "epoch",
+        "http_status": 503,
+        "top_keys": [
+          "detail"
+        ],
+        "detail": "Capture unavailable"
+      }
+    ]
+  },
+  "legacy_ACKs_and_head_byte_exact_to_pre_cohort_baseline": true,
+  "legacy_node_agent_replicas": 0,
+  "fresh_legacy_qualification_claimed": false
+}

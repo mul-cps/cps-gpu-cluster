@@ -1,0 +1,33 @@
+{
+  "deployment": "cps-compute/cps-runtime-head-delivery",
+  "uid": "8ce340ca-cead-4c57-9012-39e061ada61b",
+  "before_generation": 82,
+  "after_generation": 83,
+  "original_strategy": {
+    "type": "Recreate"
+  },
+  "original_replicas": 1,
+  "only_change": {
+    "path": "/spec/template/spec/nodeSelector",
+    "before": {
+      "kubernetes.io/hostname": "k3s-wk-gpu1"
+    },
+    "after": "absent"
+  },
+  "all_other_spec_fields_exact": true,
+  "before_spec_sha256": "92cd3a5a7f8f33763841d78a7ada6848c45d13a2af6c5e5945ad6cfbaf4d5d04",
+  "after_spec_sha256": "1f87b5f0ca9bab572832ccbc5d3d64718f1858914aa9e8c7deab1a0b18057d98",
+  "UID_RV_fullspec_CAS": true,
+  "one_actual_patch_returncode": 0,
+  "installed_module": "cps_compute.native_approval_delivery",
+  "installed_module_sha256": "a52a6c1c2954ba92b37866d15c05b1a6c9cbe275fc435b98263196bb3684a010",
+  "installed_equals_reviewed_source": true,
+  "source_implementation_changed": false,
+  "original_sa": "cps-runtime-head-delivery",
+  "image_pins": {
+    "delivery": "ghcr.io/mul-cps/cps-compute@sha256:bff495fb011f10274022a9f848b27daccea69c8a7c2b24fd897c1b3e096a1524"
+  },
+  "init_image_pins": {
+    "private-inputs": "ghcr.io/mul-cps/cps-compute@sha256:1895f5b08f707a65f66b3512babf5c630e043877208513d1f5c5d8e6f2f1ec28"
+  }
+}
