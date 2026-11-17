@@ -1,0 +1,23 @@
+{
+  "existing_service_identity": {
+    "name": "cps-admin",
+    "kind": "service"
+  },
+  "owner": "cps-ws-2114b8e3a15e8913cb98083bd5673e45",
+  "server": "rtc",
+  "ready": true,
+  "pending": null,
+  "group": "upstream-registry-qa-20261116",
+  "exact_group_users": [
+    "cpsgpumemberb"
+  ],
+  "one_group_share": true,
+  "share_scopes": [
+    "access:servers!server=cps-ws-2114b8e3a15e8913cb98083bd5673e45/rtc"
+  ],
+  "member_b_group_present": true,
+  "member_a_group_absent": true,
+  "claim": "Native group Share restored after Ready; this does not authenticate or impersonate either member/human browser.",
+  "observed": "2026-11-17T20:47:51.192452+00:00",
+  "writes": false
+}

@@ -1,0 +1,18 @@
+{
+  "source": "cit",
+  "workspace": "upstream-registry-qualification-20261116-cit",
+  "owner": "cit-ws-4f8bebfab68c2dc3f8cea6df357d874c",
+  "server": "rtc",
+  "canonical_members": [
+    "3237c91b-cef3-4f6f-960e-875b9e93c4be",
+    "8edde4a2-257c-42d7-9732-13f1e8742a33",
+    "d1fb4e43-64ec-4ac5-914f-e9cd39ad1c62"
+  ],
+  "registered_profiles": [
+    "interactive-cpu"
+  ],
+  "A_absent": true,
+  "strict_CA_hostname_TLS": true,
+  "observed": "2026-11-17T21:09:50.868304+00:00",
+  "no_mutations": true
+}

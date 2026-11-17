@@ -1,0 +1,75 @@
+{
+  "observed": "2026-11-17T21:20:28.258479+00:00",
+  "six_notebook_results_and_identity_receipts_checked": [
+    {
+      "source": "cps",
+      "case": "cpu-held-e6",
+      "profile": "interactive-cpu",
+      "pod_uid": "6be85442-6aa2-4404-86e2-6ef1798c207c",
+      "node": "k3s-wk-gpu1",
+      "container_id": "containerd://37cc3a6d98b3b193229ab1cc45a28cd7c851ee641a4b527dab72096f350ea599",
+      "sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+      "proof_prefix": "gpu3-cps-cpu-held-e6"
+    },
+    {
+      "source": "cps",
+      "case": "cpu-after-remove-e6",
+      "profile": "interactive-cpu",
+      "pod_uid": "d75d02ac-2d1b-4c92-98a8-0eabd9b1b636",
+      "node": "k3s-wk-gpu1",
+      "container_id": "containerd://ba2a0883d7223c2f57028e8a265220282b4ccff855609af039d490731fb52a3a",
+      "sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+      "proof_prefix": "gpu3-cps-cpu-after-remove-e6"
+    },
+    {
+      "source": "cps",
+      "case": "duplicate-e6",
+      "profile": "interactive-shared-5",
+      "pod_uid": "99408346-56d4-4801-9248-39c57a9ffb04",
+      "node": "k3s-wk-gpu3",
+      "container_id": "containerd://52ab59c644c472156d002d4cc80eb86054cf9e81e4386990d4dad1b667ccab28",
+      "sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+      "proof_prefix": "gpu3-cps-duplicate-e6"
+    },
+    {
+      "source": "cit",
+      "case": "cpu-held-e6",
+      "profile": "interactive-cpu",
+      "pod_uid": "b0bd4898-7ae2-4705-9358-8f728dae73ed",
+      "node": "k3s-wk-gpu1",
+      "container_id": "containerd://6ad0926f213c236ecc629c879f3ff613967a32c6aadcabde9efdaaab8f13ecc1",
+      "sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+      "proof_prefix": "gpu3-cit-cpu-held-e6"
+    },
+    {
+      "source": "cit",
+      "case": "cpu-after-remove-e6",
+      "profile": "interactive-cpu",
+      "pod_uid": "b5d93a96-3300-484e-a58f-de114981bd9b",
+      "node": "k3s-wk-gpu1",
+      "container_id": "containerd://397f73481702b6ac25f9f7de9331e0695917c6d3358e7064e45b1a560ffe93ef",
+      "sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+      "proof_prefix": "gpu3-cit-cpu-after-remove-e6"
+    },
+    {
+      "source": "cit",
+      "case": "duplicate-e6",
+      "profile": "interactive-shared-5",
+      "pod_uid": "4ada2d7d-9a26-4a4c-9930-45f1f17f6ccc",
+      "node": "k3s-wk-gpu3",
+      "container_id": "containerd://f8385c0b8b8b1457b28c45bc4638becb09e3a90d305c118b56b2afcaaaedf768",
+      "sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+      "proof_prefix": "gpu3-cit-duplicate-e6"
+    }
+  ],
+  "both_held_socket_sets_closed_and_no_manual_stop_before_observation": true,
+  "both_actual_backend_200_and_zero_bytes_received_before_reconciled_single_replay": true,
+  "raw_grant_snapshot_checks": {
+    "all58_same_keys": true,
+    "other53_byte_exact": true,
+    "only_five_expected_revocation_fields_changed": true,
+    "before_sha256": "c9c08d27d926ec32333624e61552ab11c6b3b9f4004bf4ee06231dd7a0c18ea3",
+    "after_sha256": "137141dde0ee1dd8e7334c16834dc742643435378221be4386243156a4ed3ba8"
+  },
+  "no_live_actions_by_evidence_reader": true
+}

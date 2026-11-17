@@ -1,0 +1,227 @@
+{
+  "frozenAt": "2026-11-17T21:03:30.346081+00:00",
+  "actualCompletedGPUProfiles": 5,
+  "allFiveHaveExactUIDGPUAndActualRawWindowStoredNonzeroMemoryAndSM": true,
+  "profiles": [
+    {
+      "tag": "gpu3-cps10-resume-e5",
+      "profile": "interactive-shared-10",
+      "podUID": "7af4b0c6-5526-4d69-b50d-95f808ecfb14",
+      "containerID": "containerd://5e47d4fed000f3b568d6e1d17804b7675dd6fe32555a28a7e3dccb1c713d5366",
+      "GPUUUID": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "rawWindowUTC": [
+        "2026-11-17T20:55:35.547651+00:00",
+        "2026-11-17T20:56:20.690328+00:00"
+      ],
+      "rawWindowSeconds": 45.14267373085022,
+      "independentScrapeCounts": {
+        "memory": 1,
+        "SM": 1,
+        "normalizedSM": 1
+      },
+      "memoryBytesMinMax": [
+        10636754944.0,
+        10636754944.0
+      ],
+      "SMPercentMinMax": [
+        82.0,
+        82.0
+      ],
+      "normalizedSMPercentMinMax": [
+        100.0,
+        100.0
+      ],
+      "originalSampleUTC": [
+        "2026-11-17T20:56:04.588000+00:00"
+      ],
+      "zeroSampleCounts": {
+        "gpu_fractioning_gpu_memory_used_bytes": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": 0
+      },
+      "priorWindowSamplesExcluded": {
+        "gpu_fractioning_gpu_memory_used_bytes": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": 0
+      }
+    },
+    {
+      "tag": "gpu3-cps20-resume-e5",
+      "profile": "interactive-shared-20",
+      "podUID": "3a8d43b7-c8f1-4988-a2e2-96abb19f2202",
+      "containerID": "containerd://9151aa01caac40525503e79802efe2bee6dcb692802c7972004d2a011f46445b",
+      "GPUUUID": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "rawWindowUTC": [
+        "2026-11-17T20:57:00.709899+00:00",
+        "2026-11-17T20:57:45.829699+00:00"
+      ],
+      "rawWindowSeconds": 45.11979627609253,
+      "independentScrapeCounts": {
+        "memory": 1,
+        "SM": 1,
+        "normalizedSM": 1
+      },
+      "memoryBytesMinMax": [
+        21374173184.0,
+        21374173184.0
+      ],
+      "SMPercentMinMax": [
+        82.0,
+        82.0
+      ],
+      "normalizedSMPercentMinMax": [
+        100.0,
+        100.0
+      ],
+      "originalSampleUTC": [
+        "2026-11-17T20:57:34.588000+00:00"
+      ],
+      "zeroSampleCounts": {
+        "gpu_fractioning_gpu_memory_used_bytes": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": 0
+      },
+      "priorWindowSamplesExcluded": {
+        "gpu_fractioning_gpu_memory_used_bytes": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": 0
+      }
+    },
+    {
+      "tag": "gpu3-cit5-resume-e5",
+      "profile": "interactive-shared-5",
+      "podUID": "69882d02-95b3-4c01-97c3-60c98e979617",
+      "containerID": "containerd://f074be80b9f8ab58f3e143cca10e901a073822452a6bf5b5a49174654984c121",
+      "GPUUUID": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "rawWindowUTC": [
+        "2026-11-17T20:58:41.878451+00:00",
+        "2026-11-17T20:59:26.993749+00:00"
+      ],
+      "rawWindowSeconds": 45.11529016494751,
+      "independentScrapeCounts": {
+        "memory": 1,
+        "SM": 1,
+        "normalizedSM": 1
+      },
+      "memoryBytesMinMax": [
+        5268045824.0,
+        5268045824.0
+      ],
+      "SMPercentMinMax": [
+        83.0,
+        83.0
+      ],
+      "normalizedSMPercentMinMax": [
+        100.0,
+        100.0
+      ],
+      "originalSampleUTC": [
+        "2026-11-17T20:59:04.588000+00:00"
+      ],
+      "zeroSampleCounts": {
+        "gpu_fractioning_gpu_memory_used_bytes": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": 0
+      },
+      "priorWindowSamplesExcluded": {
+        "gpu_fractioning_gpu_memory_used_bytes": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": 0
+      }
+    },
+    {
+      "tag": "gpu3-cit10-resume-e5",
+      "profile": "interactive-shared-10",
+      "podUID": "cbd3dc06-d5fa-4fe4-9fa0-2d0c117ac651",
+      "containerID": "containerd://b7f6b7ae76fb733ec174a85a390ed767dd02ec498fe04a679cf43368aca89b06",
+      "GPUUUID": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "rawWindowUTC": [
+        "2026-11-17T21:00:11.917716+00:00",
+        "2026-11-17T21:00:57.036018+00:00"
+      ],
+      "rawWindowSeconds": 45.11830520629883,
+      "independentScrapeCounts": {
+        "memory": 1,
+        "SM": 1,
+        "normalizedSM": 1
+      },
+      "memoryBytesMinMax": [
+        10636754944.0,
+        10636754944.0
+      ],
+      "SMPercentMinMax": [
+        76.0,
+        76.0
+      ],
+      "normalizedSMPercentMinMax": [
+        100.0,
+        100.0
+      ],
+      "originalSampleUTC": [
+        "2026-11-17T21:00:34.588000+00:00"
+      ],
+      "zeroSampleCounts": {
+        "gpu_fractioning_gpu_memory_used_bytes": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": 0
+      },
+      "priorWindowSamplesExcluded": {
+        "gpu_fractioning_gpu_memory_used_bytes": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": 0
+      }
+    },
+    {
+      "tag": "gpu3-cit20-resume-e5",
+      "profile": "interactive-shared-20",
+      "podUID": "7c63ff5c-24ab-482b-b9e1-c52e7cffe7b9",
+      "containerID": "containerd://e396121dfb44143edfbae7c9a133b7b3ce426b871b7ee970895b9c52fbcbfc5d",
+      "GPUUUID": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "rawWindowUTC": [
+        "2026-11-17T21:01:42.056725+00:00",
+        "2026-11-17T21:02:27.171327+00:00"
+      ],
+      "rawWindowSeconds": 45.114598989486694,
+      "independentScrapeCounts": {
+        "memory": 1,
+        "SM": 1,
+        "normalizedSM": 1
+      },
+      "memoryBytesMinMax": [
+        21374173184.0,
+        21374173184.0
+      ],
+      "SMPercentMinMax": [
+        82.0,
+        82.0
+      ],
+      "normalizedSMPercentMinMax": [
+        100.0,
+        100.0
+      ],
+      "originalSampleUTC": [
+        "2026-11-17T21:02:04.588000+00:00"
+      ],
+      "zeroSampleCounts": {
+        "gpu_fractioning_gpu_memory_used_bytes": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": 0
+      },
+      "priorWindowSamplesExcluded": {
+        "gpu_fractioning_gpu_memory_used_bytes": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent": 0,
+        "gpu_fractioning_gpu_sm_utilization_percent_normalized": 0
+      }
+    }
+  ],
+  "sampleCountsAreDistinctOriginalPrometheusTimestampsNotEvaluationPoints": true,
+  "sampledCoverageNotContinuousTraceClaim": true,
+  "metricLimits": "No GPU request/limit Prometheus gauge asserted; source profile and physical quota acceptance belong to Root probe receipts. Metrics quantify stored memory use and SM only.",
+  "priorActualCPS5Separate": {
+    "path": "private artifact gpu3-source-qa-epoch4-20261117/metrics/actual-cps5-stored-coverage.safe.json",
+    "sha256": "7e5ade90bc7f8208fd609b022180c57955408a147522b73bc4bd503313c6b356",
+    "independentScrapeCount": 1,
+    "notIncludedInFiveProfileCount": true
+  },
+  "noSourceKernelRoleOrAuthorityActions": true
+}

@@ -1,0 +1,129 @@
+{
+  "scope": "E6 actual CPU/member-removal/retained restart, duplicate starts and complete STOP-response loss, QA grant and credential closure; no Hub-restoration or worker-promotion claim",
+  "files": {
+    "README.md": {
+      "sha256": "38e1b151dd0b2a6b076b9563188437a412a59e6c9fa89fa5da79dc9cd84622fe",
+      "bytes": 7008
+    },
+    "both-card-postcleanup-idle.safe.json": {
+      "sha256": "31dc2b3c8a229d2c809f38abf3be087e6455acb5810e872272173d22b7385b79",
+      "bytes": 538
+    },
+    "cit-automatic-held-removal.safe.json": {
+      "sha256": "b173f4981fb51382d2c248a28561dff0ff90bad38c713e915e27668872b328fb",
+      "bytes": 1456
+    },
+    "cit-central-roster-after-restart.safe.json": {
+      "sha256": "0d9d39bf13fded59e14f343be036ca7ee51fffe423f7bb41d0ba831acb53e865",
+      "bytes": 501
+    },
+    "cit-confirmed-stop.safe.json": {
+      "sha256": "88767e7e23ff03592d465c5014392bf79cdfd9811ad210cb290bd032159b01b3",
+      "bytes": 141
+    },
+    "cit-duplicate-stop-loss.safe.json": {
+      "sha256": "9fcbab861c14a276823b6da4886e32bb2d8d0afe038beda617b432231bc35edc",
+      "bytes": 1218
+    },
+    "cit-final-source-cleanup.safe.json": {
+      "sha256": "4f1307ca9a6c46cae55b912052f306d25593ad66302b334f25ccd48fee5a2773",
+      "bytes": 246
+    },
+    "cit-source-hub-membership-share.safe.json": {
+      "sha256": "d4682167ca0366ddc1d4ad99057c42308d834b7445be6526b46dc2ffcd8efeb4",
+      "bytes": 1795
+    },
+    "cps-automatic-held-removal.safe.json": {
+      "sha256": "d848f4547d98fc413bfb4831bd7c4c3019cfb3cea45b3ec55033b6bfe120550c",
+      "bytes": 1456
+    },
+    "cps-central-roster-after-restart.safe.json": {
+      "sha256": "b19622665c2fbeac4f9785b0a7ea01bf0c5805d915ebc37ce458dd6dd626ab3c",
+      "bytes": 501
+    },
+    "cps-confirmed-stop.safe.json": {
+      "sha256": "22604a7ec6f2a20b5163b347c70db5ef6b65723361027425a82f8dd1890946e8",
+      "bytes": 141
+    },
+    "cps-duplicate-stop-loss.safe.json": {
+      "sha256": "c2fdc12341f0f5f655bdf4cf2905f1c30d73e7b4af2fd4269840812a4cf30bc2",
+      "bytes": 1216
+    },
+    "cps-final-source-cleanup.safe.json": {
+      "sha256": "8058472499f996980b4254f51ceaebd841fdfcf77e3deefd642eed68910a2ba1",
+      "bytes": 246
+    },
+    "cps-hub-group-share.safe.json": {
+      "sha256": "f4d5143d231d23bac9c8cdba8056c5d6bf8c31f96cf0a71692ecd988df47b680",
+      "bytes": 489
+    },
+    "cps-source-membership.safe.json": {
+      "sha256": "063c49b6f645209aff7a72c363fa72f8062d2800df4ec33e14dc241a133526c7",
+      "bytes": 1398
+    },
+    "credential-closure.safe.json": {
+      "sha256": "bee286d35a726a674b17166a7129e86ae99325367071d8efe9416ca167e36509",
+      "bytes": 420
+    },
+    "execution-and-local-closure.safe.json": {
+      "sha256": "e92f12f6209ee8f86604b509421ee1550a5ab632d68a2a12fc5a1abc669d4912",
+      "bytes": 835
+    },
+    "five-grants-closed.safe.json": {
+      "sha256": "ccb0a783f8d9e31dbe07f95e7d46ccceb4f1dee876ca7118952a1c5c05f3cdf6",
+      "bytes": 534
+    },
+    "gpu3-cit-cpu-after-remove-e6-jupyter.safe.json": {
+      "sha256": "a862d707b94e77ddb5a79e8bec405622d22ab35c3c250cf5a802a66ca06b6714",
+      "bytes": 781
+    },
+    "gpu3-cit-cpu-after-remove-e6-pod.safe.json": {
+      "sha256": "9c1ff08f8a5720c4b88491232a5280f3cc6ca9d56b972ca8d77b186c52c210ce",
+      "bytes": 773
+    },
+    "gpu3-cit-cpu-held-e6-jupyter.safe.json": {
+      "sha256": "cea54045db8b96b57fd48e352aa27e736d15af35e14a21c5c27f9f79f16c05ee",
+      "bytes": 782
+    },
+    "gpu3-cit-cpu-held-e6-pod.safe.json": {
+      "sha256": "c482ccc170627d278d1b5a24b06169ce52276107994ded09c4ee154d310a1baf",
+      "bytes": 773
+    },
+    "gpu3-cit-duplicate-e6-jupyter.safe.json": {
+      "sha256": "b0a7b8e487e297ebc8e7c113a09bb6d812c2f916697cf5f841049c4bc734d285",
+      "bytes": 1741
+    },
+    "gpu3-cit-duplicate-e6-pod.safe.json": {
+      "sha256": "c066102c9de2455b99d5dab51e81db2910b4f91623ad3cda9e54fa953f64cdaa",
+      "bytes": 1126
+    },
+    "gpu3-cps-cpu-after-remove-e6-jupyter.safe.json": {
+      "sha256": "82f47ae439624d1cb6571fe9daf8489e93bc0c520d094347f63d0af24dbe1c53",
+      "bytes": 782
+    },
+    "gpu3-cps-cpu-after-remove-e6-pod.safe.json": {
+      "sha256": "41af3720b230107ddf84adae1df2cdb3af92ae93c0db2f02f9523034e63b3813",
+      "bytes": 774
+    },
+    "gpu3-cps-cpu-held-e6-jupyter.safe.json": {
+      "sha256": "b9182ebcfe9f1d6b1e87a049d0762946b908321b9f26f696493dd5dd968d0255",
+      "bytes": 782
+    },
+    "gpu3-cps-cpu-held-e6-pod.safe.json": {
+      "sha256": "d69c337aea19292bb39ca02b779556751cc086dff37046eed26f4a912eaa347e",
+      "bytes": 774
+    },
+    "gpu3-cps-duplicate-e6-jupyter.safe.json": {
+      "sha256": "b96509671a3a04a165fe8633e60276f3b0051dacf7650c1822dd04bb1beeae5f",
+      "bytes": 1739
+    },
+    "gpu3-cps-duplicate-e6-pod.safe.json": {
+      "sha256": "c0cdab4f0c895129a83d8981f23c1205fc71e3962b54ddfee3cea11e1981172d",
+      "bytes": 1128
+    },
+    "independent-evidence-check.safe.json": {
+      "sha256": "eaddd3710f55e0a9d114d2cf85c3bf0082d8c219c441e945536d7114ea5cb819",
+      "bytes": 3277
+    }
+  }
+}

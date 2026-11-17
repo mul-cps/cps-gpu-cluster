@@ -1,0 +1,69 @@
+{
+  "observed": "2026-11-17T20:02:42.773855+00:00",
+  "actualRootRawWindow": [
+    "2026-11-17T19:28:18Z",
+    "2026-11-17T19:29:03Z"
+  ],
+  "exactPodUIDPrefixProvidedByRoot": "80cb",
+  "queries": [
+    {
+      "metric": "gpu_fractioning_gpu_memory_used_bytes",
+      "series": 1,
+      "rows": [
+        {
+          "podUID": "80cb59aa-7a09-4064-94e3-13cca7877c30",
+          "GPUUUID": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+          "min": 5268045824.0,
+          "max": 5268045824.0,
+          "evaluatedPoints": 29
+        }
+      ],
+      "independentStoredSampleCount": 1,
+      "actualStoredSampleUTC": [
+        "2026-11-17T19:28:34.588000+00:00"
+      ],
+      "allStoredSamplesWithinRawWindow": true,
+      "notStalePriorPodOrPriorWindow": true
+    },
+    {
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+      "series": 1,
+      "rows": [
+        {
+          "podUID": "80cb59aa-7a09-4064-94e3-13cca7877c30",
+          "GPUUUID": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+          "min": 82.0,
+          "max": 82.0,
+          "evaluatedPoints": 29
+        }
+      ],
+      "independentStoredSampleCount": 1,
+      "actualStoredSampleUTC": [
+        "2026-11-17T19:28:34.588000+00:00"
+      ],
+      "allStoredSamplesWithinRawWindow": true,
+      "notStalePriorPodOrPriorWindow": true
+    },
+    {
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+      "series": 1,
+      "rows": [
+        {
+          "podUID": "80cb59aa-7a09-4064-94e3-13cca7877c30",
+          "GPUUUID": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+          "min": 100.0,
+          "max": 100.0,
+          "evaluatedPoints": 29
+        }
+      ],
+      "independentStoredSampleCount": 1,
+      "actualStoredSampleUTC": [
+        "2026-11-17T19:28:34.588000+00:00"
+      ],
+      "allStoredSamplesWithinRawWindow": true,
+      "notStalePriorPodOrPriorWindow": true
+    }
+  ],
+  "evaluatedPointsAreNotIndependentScrapeCount": true,
+  "sourceTimestampCheckedAt": "2026-11-17T20:04:54.626163+00:00"
+}

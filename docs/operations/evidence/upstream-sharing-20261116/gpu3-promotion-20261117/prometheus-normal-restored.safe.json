@@ -1,0 +1,129 @@
+{
+  "observed": "2026-11-17T21:33:19.619909+00:00",
+  "actualPodUID": "f5399fbc-b6c9-4cb1-89a1-59b59b12fbbe",
+  "node": "k3s-wk-gpu3",
+  "Ready200": true,
+  "originalStatefulSetUID": true,
+  "normalPodAndSTSTolerations": true,
+  "targetCount": 72,
+  "allTargetsUp": true,
+  "jobs": {
+    "arc-systems/gha-runner-listener-metrics": {
+      "total": 1,
+      "up": 1
+    },
+    "cattle-monitoring-system/cps-argo-controller": {
+      "total": 1,
+      "up": 1
+    },
+    "gpu-fractioning/gpu-fractioning-metricsd": {
+      "total": 2,
+      "up": 2
+    },
+    "actions-runner-controller-gha-rs-controller-metrics": {
+      "total": 1,
+      "up": 1
+    },
+    "monitoring-fleet-controller": {
+      "total": 1,
+      "up": 1
+    },
+    "monitoring-gitjob": {
+      "total": 1,
+      "up": 1
+    },
+    "hub": {
+      "total": 3,
+      "up": 3
+    },
+    "kai-resource-isolator-monitor": {
+      "total": 4,
+      "up": 4
+    },
+    "ingress-nginx-controller-metrics": {
+      "total": 4,
+      "up": 4
+    },
+    "admission": {
+      "total": 1,
+      "up": 1
+    },
+    "binder": {
+      "total": 1,
+      "up": 1
+    },
+    "kai-scheduler-default": {
+      "total": 1,
+      "up": 1
+    },
+    "queue-controller": {
+      "total": 1,
+      "up": 1
+    },
+    "rancher-monitoring-alertmanager": {
+      "total": 1,
+      "up": 1
+    },
+    "apiserver": {
+      "total": 3,
+      "up": 3
+    },
+    "coredns": {
+      "total": 1,
+      "up": 1
+    },
+    "rancher-monitoring-grafana": {
+      "total": 1,
+      "up": 1
+    },
+    "kube-state-metrics": {
+      "total": 1,
+      "up": 1
+    },
+    "kubelet": {
+      "total": 21,
+      "up": 21
+    },
+    "rancher-monitoring-operator": {
+      "total": 1,
+      "up": 1
+    },
+    "node-exporter": {
+      "total": 7,
+      "up": 7
+    },
+    "rancher-monitoring-prometheus": {
+      "total": 2,
+      "up": 2
+    },
+    "compute-gateway": {
+      "total": 2,
+      "up": 2
+    },
+    "gpu-fractioning-metrics": {
+      "total": 1,
+      "up": 1
+    },
+    "gpu-operator": {
+      "total": 1,
+      "up": 1
+    },
+    "nvidia-dcgm-exporter": {
+      "total": 4,
+      "up": 4
+    },
+    "longhorn-backend": {
+      "total": 4,
+      "up": 4
+    }
+  },
+  "samePVC_PV_UIDs_Bound": true,
+  "PVC_UID": "aa098e20-3601-4edc-8fca-c0a444569814",
+  "PV_UID": "4496a4b6-7aef-4956-a5f3-32901ea9ad37",
+  "historical_count_up_2026_11_17_130712": "68",
+  "prior_CPS10_exactPodUID_GPU_sample_retained": {
+    "value": "10636754944",
+    "originalSampleUnix": "1794948964.588"
+  },
+  "integrity_claim": "Ready and selected historical queries after ordinary restart, not complete TSDB integrity qualification"
+}

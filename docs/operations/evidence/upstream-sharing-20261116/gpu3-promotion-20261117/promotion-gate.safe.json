@@ -1,0 +1,674 @@
+{
+  "observed": "2026-11-17T21:28:35.448315+00:00",
+  "all7Ready": {
+    "k3s-cp1": true,
+    "k3s-cp2": true,
+    "k3s-cp3": true,
+    "k3s-wk-gpu1": true,
+    "k3s-wk-gpu2": true,
+    "k3s-wk-gpu3": true,
+    "k3s-wk-gpu4": true
+  },
+  "onlyGPU3Maintenance": [
+    {
+      "node": "k3s-wk-gpu3",
+      "taints": [
+        {
+          "effect": "NoSchedule",
+          "key": "cps.unileoben.ac.at/maintenance",
+          "value": "upstream-pilot"
+        }
+      ]
+    }
+  ],
+  "GPU3UID": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+  "GPU3BootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+  "GPU3Unschedulable": false,
+  "kuredManualLock": {
+    "weave.works/kured-node-lock": "{\"nodeID\":\"manual\"}"
+  },
+  "attachedVolumeCount": 17,
+  "attachedVolumeCurrentRW": [
+    {
+      "volume": "pvc-07dd1975-494a-4dd0-a9a0-84d75f514dd7",
+      "uid": "7c05a036-ee20-4ebf-bb27-edbf59f95748",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-07dd1975-494a-4dd0-a9a0-84d75f514dd7-r-0ec57b56",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:21:41Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-07dd1975-494a-4dd0-a9a0-84d75f514dd7-r-447325b7",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:16:04Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-07dd1975-494a-4dd0-a9a0-84d75f514dd7-r-84cd1887",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:44:41Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-1651fba7-6ecd-4615-92f5-8780f1f3857e",
+      "uid": "fb79e1e8-545b-4a68-97a6-f9534f08b71f",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-1651fba7-6ecd-4615-92f5-8780f1f3857e-r-40dfe90f",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:45:20Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-1651fba7-6ecd-4615-92f5-8780f1f3857e-r-a72eb1c5",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:21:40Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-1651fba7-6ecd-4615-92f5-8780f1f3857e-r-c0b7b5bc",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:15:43Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-19834c8e-bb63-46ba-b928-e9a9dddeef43",
+      "uid": "a2debc0e-5bfc-42a5-8f8b-dbd569fc9a8a",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-19834c8e-bb63-46ba-b928-e9a9dddeef43-r-42b27faf",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:16:08Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-19834c8e-bb63-46ba-b928-e9a9dddeef43-r-638780fd",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:20:56Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-19834c8e-bb63-46ba-b928-e9a9dddeef43-r-6e479863",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:37:13Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-3c984fe1-3120-41e4-8bd8-386ed59a2139",
+      "uid": "facff73c-538c-4e34-8e20-735051f19595",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-3c984fe1-3120-41e4-8bd8-386ed59a2139-r-001724e4",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:19:48Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-3c984fe1-3120-41e4-8bd8-386ed59a2139-r-b0b44fc2",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:37:38Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-3c984fe1-3120-41e4-8bd8-386ed59a2139-r-fe738137",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:16:00Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-4300bb37-4a26-4d07-b4dc-9ee81150187b",
+      "uid": "40120e7f-160e-4fcb-b904-19b578e79c35",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-4300bb37-4a26-4d07-b4dc-9ee81150187b-r-548d496f",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:37:40Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-4300bb37-4a26-4d07-b4dc-9ee81150187b-r-7639f933",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:15:50Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-4300bb37-4a26-4d07-b4dc-9ee81150187b-r-e3d4fda6",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:19:40Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-471c5b9a-b330-402f-8974-6777d4759616",
+      "uid": "ef1ae69a-f49a-416c-8957-5bf8907daac7",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-471c5b9a-b330-402f-8974-6777d4759616-r-4a76b16b",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:44:43Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-471c5b9a-b330-402f-8974-6777d4759616-r-5e8443de",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:15:18Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-471c5b9a-b330-402f-8974-6777d4759616-r-d00da871",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:21:13Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-764c6600-0466-4f6e-9f4a-e1badf8c1022",
+      "uid": "c8d0def2-a398-41af-908c-5cba5427a52f",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-764c6600-0466-4f6e-9f4a-e1badf8c1022-r-32c033fa",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:44:26Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-764c6600-0466-4f6e-9f4a-e1badf8c1022-r-7f5a6244",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:15:46Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-764c6600-0466-4f6e-9f4a-e1badf8c1022-r-f33e4e8c",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:21:11Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-779c3159-a609-46a5-aea9-36d54075e715",
+      "uid": "98974050-38c5-4c3f-9644-e88b033ad61e",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-779c3159-a609-46a5-aea9-36d54075e715-r-018ed8c9",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:19:50Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-779c3159-a609-46a5-aea9-36d54075e715-r-3ea6c502",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:15:18Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-779c3159-a609-46a5-aea9-36d54075e715-r-d1850d14",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:37:58Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-7adadc35-e1f4-44c6-b231-d43038fcc0b4",
+      "uid": "e6cd59eb-d0fe-414b-b905-a4a408dd8d6a",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-7adadc35-e1f4-44c6-b231-d43038fcc0b4-r-3511b4b6",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:20:48Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-7adadc35-e1f4-44c6-b231-d43038fcc0b4-r-9cb3301a",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:16:04Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-7adadc35-e1f4-44c6-b231-d43038fcc0b4-r-c617e8b4",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:44:48Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-9e3d0ef6-9ffe-4171-a572-88423c9b01b9",
+      "uid": "c9f7e207-bd7a-4cac-a533-3022a2316df9",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-9e3d0ef6-9ffe-4171-a572-88423c9b01b9-r-121ca220",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:15:30Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-9e3d0ef6-9ffe-4171-a572-88423c9b01b9-r-266e34e4",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:20:55Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-9e3d0ef6-9ffe-4171-a572-88423c9b01b9-r-c93c5568",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:37:10Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-c33f6629-2433-4ecb-98f1-8fa633e3d765",
+      "uid": "1098cfdf-5a86-4468-bc9e-935cf3ecd0ae",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-c33f6629-2433-4ecb-98f1-8fa633e3d765-r-3e47732c",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:15:18Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-c33f6629-2433-4ecb-98f1-8fa633e3d765-r-615aa1dc",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:44:56Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-c33f6629-2433-4ecb-98f1-8fa633e3d765-r-79851792",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:20:56Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-c7795ba0-87bf-4bb8-8b90-b60fb76a1c78",
+      "uid": "27c7f3e8-8a5c-4bc5-a8d8-28f52dac50e6",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-c7795ba0-87bf-4bb8-8b90-b60fb76a1c78-r-7ae94e57",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:20:48Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-c7795ba0-87bf-4bb8-8b90-b60fb76a1c78-r-dc7bba58",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:44:43Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-c7795ba0-87bf-4bb8-8b90-b60fb76a1c78-r-e8e352a1",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:15:30Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-d1c75e8a-6510-4f7a-a826-e5e860453389",
+      "uid": "65ef74b8-1fa3-4f10-b612-84440948404e",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-d1c75e8a-6510-4f7a-a826-e5e860453389-r-41b3d0aa",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:16:01Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-d1c75e8a-6510-4f7a-a826-e5e860453389-r-a724a2d9",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:20:55Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-d1c75e8a-6510-4f7a-a826-e5e860453389-r-be141349",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:37:15Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-d791faac-9c82-42dc-87ad-541ae9edc89a",
+      "uid": "9ee1e71f-0006-421f-a45e-57881ac6ed69",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-d791faac-9c82-42dc-87ad-541ae9edc89a-r-0f414774",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:21:11Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-d791faac-9c82-42dc-87ad-541ae9edc89a-r-33ffd605",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:44:26Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-d791faac-9c82-42dc-87ad-541ae9edc89a-r-a65b2676",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:15:56Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-e6258a24-de2e-4321-a6eb-945dc2a53eb7",
+      "uid": "9df26ce9-b35a-4994-b562-593d4bca0f66",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-e6258a24-de2e-4321-a6eb-945dc2a53eb7-r-027061de",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:19:40Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-e6258a24-de2e-4321-a6eb-945dc2a53eb7-r-b0f9ffbd",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:37:08Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-e6258a24-de2e-4321-a6eb-945dc2a53eb7-r-c1cb9c6f",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:15:47Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-e8de6e65-be1b-4a5c-ac71-d84599a7788f",
+      "uid": "d5142c90-601a-4445-892c-1ed4ac3b8dd3",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-e8de6e65-be1b-4a5c-ac71-d84599a7788f-r-b83d220f",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:15:19Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-e8de6e65-be1b-4a5c-ac71-d84599a7788f-r-dbb8c3fd",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:44:28Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-e8de6e65-be1b-4a5c-ac71-d84599a7788f-r-e0b1b1f7",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:21:13Z",
+          "failedAt": ""
+        }
+      ]
+    },
+    {
+      "volume": "pvc-ed8b6472-0e95-43e8-b2e2-4694ea1c97aa",
+      "uid": "6dc82d6e-37b8-4589-b119-121ebdf90414",
+      "desired": 3,
+      "robustness": "healthy",
+      "currentRWDistinctReadyNodes": [
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu4"
+      ],
+      "replicas": [
+        {
+          "name": "pvc-ed8b6472-0e95-43e8-b2e2-4694ea1c97aa-r-347c85ff",
+          "node": "k3s-wk-gpu2",
+          "mode": "RW",
+          "healthyAt": "2026-11-17T14:15:31Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-ed8b6472-0e95-43e8-b2e2-4694ea1c97aa-r-48e989d1",
+          "node": "k3s-wk-gpu4",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T09:21:11Z",
+          "failedAt": ""
+        },
+        {
+          "name": "pvc-ed8b6472-0e95-43e8-b2e2-4694ea1c97aa-r-7743cdbd",
+          "node": "k3s-wk-gpu1",
+          "mode": "RW",
+          "healthyAt": "2026-11-16T10:37:51Z",
+          "failedAt": ""
+        }
+      ]
+    }
+  ],
+  "allAttachedHealthyAndAtLeastTwoCurrentDistinctRW": true,
+  "longhornNodeUID": "d3bca7cf-ac6e-43d1-b809-06f724c9623c",
+  "longhornNodeRV": "408036417",
+  "oldAllowScheduling": false,
+  "newAllowScheduling": true,
+  "evictionRequestedFalse": true,
+  "diskSpecsUnchanged": true,
+  "disks": [
+    {
+      "name": "default-disk-1478d14c7e24e5f4",
+      "path": "/var/lib/longhorn/",
+      "diskUUID": "747b75a3-c24e-4b50-8af0-2d0bf06f71fb",
+      "Ready": true,
+      "Schedulable": true,
+      "maximum": 518933680128,
+      "available": 96049561600,
+      "scheduled": 401579442176,
+      "reserved": 155680104038,
+      "allowScheduling": true,
+      "evictionRequested": false
+    },
+    {
+      "name": "nvme-scratch",
+      "path": "/mnt/nvme/scratch",
+      "diskUUID": "25918eeb-6ef4-4c3c-93e4-3e6d778ff68b",
+      "Ready": true,
+      "Schedulable": true,
+      "maximum": 1055735832576,
+      "available": 597898035200,
+      "scheduled": 1753999212544,
+      "reserved": 107374182400,
+      "allowScheduling": true,
+      "evictionRequested": false
+    }
+  ],
+  "nonTrueNodeConditions": [
+    {
+      "lastProbeTime": "",
+      "lastTransitionTime": "2025-12-15T08:56:08Z",
+      "message": "Kernel modules [dm_crypt] are not loaded",
+      "reason": "KernelModulesNotLoaded",
+      "status": "False",
+      "type": "KernelModulesLoaded"
+    }
+  ],
+  "preexistingDmCryptNotAnOSRegression": true,
+  "serverDryrunOnlyAllowSchedulingDiff": true,
+  "GPU2DriverPods": [
+    {
+      "name": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf-dq5wx",
+      "uid": "dfd0cc7a-1e57-476f-a90c-50b4f09b70c4",
+      "containers": [
+        {
+          "name": "nvidia-driver-ctr",
+          "containerID": "containerd://11d23783edc9f0d4c983b41e65708d1b559bcc376be96478def08ea0de21cf51",
+          "imageID": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+          "ready": true,
+          "restarts": 2
+        }
+      ]
+    }
+  ],
+  "actualApply": false
+}

@@ -1,0 +1,52 @@
+{
+  "jupyter_kernel_execution": true,
+  "elapsed_seconds": 49.5177955950021,
+  "baseline": {
+    "previous_kernels": 0,
+    "gpu_compute_processes_before": "",
+    "gpu_memory_before": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 0"
+  },
+  "jupyter_status_unix": 1794949019.4014137,
+  "result": {
+    "profile": "interactive-shared-20",
+    "sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+    "sdk_identity": {
+      "identity": "workspace:cps:upstream-registry-qualification-20261116-cps",
+      "principal_kind": "workspace",
+      "grants": [],
+      "policy_hash": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb"
+    },
+    "home": "/workspace",
+    "jupyter_runtime_dir": "/workspace/.local/share/jupyter/runtime",
+    "cuda_device_count": 1,
+    "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+    "promised_fill_bytes": 20937965568,
+    "progress_steps": 792564,
+    "progress_window_bytes": 67108864,
+    "progress_seconds": 45.00024242799918,
+    "above_hard_cap_cuda_result": 2,
+    "framework": {
+      "name": "torch",
+      "version": "2.11.0+cu129",
+      "tensor_elements": 262144,
+      "cuda_sum_matches_cpu_reference": true
+    },
+    "events": [
+      {
+        "event": "raw_running",
+        "unix": 1794949020.7098887,
+        "utc": "2026-11-17T20:57:00.709899+00:00",
+        "profile": "interactive-shared-20",
+        "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+        "allocated_bytes": 20937965568,
+        "pid": 173
+      },
+      {
+        "event": "raw_freed_context_destroyed",
+        "unix": 1794949065.829685,
+        "utc": "2026-11-17T20:57:45.829699+00:00",
+        "profile": "interactive-shared-20"
+      }
+    ]
+  }
+}

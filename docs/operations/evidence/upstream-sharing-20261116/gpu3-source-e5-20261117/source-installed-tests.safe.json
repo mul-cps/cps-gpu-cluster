@@ -1,0 +1,29 @@
+{
+  "base": "ghcr.io/mul-cps/e2x-course-hub@sha256:b6856fa9c0ac1ddd42541c5bb629ee31ff8a5fd7420cd152548d6fdc8edde7b7",
+  "candidate": "ghcr.io/mul-cps/e2x-course-hub:stopped-absent-shares-20261117-10d4a8e",
+  "network": "none",
+  "source_package_shadowed": false,
+  "results": {
+    "old_red": {
+      "returncode": 1,
+      "stdout_sha256": "af2cf7a197182be6410bc77a729b3aec2ddfee7ab171aef2476ee0623d56b90d",
+      "stderr_sha256": "8f1ae996121cad8d60a4c6b6d996287d39ce4cb37f0ad14e32b048d39447aeb7",
+      "installed": {
+        "path": "/usr/local/lib/python3.12/site-packages/e2x_course_hub/cps/workspaces.py",
+        "uid": 1000,
+        "module_sha256": "7593af400d21388aeb61f015827a6ad29b97c25900416c1301826b3aa4c93358"
+      }
+    },
+    "candidate_green": {
+      "returncode": 0,
+      "stdout_sha256": "a9eb226052f366b6a90b3d1ab9302e96161b85904e1ebf168ab4633e18adc9e1",
+      "stderr_sha256": "a7083af566e86cbe22772151b6fca3f8ebd5e54b15b65a53b075122112189e1f",
+      "installed": {
+        "path": "/usr/local/lib/python3.12/site-packages/e2x_course_hub/cps/workspaces.py",
+        "uid": 1000,
+        "module_sha256": "4fc27138f79d4054f1bf7aaa9f5da436a9f0ee83c1df9824934da6b23054eeeb"
+      }
+    }
+  },
+  "actual_external_writes": false
+}

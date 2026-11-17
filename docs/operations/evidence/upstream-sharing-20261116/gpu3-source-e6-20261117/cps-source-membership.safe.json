@@ -1,0 +1,45 @@
+{
+  "observed": "2026-11-17T21:06:24.794095+00:00",
+  "method": "SQLite mode=ro consistent read",
+  "barrier_false_pending_null": true,
+  "actual_remaining_BCD_A_absent": true,
+  "rows": [
+    {
+      "kind": "courses",
+      "id": "upstream-gpu-operator-qualification",
+      "reconciliation_pending": false,
+      "membership_removal_pending": null,
+      "membership_removal_group_id": null
+    },
+    {
+      "kind": "memberships",
+      "id": "source-qa-20261116-cps-b",
+      "person_id": "cpsgpumemberb",
+      "canonical_person_id": "d1fb4e43-64ec-4ac5-914f-e9cd39ad1c62",
+      "group_id": "upstream-registry-qa-20261116"
+    },
+    {
+      "kind": "memberships",
+      "id": "source-qa-20261116-cps-c",
+      "person_id": "cpsgpumemberc",
+      "canonical_person_id": "8edde4a2-257c-42d7-9732-13f1e8742a33",
+      "group_id": "upstream-registry-qa-20261116"
+    },
+    {
+      "kind": "memberships",
+      "id": "source-qa-20261116-cps-d",
+      "person_id": "cpsgpumemberd",
+      "canonical_person_id": "3237c91b-cef3-4f6f-960e-875b9e93c4be",
+      "group_id": "upstream-registry-qa-20261116"
+    },
+    {
+      "kind": "workspaces",
+      "id": "upstream-registry-qualification-20261116-cps",
+      "state": "starting",
+      "profile": "interactive-cpu",
+      "group_id": "upstream-registry-qa-20261116"
+    }
+  ],
+  "central_roster_not_yet_asserted": true,
+  "no_mutations": true
+}

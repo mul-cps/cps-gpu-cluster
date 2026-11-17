@@ -1,0 +1,54 @@
+{
+  "observed": "2026-11-17T21:28:10.578638+00:00",
+  "claims": [
+    {
+      "source": "cps",
+      "namespace": "jupyterhub",
+      "pvc": "cps-workspace-4cf349f6b7128fa2ed066c0d57884f0d7d751977",
+      "pvc_uid": "b0cc727e-fa9f-4f80-9caf-902757ae7157",
+      "pvc_created": "2026-11-16T20:40:43Z",
+      "pv": "cps-workspace-4cf349f6b7128fa2ed066c0d57884f0d7d751977",
+      "pv_uid": "3b5c3688-796f-43eb-b180-b263929f02b7",
+      "phase": "Bound",
+      "reclaim": "Retain",
+      "no_file_reads": true,
+      "UID_and_NFS_exact_prior_baseline": true
+    },
+    {
+      "source": "cit",
+      "namespace": "cit-jhub",
+      "pvc": "cps-workspace-30ac5e93a504c666740a687222c6ff4bae6782a6",
+      "pvc_uid": "20f7d481-613d-4ab2-b8e1-dc2622c498f2",
+      "pvc_created": "2026-11-16T20:40:49Z",
+      "pv": "cps-workspace-30ac5e93a504c666740a687222c6ff4bae6782a6",
+      "pv_uid": "d11faa29-3cf3-4005-85b9-2cffeacd49cd",
+      "phase": "Bound",
+      "reclaim": "Retain",
+      "no_file_reads": true,
+      "pre_QA_creation_timestamp": true,
+      "numeric_UID_preimage_not_in_this_reader": "Current retained claim UID and pre-QA creation corroborate prior retained-file probe; do not invent an older UID snapshot."
+    },
+    {
+      "source": "cps",
+      "purpose": "Source console SQLite",
+      "pvc": "cps-admin-data",
+      "pvc_uid": "471c5b9a-b330-402f-8974-6777d4759616",
+      "pv": "pvc-471c5b9a-b330-402f-8974-6777d4759616",
+      "pv_uid": "2b2fcd74-37dc-42e8-a4cb-e22b0b713426",
+      "phase": "Bound",
+      "exact_pre_Source_image_rollout_baseline": true
+    },
+    {
+      "source": "cit",
+      "purpose": "Source console SQLite",
+      "pvc": "cit-admin-data",
+      "pvc_uid": "e8de6e65-be1b-4a5c-ac71-d84599a7788f",
+      "pv": "pvc-e8de6e65-be1b-4a5c-ac71-d84599a7788f",
+      "pv_uid": "6880c5d9-4b0f-433d-9175-e1eb48056e9e",
+      "phase": "Bound",
+      "exact_pre_Source_image_rollout_baseline": true
+    }
+  ],
+  "no_mutations": true,
+  "no_user_file_content_reads": true
+}

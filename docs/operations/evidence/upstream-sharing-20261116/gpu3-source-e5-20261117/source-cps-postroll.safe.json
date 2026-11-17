@@ -1,0 +1,12 @@
+{
+  "source": "cps",
+  "observed": "2026-11-17T20:40:42.857187+00:00",
+  "deployment_uid": "cea488be-b5c5-481f-b41d-169d22f56f33",
+  "generation": 122,
+  "all_other_spec_exact": true,
+  "ready": true,
+  "module_sha256": "4fc27138f79d4054f1bf7aaa9f5da436a9f0ee83c1df9824934da6b23054eeeb",
+  "all_db_tables_schema_qa_state_exact": true,
+  "PVC_PV_UID_and_Bound_exact": true,
+  "no_mutations": true
+}

@@ -1,0 +1,9 @@
+{
+  "observed": "2026-11-17T21:29:34.023472+00:00",
+  "uid": "d3bca7cf-ac6e-43d1-b809-06f724c9623c",
+  "allowScheduling": true,
+  "evictionRequested": false,
+  "all_other_spec_exact": true,
+  "server_dryrun_pass": true,
+  "root_apply_once": true
+}

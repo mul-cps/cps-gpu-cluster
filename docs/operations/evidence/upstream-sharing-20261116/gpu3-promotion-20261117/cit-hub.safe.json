@@ -1,0 +1,50 @@
+{
+  "accounts": [
+    {
+      "owner": "cit-ws-4f8bebfab68c2dc3f8cea6df357d874c",
+      "user_id": 25,
+      "receipt_matches": true,
+      "receipt_sha256": "5d0d2a249e4d94f97a45a36d502b799a4ce08421c34f7fdee56dbdf803cf1f51",
+      "control_role_ids": [
+        34,
+        35
+      ],
+      "roles_exist_by_id": true,
+      "user_roles": [
+        {
+          "id": 14,
+          "name": "cps-workspace-kernel"
+        },
+        {
+          "id": 35,
+          "name": "cps-workspace-runtime-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c"
+        }
+      ],
+      "kernel_group_ids": [
+        25
+      ],
+      "servers": 0,
+      "owner_api_tokens": 0,
+      "account_sha256": "54ed82877517ead15170941147d9a0a48b1d652047e1ee2839430102d1b67ff4",
+      "custody_sha256": "2b03064e0f49372e5da31cf787e42b7866e5a94d482680557e60a8fc3b6185cb"
+    }
+  ],
+  "original_normal_upstream_leaf_sha256": "8a93e2f5604be8d8f0b28f0b7f0284b01d71ff60a02701df732cbc5bb1bb96c5",
+  "SourceRegistry_mode": true,
+  "QA_leaf_and_module_mount_absent": true,
+  "health": 200,
+  "observed": "2026-11-17T21:25:29.830996+00:00",
+  "source": "cit",
+  "generation": 320,
+  "actual_spec_original_exact": true,
+  "original_secret_UID_data_exact": true,
+  "pod": {
+    "name": "hub-ddf455d78-xlt5c",
+    "uid": "1fe4e6e6-5f78-4d35-9e2b-5686e36140c9",
+    "container_id": "containerd://eb9dc51ba7b62fe7345ad1ac1b7e2c846f26d816e0fd14072c24d74d1883df03",
+    "image_id": "ghcr.io/mul-cps/cps-compute@sha256:bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6",
+    "restarts": 0
+  },
+  "receipt_account_custody_preserved": true,
+  "no_mutations": true
+}

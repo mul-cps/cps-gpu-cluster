@@ -1,0 +1,62 @@
+{
+  "observed": "2026-11-17T21:26:15.555533+00:00",
+  "clients": [
+    {
+      "namespace": "jupyterhub",
+      "deployment": "hub",
+      "method": "actual mounted serviceaccount token with verified CA/hostname",
+      "results": [
+        {
+          "path": "/api/v1/nodes/k3s-wk-gpu2",
+          "status": 403
+        },
+        {
+          "path": "/api/v1/nodes/k3s-wk-gpu3",
+          "status": 403
+        },
+        {
+          "path": "/api/v1/nodes",
+          "status": 403
+        }
+      ]
+    },
+    {
+      "namespace": "cit-jhub",
+      "deployment": "hub",
+      "method": "actual mounted serviceaccount token with verified CA/hostname",
+      "results": [
+        {
+          "path": "/api/v1/nodes/k3s-wk-gpu2",
+          "status": 403
+        },
+        {
+          "path": "/api/v1/nodes/k3s-wk-gpu3",
+          "status": 403
+        },
+        {
+          "path": "/api/v1/nodes",
+          "status": 403
+        }
+      ]
+    },
+    {
+      "namespace": "cps-compute",
+      "deployment": "compute-gateway",
+      "method": "actual mounted serviceaccount token with verified CA/hostname",
+      "results": [
+        {
+          "path": "/api/v1/nodes/k3s-wk-gpu2",
+          "status": 200
+        },
+        {
+          "path": "/api/v1/nodes/k3s-wk-gpu3",
+          "status": 200
+        },
+        {
+          "path": "/api/v1/nodes",
+          "status": 403
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "base": "ghcr.io/mul-cps/e2x-course-hub@sha256:b6856fa9c0ac1ddd42541c5bb629ee31ff8a5fd7420cd152548d6fdc8edde7b7",
+  "candidate": "ghcr.io/mul-cps/e2x-course-hub:stopped-absent-shares-20261117-10d4a8e",
+  "python_modules_compared": 52,
+  "changed_modules": [
+    "cps/workspaces.py"
+  ],
+  "changed_module_sha256": "4fc27138f79d4054f1bf7aaa9f5da436a9f0ee83c1df9824934da6b23054eeeb",
+  "all_other_python_modules_exact": true,
+  "all_nonlabel_image_configuration_exact": true,
+  "all_base_layers_retained": 70,
+  "extra_filesystem_layers": 1,
+  "source": "https://github.com/mul-cps/e2x-course-hub",
+  "revision": "10d4a8e82225c60d4455c572c25c62d9a27b964b",
+  "candidate_image_id": "95b2c9244d467c184dbdb63408aa8b35a1369fa5df7253953fd7f2f58442a4b1"
+}

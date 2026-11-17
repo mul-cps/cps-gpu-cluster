@@ -1,0 +1,10 @@
+{
+  "observed": "2026-11-17T21:30:28.452748+00:00",
+  "sameBoot": true,
+  "bothOriginalFilesystemUUIDsExact": true,
+  "fstabBytesHashExactToBeforeOS": true,
+  "bothLonghornDiskUUIDFilesMatchAPI": true,
+  "allMountsRWUnencryptedExt4": true,
+  "dmCryptConditionPreexisting2025NotNeededForTheseMounts": true,
+  "noHostWrites": true
+}

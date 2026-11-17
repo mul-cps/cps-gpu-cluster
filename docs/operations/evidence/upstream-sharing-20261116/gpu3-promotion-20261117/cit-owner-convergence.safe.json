@@ -1,0 +1,9 @@
+{
+  "observed": "2026-11-17T21:23:24.451981+00:00",
+  "source": "cit",
+  "generation": 320,
+  "entire_spec_matches_desired": true,
+  "delivery": "Fleet owner converged after GitRepo pin; no Root Deployment patch attempted",
+  "root_CAS_applied": false,
+  "ready": true
+}

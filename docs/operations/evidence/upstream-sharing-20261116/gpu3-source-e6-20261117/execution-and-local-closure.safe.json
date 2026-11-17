@@ -1,0 +1,29 @@
+{
+  "evidence_type": "Parent operator terminal observations plus independent local receipt/filesystem checks; not a raw process transcript",
+  "parent_observed_terminal_sessions": {
+    "faults": {
+      "session": 76841,
+      "exit_code": 0
+    },
+    "final_source_cleanup": {
+      "session": 86182,
+      "exit_code": 0,
+      "six_BCD_removals_HTTP200": true
+    },
+    "five_grant_closure": {
+      "session": 46693,
+      "exit_code": 0
+    },
+    "credential_closure": {
+      "session": 34345,
+      "exit_code": 0,
+      "watch_unit_inactive": true
+    }
+  },
+  "independent_local_checks": {
+    "done_marker_present": true,
+    "both_raw_token_handoffs_absent": true,
+    "credential_closure_sha256": "bee286d35a726a674b17166a7129e86ae99325367071d8efe9416ca167e36509"
+  },
+  "restoration_and_promotion_not_claimed": true
+}

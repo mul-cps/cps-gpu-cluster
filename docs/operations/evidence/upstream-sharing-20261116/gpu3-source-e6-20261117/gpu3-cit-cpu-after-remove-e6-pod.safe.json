@@ -1,0 +1,21 @@
+{
+  "profile": "interactive-cpu",
+  "namespace": "cit-jhub",
+  "pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+  "pod_uid": "b5d93a96-3300-484e-a58f-de114981bd9b",
+  "node": "k3s-wk-gpu1",
+  "node_uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot_id": "b7aef52b-199b-48d2-a0f5-f584174dbcb6",
+  "runtime_class": null,
+  "containers": [
+    {
+      "name": "notebook",
+      "image_id": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
+      "container_id": "containerd://397f73481702b6ac25f9f7de9331e0695917c6d3358e7064e45b1a560ffe93ef",
+      "restarts": 0
+    }
+  ],
+  "assignment_annotations": {},
+  "ready_at": "2026-11-17T21:08:23Z",
+  "start_to_pod_ready_seconds": 17.235814332962036
+}

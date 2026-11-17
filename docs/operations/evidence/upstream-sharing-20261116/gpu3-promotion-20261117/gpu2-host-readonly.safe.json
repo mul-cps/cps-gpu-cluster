@@ -1,0 +1,18 @@
+{
+  "observed": "2026-11-17T21:29:33.414014+00:00",
+  "host": "k3s-wk-gpu2",
+  "bootID": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+  "runtimeUID": 0,
+  "NVML": {
+    "cards": {
+      "returncode": 0,
+      "output": "GPU-16128952-b438-556a-00bb-93039ee24e56, 620.70.06, 1, 40960\nGPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6, 620.70.06, 1, 40960",
+      "error": ""
+    },
+    "compute": {
+      "returncode": 0,
+      "output": "",
+      "error": ""
+    }
+  }
+}

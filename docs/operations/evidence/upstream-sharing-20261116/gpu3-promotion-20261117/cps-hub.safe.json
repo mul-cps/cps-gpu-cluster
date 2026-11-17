@@ -1,0 +1,78 @@
+{
+  "accounts": [
+    {
+      "owner": "cps-ws-2114b8e3a15e8913cb98083bd5673e45",
+      "user_id": 31,
+      "receipt_matches": true,
+      "receipt_sha256": "c49edf3db690fcd02b8470161ad08f24817fac1ce05df12ef8643c7c1766c623",
+      "control_role_ids": [
+        55,
+        56
+      ],
+      "roles_exist_by_id": true,
+      "user_roles": [
+        {
+          "id": 51,
+          "name": "cps-workspace-kernel"
+        },
+        {
+          "id": 56,
+          "name": "cps-workspace-runtime-cps-ws-2114b8e3a15e8913cb98083bd5673e45"
+        }
+      ],
+      "kernel_group_ids": [
+        22
+      ],
+      "servers": 0,
+      "owner_api_tokens": 0,
+      "account_sha256": "f4ab683ee46cac5ef1114c8b20845e948005363c203b0b87da78c3b555b0921c",
+      "custody_sha256": "69fe3cd3f73a9c934a551ab971723c25b186987ee93b68732ba8352008488664"
+    },
+    {
+      "owner": "cps-ws-27c474f74f9d41c53eac0be01fcca8a3",
+      "user_id": 18,
+      "receipt_matches": true,
+      "receipt_sha256": "d77fbf1432614e3fc5525fc16b9d849cf73b8e4c58f191229234365455fe90c8",
+      "control_role_ids": [
+        57,
+        58
+      ],
+      "roles_exist_by_id": true,
+      "user_roles": [
+        {
+          "id": 58,
+          "name": "cps-workspace-runtime-cps-ws-27c474f74f9d41c53eac0be01fcca8a3"
+        },
+        {
+          "id": 51,
+          "name": "cps-workspace-kernel"
+        }
+      ],
+      "kernel_group_ids": [
+        22
+      ],
+      "servers": 0,
+      "owner_api_tokens": 0,
+      "account_sha256": "abf9f6fe732d4228ab57c8e34ec69e7ae176a3802f137e0033ff457024e697a2",
+      "custody_sha256": "0fe96fd172e46b541e096f53e4e50543b5bee66997908c1dd107a1351a5fc647"
+    }
+  ],
+  "original_normal_upstream_leaf_sha256": "71c565b7892a1f2285879d3d98444d5d7adea1372cb919f61ef2639d75eff683",
+  "SourceRegistry_mode": true,
+  "QA_leaf_and_module_mount_absent": true,
+  "health": 200,
+  "observed": "2026-11-17T21:25:26.773744+00:00",
+  "source": "cps",
+  "generation": 381,
+  "actual_spec_original_exact": true,
+  "original_secret_UID_data_exact": true,
+  "pod": {
+    "name": "hub-7f79cdcbff-f77fq",
+    "uid": "87c9041e-284d-4f40-ae0c-16f5a296babf",
+    "container_id": "containerd://a43e4c27f7f25a09a78e41a0e84506b734e1eaead7acdce77efdae163b459644",
+    "image_id": "ghcr.io/mul-cps/cps-compute@sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097",
+    "restarts": 0
+  },
+  "receipt_account_custody_preserved": true,
+  "no_mutations": true
+}

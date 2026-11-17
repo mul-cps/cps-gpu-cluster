@@ -1,0 +1,10 @@
+{
+  "observed": "2026-11-17T21:30:16.989623+00:00",
+  "node": "k3s-wk-gpu3",
+  "uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+  "boot": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+  "only_exact_maintenance_taint_removed": true,
+  "qualified_label_retained": true,
+  "normal_GPU_placement_eligible": true,
+  "worker_final_receipt_pending_routine_monitoring_cleanup": true
+}

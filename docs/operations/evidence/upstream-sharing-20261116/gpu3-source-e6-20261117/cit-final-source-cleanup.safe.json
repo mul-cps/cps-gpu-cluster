@@ -1,0 +1,10 @@
+{
+  "observed": "2026-11-17T21:16:37.655641+00:00",
+  "SourceStopped": true,
+  "PodAbsent": true,
+  "leaseInactive": true,
+  "attemptNull": true,
+  "zeroQAMemberships": true,
+  "normalStopReplay200": true,
+  "ownerFilesPreservedNoDelete": true
+}

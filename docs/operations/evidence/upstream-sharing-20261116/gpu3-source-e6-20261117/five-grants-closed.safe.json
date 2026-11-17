@@ -1,0 +1,16 @@
+{
+  "observed": "2026-11-17T21:16:48.490410+00:00",
+  "closed_ids": [
+    "upstream-registry-qa-20261116-cit-a",
+    "upstream-registry-qa-20261116-cps-a",
+    "upstream-registry-qa-20261116-cps-b",
+    "upstream-registry-qa-20261116-cps-c",
+    "upstream-registry-qa-20261116-cps-d"
+  ],
+  "all58_retained": true,
+  "other53_raw_exact": true,
+  "authorized49_exact": true,
+  "verified_hostname_CA": true,
+  "five_profiles_projects_empty_allowance_zero_expired": true,
+  "bothSourceStopped_noPod_noLease_noQAMembership_before": true
+}

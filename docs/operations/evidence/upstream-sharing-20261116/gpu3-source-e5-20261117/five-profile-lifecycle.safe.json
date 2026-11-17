@@ -1,0 +1,87 @@
+{
+  "scope": "Five resumed E5 GPU profiles; earlier CPS5 is separate. No whole-worker acceptance claim.",
+  "profiles": [
+    {
+      "source": "cps",
+      "profile": "interactive-shared-10",
+      "pod_uid": "7af4b0c6-5526-4d69-b50d-95f808ecfb14",
+      "container_id": "containerd://5e47d4fed000f3b568d6e1d17804b7675dd6fe32555a28a7e3dccb1c713d5366",
+      "gpu_uuid": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "fill_bytes": 10200547328,
+      "progress_steps": 797585,
+      "progress_seconds": 45.00050042299699,
+      "cuda_over_cap_result": 2,
+      "torch_cpu_reference_match": true,
+      "start_to_pod_ready_seconds": 14.757948160171509,
+      "proof_prefix": "gpu3-cps10-resume-e5"
+    },
+    {
+      "source": "cps",
+      "profile": "interactive-shared-20",
+      "pod_uid": "3a8d43b7-c8f1-4988-a2e2-96abb19f2202",
+      "container_id": "containerd://9151aa01caac40525503e79802efe2bee6dcb692802c7972004d2a011f46445b",
+      "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "fill_bytes": 20937965568,
+      "progress_steps": 792564,
+      "progress_seconds": 45.00024242799918,
+      "cuda_over_cap_result": 2,
+      "torch_cpu_reference_match": true,
+      "start_to_pod_ready_seconds": 12.57006025314331,
+      "proof_prefix": "gpu3-cps20-resume-e5"
+    },
+    {
+      "source": "cit",
+      "profile": "interactive-shared-5",
+      "pod_uid": "69882d02-95b3-4c01-97c3-60c98e979617",
+      "container_id": "containerd://f074be80b9f8ab58f3e143cca10e901a073822452a6bf5b5a49174654984c121",
+      "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "fill_bytes": 4831838208,
+      "progress_steps": 794089,
+      "progress_seconds": 45.00033996400089,
+      "cuda_over_cap_result": 2,
+      "torch_cpu_reference_match": true,
+      "start_to_pod_ready_seconds": 12.299370288848877,
+      "proof_prefix": "gpu3-cit5-resume-e5"
+    },
+    {
+      "source": "cit",
+      "profile": "interactive-shared-10",
+      "pod_uid": "cbd3dc06-d5fa-4fe4-9fa0-2d0c117ac651",
+      "container_id": "containerd://b7f6b7ae76fb733ec174a85a390ed767dd02ec498fe04a679cf43368aca89b06",
+      "gpu_uuid": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "fill_bytes": 10200547328,
+      "progress_steps": 793692,
+      "progress_seconds": 45.0004630250005,
+      "cuda_over_cap_result": 2,
+      "torch_cpu_reference_match": true,
+      "start_to_pod_ready_seconds": 14.100117683410645,
+      "proof_prefix": "gpu3-cit10-resume-e5"
+    },
+    {
+      "source": "cit",
+      "profile": "interactive-shared-20",
+      "pod_uid": "7c63ff5c-24ab-482b-b9e1-c52e7cffe7b9",
+      "container_id": "containerd://e396121dfb44143edfbae7c9a133b7b3ce426b871b7ee970895b9c52fbcbfc5d",
+      "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "fill_bytes": 20937965568,
+      "progress_steps": 794371,
+      "progress_seconds": 45.00022297399846,
+      "cuda_over_cap_result": 2,
+      "torch_cpu_reference_match": true,
+      "start_to_pod_ready_seconds": 13.142005205154419,
+      "proof_prefix": "gpu3-cit20-resume-e5"
+    }
+  ],
+  "probe_and_metrics_identity_hash_joins_checked": true,
+  "matrix_terminal": {
+    "session": 42092,
+    "exit_code": 0,
+    "all_five_cycle_probe_and_stop_assertions_passed": true,
+    "provenance": "Parent operator terminal observation; per-cycle lease receipts were overwritten, not separately retained.",
+    "receipt": "root-execution-and-closure.safe.json"
+  },
+  "retained_final_stop_receipts": {
+    "cps": "cps-confirmed-stop.safe.json",
+    "cit": "cit-confirmed-stop.safe.json"
+  }
+}

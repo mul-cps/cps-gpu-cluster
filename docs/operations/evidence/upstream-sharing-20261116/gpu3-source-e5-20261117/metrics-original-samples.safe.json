@@ -1,0 +1,275 @@
+{
+  "distinct_original_timestamps_not_query_evaluation_points": true,
+  "samples": [
+    {
+      "tag": "gpu3-cps10-resume-e5",
+      "metric": "gpu_fractioning_gpu_memory_used_bytes",
+      "labels": {
+        "pod_uuid": "7af4b0c6-5526-4d69-b50d-95f808ecfb14",
+        "gpu_uuid": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+        "exported_namespace": "jupyterhub",
+        "exported_pod": "jupyter-cps-ws-2114b8e3a15e8913cb98083bd5673e45--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794948964.588,
+          "value": 10636754944.0
+        }
+      ],
+      "query_source_sha256": "9eafe6b20db90aeec8b044e8545ef5dcbbaad19a8601b1fcf8a76586904ac874"
+    },
+    {
+      "tag": "gpu3-cps10-resume-e5",
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+      "labels": {
+        "pod_uuid": "7af4b0c6-5526-4d69-b50d-95f808ecfb14",
+        "gpu_uuid": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+        "exported_namespace": "jupyterhub",
+        "exported_pod": "jupyter-cps-ws-2114b8e3a15e8913cb98083bd5673e45--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794948964.588,
+          "value": 82.0
+        }
+      ],
+      "query_source_sha256": "9eafe6b20db90aeec8b044e8545ef5dcbbaad19a8601b1fcf8a76586904ac874"
+    },
+    {
+      "tag": "gpu3-cps10-resume-e5",
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+      "labels": {
+        "pod_uuid": "7af4b0c6-5526-4d69-b50d-95f808ecfb14",
+        "gpu_uuid": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+        "exported_namespace": "jupyterhub",
+        "exported_pod": "jupyter-cps-ws-2114b8e3a15e8913cb98083bd5673e45--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794948964.588,
+          "value": 100.0
+        }
+      ],
+      "query_source_sha256": "9eafe6b20db90aeec8b044e8545ef5dcbbaad19a8601b1fcf8a76586904ac874"
+    },
+    {
+      "tag": "gpu3-cps20-resume-e5",
+      "metric": "gpu_fractioning_gpu_memory_used_bytes",
+      "labels": {
+        "pod_uuid": "3a8d43b7-c8f1-4988-a2e2-96abb19f2202",
+        "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+        "exported_namespace": "jupyterhub",
+        "exported_pod": "jupyter-cps-ws-2114b8e3a15e8913cb98083bd5673e45--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794949054.588,
+          "value": 21374173184.0
+        }
+      ],
+      "query_source_sha256": "90e36f180dc3922d651e3f47cafd014e80d2f21f0352fca9f119bbdc52b4a3c3"
+    },
+    {
+      "tag": "gpu3-cps20-resume-e5",
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+      "labels": {
+        "pod_uuid": "3a8d43b7-c8f1-4988-a2e2-96abb19f2202",
+        "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+        "exported_namespace": "jupyterhub",
+        "exported_pod": "jupyter-cps-ws-2114b8e3a15e8913cb98083bd5673e45--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794949054.588,
+          "value": 82.0
+        }
+      ],
+      "query_source_sha256": "90e36f180dc3922d651e3f47cafd014e80d2f21f0352fca9f119bbdc52b4a3c3"
+    },
+    {
+      "tag": "gpu3-cps20-resume-e5",
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+      "labels": {
+        "pod_uuid": "3a8d43b7-c8f1-4988-a2e2-96abb19f2202",
+        "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+        "exported_namespace": "jupyterhub",
+        "exported_pod": "jupyter-cps-ws-2114b8e3a15e8913cb98083bd5673e45--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794949054.588,
+          "value": 100.0
+        }
+      ],
+      "query_source_sha256": "90e36f180dc3922d651e3f47cafd014e80d2f21f0352fca9f119bbdc52b4a3c3"
+    },
+    {
+      "tag": "gpu3-cit5-resume-e5",
+      "metric": "gpu_fractioning_gpu_memory_used_bytes",
+      "labels": {
+        "pod_uuid": "69882d02-95b3-4c01-97c3-60c98e979617",
+        "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+        "exported_namespace": "cit-jhub",
+        "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794949144.588,
+          "value": 5268045824.0
+        }
+      ],
+      "query_source_sha256": "f99ad7449f11fa3b01228385f48fe4e0b595555f567d2bbe9653d3d37c734d99"
+    },
+    {
+      "tag": "gpu3-cit5-resume-e5",
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+      "labels": {
+        "pod_uuid": "69882d02-95b3-4c01-97c3-60c98e979617",
+        "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+        "exported_namespace": "cit-jhub",
+        "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794949144.588,
+          "value": 83.0
+        }
+      ],
+      "query_source_sha256": "f99ad7449f11fa3b01228385f48fe4e0b595555f567d2bbe9653d3d37c734d99"
+    },
+    {
+      "tag": "gpu3-cit5-resume-e5",
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+      "labels": {
+        "pod_uuid": "69882d02-95b3-4c01-97c3-60c98e979617",
+        "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+        "exported_namespace": "cit-jhub",
+        "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794949144.588,
+          "value": 100.0
+        }
+      ],
+      "query_source_sha256": "f99ad7449f11fa3b01228385f48fe4e0b595555f567d2bbe9653d3d37c734d99"
+    },
+    {
+      "tag": "gpu3-cit10-resume-e5",
+      "metric": "gpu_fractioning_gpu_memory_used_bytes",
+      "labels": {
+        "pod_uuid": "cbd3dc06-d5fa-4fe4-9fa0-2d0c117ac651",
+        "gpu_uuid": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+        "exported_namespace": "cit-jhub",
+        "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794949234.588,
+          "value": 10636754944.0
+        }
+      ],
+      "query_source_sha256": "23a5c4cfe5d5796dd318501435e63a56973493323825288f5eeec5cc61e12e95"
+    },
+    {
+      "tag": "gpu3-cit10-resume-e5",
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+      "labels": {
+        "pod_uuid": "cbd3dc06-d5fa-4fe4-9fa0-2d0c117ac651",
+        "gpu_uuid": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+        "exported_namespace": "cit-jhub",
+        "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794949234.588,
+          "value": 76.0
+        }
+      ],
+      "query_source_sha256": "23a5c4cfe5d5796dd318501435e63a56973493323825288f5eeec5cc61e12e95"
+    },
+    {
+      "tag": "gpu3-cit10-resume-e5",
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+      "labels": {
+        "pod_uuid": "cbd3dc06-d5fa-4fe4-9fa0-2d0c117ac651",
+        "gpu_uuid": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+        "exported_namespace": "cit-jhub",
+        "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794949234.588,
+          "value": 100.0
+        }
+      ],
+      "query_source_sha256": "23a5c4cfe5d5796dd318501435e63a56973493323825288f5eeec5cc61e12e95"
+    },
+    {
+      "tag": "gpu3-cit20-resume-e5",
+      "metric": "gpu_fractioning_gpu_memory_used_bytes",
+      "labels": {
+        "pod_uuid": "7c63ff5c-24ab-482b-b9e1-c52e7cffe7b9",
+        "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+        "exported_namespace": "cit-jhub",
+        "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794949324.588,
+          "value": 21374173184.0
+        }
+      ],
+      "query_source_sha256": "4fc3c3a1e81d491527e02fac8c5346deec347bfb3dcb0bfee7e99131689096d7"
+    },
+    {
+      "tag": "gpu3-cit20-resume-e5",
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+      "labels": {
+        "pod_uuid": "7c63ff5c-24ab-482b-b9e1-c52e7cffe7b9",
+        "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+        "exported_namespace": "cit-jhub",
+        "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794949324.588,
+          "value": 82.0
+        }
+      ],
+      "query_source_sha256": "4fc3c3a1e81d491527e02fac8c5346deec347bfb3dcb0bfee7e99131689096d7"
+    },
+    {
+      "tag": "gpu3-cit20-resume-e5",
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+      "labels": {
+        "pod_uuid": "7c63ff5c-24ab-482b-b9e1-c52e7cffe7b9",
+        "gpu_uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+        "exported_namespace": "cit-jhub",
+        "exported_pod": "jupyter-cit-ws-4f8bebfab68c2dc3f8cea6df357d874c--rtc",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd"
+      },
+      "samples": [
+        {
+          "original_timestamp": 1794949324.588,
+          "value": 100.0
+        }
+      ],
+      "query_source_sha256": "4fc3c3a1e81d491527e02fac8c5346deec347bfb3dcb0bfee7e99131689096d7"
+    }
+  ]
+}

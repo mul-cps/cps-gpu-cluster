@@ -1,0 +1,24 @@
+{
+  "observed": "2026-11-17T20:51:45.475220+00:00",
+  "method": "read-only SQLite mode=ro; exact target/outcome filter",
+  "Source_status": 503,
+  "fixture_expected_400_or_409": false,
+  "Source_start_clock_at": "2026-11-17T20:49:51.393444+00:00",
+  "same_CPS_attempt_retained": true,
+  "CIT_inactive_attempt_null": true,
+  "audit_rows": [
+    {
+      "seq": 9265,
+      "actor": "cit",
+      "target": "cit:upstream-registry-qualification-20261116-cit",
+      "time": "2026-11-17T20:49:59.201631+00:00",
+      "outcome": "reservation_conflict",
+      "attempt": "c7fbda66-8dd5-4ac0-b92f-3337113b7446",
+      "profile": "interactive-shared-5",
+      "members": [
+        "386feebb-df1a-4f3c-9ef9-6d9c026d5aea"
+      ]
+    }
+  ],
+  "claim": "Gateway reservation_conflict; canonical person overlap with unchanged CPS allocation. No new CREATE or release was performed by this reader."
+}

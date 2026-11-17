@@ -1,0 +1,34 @@
+{
+  "source": "cps",
+  "observed": "2026-11-17T21:14:25.562949+00:00",
+  "duplicate_request_statuses": [
+    400,
+    200
+  ],
+  "one_pod_uid": "99408346-56d4-4801-9248-39c57a9ffb04",
+  "one_attempt": "d7f4f959-7fe7-4a5a-9b55-3bfcfb506749",
+  "gpu_node": "k3s-wk-gpu3",
+  "loss": {
+    "forwarded_response_bytes": 0,
+    "request_count": 1,
+    "target_path": "/services/cps-admin/api/workspaces/upstream-registry-qualification-20261116-cps/stop",
+    "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "forwarded_unix": 1794950056.0380685,
+    "backend_status": 200,
+    "backend_headers_unix": 1794950061.512699,
+    "backend_body_sha256": "e5b440225351cff6f3ada31b4dd07d749dcd83f29b649f8c29daa2c29a8141c5",
+    "backend_response_consumed": true,
+    "downstream_close_unix": 1794950061.5128481,
+    "client_exception_type": "RemoteDisconnected",
+    "client_eof_unix": 1794950061.513262,
+    "client_received_http_status": null
+  },
+  "inherited_fixture_exit_code": 0,
+  "inherited_fixture_requires_backend_200": true,
+  "SourceStopped": true,
+  "PodAbsent": true,
+  "leaseInactive": true,
+  "attemptNull": true,
+  "fresh_cleanup_before_replay": true,
+  "replay_status": 200
+}

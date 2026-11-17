@@ -1,0 +1,20 @@
+{
+  "existing_service_identity": {
+    "name": "cps-admin",
+    "kind": "service"
+  },
+  "group": "upstream-registry-qa-20261116",
+  "actual_users": [
+    "cpsgpumemberb",
+    "cpsgpumemberc",
+    "cpsgpumemberd"
+  ],
+  "A_group_absent": true,
+  "one_exact_group_Share": true,
+  "scopes": [
+    "access:servers!server=cps-ws-2114b8e3a15e8913cb98083bd5673e45/rtc"
+  ],
+  "human_member_authentication_claim": false,
+  "observed": "2026-11-17T21:06:25.136549+00:00",
+  "no_mutations": true
+}

@@ -1,0 +1,42 @@
+{
+  "observed": "2026-11-17T21:29:32.653502+00:00",
+  "host": "k3s-wk-gpu3",
+  "bootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+  "runtimeUID": 0,
+  "fstabSHA256": "2436bae3284a71ac5fb049b072b380b70cb514a5e38c6e87bd643419086a5363",
+  "mounts": [
+    {
+      "path": "/",
+      "mount": {
+        "source": "/dev/sda1",
+        "fstype": "ext4",
+        "uuid": "ffe7eb40-94f7-473b-b336-935460126345",
+        "target": "/"
+      },
+      "rw": true,
+      "longhornDiskUUID": null
+    },
+    {
+      "path": "/var/lib/longhorn/",
+      "mount": {
+        "source": "/dev/sda1",
+        "fstype": "ext4",
+        "uuid": "ffe7eb40-94f7-473b-b336-935460126345",
+        "target": "/"
+      },
+      "rw": true,
+      "longhornDiskUUID": "747b75a3-c24e-4b50-8af0-2d0bf06f71fb"
+    },
+    {
+      "path": "/mnt/nvme/scratch",
+      "mount": {
+        "source": "/dev/sdb",
+        "fstype": "ext4",
+        "uuid": "7d6c1e7d-1031-4213-a3d8-5dff61b4a9c9",
+        "target": "/mnt/nvme/scratch"
+      },
+      "rw": true,
+      "longhornDiskUUID": "25918eeb-6ef4-4c3c-93e4-3e6d778ff68b"
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "at": "2026-11-17T20:32:51.897709+00:00",
+  "actual_gateway_serviceaccount": true,
+  "temporary_grant_and_binding_absent": true,
+  "permanent_access_results": [
+    {
+      "name": "k3s-wk-gpu2",
+      "status": 200
+    },
+    {
+      "name": "k3s-wk-gpu3",
+      "status": 200
+    },
+    {
+      "name": "k3s-wk-gpu1",
+      "status": 403
+    },
+    {
+      "name": "k3s-wk-gpu4",
+      "status": 403
+    },
+    {
+      "name": null,
+      "status": 403
+    }
+  ]
+}

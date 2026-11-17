@@ -1,0 +1,26 @@
+{
+  "source": "cit",
+  "SourceStopped": true,
+  "SourceBarrierFalsePendingNull": true,
+  "QA_memberships0": true,
+  "HubGroupUsers0": true,
+  "HubShares0": true,
+  "Shares_GET_status": 200,
+  "source_rows": [
+    {
+      "kind": "courses",
+      "id": "upstream-gpu-operator-qualification",
+      "reconciliation_pending": false,
+      "membership_removal_pending": null,
+      "membership_removal_group_id": null
+    },
+    {
+      "kind": "workspaces",
+      "id": "upstream-registry-qualification-20261116-cit",
+      "state": "stopped",
+      "profile": "interactive-shared-5"
+    }
+  ],
+  "no_mutations": true,
+  "observed": "2026-11-17T21:26:58.850885+00:00"
+}

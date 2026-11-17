@@ -1,0 +1,22 @@
+{
+  "observed": "2026-11-17T21:18:51.752603+00:00",
+  "node": "k3s-wk-gpu3",
+  "gpus": [
+    {
+      "uuid": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5",
+      "driver": "620.70.06",
+      "memory_used": "1 MiB",
+      "utilization": "0 %",
+      "MIG": "Disabled"
+    },
+    {
+      "uuid": "GPU-e7a56fad-ce29-f7d7-380a-3b5ae62a0b2a",
+      "driver": "620.70.06",
+      "memory_used": "1 MiB",
+      "utilization": "0 %",
+      "MIG": "Disabled"
+    }
+  ],
+  "compute_processes": [],
+  "source_workloads_already_normally_stopped": true
+}

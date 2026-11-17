@@ -1,0 +1,128 @@
+{
+  "observed": "2026-11-17T21:35:34.141655+00:00",
+  "read_only": true,
+  "nodes": [
+    {
+      "name": "k3s-cp1",
+      "uid": "fa674ef4-923b-46a6-be90-887f21afe7f5",
+      "ready": "True",
+      "cordoned": false,
+      "taints": [
+        {
+          "effect": "NoSchedule",
+          "key": "node-role.kubernetes.io/control-plane",
+          "value": "true"
+        }
+      ],
+      "os": "Ubuntu 24.04.4 LTS",
+      "kernel": "6.8.0-149-generic",
+      "boot_id": "db237e6c-5f5c-401a-9f08-8bae2ce804f7",
+      "qualified": null,
+      "accelerator": null,
+      "gpu_capacity": null,
+      "upgrade_labels_including_history": {}
+    },
+    {
+      "name": "k3s-cp2",
+      "uid": "b989d3ff-0372-4564-9d9a-88dcd7d63987",
+      "ready": "True",
+      "cordoned": false,
+      "taints": [
+        {
+          "effect": "NoSchedule",
+          "key": "node-role.kubernetes.io/control-plane",
+          "value": "true"
+        }
+      ],
+      "os": "Ubuntu 24.04.4 LTS",
+      "kernel": "6.8.0-149-generic",
+      "boot_id": "d6fd3938-0340-4821-a87c-5b8fe77164bc",
+      "qualified": null,
+      "accelerator": null,
+      "gpu_capacity": null,
+      "upgrade_labels_including_history": {}
+    },
+    {
+      "name": "k3s-cp3",
+      "uid": "6fa889a4-1d0d-4ce5-b62c-32d37e40a924",
+      "ready": "True",
+      "cordoned": false,
+      "taints": [
+        {
+          "effect": "NoSchedule",
+          "key": "node-role.kubernetes.io/control-plane",
+          "value": "true"
+        }
+      ],
+      "os": "Ubuntu 24.04.4 LTS",
+      "kernel": "6.8.0-149-generic",
+      "boot_id": "ca372986-f7bc-41f9-969e-22d274d64aa5",
+      "qualified": null,
+      "accelerator": null,
+      "gpu_capacity": null,
+      "upgrade_labels_including_history": {}
+    },
+    {
+      "name": "k3s-wk-gpu1",
+      "uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "ready": "True",
+      "cordoned": false,
+      "taints": [],
+      "os": "Ubuntu 24.04.4 LTS",
+      "kernel": "6.8.0-149-generic",
+      "boot_id": "b7aef52b-199b-48d2-a0f5-f584174dbcb6",
+      "qualified": null,
+      "accelerator": "nvidia",
+      "gpu_capacity": "2",
+      "upgrade_labels_including_history": {}
+    },
+    {
+      "name": "k3s-wk-gpu2",
+      "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "ready": "True",
+      "cordoned": false,
+      "taints": [],
+      "os": "Ubuntu 26.04.1 LTS",
+      "kernel": "7.0.0-43-generic",
+      "boot_id": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+      "qualified": "qualified",
+      "accelerator": "r615-canary-maintenance",
+      "gpu_capacity": "2",
+      "upgrade_labels_including_history": {
+        "nvidia.com/gpu-driver-upgrade.skip": "true",
+        "plan.upgrade.cattle.io/cps-ubuntu-gpu2-ubuntu-20261116": "1944270e1ec4d7c3b777720482fab70f046c8373f5ae0a396a1b3460"
+      }
+    },
+    {
+      "name": "k3s-wk-gpu3",
+      "uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+      "ready": "True",
+      "cordoned": false,
+      "taints": [],
+      "os": "Ubuntu 26.04.1 LTS",
+      "kernel": "7.0.0-43-generic",
+      "boot_id": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+      "qualified": "qualified",
+      "accelerator": "r615-canary-maintenance",
+      "gpu_capacity": "2",
+      "upgrade_labels_including_history": {
+        "plan.upgrade.cattle.io/cps-ubuntu-gpu3-ubuntu-20261116": "23d50e19e42851c6a4509b943b919c79b7ad0b1b07fbdc8e5f146c2f"
+      }
+    },
+    {
+      "name": "k3s-wk-gpu4",
+      "uid": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+      "ready": "True",
+      "cordoned": false,
+      "taints": [],
+      "os": "Ubuntu 24.04.3 LTS",
+      "kernel": "6.8.0-149-generic",
+      "boot_id": "21aa4a49-9e79-4194-8d26-830debb6ce2e",
+      "qualified": null,
+      "accelerator": "nvidia",
+      "gpu_capacity": "2",
+      "upgrade_labels_including_history": {}
+    }
+  ],
+  "label_scope_note": "plan.upgrade.cattle.io result labels are retained completed SUC history; no active plan or job. accelerator=r615-canary-maintenance excludes the legacy loader, not normal qualified-selector placement or a maintenance taint."
+}

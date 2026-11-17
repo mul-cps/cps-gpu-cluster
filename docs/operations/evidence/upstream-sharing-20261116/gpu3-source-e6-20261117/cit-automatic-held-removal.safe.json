@@ -1,0 +1,64 @@
+{
+  "observed": "2026-11-17T21:08:00.067401+00:00",
+  "SourceStopped": true,
+  "PodAbsent": true,
+  "leaseInactive": true,
+  "attemptNull": true,
+  "remaining_membership_ids": [
+    "source-qa-20261116-cit-b",
+    "source-qa-20261116-cit-c",
+    "source-qa-20261116-cit-d"
+  ],
+  "manualStopBeforeCheck": false,
+  "observer_exit0": true,
+  "events": [
+    {
+      "event": "rtc_initial_sync",
+      "person": "owner_1",
+      "frame_bytes": 13,
+      "unix": 1794949642.1521628
+    },
+    {
+      "event": "rtc_initial_sync",
+      "person": "owner_2",
+      "frame_bytes": 36,
+      "unix": 1794949642.3009334
+    },
+    {
+      "event": "held_ready",
+      "unix": 1794949642.3009744,
+      "kernel_id": "1bf56567-fd75-4cb7-b1b1-16cb1d581d9b",
+      "sockets": [
+        "kernel_owner",
+        "rtc_owner_1",
+        "rtc_owner_2"
+      ],
+      "actors": [
+        "neutral-workload-owner",
+        "neutral-workload-owner"
+      ]
+    },
+    {
+      "event": "connection_closed",
+      "socket": "rtc_owner_2",
+      "unix": 1794949660.5151668,
+      "close_code": null
+    },
+    {
+      "event": "connection_closed",
+      "socket": "rtc_owner_1",
+      "unix": 1794949660.515287,
+      "close_code": null
+    },
+    {
+      "event": "connection_closed",
+      "socket": "kernel_owner",
+      "unix": 1794949660.516489,
+      "close_code": null
+    },
+    {
+      "event": "all_held_connections_closed",
+      "unix": 1794949660.5165718
+    }
+  ]
+}

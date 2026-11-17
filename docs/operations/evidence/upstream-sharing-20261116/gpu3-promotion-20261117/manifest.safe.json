@@ -1,0 +1,93 @@
+{
+  "scope": "Completed GPU3 scoped fixed-profile promotion and restoration; full platform remains open",
+  "files": {
+    "README.md": {
+      "sha256": "1c6781b19b595c1e46b871710145c2a0ff8c01dc14439826c4f153855976a7d2",
+      "bytes": 6816
+    },
+    "allowScheduling-restored.safe.json": {
+      "sha256": "61cf8b02f83f0b72c66e984dbcf74644f024af8a87346c23912cef736b033a36",
+      "bytes": 248
+    },
+    "cit-gitrepo-pin.safe.json": {
+      "sha256": "51ad030c77b6fffa8cfd0f31ce7881a3326f20c357baf39bb99b79f5e8ce750c",
+      "bytes": 163
+    },
+    "cit-hub.safe.json": {
+      "sha256": "7d1a1eb9106c105936b4b7fb0109160d226d3a8cfb6d835a879bccb1ffa1e8a9",
+      "bytes": 1626
+    },
+    "cit-owner-convergence.safe.json": {
+      "sha256": "0142d05776579b9ede75a0d0e3283e70825d4d6d34da41bcf2a1b239f0161cc5",
+      "bytes": 271
+    },
+    "cit-source-group-share.safe.json": {
+      "sha256": "ae29ba3784c44797a958a66abcf7c85cf5fdd0beedb91a3dc2e2e9e6fdf6cff0",
+      "bytes": 667
+    },
+    "cps-gitrepo-pin.safe.json": {
+      "sha256": "e5fb50dc6a9bfb198eff49c6e2036618e5537b5827ace9ad8d9b7769eb3dfa25",
+      "bytes": 190
+    },
+    "cps-hub.safe.json": {
+      "sha256": "62e4b617b02cb606b3c82281be83be23435e5beb9e3e0b414d6c165cc1bbc7e8",
+      "bytes": 2450
+    },
+    "cps-owner-convergence.safe.json": {
+      "sha256": "47cf0a79ed649961cd43383a71848e9434b2c1796b227b68e1eeb4767c12e9ba",
+      "bytes": 305
+    },
+    "cps-source-group-share.safe.json": {
+      "sha256": "355522785807a9085de377d4ab6b43b917333b344da92cebbeb8dbc620d56138",
+      "bytes": 667
+    },
+    "fresh-current-nodes.safe.json": {
+      "sha256": "b3721e0987555c09448e1e8fe6562ac5f7a856d3a0f09caf891a3beb4ed0df5d",
+      "bytes": 4051
+    },
+    "gpu2-host-readonly.safe.json": {
+      "sha256": "de79248cf06d660140bf38281148a9dac8b232ac058da820543699d3f182d6d1",
+      "bytes": 457
+    },
+    "gpu3-host-readonly.safe.json": {
+      "sha256": "4a2bd4399df0c6eab7f9dfb53a489992b18bcb99255a7f013ff3efa422a01b54",
+      "bytes": 1094
+    },
+    "maintenance-fence-removed.safe.json": {
+      "sha256": "1e679eb14308f74fdf2afc15c16a6160c8bb5c5039b3876b8ea040e1cc9b35e8",
+      "bytes": 369
+    },
+    "mount-custody.safe.json": {
+      "sha256": "2741bb917c7578f46cd5e50f0484be264b1e5a5c050d6549212d89475dbadc15",
+      "bytes": 331
+    },
+    "postcleanup-actual-node-access.safe.json": {
+      "sha256": "1821f0d90cf7ea518ab984b138878d54f60fa997d49db93f75c88d15ca5290bd",
+      "bytes": 1415
+    },
+    "preserved-storage.safe.json": {
+      "sha256": "eed2c2fec62e18f5015ac2fe2020bac79a572b740dd1907995d7f92dd6f48b74",
+      "bytes": 2001
+    },
+    "prior-cps5-stored-coverage.safe.json": {
+      "sha256": "7e5ade90bc7f8208fd609b022180c57955408a147522b73bc4bd503313c6b356",
+      "bytes": 2026
+    },
+    "prometheus-normal-restored.safe.json": {
+      "sha256": "f0fb09b1b62653250bf819df733a8598ac9c5b546915a71872ff60ac4fa9ed09",
+      "bytes": 2643
+    },
+    "promotion-gate.safe.json": {
+      "sha256": "ff2d66febfbe87f0fcbe6fcd5336652e1c4625feac878519a1d644aa444b8075",
+      "bytes": 19589
+    },
+    "suc-no-active-operation.safe.json": {
+      "sha256": "0ba92d8e534a9954906801fcc49929cc3fdaf67921191ce812588d7a95e1b620",
+      "bytes": 246
+    },
+    "unused-qa-delete-complete.safe.json": {
+      "sha256": "7f9a74ba10150f0b75e02c737cb6681b04dd1b96a93b4374192b88203ae404ca",
+      "bytes": 9726
+    }
+  }
+}

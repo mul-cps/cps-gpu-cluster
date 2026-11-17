@@ -1,0 +1,9 @@
+{
+  "observed": "2026-11-17T21:36:00.141349+00:00",
+  "namespace": "system-upgrade",
+  "plan_count": 0,
+  "active_job_count": 0,
+  "retained_jobs": [],
+  "read_only": true,
+  "completed_plan_node_labels_are_history_not_active_nomination": true
+}

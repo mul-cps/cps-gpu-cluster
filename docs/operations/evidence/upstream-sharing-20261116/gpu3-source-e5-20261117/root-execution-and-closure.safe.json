@@ -1,0 +1,46 @@
+{
+  "observed": "2026-11-17T21:10:18.793305+00:00",
+  "evidence_type": "supervisor attestation of unified exec output plus fresh filesystem/systemd checks; not a process-emitted raw transcript",
+  "matrix_tool_session": 42092,
+  "observed_terminal_exit_code": 0,
+  "observed_completion_line": "ALL FIVE REMAINING REAL GPU SOURCE PROFILES COMPLETE",
+  "observed_each_case_probe_and_normal_stop_return_pass": true,
+  "cases": [
+    "cps10",
+    "cps20",
+    "cit5",
+    "cit10",
+    "cit20"
+  ],
+  "runner_sha256": "50483de62edfa9a516da41085a4d88639dd9f037ef9bf6f94cdf33ef1bea8251",
+  "helper_sha256": "2a56881e1d416070f4141febc04cca73650f78de8e1071b0b85474aa3c2f4872",
+  "credential_closure": {
+    "sources": {
+      "cps": {
+        "revoked": [
+          {
+            "id": "a1425",
+            "status": 204,
+            "absent": true
+          }
+        ],
+        "authDenied": true
+      },
+      "cit": {
+        "revoked": [
+          "a735"
+        ],
+        "authorityUnchanged": true,
+        "remainingNOTE": 0,
+        "authDenied": true
+      }
+    },
+    "errors": [],
+    "elapsedSeconds": 5.811088235117495,
+    "deadlineSeconds": 170
+  },
+  "done_present": true,
+  "raw_handoffs_absent": true,
+  "watch_unit_state": "inactive",
+  "limits": "Individual stop files retain only final per-Source receipt; historical per-case return is supervisor-observed terminal runner output, not five standalone stored stop logs."
+}

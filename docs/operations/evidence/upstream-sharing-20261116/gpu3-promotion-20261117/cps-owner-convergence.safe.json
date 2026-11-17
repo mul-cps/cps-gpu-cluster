@@ -1,0 +1,9 @@
+{
+  "observed": "2026-11-17T21:21:42.768731+00:00",
+  "source": "cps",
+  "generation": 381,
+  "entire_spec_matches_desired": true,
+  "delivery": "Fleet owner converged after GitRepo pin; Root CAS rejected due changed resourceVersion, no retry",
+  "root_CAS_applied": false,
+  "readiness_pending": false
+}

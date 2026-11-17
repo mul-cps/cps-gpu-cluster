@@ -1,0 +1,275 @@
+{
+  "observed": "2026-11-17T21:25:46.094956+00:00",
+  "bothHubOriginalSpecReady": true,
+  "livePodsReferenceNoQAObject": true,
+  "permanentGatewayRBACExcluded": true,
+  "plan": [
+    {
+      "path": "/api/v1/namespaces/cit-jhub/configmaps/cit-gpu3-source-qa-0da083ef7bcc",
+      "uid": "3eb016e3-b2ed-430d-a992-119077ce2491",
+      "resourceVersion": "407814380"
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/configmaps/cit-gpu3-source-qa-39055c0d91ad",
+      "uid": "bede220b-7668-4f7b-a516-44d0788947d9",
+      "resourceVersion": "407953963"
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/configmaps/cit-gpu3-source-qa-83ea12df6ba4",
+      "uid": "7477f4dc-ef9c-4c02-8e84-f400f535489d",
+      "resourceVersion": "407832450"
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/configmaps/cit-gpu3-source-qa-909952cd227f",
+      "uid": "4744bd32-5ee4-44e0-ba0e-6b9568fc927e",
+      "resourceVersion": "407905779"
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/configmaps/cit-gpu3-source-qa-cd11a50a3468",
+      "uid": "d976bc12-cebc-4a3c-98f3-eb80b12e1508",
+      "resourceVersion": "407999280"
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/secrets/cit-hub-gpu3-qa-06253daf2f27",
+      "uid": "7adaaba4-4f38-486f-992d-a2abd0355154",
+      "resourceVersion": "407953964"
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/secrets/cit-hub-gpu3-qa-8461b2c72ee2",
+      "uid": "bb2ad496-4d65-48a6-849a-baae9a40586c",
+      "resourceVersion": "407832453"
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/secrets/cit-hub-gpu3-qa-9564224cb149",
+      "uid": "b5112814-5ba2-4ef6-abcd-f35ac79d2cce",
+      "resourceVersion": "407999283"
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/secrets/cit-hub-gpu3-qa-9b5413275a9c",
+      "uid": "e01ceee0-9e02-4975-9cb5-071f9e3d3ca8",
+      "resourceVersion": "407814385"
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/secrets/cit-hub-gpu3-qa-fbe26d724251",
+      "uid": "62b7b54c-7ef2-46db-bad3-54573818003e",
+      "resourceVersion": "407905781"
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/configmaps/cps-gpu3-source-qa-018897c34bd3",
+      "uid": "29498a57-3ca7-4f08-a4ce-bdf1c02446ab",
+      "resourceVersion": "407905132"
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/configmaps/cps-gpu3-source-qa-0b729c95ab42",
+      "uid": "692f98b5-f1da-4c35-a519-807bc6840eec",
+      "resourceVersion": "407953371"
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/configmaps/cps-gpu3-source-qa-303bafd68239",
+      "uid": "4e334560-bad8-47d3-8720-394650011677",
+      "resourceVersion": "407997680"
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/configmaps/cps-gpu3-source-qa-9c3b5232382b",
+      "uid": "f616127d-c537-4d20-84c9-202173f2e61b",
+      "resourceVersion": "407832179"
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/configmaps/cps-gpu3-source-qa-d8843e285cd3",
+      "uid": "72d57709-2c1a-4c90-ac20-e8cf922e3a6d",
+      "resourceVersion": "407813233"
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/secrets/cps-hub-gpu3-qa-1d0ecd24dff9",
+      "uid": "37b698f0-cba5-482b-b95f-f14e82dd4e3c",
+      "resourceVersion": "407953376"
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/secrets/cps-hub-gpu3-qa-34075bd999cb",
+      "uid": "15ec954e-5faa-4441-a5d9-b641c1d1fb01",
+      "resourceVersion": "407832185"
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/secrets/cps-hub-gpu3-qa-57155e960a4a",
+      "uid": "046d344a-9e74-4825-89f5-8b3c249454a7",
+      "resourceVersion": "407905135"
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/secrets/cps-hub-gpu3-qa-6757afbf445f",
+      "uid": "b002717b-baeb-41d1-931b-20983270c8b8",
+      "resourceVersion": "407813235"
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/secrets/cps-hub-gpu3-qa-6bae3f38662a",
+      "uid": "aa5bbd3b-0db1-47be-92d9-093b150ff73e",
+      "resourceVersion": "407997681"
+    },
+    {
+      "path": "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/cps-gpu3-source-qa-node-get-20261117",
+      "uid": "12a566bc-a628-4127-ba26-4cd34d567a11",
+      "resourceVersion": "407884257"
+    },
+    {
+      "path": "/apis/rbac.authorization.k8s.io/v1/clusterroles/cps-gpu3-source-qa-node-get-20261117",
+      "uid": "8e80592a-bb00-4e90-a8d4-9ef1894763ba",
+      "resourceVersion": "407884256"
+    }
+  ],
+  "results": [
+    {
+      "path": "/api/v1/namespaces/cit-jhub/configmaps/cit-gpu3-source-qa-0da083ef7bcc",
+      "uid": "3eb016e3-b2ed-430d-a992-119077ce2491",
+      "resourceVersion": "407814380",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/configmaps/cit-gpu3-source-qa-39055c0d91ad",
+      "uid": "bede220b-7668-4f7b-a516-44d0788947d9",
+      "resourceVersion": "407953963",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/configmaps/cit-gpu3-source-qa-83ea12df6ba4",
+      "uid": "7477f4dc-ef9c-4c02-8e84-f400f535489d",
+      "resourceVersion": "407832450",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/configmaps/cit-gpu3-source-qa-909952cd227f",
+      "uid": "4744bd32-5ee4-44e0-ba0e-6b9568fc927e",
+      "resourceVersion": "407905779",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/configmaps/cit-gpu3-source-qa-cd11a50a3468",
+      "uid": "d976bc12-cebc-4a3c-98f3-eb80b12e1508",
+      "resourceVersion": "407999280",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/secrets/cit-hub-gpu3-qa-06253daf2f27",
+      "uid": "7adaaba4-4f38-486f-992d-a2abd0355154",
+      "resourceVersion": "407953964",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/secrets/cit-hub-gpu3-qa-8461b2c72ee2",
+      "uid": "bb2ad496-4d65-48a6-849a-baae9a40586c",
+      "resourceVersion": "407832453",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/secrets/cit-hub-gpu3-qa-9564224cb149",
+      "uid": "b5112814-5ba2-4ef6-abcd-f35ac79d2cce",
+      "resourceVersion": "407999283",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/secrets/cit-hub-gpu3-qa-9b5413275a9c",
+      "uid": "e01ceee0-9e02-4975-9cb5-071f9e3d3ca8",
+      "resourceVersion": "407814385",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/cit-jhub/secrets/cit-hub-gpu3-qa-fbe26d724251",
+      "uid": "62b7b54c-7ef2-46db-bad3-54573818003e",
+      "resourceVersion": "407905781",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/configmaps/cps-gpu3-source-qa-018897c34bd3",
+      "uid": "29498a57-3ca7-4f08-a4ce-bdf1c02446ab",
+      "resourceVersion": "407905132",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/configmaps/cps-gpu3-source-qa-0b729c95ab42",
+      "uid": "692f98b5-f1da-4c35-a519-807bc6840eec",
+      "resourceVersion": "407953371",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/configmaps/cps-gpu3-source-qa-303bafd68239",
+      "uid": "4e334560-bad8-47d3-8720-394650011677",
+      "resourceVersion": "407997680",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/configmaps/cps-gpu3-source-qa-9c3b5232382b",
+      "uid": "f616127d-c537-4d20-84c9-202173f2e61b",
+      "resourceVersion": "407832179",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/configmaps/cps-gpu3-source-qa-d8843e285cd3",
+      "uid": "72d57709-2c1a-4c90-ac20-e8cf922e3a6d",
+      "resourceVersion": "407813233",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/secrets/cps-hub-gpu3-qa-1d0ecd24dff9",
+      "uid": "37b698f0-cba5-482b-b95f-f14e82dd4e3c",
+      "resourceVersion": "407953376",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/secrets/cps-hub-gpu3-qa-34075bd999cb",
+      "uid": "15ec954e-5faa-4441-a5d9-b641c1d1fb01",
+      "resourceVersion": "407832185",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/secrets/cps-hub-gpu3-qa-57155e960a4a",
+      "uid": "046d344a-9e74-4825-89f5-8b3c249454a7",
+      "resourceVersion": "407905135",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/secrets/cps-hub-gpu3-qa-6757afbf445f",
+      "uid": "b002717b-baeb-41d1-931b-20983270c8b8",
+      "resourceVersion": "407813235",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/api/v1/namespaces/jupyterhub/secrets/cps-hub-gpu3-qa-6bae3f38662a",
+      "uid": "aa5bbd3b-0db1-47be-92d9-093b150ff73e",
+      "resourceVersion": "407997681",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/apis/rbac.authorization.k8s.io/v1/clusterrolebindings/cps-gpu3-source-qa-node-get-20261117",
+      "uid": "12a566bc-a628-4127-ba26-4cd34d567a11",
+      "resourceVersion": "407884257",
+      "deleted": true,
+      "postAbsent": true
+    },
+    {
+      "path": "/apis/rbac.authorization.k8s.io/v1/clusterroles/cps-gpu3-source-qa-node-get-20261117",
+      "uid": "8e80592a-bb00-4e90-a8d4-9ef1894763ba",
+      "resourceVersion": "407884256",
+      "deleted": true,
+      "postAbsent": true
+    }
+  ],
+  "completed": "2026-11-17T21:25:46.546273+00:00"
+}
