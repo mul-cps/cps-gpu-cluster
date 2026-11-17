@@ -1,0 +1,13 @@
+{
+  "requested": "2026-11-17T14:24:57.116434+00:00",
+  "namespace_uid": "74c4c4ba-9a84-4594-ba4c-66b08f4f4844",
+  "ordinary_uid_rv_delete": true,
+  "pod_count": 0,
+  "pvc_count": 0,
+  "expected_pv_absent": true,
+  "normal_provisioner_local_path_deletion_confirmed": true,
+  "backup_reverified": true,
+  "force_or_finalizer_changes": false,
+  "completed": "2026-11-17T14:25:04.231269+00:00",
+  "namespace_absent": true
+}

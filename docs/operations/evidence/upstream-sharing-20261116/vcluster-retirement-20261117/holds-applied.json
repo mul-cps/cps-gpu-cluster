@@ -1,0 +1,30 @@
+{
+  "observed": "2026-11-17T14:15:07.187193+00:00",
+  "tenant_allowlist_rechecked": true,
+  "backup_hash_reverified": true,
+  "holds": [
+    {
+      "kind": "bundle",
+      "namespace": "fleet-local",
+      "name": "vcluster-ckf",
+      "uid": "ce6a7335-d2c3-4ef8-ae9a-d37ef1a6f4e8",
+      "paused": true,
+      "keepResources": true,
+      "deleteNamespace": false
+    },
+    {
+      "kind": "bundledeployment",
+      "namespace": "cluster-fleet-local-local-1a3d67d0a899",
+      "name": "vcluster-ckf",
+      "uid": "50328c40-ee8b-4ff5-a28a-7e7ee8480a1b",
+      "paused": true,
+      "keepResources": true,
+      "deleteNamespace": false
+    }
+  ],
+  "pvc_bound_original_uid": "36c97400-db9e-41a6-b337-23d25b74f176",
+  "pv_original_uid": "35fdfe2b-b01e-4995-a17e-e15a6b76b485",
+  "controlplane_unchanged_uid": "ae656f1c-d271-4425-8880-6f0614b088d4",
+  "controlplane_ready": true,
+  "source_pin_or_uninstall_or_target_deletion": false
+}

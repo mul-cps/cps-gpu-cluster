@@ -1,0 +1,43 @@
+{
+  "observed": "2026-11-17T14:25:34.049058+00:00",
+  "namespaced_apis_scanned": 235,
+  "remaining_resources": [],
+  "list_errors": [],
+  "exact_absent_targets": [
+    {
+      "kind": "namespace",
+      "namespace": null,
+      "name": "vcluster-ckf"
+    },
+    {
+      "kind": "pv",
+      "namespace": null,
+      "name": "pvc-36c97400-db9e-41a6-b337-23d25b74f176"
+    },
+    {
+      "kind": "clusterrole",
+      "namespace": null,
+      "name": "vc-vcluster-ckf-v-vcluster-ckf"
+    },
+    {
+      "kind": "clusterrolebinding",
+      "namespace": null,
+      "name": "vc-vcluster-ckf-v-vcluster-ckf"
+    },
+    {
+      "kind": "bundle",
+      "namespace": "fleet-local",
+      "name": "vcluster-ckf"
+    },
+    {
+      "kind": "bundledeployment",
+      "namespace": "cluster-fleet-local-local-1a3d67d0a899",
+      "name": "vcluster-ckf"
+    }
+  ],
+  "helm_releases": [],
+  "exclusive_rbac_consumers": [],
+  "physical_pod_residue": [],
+  "backup_sha256_verified": "1e0fe1ed95be0f15ac8f8951a23b3cf07359ab359dc29d0bbcac1a2bfe52099b",
+  "backup_retained_private": true
+}

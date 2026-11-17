@@ -1,0 +1,8 @@
+{
+  "requested": "2026-11-17T14:19:43.093478+00:00",
+  "exact_bundle_uid": "ce6a7335-d2c3-4ef8-ae9a-d37ef1a6f4e8",
+  "ordinary_uid_rv_delete": true,
+  "keep_resources": true,
+  "delete_namespace": false,
+  "reason": "source removed; paused Bundle retained OutOfSync; root approved exclusive residue removal"
+}

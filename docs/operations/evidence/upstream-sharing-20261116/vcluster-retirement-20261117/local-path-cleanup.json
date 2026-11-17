@@ -1,0 +1,12 @@
+{
+  "observed": "2026-11-17T14:24:30.747907+00:00",
+  "provisioner_pod": "local-path-provisioner-786778b5-dfgmd",
+  "provisioner_uid": "59e55f6a-a2c3-4288-ad5a-359ad818fd7a",
+  "matching_lines": [
+    "2026-11-17T14:24:10.685195699Z time=\"2026-11-17T14:24:10Z\" level=info msg=\"Deleting volume pvc-36c97400-db9e-41a6-b337-23d25b74f176 at k3s-wk-gpu4:/var/lib/rancher/k3s/storage/pvc-36c97400-db9e-41a6-b337-23d25b74f176_vcluster-ckf_data-vcluster-ckf-0\"",
+    "2026-11-17T14:24:10.685239150Z time=\"2026-11-17T14:24:10Z\" level=info msg=\"create the helper pod helper-pod-delete-pvc-36c97400-db9e-41a6-b337-23d25b74f176 into kube-system\"",
+    "2026-11-17T14:24:13.703354017Z time=\"2026-11-17T14:24:13Z\" level=info msg=\"Volume pvc-36c97400-db9e-41a6-b337-23d25b74f176 has been deleted on k3s-wk-gpu4:/var/lib/rancher/k3s/storage/pvc-36c97400-db9e-41a6-b337-23d25b74f176_vcluster-ckf_data-vcluster-ckf-0\"",
+    "2026-11-17T14:24:13.707471386Z time=\"2026-11-17T14:24:13Z\" level=info msg=\"Start of helper-pod-delete-pvc-36c97400-db9e-41a6-b337-23d25b74f176 logs\"",
+    "2026-11-17T14:24:13.707489880Z time=\"2026-11-17T14:24:13Z\" level=info msg=\"End of helper-pod-delete-pvc-36c97400-db9e-41a6-b337-23d25b74f176 logs\""
+  ]
+}

@@ -1,0 +1,65 @@
+{
+  "observed": "2026-11-17T14:22:41.947073+00:00",
+  "namespaced_resources_scanned": 235,
+  "remaining_inventory": [
+    {
+      "api_resource": "configmaps",
+      "kind": "ConfigMap",
+      "name": "harica-ca",
+      "uid": "fe21fc50-2048-4698-9788-15e1318f22b0",
+      "resourceVersion": "253333503",
+      "deleting": null
+    },
+    {
+      "api_resource": "configmaps",
+      "kind": "ConfigMap",
+      "name": "kube-root-ca.crt",
+      "uid": "45875bec-b92e-4c5c-a134-03d8797787f3",
+      "resourceVersion": "63068784",
+      "deleting": null
+    },
+    {
+      "api_resource": "persistentvolumeclaims",
+      "kind": "PersistentVolumeClaim",
+      "name": "data-vcluster-ckf-0",
+      "uid": "36c97400-db9e-41a6-b337-23d25b74f176",
+      "resourceVersion": "63068893",
+      "deleting": null
+    },
+    {
+      "api_resource": "serviceaccounts",
+      "kind": "ServiceAccount",
+      "name": "default",
+      "uid": "97f55a28-40d3-4e51-a189-8c059be945cc",
+      "resourceVersion": "63068786",
+      "deleting": null
+    }
+  ],
+  "list_errors": [],
+  "pod_claim_users": [],
+  "namespace": {
+    "uid": "74c4c4ba-9a84-4594-ba4c-66b08f4f4844",
+    "rv": "244802216",
+    "phase": "Active"
+  },
+  "pvc": {
+    "name": "data-vcluster-ckf-0",
+    "uid": "36c97400-db9e-41a6-b337-23d25b74f176",
+    "rv": "63068893",
+    "phase": "Bound"
+  },
+  "pv": {
+    "name": "pvc-36c97400-db9e-41a6-b337-23d25b74f176",
+    "uid": "35fdfe2b-b01e-4995-a17e-e15a6b76b485",
+    "rv": "63068891",
+    "phase": "Bound",
+    "reclaim": "Delete",
+    "claim_uid": "36c97400-db9e-41a6-b337-23d25b74f176",
+    "local_path": "/var/lib/rancher/k3s/storage/pvc-36c97400-db9e-41a6-b337-23d25b74f176_vcluster-ckf_data-vcluster-ckf-0"
+  },
+  "fleet_owners_absent": true,
+  "helm_release_absent": true,
+  "backup_sha256_verified": "1e0fe1ed95be0f15ac8f8951a23b3cf07359ab359dc29d0bbcac1a2bfe52099b",
+  "deletion_not_executed": true,
+  "events_omitted_from_public_inventory": true
+}

@@ -1,0 +1,82 @@
+{
+  "observed": "2026-11-17T14:19:14.055600+00:00",
+  "stage": "source-pinned-waiting-owner-retirement",
+  "helm": {
+    "name": "vcluster-ckf",
+    "namespace": "vcluster-ckf",
+    "revision": "97",
+    "chart": "vcluster-0.28.0",
+    "app_version": "0.28.0",
+    "status": "deployed"
+  },
+  "manifest_resources_original_uids": [
+    {
+      "kind": "ServiceAccount",
+      "namespace": "vcluster-ckf",
+      "name": "vc-vcluster-ckf",
+      "uid": "e11ac1b5-ef39-4d39-b35b-39b90128e207"
+    },
+    {
+      "kind": "ServiceAccount",
+      "namespace": "vcluster-ckf",
+      "name": "vc-workload-vcluster-ckf",
+      "uid": "336c7c19-67fe-46cf-a53e-de77d3481cd2"
+    },
+    {
+      "kind": "Secret",
+      "namespace": "vcluster-ckf",
+      "name": "vc-config-vcluster-ckf",
+      "uid": "2d964d98-72f0-4c73-8839-67c4a145cc24"
+    },
+    {
+      "kind": "ClusterRole",
+      "namespace": null,
+      "name": "vc-vcluster-ckf-v-vcluster-ckf",
+      "uid": "52b97fcb-7387-43cc-ad1d-dd7c95bcf07c"
+    },
+    {
+      "kind": "ClusterRoleBinding",
+      "namespace": null,
+      "name": "vc-vcluster-ckf-v-vcluster-ckf",
+      "uid": "3d0a55ee-8314-4559-a1db-26acd8dd8f9b"
+    },
+    {
+      "kind": "Role",
+      "namespace": "vcluster-ckf",
+      "name": "vc-vcluster-ckf",
+      "uid": "6f4d0adc-5970-4e55-9a63-4afbe0abb623"
+    },
+    {
+      "kind": "RoleBinding",
+      "namespace": "vcluster-ckf",
+      "name": "vc-vcluster-ckf",
+      "uid": "fb8fde77-e8b4-436b-b512-199476ab4b22"
+    },
+    {
+      "kind": "Service",
+      "namespace": "vcluster-ckf",
+      "name": "vcluster-ckf-headless",
+      "uid": "08242c0c-436b-4c26-87a2-1795efa3e22a"
+    },
+    {
+      "kind": "Service",
+      "namespace": "vcluster-ckf",
+      "name": "vcluster-ckf",
+      "uid": "df6d7d8a-8d46-4625-a4f1-6501c2fe6129"
+    },
+    {
+      "kind": "StatefulSet",
+      "namespace": "vcluster-ckf",
+      "name": "vcluster-ckf",
+      "uid": "4b945f8d-03bf-4bc3-ad81-12b6f687e304"
+    }
+  ],
+  "namespace_uid": "74c4c4ba-9a84-4594-ba4c-66b08f4f4844",
+  "pvc_uid": "36c97400-db9e-41a6-b337-23d25b74f176",
+  "pv_uid": "35fdfe2b-b01e-4995-a17e-e15a6b76b485",
+  "pvc_phase": "Bound",
+  "controlplane_uid": "ae656f1c-d271-4425-8880-6f0614b088d4",
+  "controlplane_ready": true,
+  "backup_sha256": "1e0fe1ed95be0f15ac8f8951a23b3cf07359ab359dc29d0bbcac1a2bfe52099b",
+  "uninstall_executed": false
+}

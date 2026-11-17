@@ -1,0 +1,15 @@
+{
+  "requested": "2026-11-17T14:24:10.645632+00:00",
+  "pvc_uid": "36c97400-db9e-41a6-b337-23d25b74f176",
+  "pv_uid": "35fdfe2b-b01e-4995-a17e-e15a6b76b485",
+  "namespace_uid": "74c4c4ba-9a84-4594-ba4c-66b08f4f4844",
+  "backup_sha_verified": true,
+  "no_claim_users": true,
+  "ordinary_uid_rv_delete": true,
+  "grace_shortened": false,
+  "manual_host_path_delete": false,
+  "completed": "2026-11-17T14:24:14.746804+00:00",
+  "pvc_absent": true,
+  "pv_absent": true,
+  "cleanup": "normal local-path Delete reclaim; no explicit PV or host deletion"
+}

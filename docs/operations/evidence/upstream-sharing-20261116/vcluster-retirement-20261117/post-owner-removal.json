@@ -1,0 +1,123 @@
+{
+  "observed": "2026-11-17T14:21:03.295151+00:00",
+  "helm_releases": [],
+  "pods": [],
+  "reviewed_inventory": [
+    {
+      "kind": "Service",
+      "name": "kube-dns-x-kube-system-x-vcluster-ckf",
+      "present": false
+    },
+    {
+      "kind": "Service",
+      "name": "vcluster-ckf",
+      "present": false
+    },
+    {
+      "kind": "Service",
+      "name": "vcluster-ckf-headless",
+      "present": false
+    },
+    {
+      "kind": "ServiceAccount",
+      "name": "default",
+      "present": true,
+      "uid": "97f55a28-40d3-4e51-a189-8c059be945cc",
+      "deleting": null
+    },
+    {
+      "kind": "ServiceAccount",
+      "name": "vc-vcluster-ckf",
+      "present": false
+    },
+    {
+      "kind": "ServiceAccount",
+      "name": "vc-workload-vcluster-ckf",
+      "present": false
+    },
+    {
+      "kind": "Role",
+      "name": "vc-vcluster-ckf",
+      "present": false
+    },
+    {
+      "kind": "RoleBinding",
+      "name": "vc-vcluster-ckf",
+      "present": false
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "coredns-x-kube-system-x-vcluster-ckf",
+      "present": false
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "harica-ca",
+      "present": true,
+      "uid": "fe21fc50-2048-4698-9788-15e1318f22b0",
+      "deleting": null
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "kube-root-ca.crt",
+      "present": true,
+      "uid": "45875bec-b92e-4c5c-a134-03d8797787f3",
+      "deleting": null
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "kube-root-ca.crt-x-kube-system-x-vcluster-ckf",
+      "present": false
+    },
+    {
+      "kind": "Secret",
+      "name": "sh.helm.release.v1.vcluster-ckf.v96",
+      "present": false
+    },
+    {
+      "kind": "Secret",
+      "name": "sh.helm.release.v1.vcluster-ckf.v97",
+      "present": false
+    },
+    {
+      "kind": "Secret",
+      "name": "vc-config-vcluster-ckf",
+      "present": false
+    },
+    {
+      "kind": "Secret",
+      "name": "vc-vcluster-ckf",
+      "present": false
+    },
+    {
+      "kind": "Secret",
+      "name": "vcluster-ckf-certs",
+      "present": false
+    },
+    {
+      "kind": "PersistentVolumeClaim",
+      "name": "data-vcluster-ckf-0",
+      "present": true,
+      "uid": "36c97400-db9e-41a6-b337-23d25b74f176",
+      "deleting": null
+    },
+    {
+      "kind": "StatefulSet",
+      "name": "vcluster-ckf",
+      "present": false
+    },
+    {
+      "kind": "ClusterRole",
+      "name": "vc-vcluster-ckf-v-vcluster-ckf",
+      "present": false
+    },
+    {
+      "kind": "ClusterRoleBinding",
+      "name": "vc-vcluster-ckf-v-vcluster-ckf",
+      "present": false
+    }
+  ],
+  "manual_helm_uninstall_executed": false,
+  "observation": "Fleet Bundle/BD cleanup removed application and Helm release despite recorded keepResources holds; original namespace and storage retained",
+  "namespace_pvc_pv_deletion_executed": false
+}

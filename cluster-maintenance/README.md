@@ -30,10 +30,9 @@ cluster-maintenance/
 │       │   ├── observability/     # alloy, loki, monitoring
 │       │   ├── storage/           # longhorn, storageclasses
 │       │   └── utils/             # node-tuning, reflector
-│       ├── user/                  # user-facing workloads
-│       │   ├── jupyter/           # jupyterhub, jupyterhub-ssh
-│       │   └── llm/               # ollama, open-webui
-│       └── .vcluster-ckf/         # vcluster hosting Charmed Kubeflow
+│       └── user/                  # user-facing workloads
+│           ├── jupyter/           # jupyterhub, jupyterhub-ssh
+│           └── llm/               # ollama, open-webui
 └── README.md
 ```
 
