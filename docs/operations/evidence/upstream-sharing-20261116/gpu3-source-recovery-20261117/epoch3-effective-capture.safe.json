@@ -1,0 +1,110 @@
+{
+  "observed": "2026-11-17T18:35:23.344023+00:00",
+  "responses": 8,
+  "tlsHostnameChecked": true,
+  "tlsCertRequired": true,
+  "FQDN": "compute-gateway.cps-compute.svc.cluster.local",
+  "CA": "/etc/cps-native-hub/ca.crt",
+  "sameAcrossSources": true,
+  "digestFunction": "qa_modify_pod_hook.effective_digest",
+  "hookSHA256": "0da43f168270900591a10a31f3650ab2b3778e2f175a7b63df55e78ad274e203",
+  "exactEpoch2TransportASTReused": true,
+  "recipeSHA256": "2f62563f72090a3725aec69fe55e527807f9b77695cbb875bc7897109ce0229c",
+  "sources": [
+    {
+      "source": "cps",
+      "namespace": "jupyterhub",
+      "podBeforeAndAfter": {
+        "name": "hub-7bf794c98f-qntrj",
+        "uid": "6a71f17f-6498-4cf3-bbcd-0cac72321967",
+        "node": "k3s-wk-gpu1",
+        "containerIDs": {
+          "hub": "containerd://6ac1e49c8507b5b1e987ca046ad71a5e21da80d0d431d3826d211a75edb627cf"
+        },
+        "imageIDs": {
+          "hub": "ghcr.io/mul-cps/cps-compute@sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097"
+        }
+      },
+      "podUIDAndContainerIDsStable": true,
+      "observed": "2026-11-17T18:35:23.343596+00:00",
+      "effectiveProof": [
+        {
+          "source": "cps",
+          "person": "386feebb-df1a-4f3c-9ef9-6d9c026d5aea",
+          "effective_sha256": "97b1e9595a2ebadb6ed89bd54f8944e5d00a793831aa0ddbe857b2163c40222e",
+          "allowance": 1,
+          "grant_count": 2
+        },
+        {
+          "source": "cps",
+          "person": "d1fb4e43-64ec-4ac5-914f-e9cd39ad1c62",
+          "effective_sha256": "1e34ecb3b216454fb138e8f21b0352200a9fef582062e679396e95d16551a435",
+          "allowance": 1,
+          "grant_count": 1
+        },
+        {
+          "source": "cps",
+          "person": "8edde4a2-257c-42d7-9732-13f1e8742a33",
+          "effective_sha256": "6c956afec84d949f4bdec6d835871d03b9dd24018d37afb405e0c18f77aca6e5",
+          "allowance": 1,
+          "grant_count": 1
+        },
+        {
+          "source": "cps",
+          "person": "3237c91b-cef3-4f6f-960e-875b9e93c4be",
+          "effective_sha256": "538a910f88fef9c97659bb86f57d4c630f9394254a4184bb2319f2817af94659",
+          "allowance": 1,
+          "grant_count": 1
+        }
+      ]
+    },
+    {
+      "source": "cit",
+      "namespace": "cit-jhub",
+      "podBeforeAndAfter": {
+        "name": "hub-5b458cb475-mxrzt",
+        "uid": "df4ebc10-ae44-4155-ad0c-13c986bed930",
+        "node": "k3s-wk-gpu1",
+        "containerIDs": {
+          "hub": "containerd://904ca60dc9daa7fc03a257f58c92c0d36714d74c90e32e4dc78d900de2be3b91"
+        },
+        "imageIDs": {
+          "hub": "ghcr.io/mul-cps/cps-compute@sha256:bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6"
+        }
+      },
+      "podUIDAndContainerIDsStable": true,
+      "observed": "2026-11-17T18:35:23.342406+00:00",
+      "effectiveProof": [
+        {
+          "source": "cit",
+          "person": "386feebb-df1a-4f3c-9ef9-6d9c026d5aea",
+          "effective_sha256": "97b1e9595a2ebadb6ed89bd54f8944e5d00a793831aa0ddbe857b2163c40222e",
+          "allowance": 1,
+          "grant_count": 2
+        },
+        {
+          "source": "cit",
+          "person": "d1fb4e43-64ec-4ac5-914f-e9cd39ad1c62",
+          "effective_sha256": "1e34ecb3b216454fb138e8f21b0352200a9fef582062e679396e95d16551a435",
+          "allowance": 1,
+          "grant_count": 1
+        },
+        {
+          "source": "cit",
+          "person": "8edde4a2-257c-42d7-9732-13f1e8742a33",
+          "effective_sha256": "6c956afec84d949f4bdec6d835871d03b9dd24018d37afb405e0c18f77aca6e5",
+          "allowance": 1,
+          "grant_count": 1
+        },
+        {
+          "source": "cit",
+          "person": "3237c91b-cef3-4f6f-960e-875b9e93c4be",
+          "effective_sha256": "538a910f88fef9c97659bb86f57d4c630f9394254a4184bb2319f2817af94659",
+          "allowance": 1,
+          "grant_count": 1
+        }
+      ]
+    }
+  ],
+  "noAPIMutations": true
+}

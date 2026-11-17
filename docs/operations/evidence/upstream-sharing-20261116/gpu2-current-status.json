@@ -1,9 +1,9 @@
 {
-  "as_of": "2026-11-17T18:24:43.669024+00:00",
+  "as_of": "2026-11-17T18:39:14.837020+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2 accepted; GPU3 hardware/runtime/KAI passed; exact failed QA no-CREATE reservation reconciled, test RBAC fixed, real Source acceptance pending",
-  "gpu_eligibility": "GPU2 qualified and schedulable; GPU3 maintenance-tainted for QA only; current GPU3 QA grants/permit expired and not yet retired; GPU2 historical cleanup remains recorded separately",
+  "phase": "GPU2 accepted; GPU3 hardware/runtime/KAI passed; failed QA reservation and stale stopped-server marker reconciled, test RBAC fixed; real Source GPU acceptance pending",
+  "gpu_eligibility": "GPU2 qualified and schedulable; GPU3 maintenance-tainted for QA only; same five QA grants expiry renewed until at least19:30:51Z; installed QA permit still expired and no operator credentials active",
   "driver": {
     "version": "620.70.06",
     "image": "sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
@@ -230,7 +230,11 @@
     "source_stopped": true,
     "lease_inactive_attempt_null": true,
     "temporary_operator_credential_closed": true,
-    "historical_hub_marker_retained": true,
-    "marker_restart_semantics_pending": true
+    "historical_hub_marker_retained": false,
+    "marker_restart_semantics_pending": false,
+    "marker_removed_by_standard_upstream_Hub_API": true,
+    "canonical_owner_and_storage_preserved": true,
+    "five_QA_grants_expiry_only_renewed": true,
+    "eight_effectives_verified_equal": true
   }
 }

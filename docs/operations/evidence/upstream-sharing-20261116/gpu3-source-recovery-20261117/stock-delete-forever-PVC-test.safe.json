@@ -1,0 +1,10 @@
+{
+  "image": "sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097",
+  "kubespawner_source_sha256": "753d0dbcc4c9f07435a4aecccce0a09bc22ded8c4a6e48fd92f66962c79bd5ce",
+  "exact_named_server": "rtc",
+  "actual_template": "claim-{username}",
+  "delete_pvc_tested": true,
+  "actual_template_delete_pvc_calls": 0,
+  "destructive_template_control_calls": 1,
+  "real_api_calls": false
+}

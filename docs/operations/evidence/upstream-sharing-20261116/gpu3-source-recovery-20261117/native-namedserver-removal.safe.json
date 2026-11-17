@@ -1,0 +1,48 @@
+{
+  "at": "2026-11-17T18:38:26.198759+00:00",
+  "native_delete_status": 204,
+  "old_named_spawner_72_absent": true,
+  "historical_marker_removed_by_standard_Hub_API": true,
+  "canonical_owner_account_roles_groups_custody_receipt_exact": true,
+  "shares_sharecodes_remain_zero": true,
+  "PVC_PV_UID_NFS_unchanged_and_Bound": true,
+  "authoritative_lease_inactive_attempt_null": true,
+  "no_runtime_patch_or_direct_Hub_DB_write": true,
+  "hub_proof": {
+    "account_row_sha256": "f4ab683ee46cac5ef1114c8b20845e948005363c203b0b87da78c3b555b0921c",
+    "admin": false,
+    "custody_row_sha256": "69fe3cd3f73a9c934a551ab971723c25b186987ee93b68732ba8352008488664",
+    "groups": [
+      {
+        "id": 22,
+        "name": "cps-workspace-kernel-accounts"
+      }
+    ],
+    "old_row_absent": true,
+    "owner_api_token_count": 0,
+    "receipt_sha256": "c49edf3db690fcd02b8470161ad08f24817fac1ce05df12ef8643c7c1766c623",
+    "removed_spawner_id": 72,
+    "roles": [
+      {
+        "id": 51,
+        "name": "cps-workspace-kernel",
+        "scopes": []
+      },
+      {
+        "id": 56,
+        "name": "cps-workspace-runtime-cps-ws-2114b8e3a15e8913cb98083bd5673e45",
+        "scopes": [
+          "access:servers!server=cps-ws-2114b8e3a15e8913cb98083bd5673e45/rtc",
+          "users:activity!user=cps-ws-2114b8e3a15e8913cb98083bd5673e45"
+        ]
+      }
+    ],
+    "rtc_spawner_absent": true,
+    "share_code_count": 0,
+    "share_count": 0,
+    "transaction": "READ ONLY",
+    "user_created": "2026-11-16 20:40:31.605498",
+    "user_id": 31,
+    "user_name": "cps-ws-2114b8e3a15e8913cb98083bd5673e45"
+  }
+}

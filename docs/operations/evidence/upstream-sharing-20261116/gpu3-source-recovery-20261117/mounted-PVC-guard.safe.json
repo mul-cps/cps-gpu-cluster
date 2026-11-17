@@ -1,0 +1,31 @@
+{
+  "observed": "2026-11-17T18:28:55.533705+00:00",
+  "read_only": true,
+  "proof": {
+    "storage_type": "dynamic",
+    "pvc_name_template": "claim-{username}",
+    "hub_config_delete_pvc": null,
+    "hub_config_pvc_name_template": null,
+    "extra_config_storage_overrides": [],
+    "chart_config": [
+      {
+        "path": "/usr/local/etc/jupyterhub/jupyterhub_config.py",
+        "sha256": "561cb70a05e1c2f563741edb6aec55fdc5f5be5a6e4ee980e862977feeb3e92a",
+        "mapping_lines": [
+          {
+            "line": 261,
+            "code": "pvc_name_template = get_config(\"singleuser.storage.dynamic.pvcNameTemplate\")"
+          },
+          {
+            "line": 262,
+            "code": "if pvc_name_template:"
+          },
+          {
+            "line": 263,
+            "code": "c.KubeSpawner.pvc_name_template = pvc_name_template"
+          }
+        ]
+      }
+    ]
+  }
+}

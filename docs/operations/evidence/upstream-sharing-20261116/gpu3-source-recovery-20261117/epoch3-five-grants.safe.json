@@ -1,0 +1,12 @@
+{
+  "at": "2026-11-17T18:30:53.781128+00:00",
+  "verified_hostname_and_CA": true,
+  "all58_retained": true,
+  "other53_raw_exact": true,
+  "authorized49_exact": true,
+  "five_changed_only_expires": true,
+  "leases_inactive_before": true,
+  "qa_pods_absent_before": true,
+  "earliest_expiry": "2026-11-17T19:30:51.928789+00:00",
+  "registration_membership_profile_ceiling_unchanged": true
+}
