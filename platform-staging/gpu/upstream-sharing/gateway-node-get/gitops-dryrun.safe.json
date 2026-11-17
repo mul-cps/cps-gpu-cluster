@@ -1,0 +1,21 @@
+{
+  "bundle": "cluster-maintenance/clusters/cit-cps-gpu/system/gpu/gateway-node-observer",
+  "rendered_objects": [
+    {
+      "kind": "ClusterRole",
+      "name": "cps-native-gateway-authority-node",
+      "uid_preserved": true
+    },
+    {
+      "kind": "ClusterRoleBinding",
+      "name": "cps-native-gateway-authority-node",
+      "uid_preserved": true
+    }
+  ],
+  "full_bundle_render_exact": true,
+  "cas_uid_rv_rules_dryrun_pass": true,
+  "server_dryrun_only": true,
+  "live_adoption": false,
+  "fleet_takeOwnership_existing_pattern": "system/knative/knative-serving/fleet.yaml",
+  "source_discovery": "New narrow bundle; does not claim historical Fleet ownership"
+}

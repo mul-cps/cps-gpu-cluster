@@ -1,0 +1,44 @@
+{
+  "apiVersion": "rbac.authorization.k8s.io/v1",
+  "kind": "ClusterRoleBinding",
+  "metadata": {
+    "annotations": {
+      "kubectl.kubernetes.io/last-applied-configuration": "{\"apiVersion\":\"rbac.authorization.k8s.io/v1\",\"kind\":\"ClusterRoleBinding\",\"metadata\":{\"annotations\":{},\"name\":\"cps-native-gateway-authority-node\"},\"roleRef\":{\"apiGroup\":\"rbac.authorization.k8s.io\",\"kind\":\"ClusterRole\",\"name\":\"cps-native-gateway-authority-node\"},\"subjects\":[{\"kind\":\"ServiceAccount\",\"name\":\"cps-compute-controller\",\"namespace\":\"cps-compute\"}]}\n"
+    },
+    "creationTimestamp": "2026-10-09T12:47:19Z",
+    "managedFields": [
+      {
+        "apiVersion": "rbac.authorization.k8s.io/v1",
+        "fieldsType": "FieldsV1",
+        "fieldsV1": {
+          "f:metadata": {
+            "f:annotations": {
+              ".": {},
+              "f:kubectl.kubernetes.io/last-applied-configuration": {}
+            }
+          },
+          "f:roleRef": {},
+          "f:subjects": {}
+        },
+        "manager": "kubectl-client-side-apply",
+        "operation": "Update",
+        "time": "2026-10-09T12:47:19Z"
+      }
+    ],
+    "name": "cps-native-gateway-authority-node",
+    "resourceVersion": "363251531",
+    "uid": "7046107b-908e-41ea-b90c-fd9c55815afd"
+  },
+  "roleRef": {
+    "apiGroup": "rbac.authorization.k8s.io",
+    "kind": "ClusterRole",
+    "name": "cps-native-gateway-authority-node"
+  },
+  "subjects": [
+    {
+      "kind": "ServiceAccount",
+      "name": "cps-compute-controller",
+      "namespace": "cps-compute"
+    }
+  ]
+}

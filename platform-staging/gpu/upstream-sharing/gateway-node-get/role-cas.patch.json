@@ -1,0 +1,53 @@
+[
+  {
+    "op": "test",
+    "path": "/metadata/uid",
+    "value": "c62b67ff-dc75-46a9-a0e9-c0da08b260ac"
+  },
+  {
+    "op": "test",
+    "path": "/metadata/resourceVersion",
+    "value": "363251530"
+  },
+  {
+    "op": "test",
+    "path": "/rules",
+    "value": [
+      {
+        "apiGroups": [
+          ""
+        ],
+        "resourceNames": [
+          "k3s-wk-gpu2"
+        ],
+        "resources": [
+          "nodes"
+        ],
+        "verbs": [
+          "get"
+        ]
+      }
+    ]
+  },
+  {
+    "op": "replace",
+    "path": "/rules",
+    "value": [
+      {
+        "apiGroups": [
+          ""
+        ],
+        "resourceNames": [
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ],
+        "resources": [
+          "nodes"
+        ],
+        "verbs": [
+          "get"
+        ]
+      }
+    ]
+  }
+]

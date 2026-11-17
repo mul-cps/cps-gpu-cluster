@@ -1,0 +1,14 @@
+name: gateway-node-observer
+defaultNamespace: cps-compute
+labels:
+  name: gateway-node-observer
+kustomize:
+  dir: .
+targets:
+- name: cit-cps-gpu
+  clusterSelector:
+    matchLabels:
+      name: cit-cps-gpu
+# Adopt only the two existing client-side-managed RBAC objects in rbac.yaml.
+helm:
+  takeOwnership: true

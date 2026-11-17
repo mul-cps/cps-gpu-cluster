@@ -1,0 +1,20 @@
+{
+  "observed": "2026-11-17T19:40:50.756602+00:00",
+  "platform_base": "da278e98b87908e32b0b3c31baacdc8c94a4a00b",
+  "role_uid": "c62b67ff-dc75-46a9-a0e9-c0da08b260ac",
+  "binding_uid": "7046107b-908e-41ea-b90c-fd9c55815afd",
+  "only_semantic_change": "ClusterRole.rules[0].resourceNames appends k3s-wk-gpu3",
+  "binding_unchanged": true,
+  "verbs": [
+    "get"
+  ],
+  "resources": [
+    "nodes"
+  ],
+  "selected_nodes": [
+    "k3s-wk-gpu2",
+    "k3s-wk-gpu3"
+  ],
+  "production_apply": false,
+  "source_owner_discovery": "Live kubectl-client-side-apply, no Helm/Fleet/ownerRef metadata; original source manifest not found in checked platform/app sources/history"
+}

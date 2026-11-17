@@ -1,0 +1,18 @@
+{
+  "prepared_only": true,
+  "server_dryrun_only": true,
+  "files": {
+    "platform-staging/gpu/upstream-sharing/gateway-node-get/README.md": "0a19c9329bd91fe9eab7ad00c1752b455d0ff77fdf79dd2476b8c24781c8e679",
+    "platform-staging/gpu/upstream-sharing/gateway-node-get/binding-live.safe.json": "e130435294bf1ab4a0eb4f5e4fc3d29d89cce2db283fbd225f6dc08ee4edbacf",
+    "platform-staging/gpu/upstream-sharing/gateway-node-get/clusterrole.candidate.yaml": "1d19e6332afab1640508e63d238022d6aa913af85f1fcba4328a0d974c8935c6",
+    "platform-staging/gpu/upstream-sharing/gateway-node-get/clusterrole.previous.yaml": "fb8414c40871787523404f7d1784e4c9567775d4a7ab7b11c4a6cf6a0811a031",
+    "platform-staging/gpu/upstream-sharing/gateway-node-get/gitops-dryrun.safe.json": "f653839220c81ea8d2f7a297d9f13c7109ff66d6c563966d02f93b84762611f0",
+    "platform-staging/gpu/upstream-sharing/gateway-node-get/qualification.safe.json": "0e57805d9a05d1b57b0df198bf3a129101e030d9188be7e49a9d66f2c9689f7a",
+    "platform-staging/gpu/upstream-sharing/gateway-node-get/rendered.yaml": "70fdabe32ca6f8dc6b6c2559884debca89ff49854538ada2a08a7592e6f258bd",
+    "platform-staging/gpu/upstream-sharing/gateway-node-get/role-cas.patch.json": "0cf76a61a8118f5e4161ab9578fad7d58f0e5119cb030b9e1eb817840708cd55",
+    "platform-staging/gpu/upstream-sharing/gateway-node-get/role-live.safe.json": "899f749bd34f6ee63621f799410bc0d0ae7e195947bf2a7b1fe44e5aa6f3e5d8",
+    "cluster-maintenance/clusters/cit-cps-gpu/system/gpu/gateway-node-observer/fleet.yaml": "2503334e821d9fc7778245b568b87b7b66e5fa678ae0e7b3910ac9481aca3ca7",
+    "cluster-maintenance/clusters/cit-cps-gpu/system/gpu/gateway-node-observer/kustomization.yaml": "1d43322ce5d3b9fc022c047c046a334d69711d1f6a60760998992c7d6767f3e3",
+    "cluster-maintenance/clusters/cit-cps-gpu/system/gpu/gateway-node-observer/rbac.yaml": "e1a989de565867754c7fe3d495ce7d05386799f095fbf6145eb498da85df4123"
+  }
+}
