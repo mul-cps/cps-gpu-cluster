@@ -1,0 +1,76 @@
+{
+  "frozen": "2026-11-18T03:21:25.919238+00:00",
+  "Sources": [
+    {
+      "source": "cps",
+      "CPU_runs": [
+        {
+          "tag": "gpu1-cps-cpu-held-20261118",
+          "PodUID": "8390acf4-dfd3-462d-b63e-a1fd82d8e735",
+          "node": "k3s-wk-gpu3",
+          "CPU_no_GPU_or_runtimeclass_driver": true,
+          "SDK_and_retained_QAfile_pass": true,
+          "sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97"
+        },
+        {
+          "tag": "gpu1-cps-cpu-after-remove-20261118",
+          "PodUID": "719a454b-a610-41e1-8321-d40f74836abe",
+          "node": "k3s-wk-gpu3",
+          "CPU_no_GPU_or_runtimeclass_driver": true,
+          "SDK_and_retained_QAfile_pass": true,
+          "sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97"
+        }
+      ],
+      "held_ready_unix": 1794971353.5200434,
+      "all3_automatic_connections_closed_unix": 1794971407.3648741,
+      "two_initial_RTC_binary_syncs": true,
+      "Source_remove_member_A_HTTP": 200,
+      "automatic_stop_release_before_manualSTOP": true,
+      "SourceBCD_A_absent_barrierFalse_pendingNull": true,
+      "nativeGroupBCD_exactShare_after_restart": true,
+      "central_registeredBCD_A_absent_after_restart": true,
+      "normal_STOP_and_replay200_confirmed": true,
+      "owner_connection_only_not_humanSSO": true,
+      "automaticConnectionClosureDelayAfterHeldReadySeconds": 53.84483075141907
+    },
+    {
+      "source": "cit",
+      "CPU_runs": [
+        {
+          "tag": "gpu1-cit-cpu-held-20261118",
+          "PodUID": "5824d703-a93a-4718-b2c8-e83fce628b6b",
+          "node": "k3s-wk-gpu3",
+          "CPU_no_GPU_or_runtimeclass_driver": true,
+          "SDK_and_retained_QAfile_pass": true,
+          "sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97"
+        },
+        {
+          "tag": "gpu1-cit-cpu-after-remove-20261118",
+          "PodUID": "0bf8385e-1556-4331-8686-4f24b935b6e0",
+          "node": "k3s-wk-gpu3",
+          "CPU_no_GPU_or_runtimeclass_driver": true,
+          "SDK_and_retained_QAfile_pass": true,
+          "sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97"
+        }
+      ],
+      "held_ready_unix": 1794971744.247096,
+      "all3_automatic_connections_closed_unix": 1794971795.7067533,
+      "two_initial_RTC_binary_syncs": true,
+      "Source_remove_member_A_HTTP": 200,
+      "automatic_stop_release_before_manualSTOP": true,
+      "SourceBCD_A_absent_barrierFalse_pendingNull": true,
+      "nativeGroupBCD_exactShare_after_restart": true,
+      "central_registeredBCD_A_absent_after_restart": true,
+      "normal_STOP_and_replay200_confirmed": true,
+      "owner_connection_only_not_humanSSO": true,
+      "automaticConnectionClosureDelayAfterHeldReadySeconds": 51.459657192230225
+    }
+  ],
+  "CPUActualPlacement": "actual CPU Podrecords nameGPU3; this is SourceCPUworkflow inGPU1qualificationcontext, not a claim CPU Pods ran onGPU1",
+  "heldConnections": "one ownerkernel +two ownerRTCconnections; initialbinarysync verified; allthreeautomaticallyclosed afterauthoritativeSourceMemberA removal",
+  "BCDRestartAndRetainedFiles": true,
+  "nativeAndCentralBCDExactAAbsent": true,
+  "ownerOnlyNotHumanBrowserSSO": true,
+  "humanBrowserTwoPersonSSOAcceptance": "OPEN",
+  "CPUcohortEndingRoster": "BCD retained at CPUcohortend for followingfaults; later final supportedcleanup removedremaining6members"
+}

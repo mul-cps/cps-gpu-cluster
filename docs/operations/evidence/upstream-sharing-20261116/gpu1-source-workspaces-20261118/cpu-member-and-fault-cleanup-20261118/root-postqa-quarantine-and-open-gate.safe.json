@@ -1,0 +1,11 @@
+{
+  "at": "2026-11-18T03:40:58.160493+00:00",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+  "only_metadata_delta": "remove temporary controlled-QA qualification label after window closure",
+  "maintenance_NoSchedule_retained": true,
+  "Node_spec_semantically_unchanged": true,
+  "worker_accepted": false,
+  "strict_active_STOP_backend200_loss_gate": "OPEN; Source concurrent cleanup race under implementation",
+  "GPU4_maintenance_started": false
+}

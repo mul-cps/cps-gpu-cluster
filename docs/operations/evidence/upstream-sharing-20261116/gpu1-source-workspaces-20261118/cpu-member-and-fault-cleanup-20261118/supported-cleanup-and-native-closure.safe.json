@@ -1,0 +1,141 @@
+{
+  "frozen": "2026-11-18T03:38:05.800112+00:00",
+  "remaining6BCDSourceMemberRemovalsHTTP200": true,
+  "bothSourceMembershipHubGroupUsersSharesFinalCount": 0,
+  "bothSourcesBarrierFalseAllPendingNullStoppedPodGoneLeaseInactiveAttemptNull": true,
+  "retainedQAFileAndPVCUIDPVBoundPreserved": true,
+  "noUserfileDeleteCopyClearInspection": true,
+  "cohorts": [
+    {
+      "case": "firstGPU",
+      "closure": {
+        "sources": {
+          "cps": {
+            "revoked": [
+              {
+                "id": "a1437",
+                "status": 204,
+                "absent": true
+              }
+            ],
+            "authDenied": true
+          },
+          "cit": {
+            "revoked": [
+              "a747"
+            ],
+            "authorityUnchanged": true,
+            "remainingNOTE": 0,
+            "authDenied": true
+          }
+        },
+        "errors": [],
+        "elapsedSeconds": 4.859272060915828,
+        "deadlineSeconds": 170
+      },
+      "done": true,
+      "rawHandoffsAbsent": true,
+      "CPSUnmintedAuthDeniedNotApplicable": false
+    },
+    {
+      "case": "CIT20",
+      "closure": {
+        "sources": {
+          "cps": {
+            "noOwnedTokenRemains": true
+          },
+          "cit": {
+            "revoked": [
+              "a752"
+            ],
+            "authorityUnchanged": true,
+            "remainingNOTE": 0,
+            "authDenied": true
+          }
+        },
+        "errors": [],
+        "elapsedSeconds": 5.077475622063503,
+        "deadlineSeconds": 170
+      },
+      "done": true,
+      "rawHandoffsAbsent": true,
+      "CPSUnmintedAuthDeniedNotApplicable": true
+    },
+    {
+      "case": "CPU",
+      "closure": {
+        "sources": {
+          "cps": {
+            "revoked": [
+              {
+                "id": "a1442",
+                "status": 204,
+                "absent": true
+              }
+            ],
+            "authDenied": true
+          },
+          "cit": {
+            "revoked": [
+              "a754"
+            ],
+            "authorityUnchanged": true,
+            "remainingNOTE": 0,
+            "authDenied": true
+          }
+        },
+        "errors": [],
+        "elapsedSeconds": 5.1553275680635124,
+        "deadlineSeconds": 170
+      },
+      "done": true,
+      "rawHandoffsAbsent": true,
+      "CPSUnmintedAuthDeniedNotApplicable": false
+    },
+    {
+      "case": "fault",
+      "closure": {
+        "sources": {
+          "cps": {
+            "revoked": [
+              {
+                "id": "a1445",
+                "status": 204,
+                "absent": true
+              }
+            ],
+            "authDenied": true
+          },
+          "cit": {
+            "revoked": [
+              "a757"
+            ],
+            "authorityUnchanged": true,
+            "remainingNOTE": 0,
+            "authDenied": true
+          }
+        },
+        "errors": [],
+        "elapsedSeconds": 5.540399274090305,
+        "deadlineSeconds": 170
+      },
+      "done": true,
+      "rawHandoffsAbsent": true,
+      "CPSUnmintedAuthDeniedNotApplicable": false
+    }
+  ],
+  "all4IndependentWatchesInactive": "Root finalcleanup attestation; firstGPU/CIT20/CPU transitionreceipts andnativeclosure/done hashes retained; fault finalwatchinactive reportedbyRoot",
+  "CIT20CPSUnminted": "noCPSauthDenied probeclaim for nonexistenttoken",
+  "grantsClosedExactlyFive": {
+    "at": "2026-11-18T03:31:32.953810+00:00",
+    "closed_exactly_five": true,
+    "ALL_count": 58,
+    "other_current53_raw_exact_each_call": true,
+    "authorized49_raw_exact_each_call": true,
+    "both_leases_inactive_before_each_and_after": true,
+    "TLS_CA_hostname_verified": true,
+    "no_SQL_writes": true
+  },
+  "postCleanupNotAuthorityVsProcessOrderingProof": true,
+  "scope": "Only the two owned Source QA workspaces and groups; no system-wide membership claim"
+}

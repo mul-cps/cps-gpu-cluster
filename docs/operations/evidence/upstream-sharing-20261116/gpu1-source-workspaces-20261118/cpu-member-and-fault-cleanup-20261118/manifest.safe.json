@@ -1,0 +1,49 @@
+{
+  "created": "2026-11-18T03:50:48.570672+00:00",
+  "status": "SAFE_CLOSED_NORMAL_RESTORED_STRICT_ACTIVE200_GATE_OPEN",
+  "sourceAggregateManifestSHA256": "5e517cee53ad04fc3b5965571089c2959cc5d4b8a6b06b8084190585c290dd58",
+  "priorWindowFilesUnchanged": true,
+  "files": {
+    "cpu-member-owner-connection-actuals.safe.json": {
+      "sha256": "7a18562aa7663cf078d60a962d0c4c4a33c25770d98be6fd8e1c458a69506fdd",
+      "bytes": 3475
+    },
+    "fault-guard-actuals-and-pass-correction.safe.json": {
+      "sha256": "d64cf5c95553b2f55979d731c8069b5a1e055d6d5e93a111665634aa2b021911",
+      "bytes": 2600
+    },
+    "supported-cleanup-and-native-closure.safe.json": {
+      "sha256": "9d3ae85f735e2fb06af237b463176e91ecfd2ccfcd0d57e0be07e09677cb7611",
+      "bytes": 3856
+    },
+    "normal-hub-restore-and-private-state-preservation.safe.json": {
+      "sha256": "1736ec13c5ec27f5fda27da8d16f182e360e09fd11ed5704a8862e7df51ced64",
+      "bytes": 1747
+    },
+    "root-owned-qa-object-cleanup.safe.json": {
+      "sha256": "41d413ee83d51f5f0005a8be1e1470ac9622057f5f57b7179e515012155aaaf7",
+      "bytes": 2241
+    },
+    "actual-serviceaccount-rbac-after-cleanup.safe.json": {
+      "sha256": "d999740d2af341e45ddf6056e6ccadc78cb4f130631883953f474129920df9d1",
+      "bytes": 1309
+    },
+    "root-postqa-quarantine-and-open-gate.safe.json": {
+      "sha256": "e5eca60e61d1f2a5dc0e3bf311d9124b7c80ddc8531b486f10917accb57be48f",
+      "bytes": 508
+    },
+    "qualification-scope-and-open-gates.safe.json": {
+      "sha256": "76eac02187ef3e97118866ba53184938495899ba3805636c7b0e0afffe224002",
+      "bytes": 1228
+    },
+    "whitelisted-source-hashes.safe.json": {
+      "sha256": "11e75efeb9a1ecec1dc21d4640d294872abc9244127145e43cf5867d58a1507e",
+      "bytes": 15102
+    },
+    "README.md": {
+      "sha256": "acfbbe0d92ff2549c9de55bfcac319190801c6376929166aa4827756f230acd7",
+      "bytes": 2987
+    }
+  },
+  "noRawPrivatePodEnvTokenDBCertificateOrLogBodiesCopied": true
+}

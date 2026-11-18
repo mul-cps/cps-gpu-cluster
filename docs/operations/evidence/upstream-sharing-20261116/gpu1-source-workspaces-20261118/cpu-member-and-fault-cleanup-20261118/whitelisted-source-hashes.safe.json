@@ -1,0 +1,236 @@
+{
+  "authoritativeAggregateManifestSHA256": "5e517cee53ad04fc3b5965571089c2959cc5d4b8a6b06b8084190585c290dd58",
+  "aggregateBound16AndNestedCPU20Fault16Verified": true,
+  "referenceCount": 57,
+  "references": {
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/all-source-actuals-and-cleanup/manifest.safe.json": {
+      "sha256": "5e517cee53ad04fc3b5965571089c2959cc5d4b8a6b06b8084190585c290dd58",
+      "bytes": 4334
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-preparation-20261118/gpu-first-window-evidence/manifest.safe.json": {
+      "sha256": "dc1965cff26056bd313735401fdf8d42fc88e26c8d559128d8a1864a999456bd",
+      "bytes": 9543
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/CIT20-actual-evidence/manifest.safe.json": {
+      "sha256": "1227e460f52af3a95a0e819d454b9989000efc39c179716827dbd8cff50f3a92",
+      "bytes": 1549
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/CPU-member-actual-evidence/manifest.safe.json": {
+      "sha256": "b3770e8603bfe43df0f848e050665ee4dcda359706f38994c85a688c8aa9f56b",
+      "bytes": 3790
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-guard-actual-evidence/manifest.safe.json": {
+      "sha256": "73860df8d834466a00abe3fe54e0c032ed23fc814e7d771fad80c554169b4437",
+      "bytes": 2956
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-preparation-20261118/gpu-case/credential-packet/closure.safe.json": {
+      "sha256": "c431911cec3152950f1a9f44a4e72cc88a7db765b7753645c59285b21d524114",
+      "bytes": 419
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/gpu-case/credential-packet/closure.safe.json": {
+      "sha256": "23d2162c74edf7da80afd3a95e41e9b331224b0124840e2f1111fd74cc0d174f",
+      "bytes": 305
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/credential-packet/closure.safe.json": {
+      "sha256": "b632d25a07644e62216d88cb982cc61c5219407306547daeb1c890fa8104aecf",
+      "bytes": 420
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/credential-packet/closure.safe.json": {
+      "sha256": "012acd919de705ce582a43941f3b64eab113c153df1f4cdd4eae351497312daf",
+      "bytes": 419
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/normal-restore-preparation/postrestore/cps-hub.safe.json": {
+      "sha256": "4cffd3a802cfa6a5c61b5ec6b04975500a7831dcdad44ac7375c7375d080258e",
+      "bytes": 2643
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/cps-FINAL-supported-cleanup.safe.json": {
+      "sha256": "0df42df37863f5630fc1c6c07168fa984af0e4540ba11b1026277e1c4448ef2f",
+      "bytes": 10162
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/cps-FINAL-CLOSED-accounts.safe.json": {
+      "sha256": "c2749ae00909000b00c7aabff4df894c27d40f2463666c98ba5418fe07da4119",
+      "bytes": 2237
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/normal-restore-preparation/postrestore/cit-hub.safe.json": {
+      "sha256": "fe2901e97675b0348a1e14640a2dda0085cfd567d57d95fdb3cf80d61223abd5",
+      "bytes": 1820
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/cit-FINAL-supported-cleanup.safe.json": {
+      "sha256": "cd6b34dac9f3f003ce603aa7a9be00a0f09f38b159493d2f314456370b802a0a",
+      "bytes": 6808
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/cit-FINAL-CLOSED-accounts.safe.json": {
+      "sha256": "d3de4d213454186817355e79c89ccbc787b2b35e071afe2508a704fddc0c15da",
+      "bytes": 1263
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/root-authority-final-close-five/complete.safe.json": {
+      "sha256": "7172307ce368e8f3f90979aa1eac4d4308b4bcb384bfa3cfe10b22b14f87122c",
+      "bytes": 303
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/all-source-actuals-and-cleanup/summary.safe.json": {
+      "sha256": "0fae3fefa5c08860c7a63542685b2dd00b66c34dc2e5af2d83c66f349bfed266",
+      "bytes": 3789
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/probes/registry-qa-gpu1-cps-cpu-held-20261118-pod-evidence.json": {
+      "sha256": "af95bb97395661843a7d9f2cdf4d87188b99af81c02c2ea1f2e5e8eae78fdf53",
+      "bytes": 775
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/probes/registry-qa-gpu1-cps-cpu-held-20261118-jupyter-evidence.json": {
+      "sha256": "efb2be6aa2475ee4af65b6f2a4d8146329f8ede982ad811465a9690a8be10f96",
+      "bytes": 781
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/probes/registry-qa-gpu1-cps-cpu-after-remove-20261118-pod-evidence.json": {
+      "sha256": "f147ec0766b5484d57cff2d2b43da54ce70a2ac77a8442093a3687a041065c85",
+      "bytes": 775
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/probes/registry-qa-gpu1-cps-cpu-after-remove-20261118-jupyter-evidence.json": {
+      "sha256": "2ae9b87b42da9c8f705417942677e3fc9d1f118c04287d4df6af4011737a7cd2",
+      "bytes": 783
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/continuation-prep/cps-owner-held.private.log": {
+      "sha256": "51a46f35a44e4f729d9cb115d44e571758e2c9b7b50c924ac97db38362eb16c2",
+      "bytes": 804
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/cps-remove-a-held-result.safe.json": {
+      "sha256": "cf0a9f832c8eb2575ec13ff2f8dea16b7b479767d0e0aef2bb9234a48db7128e",
+      "bytes": 237
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/cps-authoritative-remove-automatic-stop.safe.json": {
+      "sha256": "984543381290f3fd99470f8428af58ed741c979bc75dc161bd71c015bef6fbdd",
+      "bytes": 220
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/cps-authoritative-membership-nativeShare-centralRoster.safe.json": {
+      "sha256": "26116e93f367e3c5791f208d1db5ee9e47788db142965b3c9c7d20cf2c0deeb0",
+      "bytes": 990
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/cps-confirmed-stop.safe.json": {
+      "sha256": "7c2744890af1076fb347c350a71d6123fe9da60817510abde55d04b9662baf1a",
+      "bytes": 141
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/probes/registry-qa-gpu1-cit-cpu-held-20261118-pod-evidence.json": {
+      "sha256": "ef3214ecb7b1665c34b65c4d6569d4e92019581d017fb3464e67fc3ce8d19c8a",
+      "bytes": 773
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/probes/registry-qa-gpu1-cit-cpu-held-20261118-jupyter-evidence.json": {
+      "sha256": "673fc2a6ee857c6bf6bccba5d80ecba9fac3bb4f3149d65c003555c7929c9f59",
+      "bytes": 782
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/probes/registry-qa-gpu1-cit-cpu-after-remove-20261118-pod-evidence.json": {
+      "sha256": "a3e0836e1b8f7c60b2ca6f1ebb6a84c8745d36f0c2df256f0943fd4aa2e67912",
+      "bytes": 773
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/probes/registry-qa-gpu1-cit-cpu-after-remove-20261118-jupyter-evidence.json": {
+      "sha256": "5e20321f5ba2d96a18e79eb47e0636b335ef0ba060f97ba7195bd22c754d2623",
+      "bytes": 781
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/continuation-prep/cit-owner-held.private.log": {
+      "sha256": "2e859269274b587d5c53718b3eac12ef5b80350c47413a8d5b67b42c118221ef",
+      "bytes": 804
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/cit-remove-a-held-result.safe.json": {
+      "sha256": "b05f716b95c3b7d4d768a8ffc7c3648513325b6d9b3564c82005e6955bfa76c0",
+      "bytes": 237
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/cit-authoritative-remove-automatic-stop.safe.json": {
+      "sha256": "b3219573bded2a55903fd1c710592275c76a72593e31e1654b6b1fc3f9b00bfa",
+      "bytes": 220
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/cit-authoritative-membership-nativeShare-centralRoster.safe.json": {
+      "sha256": "089b2e84557a87dd6d12b14b1d5e26f080aa00eb04023836d133091b72cd53aa",
+      "bytes": 1030
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/cit-confirmed-stop.safe.json": {
+      "sha256": "5af884ab7ded123296f4a75fbff3c18da67492c24503b686af0e42a331fc624c",
+      "bytes": 141
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/CPU-member-actual-evidence/summary.safe.json": {
+      "sha256": "0cd9ed23dd0ce76a799cf28478d0a30c06ff499b06abb6348c868c290c363c14",
+      "bytes": 3050
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/cps-duplicate-stop-loss.safe.json": {
+      "sha256": "c1a18f79908be584fbb22599cc49423355659cc3b344883889ab94ddc0e9423c",
+      "bytes": 1216
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/continuation-prep/cps-stop-response-loss.safe.json": {
+      "sha256": "5e6db4a7002e2442e8d4279d7525093b04580855ec78a4a4b8ddfa9cad8eb98e",
+      "bytes": 663
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/cps-stop-loss-executor.private.json": {
+      "sha256": "3caa32510b8aca8f93ff379af9e419e0fa036294265feb2d5ff70e2ed659eb3c",
+      "bytes": 1187
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/probes/registry-qa-gpu1-cps-duplicate-e6-pod-evidence.json": {
+      "sha256": "fbca82d0a8e8fc9801a1aa3b691e8db16452087eb0a6399c86ca63042719db86",
+      "bytes": 1128
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/probes/registry-qa-gpu1-cps-duplicate-e6-jupyter-evidence.json": {
+      "sha256": "2bff283bb7c9765493dff6303a713f719beb13b2c09afabb5ba2dc85f20a9c4f",
+      "bytes": 1739
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/cit-duplicate-stop-loss.safe.json": {
+      "sha256": "19a6f6c12eede821550e9a2eedeb6c99d70c9f025f369b26aacd9180df3d9337",
+      "bytes": 1218
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/continuation-prep/cit-stop-response-loss.safe.json": {
+      "sha256": "d4de6df48ca9182eff4d05c23590c5444df01c0c37592e1f59c2ecf27c51d527",
+      "bytes": 665
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/cit-stop-loss-executor.private.json": {
+      "sha256": "764f36766f6443604fd24d1e84c2e2c9126365b6e142fabc48f3e8ef1f58a096",
+      "bytes": 1189
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/probes/registry-qa-gpu1-cit-duplicate-e6-pod-evidence.json": {
+      "sha256": "5ada0b93910863732f3ef3f3f057b6e4a4da5c706c05fe743719e331fd7c6aca",
+      "bytes": 1126
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/probes/registry-qa-gpu1-cit-duplicate-e6-jupyter-evidence.json": {
+      "sha256": "21da0fb285d3f714266aae534bdf771ff931d1db74229176d264f16378decb21",
+      "bytes": 1742
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-guard-actual-evidence/summary.safe.json": {
+      "sha256": "e35bb3694fe6db66dc6eba7f33dea5eb7c4f84c3d5d66b678ec45048c9621409",
+      "bytes": 2507
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-preparation-20261118/gpu-case/credential-packet/done": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/gpu-case/credential-packet/done": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/cpu-case/credential-packet/done": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/fault-case/credential-packet/done": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/root-owned-QA-cleanup/complete.safe.json": {
+      "sha256": "41d413ee83d51f5f0005a8be1e1470ac9622057f5f57b7179e515012155aaaf7",
+      "bytes": 2241
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/root-final-actual-SA-RBAC.safe.json": {
+      "sha256": "d999740d2af341e45ddf6056e6ccadc78cb4f130631883953f474129920df9d1",
+      "bytes": 1309
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/root-postQA-quarantine.safe.json": {
+      "sha256": "e5eca60e61d1f2a5dc0e3bf311d9124b7c80ddc8531b486f10917accb57be48f",
+      "bytes": 508
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/root-stage3-CPU-release.safe.json": {
+      "sha256": "d74ea928806da87001e702125dd1d745f3a7a9eb279af2417500a0275eb1d1fa",
+      "bytes": 984
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-cpu-window-20261118/root-stage3-fault-release.safe.json": {
+      "sha256": "953a35097c13deac649f478c9bcec627403e29c6e2d058b0a4378bd6c87c157b",
+      "bytes": 556
+    },
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-source-qa-preparation-20261118/root-gpu-window-closed.safe.json": {
+      "sha256": "3edcd7b84f64056be75bb01e3c8f21125a5aae7ad0974a3e2ee9f4b3dc4ae5bc",
+      "bytes": 469
+    }
+  },
+  "privateBodySourcesHashReferencedOnly": true
+}

@@ -1,0 +1,79 @@
+{
+  "at": "2026-11-18T03:38:37.727513+00:00",
+  "deleted_owned_objects": [
+    {
+      "kind": "configmap",
+      "namespace": "jupyterhub",
+      "name": "cps-gpu1-source-qa-14aff1409b27",
+      "UID": "262a5ea3-efd8-4b42-963e-78168979ebc3",
+      "absent": true
+    },
+    {
+      "kind": "secret",
+      "namespace": "jupyterhub",
+      "name": "cps-hub-gpu1-qa-567a680bd006",
+      "UID": "a310138b-140b-448a-91d9-05309c979cbb",
+      "absent": true
+    },
+    {
+      "kind": "configmap",
+      "namespace": "jupyterhub",
+      "name": "cps-gpu1-source-qa-84c2e648061a",
+      "UID": "9bc32e98-663e-4a64-80e6-4027eb2af97c",
+      "absent": true
+    },
+    {
+      "kind": "secret",
+      "namespace": "jupyterhub",
+      "name": "cps-hub-gpu1-qa-888d485a192c",
+      "UID": "dde74a95-c96e-45fd-aaa3-382fff147379",
+      "absent": true
+    },
+    {
+      "kind": "configmap",
+      "namespace": "cit-jhub",
+      "name": "cit-gpu1-source-qa-676bdc534cf3",
+      "UID": "8a2c2b61-7896-46a8-86a7-4d040cc7f10d",
+      "absent": true
+    },
+    {
+      "kind": "secret",
+      "namespace": "cit-jhub",
+      "name": "cit-hub-gpu1-qa-55d3cf8e9c19",
+      "UID": "4a7b7cc6-0afe-420d-bb69-935b75feabbe",
+      "absent": true
+    },
+    {
+      "kind": "configmap",
+      "namespace": "cit-jhub",
+      "name": "cit-gpu1-source-qa-70718c772496",
+      "UID": "000e9d7a-04dc-4df5-a4f7-dcf54611be83",
+      "absent": true
+    },
+    {
+      "kind": "secret",
+      "namespace": "cit-jhub",
+      "name": "cit-hub-gpu1-qa-ddb5a4933bfb",
+      "UID": "acfa0d35-b220-49a8-857b-b4caef31eaec",
+      "absent": true
+    },
+    {
+      "kind": "clusterrolebinding",
+      "namespace": null,
+      "name": "cps-gpu1-source-qa-node-read-20261118",
+      "UID": "b7f7684a-47fe-4fe8-a08e-63824c3ea0c7",
+      "absent": true
+    },
+    {
+      "kind": "clusterrole",
+      "namespace": null,
+      "name": "cps-gpu1-source-qa-node-read-20261118",
+      "UID": "3e711d3e-2b2a-410f-a472-0aa7a4e3d31c",
+      "absent": true
+    }
+  ],
+  "normal_Hubs_and_no_live_QA_refs_verified_before_deletes": true,
+  "original_Secrets_and_permanent_Gateway_RBAC_untouched": true,
+  "UID_and_fresh_RV_preconditions_every_delete": true,
+  "force_or_finalizer_changes": false
+}

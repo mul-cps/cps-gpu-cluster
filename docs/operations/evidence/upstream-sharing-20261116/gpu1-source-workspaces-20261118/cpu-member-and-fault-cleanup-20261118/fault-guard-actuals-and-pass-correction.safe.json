@@ -1,0 +1,58 @@
+{
+  "frozen": "2026-11-18T03:35:48.025695+00:00",
+  "sources": [
+    {
+      "source": "cps",
+      "duplicate_statuses": [
+        400,
+        200
+      ],
+      "one_PodUID": "2de55d6c-fa26-43a4-a34c-f0f863f67e1c",
+      "one_attempt": "9c8d4b00-d76d-43f4-813e-c28b91b843f4",
+      "actual_GPU5_probe_passed": true,
+      "lost_entire_HTTP_response": {
+        "backend_status": 409,
+        "consumed": true,
+        "downstream_bytes": 0,
+        "clientEOF": "RemoteDisconnected"
+      },
+      "fresh_reconcile_before_replay200": true,
+      "classification": "GUARD_CASE_ONLY; pending cleanup409 response lost, normal cleanup subsequently reconciled",
+      "inherited_strict_backend200_assertion": "FAILED; inner fixture exit1",
+      "outer_script_exit0_PASS_text": "MISCLASSIFICATION retained, not accepted as strict200qualification",
+      "accepted_active_STOP200_replyloss": "OPEN",
+      "final_Source_members_group_Shares": 0,
+      "final_native_accounts_receipts_roles_custody_preserved": true
+    },
+    {
+      "source": "cit",
+      "duplicate_statuses": [
+        400,
+        200
+      ],
+      "one_PodUID": "5abe4ed4-6977-4c4d-bc56-79f3cb4b23eb",
+      "one_attempt": "834eb0e6-1544-411a-b5c8-ea3346bce6fb",
+      "actual_GPU5_probe_passed": true,
+      "lost_entire_HTTP_response": {
+        "backend_status": 409,
+        "consumed": true,
+        "downstream_bytes": 0,
+        "clientEOF": "RemoteDisconnected"
+      },
+      "fresh_reconcile_before_replay200": true,
+      "classification": "GUARD_CASE_ONLY; pending cleanup409 response lost, normal cleanup subsequently reconciled",
+      "inherited_strict_backend200_assertion": "FAILED; inner fixture exit1",
+      "outer_script_exit0_PASS_text": "MISCLASSIFICATION retained, not accepted as strict200qualification",
+      "accepted_active_STOP200_replyloss": "OPEN",
+      "final_Source_members_group_Shares": 0,
+      "final_native_accounts_receipts_roles_custody_preserved": true
+    }
+  ],
+  "duplicateSafety": "PASS bothSources400/200 withoneactualPodUID/attempt andGPU5probe",
+  "lostResponseClassification": "GUARD_CASE_ONLY; BOTH firstactiveSTOP responseswerebackend409, fullyconsumedproxy-side/clientEOF0bytes; freshauthoritativereconcile precededreplay200",
+  "inheritedStrictBackend200InnerExit": 1,
+  "outerExit0PASSLabel": "MISCLASSIFICATION corrected; notacceptedqualification",
+  "strictACTIVEAccepted200STOPResponseLossGate": "OPEN",
+  "sourceConcurrentCleanupReleaseGap": "demonstrated blocker; separate Sourcepolicyfixunderimplementation, no newfixqualificationclaimed",
+  "workerAccepted": false
+}

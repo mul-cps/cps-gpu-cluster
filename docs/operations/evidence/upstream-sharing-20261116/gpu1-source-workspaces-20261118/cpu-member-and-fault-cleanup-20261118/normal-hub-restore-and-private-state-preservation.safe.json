@@ -1,0 +1,41 @@
+{
+  "normalHubs": [
+    {
+      "observed": "2026-11-18T03:33:20.138986+00:00",
+      "source": "cps",
+      "generation": 385,
+      "health": 200,
+      "SourceRegistry_mode": true,
+      "actual_spec_original_exact": true,
+      "original_secret_UID_data_exact": true,
+      "QA_leaf_and_module_mount_absent": true,
+      "receipt_account_custody_preserved": true,
+      "captured_PVC_UID_PV_phase_exact": true,
+      "actual_Hub_image_digest_exact": true,
+      "original_normal_upstream_leaf_sha256": "71c565b7892a1f2285879d3d98444d5d7adea1372cb919f61ef2639d75eff683",
+      "final_closed_account_baseline_sha256": "c2749ae00909000b00c7aabff4df894c27d40f2463666c98ba5418fe07da4119",
+      "allOwnerTokensServers": 0,
+      "closedReceiptCustodyRolesGroupsPreserved": true,
+      "cryptoPreservedByOriginalSecretUIDAndDataExactProof": true
+    },
+    {
+      "observed": "2026-11-18T03:36:03.899512+00:00",
+      "source": "cit",
+      "generation": 323,
+      "health": 200,
+      "SourceRegistry_mode": true,
+      "actual_spec_original_exact": true,
+      "original_secret_UID_data_exact": true,
+      "QA_leaf_and_module_mount_absent": true,
+      "receipt_account_custody_preserved": true,
+      "captured_PVC_UID_PV_phase_exact": true,
+      "actual_Hub_image_digest_exact": true,
+      "original_normal_upstream_leaf_sha256": "8a93e2f5604be8d8f0b28f0b7f0284b01d71ff60a02701df732cbc5bb1bb96c5",
+      "final_closed_account_baseline_sha256": "d3de4d213454186817355e79c89ccbc787b2b35e071afe2508a704fddc0c15da",
+      "allOwnerTokensServers": 0,
+      "closedReceiptCustodyRolesGroupsPreserved": true,
+      "cryptoPreservedByOriginalSecretUIDAndDataExactProof": true
+    }
+  ],
+  "accountRowsPrivateConfigAndCryptoValuesNotCopied": true
+}
