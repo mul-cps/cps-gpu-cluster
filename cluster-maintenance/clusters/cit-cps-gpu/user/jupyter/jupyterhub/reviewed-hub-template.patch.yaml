@@ -310,7 +310,7 @@
       - name: secret
         secret:
           defaultMode: 420
-          secretName: cps-fixed-storage-defaults-bba5b104102ff364
+          secretName: cps-personal-gpu-compat-e268ad93002d0873
       - emptyDir: {}
         name: ca-bundle
       - configMap:
