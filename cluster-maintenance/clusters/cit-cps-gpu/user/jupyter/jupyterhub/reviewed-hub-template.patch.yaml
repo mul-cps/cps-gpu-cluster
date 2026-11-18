@@ -17,8 +17,6 @@
         cps.unileoben.ac.at/upstream-policy-hash: sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb
         cps.unileoben.ac.at/upstream-runtime-bootstrap: 0d9c42a691fcdd5c26ddcc4f7b1f3ba63c351dd377043e802f3dc1baf2b7bd52
         kubectl.kubernetes.io/restartedAt: '2026-11-17T13:11:20.023255+00:00'
-        cps.unileoben.ac.at/gpu1-source-qa-module: 6f57f6b20b069a1baabff883d168e035d81147de5f87f101cdba4c4f3200f75d
-        cps.unileoben.ac.at/gpu1-source-qa-permit: 14aff1409b27e9dddcdfdfa9c47dc97a9a1e5dee94fff358209e192722590d07
       labels:
         app: jupyterhub
         app.kubernetes.io/component: hub
@@ -223,9 +221,6 @@
         - mountPath: /etc/cps-upstream-hub
           name: upstream-policy
           readOnly: true
-        - name: cps-gpu1-source-qa
-          mountPath: /etc/cps-gpu1-source-qa
-          readOnly: true
       dnsPolicy: ClusterFirst
       imagePullSecrets:
       - name: cps-native-image-pull
@@ -302,7 +297,7 @@
       - name: secret
         secret:
           defaultMode: 420
-          secretName: cps-hub-gpu1-qa-567a680bd006
+          secretName: cps-fixed-launch-16fa767-20261028
       - emptyDir: {}
         name: ca-bundle
       - configMap:
@@ -397,10 +392,6 @@
           defaultMode: 292
           name: cps-upstream-policy-2b2ad6ce656d
         name: upstream-policy
-      - name: cps-gpu1-source-qa
-        configMap:
-          name: cps-gpu1-source-qa-14aff1409b27
-          defaultMode: 420
 - op: replace
   path: /spec/strategy
   value:
