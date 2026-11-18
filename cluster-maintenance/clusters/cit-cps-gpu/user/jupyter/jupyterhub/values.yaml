@@ -2856,10 +2856,10 @@ prePuller:
       tag: "latest-pytorch-code@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3"
     cps-tf:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
-      tag: "latest-tf-code"
+      tag: "latest-tf-code@sha256:593fbba67a2ed22250ad842270c2d7701ddb3e2d0607cb2500e980026c1df754"
     cps-desktop-ros2:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
-      tag: "latest-desktop-ros2"
+      tag: "latest-desktop-ros2@sha256:842b90a868e60f61b6aed854b27481fb44dc781cb71d7c0ab7e7e0934c97a10e"
     cps-comfyui:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
-      tag: "main-comfyui"
+      tag: "main-comfyui@sha256:ae3dede57292cec34d0222bbde6a2995c305289df62a6a0aaf10e30c029aa77d"
