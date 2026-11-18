@@ -1,0 +1,13 @@
+{
+  "observed": "2026-11-18T01:27:20.731420+00:00",
+  "result": "EXPECTED_PRECREATE_HA_GUARD_MISMATCH",
+  "runnerLine": 173,
+  "oldPredicate": "exactly one Ready admission, binder, scheduler",
+  "actualAdmissionCount": 2,
+  "gpuSharingMode": "NvFractions",
+  "knownFixtureObjectsRemaining": [],
+  "noCreateWatchOrGPUAllocationBeforeFailure": true,
+  "NodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+  "noRetryOrCodeChanges": true
+}

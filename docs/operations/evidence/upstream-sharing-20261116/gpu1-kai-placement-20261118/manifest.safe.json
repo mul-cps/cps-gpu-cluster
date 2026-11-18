@@ -1,0 +1,41 @@
+{
+  "created": "2026-11-18T02:12:34.595598+00:00",
+  "scope": "safe projection of GPU1stockKAIHA2placement only; noSource/worker/fullacceptance",
+  "privateRawMaterialExcluded": true,
+  "sourceEvidenceHashes": {
+    "ha2-complete.safe.json": "3478cd133f8f2a9e4e571f6262a2238ef9231f8cac3a279d050985a81a7103c7",
+    "ha2-owned-cgroups-and-physical.safe.json": "6ec86382c0830cfddce30a2c61cce171b7291d2a59e377f19c5d8243a76dd5a0",
+    "ha2-evidence-manifest.safe.json": "042df2b9206de2540bb49e3d442874e6e0de4f04001ef35373e7092f8ec071c6",
+    "expected-ha-precreate-mismatch.safe.json": "2fbb217220873f759c34cf2417ce60a74cb5c819f237848743f0946deb32adcd"
+  },
+  "files": {
+    "actual-placement-complete.safe.json": {
+      "sha256": "3478cd133f8f2a9e4e571f6262a2238ef9231f8cac3a279d050985a81a7103c7",
+      "bytes": 2026
+    },
+    "owned-cgroups-and-final-idle.safe.json": {
+      "sha256": "6ec86382c0830cfddce30a2c61cce171b7291d2a59e377f19c5d8243a76dd5a0",
+      "bytes": 1730
+    },
+    "fifteen-role-placement-and-leaves.safe.json": {
+      "sha256": "4f0a42f66230cffd0c92e05f3a96c52f8c872e1535e8712bd960c6c69589d455",
+      "bytes": 23560
+    },
+    "both-order-checkpoints.safe.json": {
+      "sha256": "b74ded67e69f48d762992bab79a433f512171cf2a4d74b58847b6c312b05bb7b",
+      "bytes": 7149
+    },
+    "historical-precreate-guard-failure.safe.json": {
+      "sha256": "03b5fcb4304631239ef9145f6cd1722844397c4cd9bfde0883331ece19f16721",
+      "bytes": 484
+    },
+    "reviewed-ha2-guard.safe.json": {
+      "sha256": "4f7ac0159570db0d84d64ad896ef420e5c06a0e568435adc7abc05403ab72228",
+      "bytes": 1153
+    },
+    "README.md": {
+      "sha256": "48472f4ddbff84a47478f5348b691d12893b42a839df08aa1e4ef9b06401a9af",
+      "bytes": 3020
+    }
+  }
+}

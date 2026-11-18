@@ -1,0 +1,219 @@
+{
+  "physicalOrderMapping": {
+    "b": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+    "a": "GPU-8df28256-50a3-db30-3706-b69d52f4874f"
+  },
+  "sequence": [
+    {
+      "create": [
+        "seed-exclusive"
+      ],
+      "expect": "KAI selects one UUID; discover it as B; other allowed UUID is A"
+    },
+    {
+      "create": [
+        "r0-a-5",
+        "r0-a-10",
+        "r0-a-20",
+        "guard-a"
+      ],
+      "expect": "all A; logical reservation 40GiB on A, seed exclusively reserves B"
+    },
+    {
+      "release_delete": [
+        "seed-exclusive"
+      ],
+      "expect": "UID-guarded seed release; B is available"
+    },
+    {
+      "create": [
+        "r0-b-5",
+        "r0-b-10",
+        "r0-b-20"
+      ],
+      "expect": "all B; A logical40GiB; both cards profiles5/10/20 coexist and independently progress"
+    },
+    {
+      "checkpoint": "round0-AB: physical32GiB/card +1MiB guard; capture BindRequests, leaf limits, progress and NVML"
+    },
+    {
+      "release_delete": [
+        "r0-b-5",
+        "r0-b-10",
+        "r0-b-20"
+      ],
+      "expect": "B payload stops before refill; preserve original A logical40GiB"
+    },
+    {
+      "create": [
+        "r1-b-20",
+        "r1-b-10",
+        "r1-b-5",
+        "guard-b"
+      ],
+      "expect": "all original B; B logical40GiB; reverse profile order"
+    },
+    {
+      "release_delete": [
+        "r0-a-5",
+        "r0-a-10",
+        "r0-a-20",
+        "guard-a"
+      ],
+      "expect": "original A becomes free while B remains booked40GiB"
+    },
+    {
+      "create": [
+        "r1-a-20",
+        "r1-a-10",
+        "r1-a-5"
+      ],
+      "expect": "all original A; both cards profiles20/10/5 coexist and independently progress"
+    },
+    {
+      "checkpoint": "round1-BA: physical32GiB/card +1MiB guard; same witness set"
+    },
+    {
+      "release_delete": [
+        "r1-b-20",
+        "r1-b-10",
+        "r1-b-5",
+        "guard-b",
+        "r1-a-20",
+        "r1-a-10",
+        "r1-a-5"
+      ],
+      "expect": "all owned Pods/CM gone; no owned BindRequests/reservations; no CUDA clients; <=1MiB/card"
+    }
+  ],
+  "checkpoints": [
+    {
+      "checkpoint": "checkpoint-4.json",
+      "rows": [
+        {
+          "role": "r0-a-5",
+          "observedTime": 1794966021.7790403,
+          "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+          "NVMLMemoryUsedMiB": 34452,
+          "runtimeContainerID": "09672e01d0d7b3c08c7be18b310126be43c5125ebe8e0802e3d06a5c0ec2eaff",
+          "cgroupInode": 30982,
+          "hostLeafMemoryMaxBytes": 17179869184
+        },
+        {
+          "role": "r0-a-10",
+          "observedTime": 1794966022.8419695,
+          "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+          "NVMLMemoryUsedMiB": 34452,
+          "runtimeContainerID": "d9f1397ba408ee2e2b02aa086dc1d6f46d164ce96af8b204bc9957102e58f95c",
+          "cgroupInode": 31345,
+          "hostLeafMemoryMaxBytes": 17179869184
+        },
+        {
+          "role": "r0-a-20",
+          "observedTime": 1794966023.8906329,
+          "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+          "NVMLMemoryUsedMiB": 34452,
+          "runtimeContainerID": "5f7ff9c24b3e615e0026333e971733e4655d6177636d15b7b955eb1851eeb859",
+          "cgroupInode": 31708,
+          "hostLeafMemoryMaxBytes": 17179869184
+        },
+        {
+          "role": "r0-b-5",
+          "observedTime": 1794966024.925135,
+          "GPUUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+          "NVMLMemoryUsedMiB": 34030,
+          "runtimeContainerID": "7e086d575bfd2e6c2e14fb66f04ce2f88a1de57aff51173b784f06c9c4cd95e2",
+          "cgroupInode": 32695,
+          "hostLeafMemoryMaxBytes": 17179869184
+        },
+        {
+          "role": "r0-b-10",
+          "observedTime": 1794966025.9533617,
+          "GPUUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+          "NVMLMemoryUsedMiB": 34030,
+          "runtimeContainerID": "ba11a7f84cbf9e937e436ba3d14e43558fd6d38f0bfc6d19e903724b5d0e6fc2",
+          "cgroupInode": 33120,
+          "hostLeafMemoryMaxBytes": 17179869184
+        },
+        {
+          "role": "r0-b-20",
+          "observedTime": 1794966026.9804366,
+          "GPUUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+          "NVMLMemoryUsedMiB": 34030,
+          "runtimeContainerID": "79d017cbd362846ce0d1f9cff4c553ce4bc00691ebbbfb1391aaa31bd6e528be",
+          "cgroupInode": 33483,
+          "hostLeafMemoryMaxBytes": 17179869184
+        }
+      ],
+      "actualPhysicalUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    },
+    {
+      "checkpoint": "checkpoint-9.json",
+      "rows": [
+        {
+          "role": "r1-b-20",
+          "observedTime": 1794966095.262549,
+          "GPUUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+          "NVMLMemoryUsedMiB": 34452,
+          "runtimeContainerID": "a6c398b701de1ee96f1984d19f9d103dcf9d1fb4bc447474c192b2f68ed0e77d",
+          "cgroupInode": 34413,
+          "hostLeafMemoryMaxBytes": 17179869184
+        },
+        {
+          "role": "r1-b-10",
+          "observedTime": 1794966096.321262,
+          "GPUUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+          "NVMLMemoryUsedMiB": 34452,
+          "runtimeContainerID": "f047366094d60e7b3ec994534c68822d986a9a014a6169cfbf5ebf97aa4fb196",
+          "cgroupInode": 34776,
+          "hostLeafMemoryMaxBytes": 17179869184
+        },
+        {
+          "role": "r1-b-5",
+          "observedTime": 1794966097.3830023,
+          "GPUUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+          "NVMLMemoryUsedMiB": 34452,
+          "runtimeContainerID": "da87e1a2f5c911c9e39d5e80daad103b4fd7c64796c4d41ec64d8b6117643f4c",
+          "cgroupInode": 35139,
+          "hostLeafMemoryMaxBytes": 17179869184
+        },
+        {
+          "role": "r1-a-20",
+          "observedTime": 1794966098.425664,
+          "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+          "NVMLMemoryUsedMiB": 34030,
+          "runtimeContainerID": "0155f574d541ae106ba50aef9c6afdeee8f5f711c19fcaa6c54d521c141babbb",
+          "cgroupInode": 36170,
+          "hostLeafMemoryMaxBytes": 17179869184
+        },
+        {
+          "role": "r1-a-10",
+          "observedTime": 1794966099.4383974,
+          "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+          "NVMLMemoryUsedMiB": 34030,
+          "runtimeContainerID": "c6158400b6eae0e90206244f43dfc345938974915cd292f0bad0d68deab2ca32",
+          "cgroupInode": 36964,
+          "hostLeafMemoryMaxBytes": 17179869184
+        },
+        {
+          "role": "r1-a-5",
+          "observedTime": 1794966100.5318298,
+          "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+          "NVMLMemoryUsedMiB": 34030,
+          "runtimeContainerID": "cdf174e15145defd780d657802eb49ddbc72925eeaff94903c078f8c68cc5b56",
+          "cgroupInode": 37327,
+          "hostLeafMemoryMaxBytes": 17179869184
+        }
+      ],
+      "actualPhysicalUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    }
+  ],
+  "runStatus": "PASS",
+  "cleanup": "PASS"
+}

@@ -1,0 +1,63 @@
+{
+  "observed": "2026-11-18T01:43:47.590206+00:00",
+  "stockKAI15RoleFlowPASS": true,
+  "cleanupPASS": true,
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+  "physicalUUIDs": [
+    "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+    "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+  ],
+  "driverUIDCIDUnchanged": true,
+  "fractiondUIDCIDUnchanged": true,
+  "physicalOrderMapping": {
+    "b": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+    "a": "GPU-8df28256-50a3-db30-3706-b69d52f4874f"
+  },
+  "elapsedSeconds": 159.77360796905123,
+  "admittedOwnedPodUIDCount": 15,
+  "checkpointEvidence": [
+    {
+      "file": "checkpoint-4.json",
+      "payloadContainers": 6,
+      "actualGPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ],
+      "actualHostMemoryMaxValues": [
+        "17179869184\n"
+      ]
+    },
+    {
+      "file": "checkpoint-9.json",
+      "payloadContainers": 6,
+      "actualGPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ],
+      "actualHostMemoryMaxValues": [
+        "17179869184\n"
+      ]
+    }
+  ],
+  "fullABThenBAAndProfileOrderReverse": true,
+  "allOwnedPodCMAndBindRequestsRemaining": [],
+  "selectedStockKAIReservationPodsRemaining": [],
+  "all15OwnedPodCgroupsAbsent": true,
+  "currentPhysical": [
+    "GPU-8df28256-50a3-db30-3706-b69d52f4874f, 620.70.06, 1, 40960",
+    "GPU-b1222487-3937-5349-7329-5cbebd15a5db, 620.70.06, 1, 40960"
+  ],
+  "computeProcesses": [],
+  "uncordoned": true,
+  "exactMaintenanceRetained": true,
+  "qualificationAbsent": true,
+  "acceptedQualifiedPeers": {
+    "k3s-wk-gpu2": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "k3s-wk-gpu3": "7b3b5113-158d-4e0d-bd63-898a508fe806"
+  },
+  "manualGPUCDINodeNameRuntimeClassInInputs": false,
+  "NodeRuntimeSourceOperatorOrPromotionWritesPerformed": false,
+  "SourceAcceptanceClaimed": false,
+  "originalPrecreateFailurePreserved": true
+}

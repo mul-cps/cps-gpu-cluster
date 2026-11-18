@@ -1,0 +1,610 @@
+{
+  "NodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+  "roles": [
+    {
+      "role": "seed-exclusive",
+      "podName": "kai-gpu1-ha2-seed-exclusive",
+      "PodUID": "8bae8a93-49a2-45a4-a513-5a7ff5239bc3",
+      "runtimeContainerID": "4c995640249636d08715522e2a433bff36a943a335b7277a65d8a54df16d1355",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "physicalObserverUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "BindRequestUID": "a4f038a3-8ac1-47e8-a45f-2dbb8cf17a7c",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Regular",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "1.00"
+      },
+      "stockAssignedGPUAnnotation": null,
+      "requestedGPUMemory": null,
+      "limitedGPUMemory": null,
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": true,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": null,
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 1
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": null,
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": [
+        "/dev/nvidia-modeset",
+        "/dev/nvidia-uvm",
+        "/dev/nvidia-uvm-tools",
+        "/dev/nvidiactl",
+        "/dev/nvidia0"
+      ]
+    },
+    {
+      "role": "r0-a-5",
+      "podName": "kai-gpu1-ha2-r0-a-5",
+      "PodUID": "72d80bdf-3172-46bf-83d1-e0aa469af148",
+      "runtimeContainerID": "09672e01d0d7b3c08c7be18b310126be43c5125ebe8e0802e3d06a5c0ec2eaff",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "physicalObserverUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "BindRequestUID": "a7120069-aec3-4d67-b8ad-0a0d0fe50bf8",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.13"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "requestedGPUMemory": "5120Mi",
+      "limitedGPUMemory": "5120Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 6144
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 4096
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "r0-a-10",
+      "podName": "kai-gpu1-ha2-r0-a-10",
+      "PodUID": "4f34290a-3b74-455d-b972-aa26982a3069",
+      "runtimeContainerID": "d9f1397ba408ee2e2b02aa086dc1d6f46d164ce96af8b204bc9957102e58f95c",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "physicalObserverUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "BindRequestUID": "d48ad020-49ff-4bc7-8d8f-ea12e8451c98",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.25"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "requestedGPUMemory": "10240Mi",
+      "limitedGPUMemory": "10240Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 11264
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 9216
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "r0-a-20",
+      "podName": "kai-gpu1-ha2-r0-a-20",
+      "PodUID": "78c6ae2a-56b0-4cd9-a892-4ac9b583574c",
+      "runtimeContainerID": "5f7ff9c24b3e615e0026333e971733e4655d6177636d15b7b955eb1851eeb859",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "physicalObserverUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "BindRequestUID": "c380bd3f-4fa5-41d9-8be6-237496ab021b",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.50"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "requestedGPUMemory": "20480Mi",
+      "limitedGPUMemory": "20480Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 21504
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 19456
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "r0-b-5",
+      "podName": "kai-gpu1-ha2-r0-b-5",
+      "PodUID": "afc0da21-1597-46b9-a2cf-0177d2af53e2",
+      "runtimeContainerID": "7e086d575bfd2e6c2e14fb66f04ce2f88a1de57aff51173b784f06c9c4cd95e2",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "physicalObserverUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "BindRequestUID": "f6608183-07b8-411a-86a5-c4baeaee864e",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.13"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "requestedGPUMemory": "5120Mi",
+      "limitedGPUMemory": "5120Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 6144
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 4096
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "r0-b-10",
+      "podName": "kai-gpu1-ha2-r0-b-10",
+      "PodUID": "5a55ada3-2f15-4534-8c69-64df63beed30",
+      "runtimeContainerID": "ba11a7f84cbf9e937e436ba3d14e43558fd6d38f0bfc6d19e903724b5d0e6fc2",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "physicalObserverUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "BindRequestUID": "d4afc7b8-c15b-4a5b-84c8-7d7d6614801e",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.25"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "requestedGPUMemory": "10240Mi",
+      "limitedGPUMemory": "10240Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 11264
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 9216
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "r0-b-20",
+      "podName": "kai-gpu1-ha2-r0-b-20",
+      "PodUID": "db0e70a5-262a-4339-823e-ad8f5e0850be",
+      "runtimeContainerID": "79d017cbd362846ce0d1f9cff4c553ce4bc00691ebbbfb1391aaa31bd6e528be",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "physicalObserverUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "BindRequestUID": "e5b0bbf4-b227-41d4-b5b0-ab9799dd3077",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.50"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "requestedGPUMemory": "20480Mi",
+      "limitedGPUMemory": "20480Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 21504
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 19456
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "r1-b-20",
+      "podName": "kai-gpu1-ha2-r1-b-20",
+      "PodUID": "34a2da0d-57f8-4bb6-b687-b38c92d055ec",
+      "runtimeContainerID": "a6c398b701de1ee96f1984d19f9d103dcf9d1fb4bc447474c192b2f68ed0e77d",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "physicalObserverUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "BindRequestUID": "81a97219-a802-4fc0-b2f1-7065206e4dd7",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.50"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "requestedGPUMemory": "20480Mi",
+      "limitedGPUMemory": "20480Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 21504
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 19456
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "r1-b-10",
+      "podName": "kai-gpu1-ha2-r1-b-10",
+      "PodUID": "734617dc-1255-4939-835f-926010b6a418",
+      "runtimeContainerID": "f047366094d60e7b3ec994534c68822d986a9a014a6169cfbf5ebf97aa4fb196",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "physicalObserverUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "BindRequestUID": "c54d71ef-d723-46f6-bf0d-0c3182ae14db",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.25"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "requestedGPUMemory": "10240Mi",
+      "limitedGPUMemory": "10240Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 11264
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 9216
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "r1-b-5",
+      "podName": "kai-gpu1-ha2-r1-b-5",
+      "PodUID": "616017dd-eca4-4b7a-9760-a2b4c4487ef8",
+      "runtimeContainerID": "da87e1a2f5c911c9e39d5e80daad103b4fd7c64796c4d41ec64d8b6117643f4c",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "physicalObserverUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "BindRequestUID": "4ee98735-b2ce-489c-a541-cb267a528f9f",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.13"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "requestedGPUMemory": "5120Mi",
+      "limitedGPUMemory": "5120Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 6144
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 4096
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "r1-a-20",
+      "podName": "kai-gpu1-ha2-r1-a-20",
+      "PodUID": "1eb2e849-64be-4fd3-a6e9-75a65f939a37",
+      "runtimeContainerID": "0155f574d541ae106ba50aef9c6afdeee8f5f711c19fcaa6c54d521c141babbb",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "physicalObserverUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "BindRequestUID": "49071b4d-d529-4910-a9f2-3223814d3e61",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.50"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "requestedGPUMemory": "20480Mi",
+      "limitedGPUMemory": "20480Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 21504
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 19456
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "r1-a-10",
+      "podName": "kai-gpu1-ha2-r1-a-10",
+      "PodUID": "f4d109fb-9bd0-4535-af58-42b399c30d4b",
+      "runtimeContainerID": "c6158400b6eae0e90206244f43dfc345938974915cd292f0bad0d68deab2ca32",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "physicalObserverUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "BindRequestUID": "563350b5-ced7-4169-842b-f91ea53becca",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.25"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "requestedGPUMemory": "10240Mi",
+      "limitedGPUMemory": "10240Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 11264
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 9216
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "r1-a-5",
+      "podName": "kai-gpu1-ha2-r1-a-5",
+      "PodUID": "7b433c8a-da31-4214-b93e-9d8333c97573",
+      "runtimeContainerID": "cdf174e15145defd780d657802eb49ddbc72925eeaff94903c078f8c68cc5b56",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "physicalObserverUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "BindRequestUID": "f085f7d1-dea5-4d94-8a9c-ac4e98e698a9",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.13"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "requestedGPUMemory": "5120Mi",
+      "limitedGPUMemory": "5120Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 6144
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 4096
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "guard-a",
+      "podName": "kai-gpu1-ha2-guard-a",
+      "PodUID": "5a1564dc-f8fa-411f-816e-8151bb8016e1",
+      "runtimeContainerID": "7a8bc32204ac2592245cef4bba100c0370cf79d1196ec1c6de45da55ea66ae4c",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "physicalObserverUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "BindRequestUID": "91dce72c-3852-432e-aecb-957f3db23d5c",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.13"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "requestedGPUMemory": "5120Mi",
+      "limitedGPUMemory": "5120Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 6144
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 1
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    },
+    {
+      "role": "guard-b",
+      "podName": "kai-gpu1-ha2-guard-b",
+      "PodUID": "d7908b85-6637-4054-8779-08fee42e29eb",
+      "runtimeContainerID": "ca086085b59d8bf57dcebb6d2a04c9d0577f2e24642db0fc460ba73e8743860c",
+      "actualNode": "k3s-wk-gpu1",
+      "CUDADeviceCount": 1,
+      "actualCUDAUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "physicalObserverUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "BindRequestUID": "5d41ad79-cb13-4aed-a11b-f7a7ae2d8804",
+      "BindRequestSelectedNode": "k3s-wk-gpu1",
+      "receivedResourceType": "Fraction",
+      "receivedGPU": {
+        "count": 1,
+        "portion": "0.13"
+      },
+      "stockAssignedGPUAnnotation": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "requestedGPUMemory": "5120Mi",
+      "limitedGPUMemory": "5120Mi",
+      "mandatoryNRI": "[\"gpu-fractioning\"]",
+      "exclusiveAvailabilitySeed": false,
+      "actualHostLeafMemoryMaxBytes": 17179869184,
+      "actualLeafMiscMax": {},
+      "aboveHardNegativeResult": {
+        "step": "above-hard-limit-allocation",
+        "result": 2,
+        "mib": 6144
+      },
+      "allocationEvents": [
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 1
+        }
+      ],
+      "noManualDeviceCDINodeNameRuntimeClassInInput": true,
+      "stockAssignedQualifiedDeviceReference": "k8s.device-plugin.nvidia.com/gpu=GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "OCIAnnotationGpuCdiKeyCount": 0,
+      "NvidiaRuntimeDevicePathsObserved": []
+    }
+  ],
+  "negativeCUDAError2FractionalRoleCount": 14,
+  "exclusiveSeedHasNoFractionalOOMClaim": true
+}

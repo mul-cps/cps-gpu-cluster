@@ -1,0 +1,71 @@
+{
+  "observed": "2026-11-18T01:43:47.496406+00:00",
+  "all15OwnedPodCgroupsAbsent": true,
+  "cgroups": [
+    {
+      "PodUID": "1eb2e849-64be-4fd3-a6e9-75a65f939a37",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "34a2da0d-57f8-4bb6-b687-b38c92d055ec",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "4f34290a-3b74-455d-b972-aa26982a3069",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "5a1564dc-f8fa-411f-816e-8151bb8016e1",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "5a55ada3-2f15-4534-8c69-64df63beed30",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "616017dd-eca4-4b7a-9760-a2b4c4487ef8",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "72d80bdf-3172-46bf-83d1-e0aa469af148",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "734617dc-1255-4939-835f-926010b6a418",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "78c6ae2a-56b0-4cd9-a892-4ac9b583574c",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "7b433c8a-da31-4214-b93e-9d8333c97573",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "8bae8a93-49a2-45a4-a513-5a7ff5239bc3",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "afc0da21-1597-46b9-a2cf-0177d2af53e2",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "d7908b85-6637-4054-8779-08fee42e29eb",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "db0e70a5-262a-4339-823e-ad8f5e0850be",
+      "remainingPaths": []
+    },
+    {
+      "PodUID": "f4d109fb-9bd0-4535-af58-42b399c30d4b",
+      "remainingPaths": []
+    }
+  ],
+  "GPUs": [
+    "GPU-8df28256-50a3-db30-3706-b69d52f4874f, 620.70.06, 1, 40960",
+    "GPU-b1222487-3937-5349-7329-5cbebd15a5db, 620.70.06, 1, 40960"
+  ],
+  "computeProcesses": []
+}

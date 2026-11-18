@@ -1,0 +1,26 @@
+{
+  "reviewedFixtureManifestSHA256": "5635b0b240cace27e49e91f99a92aaf176994fea6f2ff125698a67263099a2f3",
+  "reviewedRunnerSHA256": "64da165bd6029634fc2d4c64a597d3753de6ab37769b119ebed6fba56d3ebc4e",
+  "originalGPU1FixtureManifestSHA256": "0f7e059d3150d3af6a19b7f49a239de1dd66551eee7d842259c8f95f8374f150",
+  "actualPreflightReceipt": {
+    "admissionCount": 2,
+    "imageDigest": "sha256:01492e2118a8f4192f20c72ca1e077724b036f65828c53f1f6d5e5755f2ff0fb",
+    "leaderElect": true,
+    "distinctNodes": [
+      "k3s-wk-gpu2",
+      "k3s-wk-gpu3"
+    ],
+    "admissionPodUIDs": [
+      "254bc49c-3315-4f7e-8e87-36702081c360",
+      "6bd7a119-4d12-4164-8e4e-8c1e07212c4f"
+    ],
+    "PDBUID": "0b384b76-a3a3-4509-8c81-2e1ed62e5d3c",
+    "binderAndSchedulerCount": 1,
+    "approvedThreeFieldConfig": true
+  },
+  "independentOfflineTestsPASS": 22,
+  "rendererCUDA15RolesSequenceThresholdWatchCleanupUnchanged": true,
+  "originalFailureAndOriginalFixturePreserved": true,
+  "historicalProbeSHA256": "d2a4f4cdb9ee1e6c09622a3277fffc711d0be0a2ddd140e74b03e0a20dd02515",
+  "derivedProbeSHA256": "9ef2c893dfebcc5d63b053cccbddd7e4379df5957adfa4d097789e72d5c72a14"
+}
