@@ -1,12 +1,12 @@
 {
-  "observedAt": "2026-11-18T17:52:20.134545+00:00",
+  "observedAt": "2026-11-18T18:14:59.770477+00:00",
   "scope": "Partial personal GPU/native storage qualification, not full rollout acceptance",
-  "CPSOwnerRevision": "7a9203ab5b782189723cce6ec8aac0d12e27613e",
+  "CPSOwnerRevision": "2b81dc5180ee6dbb69c91dacd71a8c0b8e0de685",
   "GatewayGeneration": 444,
-  "HubGeneration": 397,
+  "HubGeneration": 398,
   "compatibilityHash": "9037745ae5953952f5b65ba6732949b46230116203ec6f08fc15f9f671bf788d",
   "backendEnabled": true,
-  "dedicatedGPUUIEnabled": false,
+  "dedicatedGPUUIEnabled": true,
   "originalMajorityImagesRetained": true,
   "cases": [
     {
@@ -235,7 +235,76 @@
     ],
     "actualDashboardMatchesProjection": true,
     "dataSHA256": "7d8490c57d307e22a4b2b29c465ea9bbd1f6e249f9eb6904c4002192fe669beb",
-    "CUDAQualification": "pending: inherited test-only image391 assertion rejected real TF593; normal cleanup passed",
-    "fourProfileUIActivation": "pending"
+    "CUDAQualification": "PASS: actual original TF one/two-card native CUDA/storage/public200 and cleanup after config correction",
+    "fourProfileUIActivation": "deployed generation398 after four original GPU-image cases and CPU reset passed"
+  },
+  "originalGPUImageCaseResults": [
+    {
+      "stage": "tf1",
+      "caseID": "personal-gpu-qa-0d6889e1a329",
+      "node": "k3s-wk-gpu1",
+      "cudaDeviceCount": 1,
+      "storageCUDAAndCleanup": true,
+      "hardwareSHA256": "48a6c099508365bb8bd8bdb28caa88f3c1e9312847c0c7ddffca2d99550e83c1"
+    },
+    {
+      "stage": "tf2",
+      "caseID": "personal-gpu-qa-bb7bb21181c4",
+      "node": "k3s-wk-gpu1",
+      "cudaDeviceCount": 2,
+      "storageCUDAAndCleanup": true,
+      "hardwareSHA256": "b8bad84be606f33015752aec6c6954aafbaeb345956fe3d2b55e6744866126bf"
+    },
+    {
+      "stage": "desktop",
+      "caseID": "personal-gpu-qa-2de9fef159d5",
+      "node": "k3s-wk-gpu1",
+      "cudaDeviceCount": 1,
+      "storageCUDAAndCleanup": true,
+      "hardwareSHA256": "28eb55acf6720c828f9d287a5e236c1f1d62a0423721b869db59a40d4f6f0967"
+    },
+    {
+      "stage": "comfy",
+      "caseID": "personal-gpu-qa-d197581c334d",
+      "node": "k3s-wk-gpu1",
+      "cudaDeviceCount": 1,
+      "storageCUDAAndCleanup": true,
+      "hardwareSHA256": "3273223d867b542ce83486ea2b6751edde4360734a26b09688cd6a9f4278d337"
+    }
+  ],
+  "postConfigCPURecheck": {
+    "case": "personal-gpu-qa-c59cfb5951c8",
+    "uid": 1000,
+    "cudaDeviceCount": 0,
+    "runtimeClass": null,
+    "NVIDIA_VISIBLE_DEVICES": "void",
+    "retainedFilesAndStorage": true,
+    "normalCleanupAllPersonalBindingsZero": true
+  },
+  "UIVerification": {
+    "templateSHA256": "a7014c9a0be6b14d6fdba2888a84c789410a7b09f58ee5079480f83fe8e666b5",
+    "browserTestsPassed": 8,
+    "actualMountedTemplateAndHealthVerified": true,
+    "runtimeConfigCryptoHomeStorageAndStableNativeTablesExact": true,
+    "CITEntireSnapshotExact": true,
+    "personalPodStartForRealOperatorPerformed": false
+  },
+  "realIdentityScope": {
+    "operatorAccountMapped": true,
+    "additionalEligibleUnmappedUsers": 6,
+    "unmappedOutcome": "HTTP403 before acquire or Pod creation; no guessed identity links",
+    "ordinarySSOAutoCreatesMappings": false,
+    "authoritativeIdentityLinkingOpen": true
+  },
+  "testHomeReplicaRepair": {
+    "actualEngine2RW": true,
+    "existingG2ReplicaUID": "0668952f-4d7f-42ef-9b9a-ddb57f9704b3",
+    "newG4ReplicaUID": "2265b02e-dc4d-4491-85ba-25949198b42d",
+    "stockSchedulerRootDisk": true,
+    "newBackupClaimed": false,
+    "staleRestoreOrPVCDeletion": false,
+    "GPU4CordonRestored": true,
+    "GPU4LonghornSchedulingRestoredFalse": true,
+    "GPUQualificationStillAbsent": true
   }
 }
