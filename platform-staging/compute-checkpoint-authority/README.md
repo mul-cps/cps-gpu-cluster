@@ -47,3 +47,11 @@ go test -mod=readonly -v ./...
 ```
 
 Kubernetes documentation: [ValidatingAdmissionPolicy](https://kubernetes.io/docs/reference/access-authn-authz/validating-admission-policy/). It documents Warn/Audit prequalification and the separate Deny action. No mutation or policy application was performed while preparing this source.
+
+## Live prequalification, 18 November 2026
+
+The policy and Warn/Audit binding have now been installed. Actual policy UID is `40f89f68-da5b-452b-981a-28298ca61da7`; binding UID is `620b91f2-2267-4a0d-b2eb-fc9b54cf2abc`. Generation1 was observed without type-check warnings. Four server dry-runs passed: only old RW produced the expected warning. No Deny transition or production migration has occurred. See `docs/operations/evidence/upstream-sharing-20261116/controller-admission-warning-20261118.json`. The historical unarmed envelope remains unarmed for enforcement.
+
+`probe_source_readonly.py` runs via stdin inside either existing Source Pod, with `PROBE_SOURCE=cps` or `cit`. It reads the existing `COMPUTE_POLICY_TOKEN` environment variable and `/trust/ca.crt`; it never prints or exports credentials. Four GET-only checks per Source verify exact inactive reservation, workspace/namespace/policy identity, the shared profile catalog and foreign-source workspace refusal. Its successful live baseline is in `controller-route-baseline-20261118.json`. This establishes authenticated backend usability, not frontend login, starting workloads, or the cutover timing gate. The exact prefixed policy identifier is intentional; changes require reviewed successor expectations.
+
+Legacy lifecycle147 routes have a separately retained strict-TLS expired-certificate diagnostic. Their mounted settings scope them to two legacy qualification workspaces. They are not counted as successful normal API calls. Both legacy process custody journals remain preserved; no TLS bypass, certificate replacement, legacy retirement or journal deletion was performed.

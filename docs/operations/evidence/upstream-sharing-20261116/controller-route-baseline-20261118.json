@@ -1,0 +1,92 @@
+{
+  "verifiedAt": "2026-11-18T19:47:17.247071+00:00",
+  "scope": "normal authenticated backend API baseline; no frontend or human login claim",
+  "sources": {
+    "cps": {
+      "source": "cps",
+      "strictTLS": true,
+      "reservationExactInactive": true,
+      "workspaceExact": true,
+      "namespaceExact": true,
+      "profileCatalogHas5_10_20": true,
+      "workspaceProfilesInCatalog": true,
+      "policyHashExact": true,
+      "sourceIsolationStatus": 404,
+      "bodySHA256": {
+        "reservation": "2b5c4111aaf4ef8f28f8682467ca9eb385e9b7b2f7f56d995e1d8cd89e452152",
+        "workspace": "f5c1890958f2bbfa3e1ffe61515ce8c386f0524c687b44399e7086a2b4320502",
+        "profiles": "301f1b0eab6d58efdcd6b291e056757839863b561a011a425048edbbf00b4dca"
+      },
+      "noWritesOrNewCredentials": true
+    },
+    "cit": {
+      "source": "cit",
+      "strictTLS": true,
+      "reservationExactInactive": true,
+      "workspaceExact": true,
+      "namespaceExact": true,
+      "profileCatalogHas5_10_20": true,
+      "workspaceProfilesInCatalog": true,
+      "policyHashExact": true,
+      "sourceIsolationStatus": 404,
+      "bodySHA256": {
+        "reservation": "a02936ad7ae20209b32859e39e6a0c547c7eaba626bfa2ce2f3b423a7d865d60",
+        "workspace": "3b5189150d155fa60e39b5d10718f10d529c1b58949f574f8834720b0b3d79db",
+        "profiles": "301f1b0eab6d58efdcd6b291e056757839863b561a011a425048edbbf00b4dca"
+      },
+      "noWritesOrNewCredentials": true
+    }
+  },
+  "legacy": {
+    "strictTLS": true,
+    "certificateFailure": true,
+    "verifyCode": 10,
+    "verifyMessage": "certificate has expired",
+    "exceptionClass": "SSLCertVerificationError"
+  },
+  "legacyConsumerScope": {
+    "at": "2026-11-18T19:44:35.110663+00:00",
+    "legacyMountedConsumers": [
+      {
+        "namespace": "jupyterhub",
+        "configMap": "native-lifecycle147-measured-hub-114035ad2312563f",
+        "UID": "b8612bff-2c79-4054-a74c-11207d00db10",
+        "enabled": true,
+        "source": "cps",
+        "gatewayUrl": "https://native-lifecycle147-gateway.cps-compute.svc.cluster.local",
+        "gatewayCAFile": "/etc/cps-lifecycle147/ca.crt",
+        "serviceTokenEnv": "CPS_LIFECYCLE147_CPS_TOKEN",
+        "workspaces": [
+          "cps:lifecycle147-cps-a"
+        ],
+        "profiles": [
+          "interactive-native-qualification-10"
+        ]
+      },
+      {
+        "namespace": "cit-jhub",
+        "configMap": "native-lifecycle147-measured-hub-c58d8957fa1a1985",
+        "UID": "7ce6498a-6874-4d92-920e-b3d5d00249f5",
+        "enabled": true,
+        "source": "cit",
+        "gatewayUrl": "https://native-lifecycle147-gateway.cps-compute.svc.cluster.local",
+        "gatewayCAFile": "/etc/cps-lifecycle147/ca.crt",
+        "serviceTokenEnv": "CPS_LIFECYCLE147_CIT_TOKEN",
+        "workspaces": [
+          "cit:lifecycle147-cit-b"
+        ],
+        "profiles": [
+          "interactive-native-qualification-5"
+        ]
+      }
+    ],
+    "nativeJournalPreserved": true,
+    "legacyTLSBypass": false,
+    "legacyTLSRepairOrRetirementPerformed": false,
+    "cutoverSuccessRequirement": "normal authenticated main CPS and CIT APIs; TCP readiness alone insufficient",
+    "legacyNegativeDiagnostic": "separate expired certificate diagnostic; not silently counted as usable"
+  },
+  "productionCutoverPerformed": false,
+  "cutoverSecondsQualified": false,
+  "causalTestCorrection": "Initial bare-hex policy-hash assertion failed; actual API identifier includes sha256: prefix. Exact prefixed policy identifier then passed; no writes occurred."
+}
