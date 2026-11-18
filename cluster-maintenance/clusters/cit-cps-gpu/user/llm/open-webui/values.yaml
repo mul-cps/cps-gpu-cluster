@@ -28,4 +28,8 @@ extraEnvVars:
   # Secret (see oauth-sopssecret.yaml), injected via the StatefulSet
   # envFrom patch in fleet.yaml.
 
-replicaCount: 0
+tolerations:
+  - key: cps.unileoben.ac.at/maintenance
+    operator: Equal
+    value: upstream-pilot
+    effect: NoSchedule
