@@ -1,0 +1,141 @@
+{
+  "cards": [
+    {
+      "cardIndex": 0,
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "PodUID": "2de702a2-8230-49e3-84ab-c76805c0a601",
+      "nodeName": "k3s-wk-gpu1",
+      "containerID": "containerd://0bed53c5199d640f86412b6e26735526be4c5ac4d0a21f5ee1c3d52ca503d020",
+      "events": [
+        {
+          "step": "init",
+          "result": 0
+        },
+        {
+          "step": "device",
+          "result": 0
+        },
+        {
+          "step": "context",
+          "result": 0
+        },
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 1024,
+          "expected": 0
+        },
+        {
+          "step": "fill",
+          "result": 0
+        },
+        {
+          "step": "sync",
+          "result": 0
+        },
+        {
+          "step": "free",
+          "result": 0
+        },
+        {
+          "step": "allocation",
+          "result": 2,
+          "mib": 6144,
+          "expected": 2
+        },
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 2048,
+          "expected": 0
+        },
+        {
+          "step": "fill",
+          "result": 0
+        },
+        {
+          "step": "sync",
+          "result": 0
+        },
+        {
+          "step": "free",
+          "result": 0
+        },
+        {
+          "step": "destroy",
+          "result": 0
+        }
+      ],
+      "exitCode": 0
+    },
+    {
+      "cardIndex": 1,
+      "GPUUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "PodUID": "175005ad-618b-44e1-a9ba-a38d7a08712b",
+      "nodeName": "k3s-wk-gpu1",
+      "containerID": "containerd://2c0e03708b4b76ab3609c102bd6fd12020dd214b9b71cbc84f5c8c341549f534",
+      "events": [
+        {
+          "step": "init",
+          "result": 0
+        },
+        {
+          "step": "device",
+          "result": 0
+        },
+        {
+          "step": "context",
+          "result": 0
+        },
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 1024,
+          "expected": 0
+        },
+        {
+          "step": "fill",
+          "result": 0
+        },
+        {
+          "step": "sync",
+          "result": 0
+        },
+        {
+          "step": "free",
+          "result": 0
+        },
+        {
+          "step": "allocation",
+          "result": 2,
+          "mib": 6144,
+          "expected": 2
+        },
+        {
+          "step": "allocation",
+          "result": 0,
+          "mib": 2048,
+          "expected": 0
+        },
+        {
+          "step": "fill",
+          "result": 0
+        },
+        {
+          "step": "sync",
+          "result": 0
+        },
+        {
+          "step": "free",
+          "result": 0
+        },
+        {
+          "step": "destroy",
+          "result": 0
+        }
+      ],
+      "exitCode": 0
+    }
+  ],
+  "scope": "5GiB quota: 1GiB succeeds, 6GiB typed CUDA OOM2, then 2GiB fill/sync/free succeeds; no runtime restart performed by this postcold NRI run"
+}

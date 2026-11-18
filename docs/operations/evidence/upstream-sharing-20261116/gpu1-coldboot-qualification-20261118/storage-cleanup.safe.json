@@ -1,0 +1,39 @@
+{
+  "completedAt": "2026-11-18T01:02:37.467351+00:00",
+  "normalUIDResourceVersionDeletes": [
+    {
+      "kind": "Pod",
+      "uid": "1592a1d6-5d52-4936-97f6-894b1895ea98",
+      "httpStatus": 200
+    },
+    {
+      "kind": "PersistentVolumeClaim",
+      "uid": "ae0b10a6-3078-411d-89fe-3c0286870268",
+      "httpStatus": 200
+    }
+  ],
+  "absence": [
+    {
+      "path": "/api/v1/namespaces/cattle-system/pods/gpu1-postcold-storage-20261118",
+      "uid": "1592a1d6-5d52-4936-97f6-894b1895ea98",
+      "httpStatus": 404
+    },
+    {
+      "path": "/api/v1/namespaces/cattle-system/persistentvolumeclaims/gpu1-postcold-storage-20261118",
+      "uid": "ae0b10a6-3078-411d-89fe-3c0286870268",
+      "httpStatus": 404
+    },
+    {
+      "path": "/api/v1/persistentvolumes/pvc-ae0b10a6-3078-411d-89fe-3c0286870268",
+      "uid": "2ef2b570-8917-422f-9dfb-b43845536e9c",
+      "httpStatus": 404
+    },
+    {
+      "path": "/apis/longhorn.io/v1beta2/namespaces/longhorn-system/volumes/pvc-ae0b10a6-3078-411d-89fe-3c0286870268",
+      "uid": "023dd657-917b-4d7f-a82d-69fb90fe1175",
+      "httpStatus": 404
+    }
+  ],
+  "force": false,
+  "finalizerChanges": false
+}

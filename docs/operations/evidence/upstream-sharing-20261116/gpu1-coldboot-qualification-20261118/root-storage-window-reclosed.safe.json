@@ -1,0 +1,11 @@
+{
+  "observed": "2026-11-18T01:02:45.694323+00:00",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+  "controlledIMWindowClosed": true,
+  "cordoned": true,
+  "maintenanceTaintRetained": true,
+  "qualificationAbsent": true,
+  "postcoldStorageAlreadySucceeded": true,
+  "noForce": true
+}

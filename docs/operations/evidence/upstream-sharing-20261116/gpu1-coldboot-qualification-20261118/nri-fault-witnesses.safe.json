@@ -1,0 +1,63 @@
+{
+  "rejections": [
+    {
+      "case": "first CREATE during actual fractiond stop",
+      "PodUID": "d17a3b58-9472-48cb-9702-cf9a5653a96a",
+      "nodeName": "k3s-wk-gpu1",
+      "waitingReason": "CreateContainerError",
+      "containerID": null,
+      "defaultValidatorRejectedRequiredPlugin": true,
+      "mandatoryPlugins": [
+        "gpu-fractioning"
+      ]
+    },
+    {
+      "case": "disconnected mandatory fractiond",
+      "PodUID": "6193b0f6-aa04-4af5-8c7e-550a95e48c16",
+      "nodeName": "k3s-wk-gpu1",
+      "waitingReason": "CreateContainerError",
+      "containerID": null,
+      "defaultValidatorRejectedRequiredPlugin": true,
+      "mandatoryPlugins": [
+        "gpu-fractioning"
+      ]
+    },
+    {
+      "case": "missing mandatory plugin",
+      "PodUID": "b1fab8f1-f746-403e-9ad0-e7226f923a9f",
+      "nodeName": "k3s-wk-gpu1",
+      "waitingReason": "CreateContainerError",
+      "containerID": null,
+      "defaultValidatorRejectedRequiredPlugin": true,
+      "mandatoryPlugins": [
+        "gpu-fractioning",
+        "cps-required-missing-final"
+      ]
+    }
+  ],
+  "CPUIndependence": [
+    {
+      "podUID": "8487a001-c98b-4f22-91e3-e7a2411dd458",
+      "node": "k3s-wk-gpu1",
+      "containerID": "containerd://8aff71bcbe033fb5320bad4454d3ab8b400ba06e52bcada82a9d04c2de33acd0",
+      "exitCode": 0
+    },
+    {
+      "podUID": "2753913d-3700-4a5b-bcd1-be8ceede3eda",
+      "node": "k3s-wk-gpu1",
+      "containerID": "containerd://977c22c882e14d5ad857a7d9a62b56cf4fcc2765b6cdfbc1664a4047696e32b2",
+      "exitCode": 0
+    }
+  ],
+  "fractiondIdentity": {
+    "container_id": "6fcd14df752ebac5443bf3390986e5b122ae99b9192e4becb71e31131dad0c3e",
+    "pod_uid": "628f5b6c-a12e-47ee-b33e-e16eb5e2cadc",
+    "pid": 27254,
+    "starttime": "12824",
+    "unit": "cps-nri-hotfix-cont-27254",
+    "stopped_at": 1794963938.4886737,
+    "status": "PASS"
+  },
+  "firstRequiredTimeoutRejected": true,
+  "disconnectedRequiredRejected": true
+}

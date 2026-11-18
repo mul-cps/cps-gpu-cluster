@@ -1,0 +1,18 @@
+{
+  "podUID": "1592a1d6-5d52-4936-97f6-894b1895ea98",
+  "pvcUID": "ae0b10a6-3078-411d-89fe-3c0286870268",
+  "PVName": "pvc-ae0b10a6-3078-411d-89fe-3c0286870268",
+  "PVUID": "2ef2b570-8917-422f-9dfb-b43845536e9c",
+  "LHVolumeName": "pvc-ae0b10a6-3078-411d-89fe-3c0286870268",
+  "LHVolumeUID": "023dd657-917b-4d7f-a82d-69fb90fe1175",
+  "LHstate": "attached",
+  "LHcurrentNode": "k3s-wk-gpu1",
+  "events": [
+    {
+      "bytes": 4194324,
+      "sha256": "d87a6c613644fa29a9cca71766c283f0ead7a19c5f9df1e5ab954c08a669515c",
+      "uid": 1000,
+      "result": "RW_FSYNC_PASS"
+    }
+  ]
+}

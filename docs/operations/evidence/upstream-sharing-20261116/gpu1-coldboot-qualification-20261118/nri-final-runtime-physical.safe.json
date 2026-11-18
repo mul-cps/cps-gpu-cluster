@@ -1,0 +1,47 @@
+{
+  "physical": [
+    {
+      "time": 1794964089.6455727,
+      "node": "k3s-wk-gpu1",
+      "boot_id": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "gpu": "GPU-8df28256-50a3-db30-3706-b69d52f4874f, 620.70.06, 1, 40960",
+      "compute_processes": "",
+      "uvm": {
+        "srcversion": "10301D70B8ED1758BC717E9",
+        "parameters/uvm_reject_managed_memory": "Y",
+        "parameters/uvm_disable_hmm": "Y"
+      },
+      "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+    },
+    {
+      "time": 1794964090.0182664,
+      "node": "k3s-wk-gpu1",
+      "boot_id": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "gpu": "GPU-b1222487-3937-5349-7329-5cbebd15a5db, 620.70.06, 1, 40960",
+      "compute_processes": "",
+      "uvm": {
+        "srcversion": "10301D70B8ED1758BC717E9",
+        "parameters/uvm_reject_managed_memory": "Y",
+        "parameters/uvm_disable_hmm": "Y"
+      },
+      "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+    }
+  ],
+  "runtime": {
+    "kernel": "7.0.0-43-generic",
+    "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+    "data_current": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa",
+    "processes": [
+      {
+        "pid": 25806,
+        "executable": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+        "sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a"
+      },
+      {
+        "pid": 25965,
+        "executable": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+        "sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a"
+      }
+    ]
+  }
+}

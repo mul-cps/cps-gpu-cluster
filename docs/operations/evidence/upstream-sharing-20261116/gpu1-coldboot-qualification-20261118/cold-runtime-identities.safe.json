@@ -1,0 +1,169 @@
+{
+  "observed": "2026-11-18T00:46:23.705747+00:00",
+  "hostname": "k3s-wk-gpu1",
+  "boot": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+  "kernel": "7.0.0-43-generic",
+  "outerSHA256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+  "dataCurrent": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa",
+  "runningProcesses": [
+    {
+      "pid": 25806,
+      "exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+      "SHA256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a"
+    },
+    {
+      "pid": 25965,
+      "exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+      "SHA256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a"
+    }
+  ],
+  "persistentFileHashes": {
+    "/etc/systemd/system/k3s-agent.service": "65ef9bc2d2ec743511b87007c9591bcd7e86f52cb375e585429a99f82fb975d4",
+    "/etc/systemd/system/k3s-agent.service.env": "fddce084277ff92566d352b85a5fc892da3fef9db3432075249ec9e1951a5479",
+    "/var/lib/rancher/k3s/agent/etc/containerd/config-v3.toml.tmpl": "dc9420d1d91a415d0d6e097d396c137310e986affe89705c4463c6702c5202ed",
+    "/etc/systemd/system/k3s-agent.service.d/30-apparmor-compat.conf": "b350ab02c446a1acbc0669d37299a8245b6fc36e8fc1753e42bd1f5580b51747",
+    "/etc/apparmor.d/cri-containerd.apparmor.d": "30e2fc1210fc99c4e7060ea6bf7f931f6d6c03fbdc499f5f0584fb5c01c92875",
+    "/etc/fstab": "2436bae3284a71ac5fb049b072b380b70cb514a5e38c6e87bd643419086a5363"
+  },
+  "AppArmor": {
+    "enforcedProfiles": [
+      "cri-containerd.apparmor.d (enforce)"
+    ],
+    "loadedRawSHA256": "b6b9c37f7f03345701c0055a5a98e8b8c6ccc351e64091fba8a4406a8b336687",
+    "loadedMatchingProfileCount": 1,
+    "unprivilegedUnconfinedRestriction": "1"
+  },
+  "modules": {
+    "/sys/module/nvidia/version": "620.70.06",
+    "/sys/module/nvidia/parameters/NVreg_RegistryDwords": "RmMemacctMode=1",
+    "/sys/module/nvidia_uvm/srcversion": "10301D70B8ED1758BC717E9",
+    "/sys/module/nvidia_uvm/parameters/uvm_reject_managed_memory": "Y",
+    "/sys/module/nvidia_uvm/parameters/uvm_disable_hmm": "Y"
+  },
+  "driverReadyFile": {
+    "exists": true,
+    "mtimeUTC": "2026-11-18T00:45:28.478982+00:00"
+  },
+  "UVMSourceSHA256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+  "mountIdentityReadbacks": [
+    "/ /dev/sda1 ext4 ffe7eb40-94f7-473b-b336-935460126345",
+    "/mnt/nvme/scratch /dev/sdb ext4 730ffc3a-3d42-41b7-a2b8-f7237c0f6cd0"
+  ],
+  "aptDailyAndUpgradeTimersActive": true,
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "driver": {
+    "namespace": "gpu-operator",
+    "name": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf-9tc9j",
+    "uid": "74ec5235-668e-4472-9e64-f8a06aa87be2",
+    "phase": "Running",
+    "runtimeClassName": null,
+    "specImages": [
+      {
+        "name": "nvidia-driver-ctr",
+        "image": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73"
+      }
+    ],
+    "containers": [
+      {
+        "name": "nvidia-driver-ctr",
+        "containerID": "containerd://2d65c0f7a3c9f6a939033b47b41e3530b35148b84d3b9ed04b630427a3daab06",
+        "imageID": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+        "ready": true,
+        "restartCount": 1,
+        "state": {
+          "running": {
+            "startedAt": "2026-11-18T00:43:59Z"
+          }
+        }
+      }
+    ],
+    "metricsdHostPathVolumes": []
+  },
+  "fractioning": [
+    {
+      "namespace": "gpu-fractioning",
+      "name": "gpu-fractioning-fractiond-gw9t5",
+      "uid": "628f5b6c-a12e-47ee-b33e-e16eb5e2cadc",
+      "phase": "Running",
+      "runtimeClassName": "nvidia",
+      "specImages": [
+        {
+          "name": "fractiond",
+          "image": "ghcr.io/kai-scheduler/gpu-fractioning/fractiond:v0.1.9"
+        },
+        {
+          "name": "metricsd",
+          "image": "ghcr.io/kai-scheduler/gpu-fractioning/metricsd:v0.1.9"
+        }
+      ],
+      "containers": [
+        {
+          "name": "fractiond",
+          "containerID": "containerd://6fcd14df752ebac5443bf3390986e5b122ae99b9192e4becb71e31131dad0c3e",
+          "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/fractiond@sha256:29c5fca25c1b35f22cf9f1e6c53acaa79d0b9f722ed6e8417caf438c06cd3739",
+          "ready": true,
+          "restartCount": 1,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-18T00:45:43Z"
+            }
+          }
+        },
+        {
+          "name": "metricsd",
+          "containerID": "containerd://ea4cf70b94e1b9d37283891bb12e2d90e69e5dc06389a80b8a833000b60673a1",
+          "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/metricsd@sha256:7a619c92651d0744bcd80745be264f3b6c213ad4f3a12fef19a339df422af2bf",
+          "ready": true,
+          "restartCount": 1,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-18T00:45:43Z"
+            }
+          }
+        }
+      ],
+      "metricsdHostPathVolumes": [
+        {
+          "hostPath": {
+            "path": "/run/nvidia/validations/driver-ready",
+            "type": "File"
+          },
+          "name": "gpu-operator-driver-ready"
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-fractioning",
+      "name": "gpu-fractioning-mpsd-6lqsf",
+      "uid": "e1345782-0064-4b46-b92a-cbd8f48c473e",
+      "phase": "Running",
+      "runtimeClassName": "nvidia",
+      "specImages": [
+        {
+          "name": "mpsd",
+          "image": "ghcr.io/kai-scheduler/gpu-fractioning/mpsd:v0.1.9"
+        }
+      ],
+      "containers": [
+        {
+          "name": "mpsd",
+          "containerID": "containerd://2b5b955173d18c23f2d5bf5c317aebed8f827bde8fb4d051867c9c04ab2801ef",
+          "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/mpsd@sha256:f161d6c653c668e49e384ae15794421777464248c5e533660ac26b006787b102",
+          "ready": true,
+          "restartCount": 5,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-18T00:45:43Z"
+            }
+          }
+        }
+      ],
+      "metricsdHostPathVolumes": []
+    }
+  ],
+  "firstMetricsStart": "2026-11-18T00:45:43.988894729Z",
+  "firstMetricsNVMLInitialized": "2026-11-18T00:45:44.05105119Z",
+  "NVMLInitErrorsObserved": false,
+  "stockFractioningTargetsUp": 4,
+  "allPromTargetsUpAtReadback": true
+}

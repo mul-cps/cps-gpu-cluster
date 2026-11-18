@@ -1,0 +1,34 @@
+{
+  "observed": "2026-11-18T01:08:11.530235+00:00",
+  "ownedPodCgroupChecks": [
+    {
+      "podUID": "175005ad-618b-44e1-a9ba-a38d7a08712b",
+      "remainingPaths": []
+    },
+    {
+      "podUID": "2753913d-3700-4a5b-bcd1-be8ceede3eda",
+      "remainingPaths": []
+    },
+    {
+      "podUID": "2de702a2-8230-49e3-84ab-c76805c0a601",
+      "remainingPaths": []
+    },
+    {
+      "podUID": "6193b0f6-aa04-4af5-8c7e-550a95e48c16",
+      "remainingPaths": []
+    },
+    {
+      "podUID": "8487a001-c98b-4f22-91e3-e7a2411dd458",
+      "remainingPaths": []
+    },
+    {
+      "podUID": "b1fab8f1-f746-403e-9ad0-e7226f923a9f",
+      "remainingPaths": []
+    },
+    {
+      "podUID": "d17a3b58-9472-48cb-9702-cf9a5653a96a",
+      "remainingPaths": []
+    }
+  ],
+  "allAbsent": true
+}

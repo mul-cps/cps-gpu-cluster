@@ -1,0 +1,81 @@
+{
+  "scope": "GPU1 postcold startup/NRI/CPU/storage only; KAI/Source/worker/full-platform acceptance not claimed",
+  "files": {
+    "README.md": {
+      "sha256": "9449742e0d8d042627c097808f7ba16fad349c55329d9ff90ad2038a680032f7",
+      "bytes": 5695
+    },
+    "cold-runtime-identities.safe.json": {
+      "sha256": "4f20533c39e8139e028e88f191d504561c3534662caef4d4404f251f8240086c",
+      "bytes": 6454
+    },
+    "cold-startup-cause.safe.json": {
+      "sha256": "ee52f6456044796ae6c408274f7b812061093ab930040ebd882611c3e897aba4",
+      "bytes": 2433
+    },
+    "coldboot-intent.safe.json": {
+      "sha256": "4c10e819f3ec86e209fec959f36a6d9aff9a612a18c44d6213639567b4fbae83",
+      "bytes": 246
+    },
+    "coldboot-preconditions.safe.json": {
+      "sha256": "dc1cf2cc4c2040cf99b971188c496bae8ab23a25fbd6450b1f204339743fe13d",
+      "bytes": 4293
+    },
+    "cordon-cause-resolved.safe.json": {
+      "sha256": "443feb949d479d950cdcfe64f45f8663c78ac76c457f547a9ad0b2b541001b61",
+      "bytes": 892
+    },
+    "cpu-cleanup.safe.json": {
+      "sha256": "d98e279f952929c28ed1fb494513c556d7eb8ce1554641c9928a3666050ba0c3",
+      "bytes": 564
+    },
+    "cpu-probe.safe.json": {
+      "sha256": "e3562dbd82dd1d830e8cb98a251c6698b43f5ac1adb1d4db196807a805184a7a",
+      "bytes": 1854
+    },
+    "cpu-storage-complete.safe.json": {
+      "sha256": "df0337a6581aae15c844e4b08ffb19cd703dc87e1035e654af51a26368fb9032",
+      "bytes": 1359
+    },
+    "nri-cgroups-cleaned.safe.json": {
+      "sha256": "110164d375a5c4487f90d148123123ee5c2a57be0b744cf0ea6adc72a4d5949f",
+      "bytes": 778
+    },
+    "nri-complete.safe.json": {
+      "sha256": "28b371125504a39d13fdb556160e6fcf54b964d87db0d3c5fab524d589e32927",
+      "bytes": 1242
+    },
+    "nri-fault-witnesses.safe.json": {
+      "sha256": "9be2427c90a5fe4b5d3a05fe44023a5a27031a19e777baa3cb3cce829a4c7fa5",
+      "bytes": 1954
+    },
+    "nri-final-runtime-physical.safe.json": {
+      "sha256": "df9ec350eeeb81cf48983fa2ad28ec00bf536ece48aca9427e6c0d05c1569807",
+      "bytes": 1807
+    },
+    "nri-two-card-recovery.safe.json": {
+      "sha256": "39fb818931a30014a3f0932f8facd1de114bbf37f409fc59cef5aa7cd9df133b",
+      "bytes": 2972
+    },
+    "original-volumes-preserved.safe.json": {
+      "sha256": "784d29bce9c9accdee6cb1d40b34c7d8c5fa0307394503af43a35c62c22f7bb2",
+      "bytes": 4123
+    },
+    "root-storage-window-reclosed.safe.json": {
+      "sha256": "c2814905d5a4e232c9ad044638d9aeae4978ef89ac48237c182c0b13d6eb3395",
+      "bytes": 341
+    },
+    "source-provenance.safe.json": {
+      "sha256": "3bb1575d7e5c50d0a97135ecb2b58112bf56c64955d4cec99b6a6f45ebb79a95",
+      "bytes": 5615
+    },
+    "storage-cleanup.safe.json": {
+      "sha256": "7467ae37f531bcbd77d34db1b4cc81d809b40bdb8eee07b02955544803b0725c",
+      "bytes": 1158
+    },
+    "storage-probe.safe.json": {
+      "sha256": "7fadc70e404d8362d5fa663d34ad3d346f2f17567ed4d7b001bcdfb333461360",
+      "bytes": 582
+    }
+  }
+}

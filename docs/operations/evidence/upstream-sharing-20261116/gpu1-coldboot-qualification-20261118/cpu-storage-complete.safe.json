@@ -1,0 +1,27 @@
+{
+  "completedAt": "2026-11-18T01:04:02.702340+00:00",
+  "scope": "Postcold CPU confinement and disposable Longhorn fsync only; no GPU hardware or worker acceptance",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+  "cpuPassed": true,
+  "storagePassed": true,
+  "storagePayloadByteIdentical": true,
+  "storageCommandSHA256": "9bd7ad4054f4b92d26471ca9d489e93a732eb743c0f7c58b8a87aa899049c8e2",
+  "podUID": "1592a1d6-5d52-4936-97f6-894b1895ea98",
+  "containerID": "containerd://bb20514cee99a7f39babe593867af4f6d7043fba369d9cb030b88e2fd3555dc7",
+  "imageID": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+  "terminated": {
+    "containerID": "containerd://bb20514cee99a7f39babe593867af4f6d7043fba369d9cb030b88e2fd3555dc7",
+    "exitCode": 0,
+    "finishedAt": "2026-11-18T00:59:50Z",
+    "reason": "Completed",
+    "startedAt": "2026-11-18T00:59:50Z"
+  },
+  "restartCount": 0,
+  "allFourOwnedObjectsAndDisposablePVLonghornAbsent": true,
+  "original17VolumesExact": true,
+  "nodeWritesByThisAgent": false,
+  "forceOrFinalizerMutation": false,
+  "localProxyStopped": true,
+  "cordonCause": "Root intended IM-window patches; false/omitted representation caused initial mistaken postcondition. Root supplied resolved causal receipt."
+}

@@ -1,0 +1,70 @@
+{
+  "observed": "2026-11-18T00:51:39.146915+00:00",
+  "assessment": "Observed stock NVIDIA toolkit reload caused the single automatic k3s-agent restart during cold startup; not a manual warm repair. No uninterrupted-agent claim.",
+  "toolkit": {
+    "version": "1.20.1",
+    "PodUID": "8b569267-a3aa-40c9-9843-f7bb50c94361",
+    "CID": "acadee03b409a37ac0fa897835d1c9105842a8af214ec3dea2d2ab30cd21cc6d",
+    "Ready": true,
+    "containerStartedAt": "2026-11-18T00:45:28Z",
+    "runtime": "containerd",
+    "config": "/runtime/config-dir/config.toml",
+    "socket": "/runtime/sock-dir/containerd.sock",
+    "setAsDefault": true
+  },
+  "timelineUTC": [
+    {
+      "time": "00:45:28.478982",
+      "event": "driver-ready file created"
+    },
+    {
+      "time": "00:45:33.829675689",
+      "event": "toolkit flushed config /runtime/config-dir.d/99-nvidia.toml"
+    },
+    {
+      "time": "00:45:33.830890150",
+      "event": "toolkit Sending SIGHUP signal to containerd"
+    },
+    {
+      "time": "00:45:33.831127332",
+      "event": "toolkit Successfully signaled containerd"
+    },
+    {
+      "time": "00:45:33.849029",
+      "event": "k3s-agent PID1585 Shutdown request received: containerd exited: signal: hangup"
+    },
+    {
+      "time": "00:45:33.953461",
+      "event": "systemd deactivated k3s-agent successfully"
+    },
+    {
+      "time": "00:45:38.973997",
+      "event": "systemd scheduled automatic restart counter1"
+    },
+    {
+      "time": "00:45:42.624347",
+      "event": "systemd started k3s-agent; newMainPID25806"
+    },
+    {
+      "time": "00:45:43.988894729",
+      "event": "first current-coldboot metricsd instance starting"
+    },
+    {
+      "time": "00:45:44.051051190",
+      "event": "NVML initialized; GPU process metrics enabled"
+    }
+  ],
+  "evidence": [
+    "toolkit-cold-config-allowlist.safe.json",
+    "toolkit-reload-events.safe.json",
+    "toolkit-k3s-sighup-correlation.safe.json",
+    "metricsd-startup-events.safe.json",
+    "host-postboot.safe.json",
+    "cold-prom-targets.safe.json"
+  ],
+  "runtimeBytesAfterReload": "same6ce/0ca/archive2277; AA/source/UVM/misc/module/marker/metrics unchanged exact observed receipts",
+  "aptTimers": "active is expected original24.04 policy restored/persisted per Root; no disabling or cold-failure classification",
+  "observerPerformedAnyRestartOrWarmFix": false,
+  "selectionOrNodeOrPodOrRuntimeWrites": false,
+  "CUDAOrAcceptanceTests": false
+}

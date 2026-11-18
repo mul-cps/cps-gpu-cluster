@@ -1,0 +1,57 @@
+{
+  "generatedAt": "2026-11-18T01:34:04.921107+00:00",
+  "sourceManifestIntegrity": [
+    {
+      "manifest": "gpu1-runtime-coldboot-20261118/readonly-postboot/manifest.safe.json",
+      "sha256": "7e11b00ff2c165a6cd277672b48e842991f3c7f682e044e4f717d44b6891fa18",
+      "listedFilesVerified": 21,
+      "allHashesMatch": true
+    },
+    {
+      "manifest": "gpu1-cpu-storage-postcoldboot-20261118/manifest.safe.json",
+      "sha256": "834a50b47194f0a2ad790251649175748307ef7bfa90d7ba0bebdbf330f78438",
+      "listedFilesVerified": 35,
+      "allHashesMatch": true
+    },
+    {
+      "manifest": "gpu1-hardware-postcoldboot-20261118-bootcd940/evidence-manifest.safe.json",
+      "sha256": "53923c65d495c7bc554755ca165199380f9038f33211932a2f380ac8d1a41bce",
+      "listedFilesVerified": 68,
+      "allHashesMatch": true
+    }
+  ],
+  "sourceFileSHA256": {
+    "gpu1-runtime-coldboot-20261118/readonly-postboot/manifest.safe.json": "7e11b00ff2c165a6cd277672b48e842991f3c7f682e044e4f717d44b6891fa18",
+    "gpu1-cpu-storage-postcoldboot-20261118/manifest.safe.json": "834a50b47194f0a2ad790251649175748307ef7bfa90d7ba0bebdbf330f78438",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/evidence-manifest.safe.json": "53923c65d495c7bc554755ca165199380f9038f33211932a2f380ac8d1a41bce",
+    "gpu1-runtime-coldboot-20261118/root-pre-coldboot-gates.safe.json": "dc1cf2cc4c2040cf99b971188c496bae8ab23a25fbd6450b1f204339743fe13d",
+    "gpu1-runtime-coldboot-20261118/root-submit-intent.safe.json": "4c10e819f3ec86e209fec959f36a6d9aff9a612a18c44d6213639567b4fbae83",
+    "gpu1-runtime-coldboot-20261118/readonly-postboot/cold-startup-cause-assessment.safe.json": "ee52f6456044796ae6c408274f7b812061093ab930040ebd882611c3e897aba4",
+    "gpu1-runtime-coldboot-20261118/readonly-postboot/host-postboot.safe.json": "53cc9ab8637cf91ea63d2fe89673238d43d34d64c5685942c2989a93ec761599",
+    "gpu1-runtime-coldboot-20261118/readonly-postboot/postboot-inventory.safe.json": "595237986d36d8809c7e499549baa8f9830ba65a7a5f6ed4efbc7b85d2cf3979",
+    "gpu1-cpu-storage-postcoldboot-20261118/cpu-postcoldboot-passed.safe.json": "e3562dbd82dd1d830e8cb98a251c6698b43f5ac1adb1d4db196807a805184a7a",
+    "gpu1-cpu-storage-postcoldboot-20261118/cpu-normal-cleanup.safe.json": "d98e279f952929c28ed1fb494513c556d7eb8ce1554641c9928a3666050ba0c3",
+    "gpu1-cpu-storage-postcoldboot-20261118/storage-passed-before-cleanup.safe.json": "7fadc70e404d8362d5fa663d34ad3d346f2f17567ed4d7b001bcdfb333461360",
+    "gpu1-cpu-storage-postcoldboot-20261118/storage-normal-cleanup.safe.json": "7467ae37f531bcbd77d34db1b4cc81d809b40bdb8eee07b02955544803b0725c",
+    "gpu1-cpu-storage-postcoldboot-20261118/root-im-window-reclosed.safe.json": "c2814905d5a4e232c9ad044638d9aeae4978ef89ac48237c182c0b13d6eb3395",
+    "gpu1-cpu-storage-postcoldboot-20261118/original-volumes-postcheck.safe.json": "784d29bce9c9accdee6cb1d40b34c7d8c5fa0307394503af43a35c62c22f7bb2",
+    "gpu1-cpu-storage-postcoldboot-20261118/postcold-cpu-storage-complete.safe.json": "df0337a6581aae15c844e4b08ffb19cd703dc87e1035e654af51a26368fb9032",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/postcold-nri-complete.safe.json": "28b371125504a39d13fdb556160e6fcf54b964d87db0d3c5fab524d589e32927",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/postcold-nri-owned-cgroups.safe.json": "110164d375a5c4487f90d148123123ee5c2a57be0b744cf0ea6adc72a4d5949f",
+    "gpu1-cordon-investigation-20261118/root-cause-resolved-false-omission.safe.json": "443feb949d479d950cdcfe64f45f8663c78ac76c457f547a9ad0b2b541001b61",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/nri-initial/first-rejection.json": "f0ecbbd4639b6d7002fa8a73ef544b139ac5caeba2f93a82209ceea0e19895b7",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/nri-initial/disconnected-rejection.json": "c5fc370dcf5cd62d0775413677abae06c72a92e5db2814ecd62d8381fee4e69a",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/nri-initial/missing-rejection.json": "4f7c2a5cef721663b35618a6ebc4fa39a6d8bf4c3e53b272184cbf23df4645ae",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/nri-initial/cpu-during-stop.json": "102e335f14e313ce82314601e71bb75f254222e0570e270a9ae3c23b17e78016",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/nri-initial/nri-hotfix-missing-cpu-latest.json": "63a089ce654eada472c962f81d07d4715ed8603633f1b91f8b865f03e22faf60",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/nri-initial/hung-summary.json": "845f501eb8e872849956bce41541585fd98c3e711650e2afc5482ee70e20f0bf",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/nri-initial/recovery-0.log": "7720f0a7701b6a60945ce53fc9d0bb15d7e46ee7d1d688c7df29af21141fe079",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/nri-initial/nri-hotfix-recovery-0-latest.json": "30e3ec059d28b69147326032f8de602b10886e5cc978aac88bccd57efc0fe7bc",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/nri-initial/recovery-1.log": "7720f0a7701b6a60945ce53fc9d0bb15d7e46ee7d1d688c7df29af21141fe079",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/nri-initial/nri-hotfix-recovery-1-latest.json": "d5225cdf112fb1364f2b8ca102846207c5617b91e4c0a55745abc5734a5078b3",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/postcold-nri-final-host.json": "2f00abdc90dab3df21f02ebacdb9cd7acd1b728309386563df19d96c079c14d7",
+    "gpu1-hardware-postcoldboot-20261118-bootcd940/postcold-nri-final-runtime.json": "1b8b74dfc5408973bc07b6bafd73819b71a0237de13a8629b9f11be071d6157b"
+  },
+  "projectionPolicy": "Only explicit safe receipts and selected typed metadata; no raw specs/log bodies/certificates/secret/token values/fixture vendoring",
+  "noLiveActionPerformedForProjection": true
+}

@@ -1,0 +1,8 @@
+{
+  "submittedAt": "2026-11-18T00:40:01.632233+00:00",
+  "node": "k3s-wk-gpu1",
+  "oldBoot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "unit": "cps-gpu1-upstream-runtime-reboot-20261118",
+  "repeatedSubmissionForbidden": true,
+  "force": false
+}

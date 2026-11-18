@@ -1,0 +1,61 @@
+{
+  "observed": "2026-11-18T00:53:13.932941+00:00",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+  "podUID": "68f26f0c-8027-4949-8d0e-d8c06c1aa608",
+  "podNode": "k3s-wk-gpu1",
+  "containerID": "containerd://b97cf9417033301f9b532fae539fe727b5180fa5b6a01ea057b75d50966badcb",
+  "imageID": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+  "termination": {
+    "containerID": "containerd://b97cf9417033301f9b532fae539fe727b5180fa5b6a01ea057b75d50966badcb",
+    "exitCode": 0,
+    "finishedAt": "2026-11-18T00:51:57Z",
+    "reason": "Completed",
+    "startedAt": "2026-11-18T00:51:56Z"
+  },
+  "events": [
+    {
+      "event": "identity",
+      "pid": 7,
+      "uid": 1000,
+      "profile": "cri-containerd.apparmor.d//&unconfined (enforce)",
+      "cgroup": "0::/"
+    },
+    {
+      "event": "signal_send",
+      "result": "pass",
+      "child": 8
+    },
+    {
+      "event": "signal_received",
+      "pid": 8
+    },
+    {
+      "event": "ptrace_attach_detach",
+      "result": "pass"
+    },
+    {
+      "event": "sigkill",
+      "result": "pass"
+    },
+    {
+      "event": "reaped",
+      "status": 9,
+      "result": "pass"
+    },
+    {
+      "event": "mount_negative",
+      "result": "pass",
+      "errno": 1,
+      "uid": 1000,
+      "profile": "cri-containerd.apparmor.d//&unconfined (enforce)",
+      "probeSHA256": "23ffe82b21aa91face3a3017b725393ba3e998d9d83a882d8306a050fcc072b4",
+      "nvidiaDevices": [],
+      "mountDenialIsNotUniquelyAttributedToAppArmor": true
+    }
+  ],
+  "CPUProbePassed": true,
+  "cpuOwnedObjectsAbsent": true,
+  "storageProbeState": "HELD before create: no selected instance-manager under cordon",
+  "payloadSourceHash": "47cc7717f9837ad25091c76cf24a72e1eee45ecc6181230dc7a1fb1df921021b"
+}

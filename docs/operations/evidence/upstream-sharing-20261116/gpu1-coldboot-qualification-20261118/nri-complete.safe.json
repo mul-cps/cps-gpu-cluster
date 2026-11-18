@@ -1,0 +1,34 @@
+{
+  "observed": "2026-11-18T01:08:11.615121+00:00",
+  "postcoldNRIinitialAndRecoveryPASS": true,
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "newBoot": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+  "driverPodUID": "74ec5235-668e-4472-9e64-f8a06aa87be2",
+  "driverCID": "2d65c0f7a3c9f6a939033b47b41e3530b35148b84d3b9ed04b630427a3daab06",
+  "fractiondPodUID": "628f5b6c-a12e-47ee-b33e-e16eb5e2cadc",
+  "fractiondCID": "6fcd14df752ebac5443bf3390986e5b122ae99b9192e4becb71e31131dad0c3e",
+  "firstHungTimeoutRejected": true,
+  "disconnectedRequiredRejected": true,
+  "missingRequiredRejected": true,
+  "CPUIndependentInBothFaults": true,
+  "rawQuotaAndRecoveryCards": 2,
+  "ownedPodCMRemaining": [],
+  "ownedBindRequestsRemaining": [],
+  "knownOwnedPodCgroupsAllAbsent": true,
+  "knownOwnedPodCgroupUIDsChecked": 7,
+  "cordon": true,
+  "maintenanceRetained": true,
+  "qualifiedAbsent": true,
+  "physical": [
+    {
+      "GPU": "GPU-8df28256-50a3-db30-3706-b69d52f4874f, 620.70.06, 1, 40960",
+      "computeProcesses": ""
+    },
+    {
+      "GPU": "GPU-b1222487-3937-5349-7329-5cbebd15a5db, 620.70.06, 1, 40960",
+      "computeProcesses": ""
+    }
+  ],
+  "sameBootFinal": true,
+  "restartColdbootKAIOrNodeChangesPerformedByThisRun": false
+}

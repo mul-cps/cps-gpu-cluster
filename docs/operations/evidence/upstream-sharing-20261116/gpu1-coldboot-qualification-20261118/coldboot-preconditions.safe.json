@@ -1,0 +1,174 @@
+{
+  "observed": "2026-11-18T00:39:15.175367+00:00",
+  "selectedNode": "k3s-wk-gpu1",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "oldBoot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "closedRuntimeAndBothCardIdlePreflightPassed": true,
+  "coreAndContinuityCompleteRefs": [
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-hardware-20261118-bootb82de/core-phaseA-complete.safe.json",
+    "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu1-hardware-20261118-bootb82de/phaseB-complete.safe.json"
+  ],
+  "all7Ready": true,
+  "threePeersReadyTwoGPUsEach": true,
+  "noSelectedUserOrGPUJobs": true,
+  "attached17TwoDistinctCurrentRemoteRW": true,
+  "volumes": [
+    {
+      "volume": "pvc-07dd1975-494a-4dd0-a9a0-84d75f514dd7",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-1651fba7-6ecd-4615-92f5-8780f1f3857e",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-19834c8e-bb63-46ba-b928-e9a9dddeef43",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-3c984fe1-3120-41e4-8bd8-386ed59a2139",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-4300bb37-4a26-4d07-b4dc-9ee81150187b",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-471c5b9a-b330-402f-8974-6777d4759616",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-764c6600-0466-4f6e-9f4a-e1badf8c1022",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-779c3159-a609-46a5-aea9-36d54075e715",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-7adadc35-e1f4-44c6-b231-d43038fcc0b4",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-9e3d0ef6-9ffe-4171-a572-88423c9b01b9",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-c33f6629-2433-4ecb-98f1-8fa633e3d765",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-c7795ba0-87bf-4bb8-8b90-b60fb76a1c78",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-d1c75e8a-6510-4f7a-a826-e5e860453389",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-d791faac-9c82-42dc-87ad-541ae9edc89a",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-e6258a24-de2e-4321-a6eb-945dc2a53eb7",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-e8de6e65-be1b-4a5c-ac71-d84599a7788f",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    },
+    {
+      "volume": "pvc-ed8b6472-0e95-43e8-b2e2-4694ea1c97aa",
+      "robustness": "healthy",
+      "remoteRWNodes": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu4"
+      ]
+    }
+  ],
+  "kuredManualLock": true,
+  "cordonAndMaintenanceRetained": true,
+  "qualificationAbsent": true,
+  "force": false
+}

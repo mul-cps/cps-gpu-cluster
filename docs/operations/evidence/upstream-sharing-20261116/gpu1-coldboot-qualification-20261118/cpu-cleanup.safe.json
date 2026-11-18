@@ -1,0 +1,22 @@
+[
+  {
+    "kind": "Pod",
+    "name": "gpu1-postcold-aa-20261118",
+    "namespace": "cattle-system",
+    "uid": "68f26f0c-8027-4949-8d0e-d8c06c1aa608",
+    "deleteHTTPStatus": 200,
+    "absent": true,
+    "forced": false,
+    "observed": "2026-11-18T00:52:49.312004+00:00"
+  },
+  {
+    "kind": "ConfigMap",
+    "name": "gpu1-postcold-aa-code-20261118",
+    "namespace": "cattle-system",
+    "uid": "33fbd887-8dbe-4bc5-bc3b-b42cd8c75deb",
+    "deleteHTTPStatus": 200,
+    "absent": true,
+    "forced": false,
+    "observed": "2026-11-18T00:52:49.333542+00:00"
+  }
+]
