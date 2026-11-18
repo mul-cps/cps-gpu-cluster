@@ -1,0 +1,216 @@
+{
+  "operation": "planned-checkpoint-20261118",
+  "rootRelease": null,
+  "expiresAt": null,
+  "intervalSeconds": 0.5,
+  "maximumSeconds": 600,
+  "prequalificationOnly": false,
+  "endpoints": [
+    {
+      "id": "cps-reservation",
+      "required": true,
+      "category": "authenticated-api",
+      "transport": "source-pod",
+      "podBinding": {
+        "source": "cps",
+        "namespace": "cps-compute",
+        "name": "cps-admin-57c65fcd6c-flsqp",
+        "uid": "f95c7960-f7a3-44ab-ab62-a150550454aa",
+        "container": "console",
+        "containerID": "containerd://dddf6fd7005ffd6323e8622c46229ae26985ed9b7167190bb2ab8cb8af5e09da",
+        "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e7726d86d94d9508b4419b2222e1bd5a3a0b6e1ec1698a944e31b50397bed0c",
+        "deploymentGeneration": 126
+      },
+      "url": "https://compute-gateway.cps-compute.svc.cluster.local:8000/internal/v1/reservations/upstream-registry-qualification-20261116-cps",
+      "expectedStatus": 200,
+      "expectedJSONSubset": {
+        "workspace": "upstream-registry-qualification-20261116-cps",
+        "active": false,
+        "attempt": null
+      },
+      "expectedBodySHA256": "2b5c4111aaf4ef8f28f8682467ca9eb385e9b7b2f7f56d995e1d8cd89e452152",
+      "authScheme": "Bearer",
+      "caFile": "/trust/ca.crt"
+    },
+    {
+      "id": "cps-workspace",
+      "required": true,
+      "category": "authenticated-api",
+      "transport": "source-pod",
+      "podBinding": {
+        "source": "cps",
+        "namespace": "cps-compute",
+        "name": "cps-admin-57c65fcd6c-flsqp",
+        "uid": "f95c7960-f7a3-44ab-ab62-a150550454aa",
+        "container": "console",
+        "containerID": "containerd://dddf6fd7005ffd6323e8622c46229ae26985ed9b7167190bb2ab8cb8af5e09da",
+        "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e7726d86d94d9508b4419b2222e1bd5a3a0b6e1ec1698a944e31b50397bed0c",
+        "deploymentGeneration": 126
+      },
+      "url": "https://compute-gateway.cps-compute.svc.cluster.local:8000/internal/v1/workspaces/upstream-registry-qualification-20261116-cps",
+      "expectedStatus": 200,
+      "expectedJSONSubset": {
+        "workspace": "upstream-registry-qualification-20261116-cps",
+        "namespace": "jupyterhub",
+        "policy_hash": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb"
+      },
+      "expectedBodySHA256": "f5c1890958f2bbfa3e1ffe61515ce8c386f0524c687b44399e7086a2b4320502",
+      "authScheme": "Bearer",
+      "caFile": "/trust/ca.crt"
+    },
+    {
+      "id": "cps-profiles",
+      "required": true,
+      "category": "authenticated-api",
+      "transport": "source-pod",
+      "podBinding": {
+        "source": "cps",
+        "namespace": "cps-compute",
+        "name": "cps-admin-57c65fcd6c-flsqp",
+        "uid": "f95c7960-f7a3-44ab-ab62-a150550454aa",
+        "container": "console",
+        "containerID": "containerd://dddf6fd7005ffd6323e8622c46229ae26985ed9b7167190bb2ab8cb8af5e09da",
+        "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e7726d86d94d9508b4419b2222e1bd5a3a0b6e1ec1698a944e31b50397bed0c",
+        "deploymentGeneration": 126
+      },
+      "url": "https://compute-gateway.cps-compute.svc.cluster.local:8000/internal/v1/profiles",
+      "expectedStatus": 200,
+      "expectedJSONSubset": {
+        "interactive-shared-5": {},
+        "interactive-shared-10": {},
+        "interactive-shared-20": {}
+      },
+      "expectedBodySHA256": "301f1b0eab6d58efdcd6b291e056757839863b561a011a425048edbbf00b4dca",
+      "authScheme": "Bearer",
+      "caFile": "/trust/ca.crt"
+    },
+    {
+      "id": "cps-isolation",
+      "required": true,
+      "category": "authenticated-api",
+      "transport": "source-pod",
+      "podBinding": {
+        "source": "cps",
+        "namespace": "cps-compute",
+        "name": "cps-admin-57c65fcd6c-flsqp",
+        "uid": "f95c7960-f7a3-44ab-ab62-a150550454aa",
+        "container": "console",
+        "containerID": "containerd://dddf6fd7005ffd6323e8622c46229ae26985ed9b7167190bb2ab8cb8af5e09da",
+        "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e7726d86d94d9508b4419b2222e1bd5a3a0b6e1ec1698a944e31b50397bed0c",
+        "deploymentGeneration": 126
+      },
+      "url": "https://compute-gateway.cps-compute.svc.cluster.local:8000/internal/v1/workspaces/upstream-registry-qualification-20261116-cit",
+      "expectedStatus": 404,
+      "expectedJSONSubset": {
+        "detail": "Workspace not found"
+      },
+      "expectedBodySHA256": null,
+      "authScheme": "Bearer",
+      "caFile": "/trust/ca.crt"
+    },
+    {
+      "id": "cit-reservation",
+      "required": true,
+      "category": "authenticated-api",
+      "transport": "source-pod",
+      "podBinding": {
+        "source": "cit",
+        "namespace": "cps-compute",
+        "name": "cit-admin-8d9884676-6wbbl",
+        "uid": "246f6a45-5e3d-46a3-b566-dde80a6ef95d",
+        "container": "console",
+        "containerID": "containerd://a448dde1ef5d5fb2bfef6700fc6d21fcc4c45be4d3650e3b0c72dc6c273f77d0",
+        "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e7726d86d94d9508b4419b2222e1bd5a3a0b6e1ec1698a944e31b50397bed0c",
+        "deploymentGeneration": 126
+      },
+      "url": "https://compute-gateway.cps-compute.svc.cluster.local:8000/internal/v1/reservations/upstream-registry-qualification-20261116-cit",
+      "expectedStatus": 200,
+      "expectedJSONSubset": {
+        "workspace": "upstream-registry-qualification-20261116-cit",
+        "active": false,
+        "attempt": null
+      },
+      "expectedBodySHA256": "a02936ad7ae20209b32859e39e6a0c547c7eaba626bfa2ce2f3b423a7d865d60",
+      "authScheme": "Bearer",
+      "caFile": "/trust/ca.crt"
+    },
+    {
+      "id": "cit-workspace",
+      "required": true,
+      "category": "authenticated-api",
+      "transport": "source-pod",
+      "podBinding": {
+        "source": "cit",
+        "namespace": "cps-compute",
+        "name": "cit-admin-8d9884676-6wbbl",
+        "uid": "246f6a45-5e3d-46a3-b566-dde80a6ef95d",
+        "container": "console",
+        "containerID": "containerd://a448dde1ef5d5fb2bfef6700fc6d21fcc4c45be4d3650e3b0c72dc6c273f77d0",
+        "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e7726d86d94d9508b4419b2222e1bd5a3a0b6e1ec1698a944e31b50397bed0c",
+        "deploymentGeneration": 126
+      },
+      "url": "https://compute-gateway.cps-compute.svc.cluster.local:8000/internal/v1/workspaces/upstream-registry-qualification-20261116-cit",
+      "expectedStatus": 200,
+      "expectedJSONSubset": {
+        "workspace": "upstream-registry-qualification-20261116-cit",
+        "namespace": "cit-jhub",
+        "policy_hash": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb"
+      },
+      "expectedBodySHA256": "3b5189150d155fa60e39b5d10718f10d529c1b58949f574f8834720b0b3d79db",
+      "authScheme": "Bearer",
+      "caFile": "/trust/ca.crt"
+    },
+    {
+      "id": "cit-profiles",
+      "required": true,
+      "category": "authenticated-api",
+      "transport": "source-pod",
+      "podBinding": {
+        "source": "cit",
+        "namespace": "cps-compute",
+        "name": "cit-admin-8d9884676-6wbbl",
+        "uid": "246f6a45-5e3d-46a3-b566-dde80a6ef95d",
+        "container": "console",
+        "containerID": "containerd://a448dde1ef5d5fb2bfef6700fc6d21fcc4c45be4d3650e3b0c72dc6c273f77d0",
+        "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e7726d86d94d9508b4419b2222e1bd5a3a0b6e1ec1698a944e31b50397bed0c",
+        "deploymentGeneration": 126
+      },
+      "url": "https://compute-gateway.cps-compute.svc.cluster.local:8000/internal/v1/profiles",
+      "expectedStatus": 200,
+      "expectedJSONSubset": {
+        "interactive-shared-5": {},
+        "interactive-shared-10": {},
+        "interactive-shared-20": {}
+      },
+      "expectedBodySHA256": "301f1b0eab6d58efdcd6b291e056757839863b561a011a425048edbbf00b4dca",
+      "authScheme": "Bearer",
+      "caFile": "/trust/ca.crt"
+    },
+    {
+      "id": "cit-isolation",
+      "required": true,
+      "category": "authenticated-api",
+      "transport": "source-pod",
+      "podBinding": {
+        "source": "cit",
+        "namespace": "cps-compute",
+        "name": "cit-admin-8d9884676-6wbbl",
+        "uid": "246f6a45-5e3d-46a3-b566-dde80a6ef95d",
+        "container": "console",
+        "containerID": "containerd://a448dde1ef5d5fb2bfef6700fc6d21fcc4c45be4d3650e3b0c72dc6c273f77d0",
+        "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e7726d86d94d9508b4419b2222e1bd5a3a0b6e1ec1698a944e31b50397bed0c",
+        "deploymentGeneration": 126
+      },
+      "url": "https://compute-gateway.cps-compute.svc.cluster.local:8000/internal/v1/workspaces/upstream-registry-qualification-20261116-cps",
+      "expectedStatus": 404,
+      "expectedJSONSubset": {
+        "detail": "Workspace not found"
+      },
+      "expectedBodySHA256": null,
+      "authScheme": "Bearer",
+      "caFile": "/trust/ca.crt"
+    }
+  ],
+  "legacyTLSRequired": false,
+  "legacyTLSFailureReceipt": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/controller-cutover-route-audit-20261118/legacy-native-strict-tls.safe.json"
+}

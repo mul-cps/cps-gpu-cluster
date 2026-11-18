@@ -1,0 +1,32 @@
+{
+  "status": "PREPARED_UNARMED_PRODUCTION_DATA_ADAPTER",
+  "offlineTests": 12,
+  "noLiveCallsOrProductionCopy": true,
+  "noGatedProductionFunctionWithSyntheticReceipts": true,
+  "files": {
+    "README.md": {
+      "sha256": "5866a20b5950cb93f4cadb63f9fceb196fff422c5fbc73c7716c063080726719",
+      "bytes": 6660
+    },
+    "data_adapter.py": {
+      "sha256": "7c8804a488ff7d3430e632b2c120ac236e0af9ddcfe82ae9e6deb99dffd96364",
+      "bytes": 11299
+    },
+    "dependencies.safe.json": {
+      "sha256": "e21b4a20084ba1898e31fa90435fa31484e5d94f3b8dd597d0bde6ae29108459",
+      "bytes": 1351
+    },
+    "inputs.UNARMED.json": {
+      "sha256": "470636a246be7b146940b49c48308ce8faf9f00606d1bff1777710e4f0695c55",
+      "bytes": 712
+    },
+    "offline-tests.txt": {
+      "sha256": "5835d8d2ce906b665f1d2233ef38f3490656e01b5c4975f1e4a66fbccc8ebf43",
+      "bytes": 2885
+    },
+    "test_data_adapter.py": {
+      "sha256": "acaa98003f5bed9348a8fd9bb84e2276df61c7b2431229af059c7cba49de8374",
+      "bytes": 8283
+    }
+  }
+}

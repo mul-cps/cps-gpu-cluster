@@ -1,0 +1,68 @@
+{
+  "at": "2026-11-18T20:03:50.633335+00:00",
+  "observerManifestSHA256": "e717fcf42ec512235c757b7ed74d3ee6f57294a26a931323843dc7005fde32df",
+  "observerSourceSHA256": "8fddf06e8b5195a2efd416435af6ee941181e3d07f80ac9e7692691ed74a9b45",
+  "liveObserver": {
+    "baselineReady": true,
+    "cadenceQualified": true,
+    "maxSampleStartGapSeconds": 0.788443733,
+    "noCutoverClaim": true,
+    "requiredAPIsEverySampleGood": true,
+    "status": "PREQUALIFICATION_ONLY",
+    "thresholdPass": false
+  },
+  "samples": 22,
+  "endpointObservations": 132,
+  "allEndpointObservationsVerified": true,
+  "observerOfflineTests": 25,
+  "dataAdapterManifestSHA256": "64a38006f42fb44a0d9b548440bd74646b6fb87a6a8e64ac267a332f1f98067f",
+  "dataAdapterOfflineTests": 12,
+  "dataAdapterProductionSnapshotOrInstallExecuted": false,
+  "productionFenceOrCutoverPerformed": false,
+  "previousObserverFailures": {
+    "I1": {
+      "baselineReady": false,
+      "cadenceQualified": true,
+      "maxSampleStartGapSeconds": 0.500527257,
+      "noCutoverClaim": true,
+      "requiredAPIsEverySampleGood": false,
+      "status": "PREQUALIFICATION_ONLY",
+      "thresholdPass": false,
+      "rootDiagnosis": "remote worker string split matched its own quoted delimiter before actual __main__ guard; generated Python truncated and raised SyntaxError before API call",
+      "productionFencePerformed": false,
+      "productionCopyPerformed": false,
+      "sourceAPIsStillSeparatelyVerified": true,
+      "nextAction": "successor worker construction fix plus compile-generated-source regression and live rerun",
+      "frozenPayloadHashesVerified": true
+    },
+    "I2": {
+      "baselineReady": true,
+      "cadenceQualified": true,
+      "maxSampleStartGapSeconds": 0.817957755,
+      "noCutoverClaim": true,
+      "requiredAPIsEverySampleGood": false,
+      "status": "PREQUALIFICATION_ONLY",
+      "thresholdPass": false,
+      "samples": 19,
+      "allRequiredGoodSamples": 17,
+      "sourceBodyMismatchCount": 0,
+      "boundedTimeoutEndpointCount": 12,
+      "classification": "NOT ACCEPTED: bounded observer gaps remain",
+      "productionFenceOrCopyPerformed": false,
+      "nextAction": "batch same-Source probes to reduce measurement overhead while retaining <=1s cadence and per-endpoint semantic checks"
+    }
+  },
+  "sourceFilesystemMetadata": {
+    "rootMode": "0o2775",
+    "directoryModes": {
+      "0o700": 3,
+      "0o2775": 45,
+      "0o2770": 1
+    },
+    "regularFileSetIDCount": 0,
+    "foreignRegularFileOwnerCount": 0,
+    "symlinkCount": 0,
+    "readOnlyObservationNotFinalCheckpoint": true
+  },
+  "remaining": "Fresh helpers and exact tooling staging; genuine writer/quiescence collector; integrated actual cutover and final target/service preservation within original clock."
+}
