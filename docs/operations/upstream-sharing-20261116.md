@@ -11,13 +11,15 @@ See the [GPU1 worker receipt](evidence/upstream-sharing-20261116/gpu1-worker-acc
 [final GPU tests](evidence/upstream-sharing-20261116/gpu1-final-source-gpu-20261118/README.md),
 [lifecycle tests](evidence/upstream-sharing-20261116/gpu1-final-source-lifecycle-20261118/README.md)
 and [current status](evidence/upstream-sharing-20261116/gpu2-current-status.json).
-GPU4 is cordoned and fenced. Normal drain and service relocation passed; its old
-driver/MPS pods stopped normally. Current 24.04 prerequisites completed and one
-normal prerequisite reboot passed with exact mounts and clean packages.
-Only GPU4 is now nominated through SUC; the durable host release upgrade is
-running. Job completion proves submission, not OS or worker acceptance. All17 attached volumes have three
-current RW copies outside GPU4. Local data and historical custody are preserved.
-See [GPU4 progress](evidence/upstream-sharing-20261116/gpu4-pre-os-progress-20261118.json).
+GPU4 now boots Ubuntu26.04.1/kernel7.0.0-43; its sole SUC operation is reconciled
+as OS-verified and nomination removed. Matched R620 and upstream runtime are
+installed on both cards. It remains cordoned, maintenance-tainted and unqualified
+while hardware/fault tests run; coldboot, KAI and Source acceptance still follow.
+Original local data inventories, mounts/PVC/PV identities and scoped recovery files
+are preserved. One upstream GPU Operator controller relist reconciled its stale
+node-owner label; peer GPU runtimes did not restart. See
+[GPU4 OS/runtime stage](evidence/upstream-sharing-20261116/gpu4-os-runtime-stage-20261118.json)
+and the [earlier drain/OS submission](evidence/upstream-sharing-20261116/gpu4-pre-os-progress-20261118.json).
 Controller cutover, all-eight-GPU rollout, startup bursts and full platform gates remain open.
 
 **2026-11-17 historical checkpoint:** GPU2 passed the scoped fixed-profile worker

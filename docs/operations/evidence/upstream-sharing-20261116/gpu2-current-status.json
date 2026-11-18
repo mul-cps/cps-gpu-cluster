@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-11-18T07:48:08.856872+00:00",
+  "as_of": "2026-11-18T08:29:51.083675+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "Six qualified GPUs on GPU2/GPU3/GPU1. GPU4 normal drain and current24.04 prerequisites/reboot passed; soleSUC release upgrade nominated and durable host operation running. GPU4 remains cordoned; full OS/runtime/worker acceptance pending.",
+  "phase": "All four GPU workers now boot Ubuntu26.04.1/kernel7.0.0-43 and have R620 installed. Six GPUs remain qualified on GPU2/GPU3/GPU1. GPU4 cordoned/maintenance/unqualified; warm hardware qualification running before runtime continuity/coldboot/KAI/Source acceptance.",
   "gpu_eligibility": "GPU1/GPU2/GPU3 qualified and untainted, six GPUs; GPU4 unqualified legacy and cordoned/maintenance fenced. No new shared starts fall back to GPU4.",
   "driver": {
     "version": "620.70.06",
@@ -231,8 +231,8 @@
       "taints": [
         {
           "effect": "NoSchedule",
-          "key": "cps.unileoben.ac.at/os-upgrade",
-          "value": "gpu4-ubuntu-20261118"
+          "key": "cps.unileoben.ac.at/maintenance",
+          "value": "upstream-pilot"
         },
         {
           "effect": "NoSchedule",
@@ -240,17 +240,16 @@
           "timeAdded": "2026-11-18T05:39:33Z"
         }
       ],
-      "os": "Ubuntu 24.04.5 LTS",
-      "kernel": "6.8.0-149-generic",
-      "boot_id": "66f8ee6d-3c51-451f-bd2f-ae441224f567",
+      "os": "Ubuntu 26.04.1 LTS",
+      "kernel": "7.0.0-43-generic",
+      "boot_id": "4387283f-838a-457a-967d-c53ab7906ab7",
       "qualified": null,
       "accelerator": "r615-canary-maintenance",
-      "gpu_capacity": "0",
+      "gpu_capacity": "2",
       "upgrade_labels_including_history": {
-        "cps.unileoben.ac.at/os-upgrade": "gpu4-ubuntu-20261118",
         "plan.upgrade.cattle.io/cps-ubuntu-gpu4-ubuntu-20261118": "115a40ecb4100b6304f5a9bdca5b3e184335614b1c02bb5592b4710b"
       },
-      "maintenance_tainted": false
+      "maintenance_tainted": true
     }
   ],
   "gpu3_maintenance": {
@@ -517,14 +516,16 @@
     "historical_four_previous_credential_cohorts_closed": true
   },
   "refresh_scope": [
-    "Fresh7node snapshot and GPU4 soleSUC/hostsystemd running evidence; earlier acceptance scopes unchanged"
+    "fresh7node snapshot",
+    "GPU4nativeOSverified+matchedR620/runtime+preservedlocaldata",
+    "warmGPU4 hardware window inprogress; acceptance and broader gates remain open"
   ],
   "gpu1_worker_receipt": "gpu1-worker-acceptance-20261118.json",
   "gpu1_worker_receipt_sha256": "3a7e71cac44c149924db7f5258d0e228c06725a443c2e668731779067d94e9cf",
   "gpu4_maintenance": {
     "cordoned": true,
     "maintenance_tainted": true,
-    "OS_nominated": true,
+    "OS_nominated": false,
     "normal_drain_passed": true,
     "legacy_driver_MPS_normally_stopped": true,
     "current24_04_prerequisites_completed": true,
@@ -536,6 +537,9 @@
     "remaining_selected_custody_none_historical_records_preserved": true,
     "receipt": "gpu4-pre-os-progress-20261118.json",
     "prerequisite_reboot_verified": true,
-    "OS_upgrade_host_operation": "running"
+    "OS_upgrade_host_operation": "os-verified",
+    "R620_upstream_runtime_installed": true,
+    "hardware_qualification": "running; full worker acceptance pending",
+    "runtime_receipt": "gpu4-os-runtime-stage-20261118.json"
   }
 }

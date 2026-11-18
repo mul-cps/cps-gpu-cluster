@@ -1,0 +1,78 @@
+{
+  "as_of": "2026-11-18T08:29:51.083675+00:00",
+  "scope": "GPU4 OS/runtime installation complete; warm hardware acceptance underway, not worker acceptance",
+  "node": "k3s-wk-gpu4",
+  "nodeUID": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+  "boot": "4387283f-838a-457a-967d-c53ab7906ab7",
+  "OS": "Ubuntu 26.04.1 LTS",
+  "kernel": "7.0.0-43-generic",
+  "native_OS_operation": "os-verified",
+  "OS_nomination_removed": true,
+  "cordoned": true,
+  "maintenance_fence": true,
+  "shared_qualified": false,
+  "qualified_peer_GPU_count": 6,
+  "R620": "620.70.06 c3b image; both cards/5648 source/10301 UVM/managed+HMM guards/misc/MIG disabled verified",
+  "runtime": "6ce outer/0ca running agent+containerd, same nominalK3s1.34.9; NRI validator enabled; toolkit1.20.1, plugin+GFD0.20.1, Fractioning0.1.9",
+  "operator_relist": "One existing v26.7.1 control-plane controller restart reconciled missing operator-owned node label, same priorGPU1 condition; 35 other peer PodUIDs unchanged; no peer GPU runtime restart",
+  "preservation": "Both original mounts and disk identities, fstab, localAM/Pipelines inventories and coldarchives, retainedBuildkit backendmetadata and originalPVC/PV identities match; no full80GBcachecontent scan/restore claimed",
+  "open_before_worker_promotion": [
+    "Warm fault/contention/API/cleanup suite completion",
+    "Controlled runtime continuity restart and deliberate coldboot; fresh identity and NRI/CPU/storage checks",
+    "Stock KAI15 roles and real CPS/CIT finalSource lifecycle, storage/members/allowances/cleanup/metrics",
+    "RestorepausedAM/Pipelines normally, re-enableLHnode scheduling, explicitRootacceptance and peer verification"
+  ],
+  "full_platform_acceptance": false,
+  "evidence": [
+    {
+      "artifact": "gpu4-maintenance-actual-20261118/release-upgrade/os-verified-ACTUAL.safe.json",
+      "sha256": "fb59733ca5f5bb30dde4b8bf961b04420bac3f3203320e9f732f8fff66382053",
+      "bytes": 1476
+    },
+    {
+      "artifact": "gpu4-maintenance-actual-20261118/release-upgrade/post-OS-maintenance-fence.safe.json",
+      "sha256": "d0f467b261d83e2018bb88aa944229e06883bc244ca065ffe46fdfad97771b17",
+      "bytes": 335
+    },
+    {
+      "artifact": "gpu4-post-os-localdata-readonly-20261118/manifest.safe.json",
+      "sha256": "ad3a1ffabb5ffc7af71a7af9577f562a99fb829e855b2e895fdaec815444f4b2",
+      "bytes": 541
+    },
+    {
+      "artifact": "gpu4-runtime-actual-20261118/nri-running-ACTUAL.safe.json",
+      "sha256": "fcda8cdfc7f36fa55a18507dd34d357ffc4709973c1db53e30f40727e34a23ee",
+      "bytes": 2567
+    },
+    {
+      "artifact": "gpu4-runtime-actual-20261118/actual-r620-both-cards.safe.json",
+      "sha256": "03cae0fafecb5f59919d27007b9313286088936184a97dfb8b69b9fb9038b024",
+      "bytes": 959
+    },
+    {
+      "artifact": "gpu4-runtime-actual-20261118/operator-relist-actual-peer-continuity.safe.json",
+      "sha256": "f37c2134a8f5b45e55e994f82b45b9fd9a68e6924ba15e01e87b42f127342a74",
+      "bytes": 591
+    },
+    {
+      "artifact": "gpu4-runtime-actual-20261118/selected-operands/nvidia-container-toolkit-daemonset-replacement.safe.json",
+      "sha256": "763e6ad64fcdd7ca3c0b0119f39ca954e53126c8d00ce9ed5b7dff9d9a637265",
+      "bytes": 915
+    },
+    {
+      "artifact": "gpu4-runtime-actual-20261118/selected-operands/nvidia-device-plugin-daemonset-replacement.safe.json",
+      "sha256": "4504080e1f01f03dce5e849e478c137da2ad7936d7db5133b4d9c371d4f0a05f",
+      "bytes": 1203
+    },
+    {
+      "artifact": "gpu4-runtime-actual-20261118/selected-operands/gpu-feature-discovery-replacement.safe.json",
+      "sha256": "0f66310f53d07bbe9664b1fd43fa91c1f50fd1a88e3bdd11871f5048e7c98ecc",
+      "bytes": 1153
+    },
+    {
+      "artifact": "gpu4-runtime-actual-20261118/fractioning-nomination-intent.safe.json",
+      "sha256": "7475d3ee809135de3cb0a42d8fa804fbf436d6e5a3420d21e0944ff80951a32e",
+      "bytes": 349
+    }
+  ]
+}
