@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-11-18T05:51:14.757561+00:00",
+  "as_of": "2026-11-18T07:48:08.856872+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2/GPU3/GPU1 scoped workers accepted; six qualified GPUs normal eligibility. Final Source cleanup-race fix deployed and six GPU/two CPU/two strict active200 fault cases passed; final QA closed, normal Hubs restored. GPU4 cordoned/maintenance fenced; local-data and service prerequisites in progress, OS not nominated.",
+  "phase": "Six qualified GPUs on GPU2/GPU3/GPU1. GPU4 normal drain and current24.04 prerequisites/reboot passed; soleSUC release upgrade nominated and durable host operation running. GPU4 remains cordoned; full OS/runtime/worker acceptance pending.",
   "gpu_eligibility": "GPU1/GPU2/GPU3 qualified and untainted, six GPUs; GPU4 unqualified legacy and cordoned/maintenance fenced. No new shared starts fall back to GPU4.",
   "driver": {
     "version": "620.70.06",
@@ -231,8 +231,8 @@
       "taints": [
         {
           "effect": "NoSchedule",
-          "key": "cps.unileoben.ac.at/maintenance",
-          "value": "upstream-pilot"
+          "key": "cps.unileoben.ac.at/os-upgrade",
+          "value": "gpu4-ubuntu-20261118"
         },
         {
           "effect": "NoSchedule",
@@ -240,14 +240,17 @@
           "timeAdded": "2026-11-18T05:39:33Z"
         }
       ],
-      "os": "Ubuntu 24.04.3 LTS",
+      "os": "Ubuntu 24.04.5 LTS",
       "kernel": "6.8.0-149-generic",
-      "boot_id": "21aa4a49-9e79-4194-8d26-830debb6ce2e",
+      "boot_id": "66f8ee6d-3c51-451f-bd2f-ae441224f567",
       "qualified": null,
-      "accelerator": "nvidia",
-      "gpu_capacity": "2",
-      "upgrade_labels_including_history": {},
-      "maintenance_tainted": true
+      "accelerator": "r615-canary-maintenance",
+      "gpu_capacity": "0",
+      "upgrade_labels_including_history": {
+        "cps.unileoben.ac.at/os-upgrade": "gpu4-ubuntu-20261118",
+        "plan.upgrade.cattle.io/cps-ubuntu-gpu4-ubuntu-20261118": "115a40ecb4100b6304f5a9bdca5b3e184335614b1c02bb5592b4710b"
+      },
+      "maintenance_tainted": false
     }
   ],
   "gpu3_maintenance": {
@@ -514,25 +517,25 @@
     "historical_four_previous_credential_cohorts_closed": true
   },
   "refresh_scope": [
-    "fresh seven-node UID/boot/maintenance/qualification readback",
-    "GPU1 actual accepted promotion: Longhorn enabled then exact maintenance taint removed",
-    "final d52 Source sixGPU/twoCPU/two strict200 cases and final cleanup/normal387/325/RBAC403",
-    "GPU4 actual initial fence only; OS unchanged and no nomination",
-    "remaining broad gates unchanged; historical failed409 evidence retained"
+    "Fresh7node snapshot and GPU4 soleSUC/hostsystemd running evidence; earlier acceptance scopes unchanged"
   ],
   "gpu1_worker_receipt": "gpu1-worker-acceptance-20261118.json",
   "gpu1_worker_receipt_sha256": "3a7e71cac44c149924db7f5258d0e228c06725a443c2e668731779067d94e9cf",
   "gpu4_maintenance": {
     "cordoned": true,
     "maintenance_tainted": true,
-    "OS_nominated": false,
-    "Ubuntu_R615_unchanged": true,
-    "local_data_and_service_preservation_in_progress": true,
-    "new_user_Pod_placements_blocked_existing_jobs_not_forced": true,
-    "Alertmanager_existing_owner_PV_retained_no_HA_upgrade_required_no_PDB_found": true,
-    "Pipelines_combined_digest_pin_pause_owner_commit": "870e17800cfb99be60331dcef725179f9fd72065",
-    "Pipelines_pause_applied": true,
-    "Buildkit_Retain_and_service_gate_prepared_not_yet_applied": true,
-    "WebXR_source_relocation_prepared_not_yet_applied": true
+    "OS_nominated": true,
+    "normal_drain_passed": true,
+    "legacy_driver_MPS_normally_stopped": true,
+    "current24_04_prerequisites_completed": true,
+    "Longhorn_attached17_each3current_outside_RW": true,
+    "Pipelines_paused_and_local_PV_preserved": true,
+    "Alertmanager_paused_and_local_PV_preserved": true,
+    "Buildkit_moved_old_cache_PV_Retain": true,
+    "WebXR_moved_GPU2_DNS_RTC_acceptance_open": true,
+    "remaining_selected_custody_none_historical_records_preserved": true,
+    "receipt": "gpu4-pre-os-progress-20261118.json",
+    "prerequisite_reboot_verified": true,
+    "OS_upgrade_host_operation": "running"
   }
 }

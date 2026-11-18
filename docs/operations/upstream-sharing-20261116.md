@@ -11,9 +11,14 @@ See the [GPU1 worker receipt](evidence/upstream-sharing-20261116/gpu1-worker-acc
 [final GPU tests](evidence/upstream-sharing-20261116/gpu1-final-source-gpu-20261118/README.md),
 [lifecycle tests](evidence/upstream-sharing-20261116/gpu1-final-source-lifecycle-20261118/README.md)
 and [current status](evidence/upstream-sharing-20261116/gpu2-current-status.json).
-GPU4 is cordoned and fenced for maintenance; local data/services are being
-preserved before OS nomination. Its OS/driver remain unchanged. Controller cutover,
-all-eight-GPU rollout, startup bursts and full platform gates remain open.
+GPU4 is cordoned and fenced. Normal drain and service relocation passed; its old
+driver/MPS pods stopped normally. Current 24.04 prerequisites completed and one
+normal prerequisite reboot passed with exact mounts and clean packages.
+Only GPU4 is now nominated through SUC; the durable host release upgrade is
+running. Job completion proves submission, not OS or worker acceptance. All17 attached volumes have three
+current RW copies outside GPU4. Local data and historical custody are preserved.
+See [GPU4 progress](evidence/upstream-sharing-20261116/gpu4-pre-os-progress-20261118.json).
+Controller cutover, all-eight-GPU rollout, startup bursts and full platform gates remain open.
 
 **2026-11-17 historical checkpoint:** GPU2 passed the scoped fixed-profile worker
 acceptance and is restored to shared placement and Longhorn scheduling. Its old

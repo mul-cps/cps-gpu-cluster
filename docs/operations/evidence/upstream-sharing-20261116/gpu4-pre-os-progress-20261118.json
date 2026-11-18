@@ -1,0 +1,102 @@
+{
+  "as_of": "2026-11-18T07:48:08.856872+00:00",
+  "scope": "GPU4 pre-OS worker maintenance; not worker or platform acceptance",
+  "selected_node_UID": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+  "pre_reboot_boot": "21aa4a49-9e79-4194-8d26-830debb6ce2e",
+  "normal_drain": "exit0; ordinary PDB respecting eviction with original grace; no force or emptyDir-data bypass",
+  "old_driver_MPS": "selected selectors changed, original pods gone normally; no forced module unload/reset",
+  "current_release_prerequisites": "completed; no pending packages; audit/check pass; requires reboot",
+  "normal_prerequisite_reboot": "verified actualboot66f8ee6d-3c51-451f-bd2f-ae441224f567; exactmounts/fstab/audit/apt pass; original timers restored",
+  "release_upgrade": "SUC soleGPU4 nomination applied; Job exit0; exact durable host operation running, not OS/worker acceptance",
+  "qualified_peer_GPUs": 6,
+  "Longhorn": "17 attached volumes have three current running RW replicas outside GPU4; no selected running engine/replica; node scheduling disabled; disk settings preserved",
+  "local_data": "Pipelines and Alertmanager paused with verified scoped cold archives; Buildkit old cache PV Retain; no local files deleted or stale replicas restored",
+  "custody": "no selected live legacy process or allocation reference found; retained historical pending records preserved",
+  "limitations": [
+    "February VM archive header/config/log checked, not full archive integrity or restore",
+    "Harbor job-log baseline84 now72: unchanged native sweeper reported12 expiry deletions; individual expiry qualification remains open",
+    "WebXR relocated to GPU2; canonical-host TLS/HTTP pass through explicit endpoint, ordinary DNS and RTC mission handshake remain unqualified",
+    "Broader eight-GPU, controller cutover, startup bursts, advanced features, human access and recovery acceptance remain open"
+  ],
+  "evidence": [
+    {
+      "artifact": "gpu4-frontdoor-controller-relocation-actual-20261118/complete.safe.json",
+      "sha256": "076b61159c10635f7cce71a6057251866b0387fc4d269cf503499476f86e0dba",
+      "bytes": 1826
+    },
+    {
+      "artifact": "gpu4-harbor-core-relocation-actual-20261118/manifest.safe.json",
+      "sha256": "6701fcacbfcc8487016a08a09a5f1e0a235279c7097549808c2b41812fb300ce",
+      "bytes": 6631
+    },
+    {
+      "artifact": "gpu4-buildkit-preservation-preparation-20261118/manifest.safe.json",
+      "sha256": "73aa9eebd1b3cfe5572029c7834494964a23b4168501ffdc02bf9acfddac0951",
+      "bytes": 5356
+    },
+    {
+      "artifact": "gpu4-custody-final-readonly-20261118/summary.safe.json",
+      "sha256": "62baaba6aa6af6d37df2ae5b65b3d3b560c0844cec2fab65930b1a687e94c516",
+      "bytes": 4098
+    },
+    {
+      "artifact": "gpu4-os-final-readiness-20261118/prelaunch-storage-fresh.safe.json",
+      "sha256": "902bb34ad526e6d7a2f0be618ccc96f8bb3dd34b34be9f9be36c08b2bb47a43f",
+      "bytes": 4652
+    },
+    {
+      "artifact": "gpu4-os-final-readiness-20261118/console-actual-readonly.safe.json",
+      "sha256": "f44cbd4b5f77f59aa17e5d6bef6786b518de87f4271e033266b0cbdd95c892aa",
+      "bytes": 291
+    },
+    {
+      "artifact": "gpu4-maintenance-actual-20261118/prerequisite-completed.safe.json",
+      "sha256": "0cb9683ec5bef569456634274d8f988486997a783611bb0c489df16445627235",
+      "bytes": 1139
+    },
+    {
+      "artifact": "gpu4-maintenance-actual-20261118/prerequisite-reboot-intent.safe.json",
+      "sha256": "94e97d15838424e6fd0d673dce6feed28119801208015a0e6d3e6ece6cb1eb3c",
+      "bytes": 4902
+    },
+    {
+      "artifact": "gpu4-maintenance-actual-20261118/prerequisite-reboot-transport.safe.json",
+      "sha256": "c7595a90eee8b625e1031d3d87795d08691aef4ef06781c6cc8a991720b22f68",
+      "bytes": 246
+    },
+    {
+      "artifact": "gpu4-maintenance-actual-20261118/current-config/complete.safe.json",
+      "sha256": "242e7f78e5cb60444e78adec35809817a13a98c5eeae41c40c32d3493a0d3cea",
+      "bytes": 761
+    },
+    {
+      "artifact": "gpu4-maintenance-actual-20261118/ordinary-drain.log",
+      "sha256": "7b805759303925283535e6e9670920ef03e79684d8126f0dd1f9217f32904805",
+      "bytes": 1471
+    },
+    {
+      "artifact": "gpu4-maintenance-actual-20261118/prerequisite-reboot-verified.safe.json",
+      "sha256": "b9ff8d9955707bcbdd043c36695826f7727f01bd409a00da9dc60cf636b51210",
+      "bytes": 2166
+    },
+    {
+      "artifact": "gpu4-maintenance-actual-20261118/release-upgrade/nomination-ACTUAL.safe.json",
+      "sha256": "7eccca47f44fd5e4ac362b1c653aefcf275c032cf78dc9969def03335a2d04f9",
+      "bytes": 334
+    },
+    {
+      "artifact": "gpu4-maintenance-actual-20261118/release-upgrade/running-ACTUAL.safe.json",
+      "sha256": "c1fdac29b264f06b9377ce06d0d4a1ff1f05dbc6ccf7ebbccddbb305fc119ed5",
+      "bytes": 556
+    }
+  ],
+  "OS_operation": {
+    "status": "running",
+    "operation": "gpu4-ubuntu-20261118",
+    "node": "k3s-wk-gpu4",
+    "target": "26.04.1",
+    "boot_id": "66f8ee6d-3c51-451f-bd2f-ae441224f567",
+    "payload_sha256": "9fdc8214a86c822d6a68c8b646ce39a8f5dba4cca9d456097b15bdd190ca72d2",
+    "updated_at": 1794988041.3817008
+  }
+}
