@@ -27,7 +27,7 @@ and the [earlier drain/OS submission](evidence/upstream-sharing-20261116/gpu4-pr
 The [post-coldboot stage receipt](evidence/upstream-sharing-20261116/gpu4-postcoldboot-stage-20261118.json)
 binds the five verified hardware/storage/KAI manifests; this is not worker promotion.
 
-Both Sources currently run `be824ee5…` (source `9725e3b9…`, generation125):
+Both Sources currently run `7e7726d8…` (source `126e0e80…`, generation126):
 controlled Start errors, effective membership expiry handling, current-request
 XSRF headers, readable Notice widths and content-versioned assets. The user's
 `shared-gpu-lab` is running on qualified GPU1; preserve its Pod and allocation.
@@ -35,12 +35,18 @@ Member discovery uses JupyterHub's native self/group Shares API through a Home
 template extension, not the unpublished custom Source access API/Overview.
 The first Home release mounted the template but did not activate it because
 the reviewed Pod templates retain immutable runtime Secrets. The corrected
-standard `config.d` extraFile is now actually loaded by both Hubs (CPS389/CIT327),
+standard `config.d` extraFile is now actually loaded by both Hubs (currently CPS391/CIT328),
 with unchanged existing crypto, stable access/workspace-account records and
-the original running notebook Pod/container. Genuine browser Home/Open acceptance
-is pending the user's refresh; installed bytes and startup logs alone are not that gate.
+the original running notebook Pod/container. The user confirmed the native Home
+shared list appeared. Responsive cards are now deployed; a genuine Open click
+from the styled cards remains unverified.
 See [native Home rollout](evidence/upstream-sharing-20261116/native-hub-home-20261118/README.md).
-The empty Notice text fallback is still a separate release in preparation.
+The empty Notice fallback is deployed on both Sources as “No additional notices.”
+CPS also has the compact native personal spawn form and CPU reset image `b045f8a3…`.
+Its live disposable personal CPU acceptance remains open: an initial check rejected
+native expanded token scopes before user creation; the owned token was revoked
+and cleanup confirmed. Dedicated personal GPU choices remain disabled until their
+canonical policy and reservation path is implemented and qualified.
 
 The obsolete `accelerator=r615-canary-maintenance` key was removed from all four
 workers by UID/resourceVersion/full-label/spec guarded patches. The three legacy

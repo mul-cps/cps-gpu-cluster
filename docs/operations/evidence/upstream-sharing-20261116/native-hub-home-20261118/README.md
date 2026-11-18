@@ -7,7 +7,8 @@ with `super()` and displays the existing native Share results. No custom Source
 access API, new grant, scope, reservation store, handler or image is selected.
 The unpublished Source Open API/Overview candidates remain preserved separately.
 
-Template SHA256: `7ebb47c6c69a3a7ce729f33cacac17ec10bacec95e96a3bba95f6f354a86d223`.
+Current card template SHA256: `9ff1637259afbbad79c789e9e6a0cf6754df9b7f43cd90b41c8d258978a237d9`.
+Nine functional tests and 36 responsive/theme cases passed for the card successor.
 Eight local Chrome/Jinja tests passed, covering inherited personal controls,
 direct/group shares, exact access scopes, ready-only Open, unsafe URLs, XSS,
 duplicate readiness, empty expired pagination, errors and narrow layouts.
@@ -21,17 +22,17 @@ new section. Mounted bytes and healthy rollout did not establish active renderin
 The correction uses the standard chart `config.d` loader through a second
 `hub.extraFiles` entry. Its one-line configuration has SHA256
 `f430ed6a5700061a1570c77094003c81586136953197d4d302e5495d2df7ed87`.
-Both actual startup logs confirm it loaded. CPS389/CIT327 are Ready with the
+Both actual startup logs confirm it loaded. CPS391/CIT328 are Ready with the
 exact files and reviewed Pod templates; existing runtime Secrets remain pinned.
-Current source owners are CPS `92345c70e6fdae34329519867ed23e7259b67dce`
-(includes the separate exact GPU4 node GET prerequisite) and CIT
-`ad88357bba3c610061cb43ac9f4b0a76a8453d9a`.
+Current source owners are CPS `20e8988cb57d5c58d225713bddba0f03689a3fd3`
+(includes the personal CPU form and safe CPU reset image) and CIT
+`f7689464be40b42e74f501367ba04ce3305f42f7`.
 
 [Preservation](configd-preservation.safe.json) confirms the original running
 notebook Pod/container, stable access/workspace-account tables, referenced
 resource identities and existing crypto keys. [Runtime proof](configd-runtime.safe.json)
-binds installed files and actual configuration loading. **Genuine browser Home
-and Open acceptance remains pending the user's refresh.** Browser automation's
+binds installed files and actual configuration loading. **The user confirmed the first native shared list appeared.** The styled card
+successor is deployed; its genuine Open-click acceptance remains unverified. Browser automation's
 documented DOM/screenshot/CDP interfaces currently fail; no cookie fabrication,
 authentication-state edit or substitute UI API token was used. Home is cookie-only.
 
