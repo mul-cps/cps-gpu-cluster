@@ -2877,7 +2877,7 @@ prePuller:
       tag: "latest-standard-cpu@sha256:efc3b485006f9d4e1e1b1eeacdd75c92bf00bfe02141f5d91ff28eaadb6eb72f"
     cps-pytorch:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
-      tag: "latest-pytorch-code"
+      tag: "latest-pytorch-code@sha256:3910644e2e541f9cde6bed75a01f1bbdcc293a2d57a3f8862cbc99c7eeca30f3"
     cps-tf:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
       tag: "latest-tf-code"
