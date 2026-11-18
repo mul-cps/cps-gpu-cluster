@@ -18,7 +18,7 @@
   "normalCPSHub393ReadyAndRealLabUIDCIDSpecPreserved": true,
   "CITTests": "not run; genuine operator sign-in outstanding",
   "CPU_member_strictStopLossTests": "not yet run for final worker acceptance",
-  "nativeQAZeroMembershipCleanup": "pending supported cleanup cohort; no stale credential reuse",
+  "nativeQAZeroMembershipCleanup": "complete: supported four removals HTTP200; final empty QA group Share203 revoked by one targeted upstream PATCH; members/group users/Shares0, barrierfalse, inactive/null lease, Podgone; fresh a2554 credential revoked and watcher exited; files/accounts retained",
   "personalDedicatedGPUCompatibility": "user requested retaining six legacy choices; implementation in progress; not enabled by storage release",
   "evidence": {
     "CPS3IndependentManifest": {
@@ -60,6 +60,14 @@
     "personalHumanCPUFinal": {
       "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/personal-cpu-human-qa-actual-qa-cpu-20261118-e833e56ed358-I6-393/Root-final-reconciliation.safe.json",
       "sha256": "4bb70de6b5fb9a22dedb669af2726f33811e92862320565aa8b18e0ac8793382"
+    },
+    "CPSQAZeroCleanup": {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-zero-cleanup-300-20261118/actual/Root-final-reconciliation.safe.json",
+      "sha256": "d6f91c5525b3b0f2ac3289d3bbd0c9832089ac020a622f1316fc293ca456ade4"
+    },
+    "emptyQAGroupShareRevoked": {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-qa-empty-share-removal-20261118/actual/complete.safe.json",
+      "sha256": "74379aa6eb5d10ed9905a28409b5086af1a5749210115c4ff9fcdb70ea6f1414"
     }
   },
   "personalHumanCPUAcceptance": "passed separately on normal Hub393; not Source CPU/member acceptance"

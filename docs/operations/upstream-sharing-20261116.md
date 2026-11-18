@@ -67,7 +67,11 @@ GPU4 subsequently passed actual CPS 5/10/20 GiB Source workloads on both cards,
 including typed CUDA OOM, Torch CPU reference, SDK/files,45-second progress,
 stored metrics, normal Stop/charge return and confirmed idempotent Stop. Its
 temporary QA window and credential are closed, temporary objects/Node permission
-removed, and five QA grants closed while all other 53 rows stayed exact. CIT,
+removed, and five QA grants closed while all other 53 rows stayed exact. All four
+CPS test memberships were removed through supported APIs; the remaining empty
+QA group Share was revoked through one targeted native Hub PATCH. Final members,
+group users and Shares are zero, the barrier is clear and the lease inactive/null.
+The fresh cleanup credential is revoked; files and native accounts are retained. CIT,
 CPU/member and strict Stop-loss final gates remain open; GPU4 is cordoned and
 unqualified. See the [CPS partial receipt](evidence/upstream-sharing-20261116/gpu4-cps-source-partial-20261118.json).
 Gateway node observation now permits exact GET of GPU4 as well as GPU1/2/3;
