@@ -1,9 +1,9 @@
 {
-  "as_of": "2026-11-18T01:01:21.608659+00:00",
+  "as_of": "2026-11-18T03:47:32.325375+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2/GPU3 fixed-profile workers accepted; GPU1 core+runtime continuity passed and new-boot startup verified; post-reboot CPU/storage/NRI/KAI and CPS/CIT acceptance remain; GPU4 read-only preparation only",
-  "gpu_eligibility": "GPU2/GPU3 qualified for new/restarted upstream shared placement. GPU1 remains quarantined for runtime and worker qualification; GPU4 remains an unqualified legacy worker.",
+  "phase": "GPU2/GPU3 scoped workers accepted; GPU1 OS/runtime/coldboot/NRI/KAI and six Source GPU profiles plus both CPU/member lifecycles passed; strict accepted-200 STOP response-loss gate failed under a Source concurrent-release race; GPU1 quarantined pending fix; GPU4 offline preparation only",
+  "gpu_eligibility": "GPU2/GPU3 remain the qualified pool. GPU1 temporary QA qualification removed and maintenance NoSchedule retained; GPU4 remains unqualified legacy. No promotion or GPU4 maintenance.",
   "driver": {
     "version": "620.70.06",
     "image": "sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
@@ -47,7 +47,7 @@
   "remaining": [
     "Human/nonadministrator IdP/browser and two-human RTC acceptance remain open; held sockets used the neutral workload owner, and service reads do not authenticate human members.",
     "IPC/VMM/default async-pool tests retain same-container/cgroup scope. Cross-cgroup imports, exported/custom pools and forced numeric host PID reuse are not claimed.",
-    "Both Sources tested complete successful STOP-response loss and read-before-replay; lost successful START replies and arbitrary partitions are not claimed.",
+    "GPU1 both first active STOP-response-loss tests returned generic409; inherited backend200 assertions failed despite outer fixture PASS. Safe read-before-replay passed, but strict accepted200 loss gate remains open pending narrow Source reconciliation fix and fresh active-stop qualification. Historical GPU3 witnesses do not close this current gate.",
     "GPU1/GPU4 serial rollout, all-eight-GPU acceptance, advanced R620 modes, ordinary/distributed workloads, startup bursts/defragmentation, teaching, controller cutover and complete platform recovery/restore remain open.",
     "Canonical quota enforcement passed, but Source returned generic HTTP503 instead of expected400/409; typed quota-error presentation remains an open product UX bug.",
     "Prometheus72targets and selected retained historical samples pass; this is not complete TSDB integrity or full platform restoration qualification.",
@@ -58,15 +58,15 @@
     "source": "1c160751676bce808fe8a2ae86b0a495b61c0f72",
     "cps_image": "sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097",
     "cit_image": "sha256:bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6",
-    "cps_gitops_pin": "36834c7107b442f5ccb7ad2f29474c6d15964ffe",
-    "cit_gitops_pin": "dc14b6586b9527011b1c48a4d25852ea696695c3",
+    "cps_gitops_pin": "1bd6376d943c8ddc406b07931bb4d9745fb66925",
+    "cit_gitops_pin": "de4fe398ea85c1c1b68ee36a9f8be02f5211a27f",
     "fleet_both_ready": false,
     "live_catalog": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
     "sdk_repair_candidate": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
     "live_hubs_ready": true,
     "fleet_note": "Both normal Hub templates converged at restored owner pins; live GitRepo Ready is false for cluster-maintenance and true for cit-teaching-platform, so overall Fleet readiness remains open.",
-    "cps_generation": 382,
-    "cit_generation": 320,
+    "cps_generation": 385,
+    "cit_generation": 323,
     "original_preQA_templates_restored": true,
     "original_secret_UID_data_exact": true,
     "QA_hook_absent": true,
@@ -401,15 +401,22 @@
     "CPU_AppArmor_probe_passed": true,
     "Longhorn_write_fsync_read_passed": true,
     "owned_CPU_storage_fixtures_cleanup_complete": true,
-    "GPU_hardware_qualification_in_progress": true,
-    "coldboot_runtime_qualification_pending": true,
+    "GPU_hardware_qualification_in_progress": false,
+    "coldboot_runtime_qualification_pending": false,
     "runtime_evidence": "gpu1-runtime-qualification-20261118/README.md",
     "unexpected_cordon_clear_cause": "resolved: Root intended IM-window PATCH succeeded; post-write check misread omitted false field; primary fences retained",
     "GPU_hardware_core_phaseA_passed": true,
     "runtime_continuity_passed": true,
     "runtime_coldboot_startup_verified": true,
     "hardware_core_evidence": "gpu1-hardware-core-20261118/summary.json",
-    "current_window": "controlled Longhorn IM/storage availability; NoSchedule maintenance and absent qualification retained"
+    "current_window": "QA closed; normal Hubs restored; exact 8 QA objects and 2 temporary Hub RBAC objects removed; qualification absent and maintenance NoSchedule retained",
+    "GPU_hardware_qualification_passed": true,
+    "postcold_NRI_passed": true,
+    "stock_KAI_15_role_flow_passed": true,
+    "Source_GPU_profiles_passed": 6,
+    "Source_CPU_membership_cases_passed": 2,
+    "source_lost_active_accepted200_stop_response_gate_passed": false,
+    "Source_cleanup_race_fix_in_progress": true
   },
   "controller_cutover": {
     "accepted_preservation_handoff": true,
@@ -450,9 +457,47 @@
     "gateway_actual_GET_GPU1_GPU2_GPU3": 200,
     "gateway_actual_GET_GPU4": 403,
     "gateway_actual_LIST": 403,
-    "hub_temporary_QA_permission_installed": true,
+    "hub_temporary_QA_permission_installed": false,
     "evidence": "gpu1-source-node-read-20261118/README.md",
-    "hub_actual_GET_GPU1": 200,
-    "hub_actual_GET_GPU2_GPU3_GPU4_LIST": 403
-  }
+    "hub_actual_GET_GPU1": 403,
+    "hub_actual_GET_GPU2_GPU3_GPU4_LIST": 403,
+    "temporary_Hub_ClusterRole_and_Binding_deleted": true
+  },
+  "gpu1_source_qa": {
+    "GPU_profiles_passed": [
+      "cps5",
+      "cps10",
+      "cps20",
+      "cit5",
+      "cit10",
+      "cit20"
+    ],
+    "two_separate_GPU_cohorts": true,
+    "CPU_member_held_kernel_two_RTC_automatic_shutdown_and_BCD_restart_both_passed": true,
+    "human_nonadmin_SSO_not_established": true,
+    "duplicate_start_one_Pod_attempt_safety_both_passed": true,
+    "lost_STOP_actual_backend_statuses": {
+      "cps": 409,
+      "cit": 409
+    },
+    "inherited_backend200_assertions_failed": true,
+    "outer_fixture_PASS_misclassification_preserved_not_counted": true,
+    "strict_active_accepted200_loss_gate_passed": false,
+    "all_four_credential_cohorts_closed": true,
+    "all_QA_memberships_groups_Shares_reservations_closed": true,
+    "five_QA_grants_closed_other53_and_authorized49_raw_exact": true,
+    "temporary_owned_objects_deleted": 10,
+    "normal_Hub_generations": {
+      "cps": 385,
+      "cit": 323
+    },
+    "GPU_evidence": "gpu1-source-workspaces-20261118/continuation-cit20-20261118/README.md",
+    "worker_accepted": false
+  },
+  "refresh_scope": [
+    "fresh current Node status/boot/eligibility",
+    "fresh normal Hub generations and GitRepo pins",
+    "GPU1 closed Source qualification and quarantine",
+    "actual mounted-SA RBAC readback after temporary role removal"
+  ]
 }

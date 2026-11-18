@@ -1,6 +1,18 @@
 # GPU2 upstream sharing pilot — 2026-11-16
 
-**2026-11-17 current state:** GPU2 passed the scoped fixed-profile worker
+**2026-11-18 current state:** GPU2 and GPU3 retain scoped worker acceptance.
+GPU1 passed Ubuntu/R620, coldboot/NRI, stock KAI, all six CPS/CIT GPU profiles,
+and both CPU/member lifecycle cases. Its two first active STOP-response-loss
+cases returned generic409 after concurrent cleanup; the strict accepted200
+witness remains open. A narrow Source integration fix is under development;
+GPU1 remains quarantined and GPU4 has not entered maintenance. Normal Hubs
+are restored (CPS385/CIT323), all QA credentials/grants/memberships are closed,
+and the eight QA configuration objects plus two temporary Hub RBAC objects
+are removed. See [current status](evidence/upstream-sharing-20261116/gpu2-current-status.json)
+and [six-profile evidence](evidence/upstream-sharing-20261116/gpu1-source-workspaces-20261118/continuation-cit20-20261118/README.md).
+The controller cutover, all-eight-GPU rollout and full platform gates remain open.
+
+**2026-11-17 historical checkpoint:** GPU2 passed the scoped fixed-profile worker
 acceptance and is restored to shared placement and Longhorn scheduling. Its old
 OS nomination is cleared. See the [worker receipt](evidence/upstream-sharing-20261116/gpu2-worker-acceptance-20261117.json),
 [CIT Source lifecycle evidence](evidence/upstream-sharing-20261116/source-provider-qualification/cit-20261117/README.md)
