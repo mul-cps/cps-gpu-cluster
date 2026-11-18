@@ -23,7 +23,7 @@ spec:
       hostNetwork: true
       dnsPolicy: ClusterFirstWithHostNet
       nodeSelector:
-        kubernetes.io/hostname: k3s-wk-gpu4
+        kubernetes.io/hostname: k3s-wk-gpu2
       imagePullSecrets:
         - name: eligsir-registry
       securityContext:
