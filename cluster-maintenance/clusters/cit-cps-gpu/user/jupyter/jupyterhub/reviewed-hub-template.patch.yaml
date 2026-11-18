@@ -17,6 +17,7 @@
         cps.unileoben.ac.at/upstream-policy-hash: sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb
         cps.unileoben.ac.at/upstream-runtime-bootstrap: 0d9c42a691fcdd5c26ddcc4f7b1f3ba63c351dd377043e802f3dc1baf2b7bd52
         kubectl.kubernetes.io/restartedAt: '2026-11-17T13:11:20.023255+00:00'
+        cps.unileoben.ac.at/shared-home-sha256: 7ebb47c6c69a3a7ce729f33cacac17ec10bacec95e96a3bba95f6f354a86d223
       labels:
         app: jupyterhub
         app.kubernetes.io/component: hub
@@ -221,6 +222,9 @@
         - mountPath: /etc/cps-upstream-hub
           name: upstream-policy
           readOnly: true
+        - mountPath: /usr/local/share/jupyterhub/shared-home-templates/home.html
+          subPath: shared-home
+          name: files
       dnsPolicy: ClusterFirst
       imagePullSecrets:
       - name: cps-native-image-pull
@@ -392,6 +396,12 @@
           defaultMode: 292
           name: cps-upstream-policy-2b2ad6ce656d
         name: upstream-policy
+      - name: files
+        secret:
+          secretName: hub
+          items:
+          - key: shared-home
+            path: shared-home
 - op: replace
   path: /spec/strategy
   value:
