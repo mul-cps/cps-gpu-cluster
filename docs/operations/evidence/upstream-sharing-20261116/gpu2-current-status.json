@@ -1,5 +1,5 @@
 {
-  "as_of": "2026-11-18T01:00:25.463492+00:00",
+  "as_of": "2026-11-18T01:01:21.608659+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
   "phase": "GPU2/GPU3 fixed-profile workers accepted; GPU1 core+runtime continuity passed and new-boot startup verified; post-reboot CPU/storage/NRI/KAI and CPS/CIT acceptance remain; GPU4 read-only preparation only",
@@ -173,13 +173,8 @@
       "name": "k3s-wk-gpu1",
       "uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
       "ready": "True",
-      "cordoned": true,
+      "cordoned": false,
       "taints": [
-        {
-          "effect": "NoSchedule",
-          "key": "node.kubernetes.io/unschedulable",
-          "timeAdded": "2026-11-17T21:42:02Z"
-        },
         {
           "effect": "NoSchedule",
           "key": "cps.unileoben.ac.at/maintenance",
@@ -188,10 +183,10 @@
       ],
       "os": "Ubuntu 26.04.1 LTS",
       "kernel": "7.0.0-43-generic",
-      "boot_id": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "boot_id": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
       "qualified": null,
       "accelerator": "r615-canary-maintenance",
-      "gpu_capacity": "0",
+      "gpu_capacity": "2",
       "upgrade_labels_including_history": {
         "plan.upgrade.cattle.io/cps-ubuntu-gpu1-ubuntu-20261117": "5a7bfc4aa1ce82fde37054c385bb45c1f734d4495a7fab615c431dd2"
       },
@@ -368,7 +363,7 @@
   },
   "gpu3_worker_receipt_sha256": "94c2a18c384f776728fbf1da1c7a84c283e542b59676e3b8645632c45b39a0cf",
   "gpu1_maintenance": {
-    "cordoned": true,
+    "cordoned": false,
     "maintenance_tainted": true,
     "drain_started": true,
     "OS_nominated": false,
@@ -413,7 +408,8 @@
     "GPU_hardware_core_phaseA_passed": true,
     "runtime_continuity_passed": true,
     "runtime_coldboot_startup_verified": true,
-    "hardware_core_evidence": "gpu1-hardware-core-20261118/summary.json"
+    "hardware_core_evidence": "gpu1-hardware-core-20261118/summary.json",
+    "current_window": "controlled Longhorn IM/storage availability; NoSchedule maintenance and absent qualification retained"
   },
   "controller_cutover": {
     "accepted_preservation_handoff": true,
