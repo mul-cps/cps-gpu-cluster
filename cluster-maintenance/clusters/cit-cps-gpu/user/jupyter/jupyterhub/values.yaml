@@ -148,6 +148,11 @@ hub:
         }());
           </script>
         {% endblock script %}
+    shared-home-config:
+      mountPath: /usr/local/etc/jupyterhub/jupyterhub_config.d/90-shared-home.py
+      stringData: |
+        # Use the standard chart config.d loader; runtime credentials stay pinned.
+        c.JupyterHub.template_paths = ["/usr/local/share/jupyterhub/shared-home-templates"]
   extraEnv:
     - name: OAUTH_CLIENT_SECRET
       # client-secret sourced from jupyterhub-oauth-secret, now SOPS-managed — see oauth-sopssecret.yaml
@@ -193,9 +198,6 @@ hub:
           key: admin-api-token
   config:
     JupyterHub:
-      # Native Shares API discovery on the ordinary Hub Home page.
-      template_paths:
-      - /usr/local/share/jupyterhub/shared-home-templates
       admin_access: true
       authenticator_class: oauthenticator.generic.GenericOAuthenticator
       allow_named_servers: true
