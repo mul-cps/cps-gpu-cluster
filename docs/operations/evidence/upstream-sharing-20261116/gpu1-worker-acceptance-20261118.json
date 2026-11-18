@@ -1,0 +1,47 @@
+{
+  "observed": "2026-11-18T05:51:14.757561+00:00",
+  "worker": "k3s-wk-gpu1",
+  "worker_acceptance": true,
+  "scope": "fixed5/10/20GiB hardware/runtime plus CPS/CIT supported Source lifecycle on final artifacts",
+  "accepted_at": "2026-11-18T05:35:36.097344+00:00",
+  "Ubuntu": "26.04.1 LTS",
+  "kernel": "7.0.0-43-generic",
+  "driver": "620.70.06",
+  "driver_image": "sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+  "Source_image": "sha256:d52d0a7a6af988e2cf709fa1756305ca03115e169f55b9837f2a4964b990065c",
+  "Source_commit": "2bb5c1499838ff1455d1feb94970ffb0dd23065b",
+  "source_GPU_profiles_passed": 6,
+  "source_CPU_member_cases_passed": 2,
+  "strict_first_active_backend200_STOP_response_loss_cases_passed": 2,
+  "all_three_credential_cohorts_closed": true,
+  "all_five_QA_grants_closed_others53_authorized49_raw_exact": true,
+  "Source_memberships_groups_Shares_reservations_Pods_clear": true,
+  "original_identity_roles_and_unrelated_CPS18_preserved": true,
+  "normal_Hubs": {
+    "cps_generation": 387,
+    "cit_generation": 325,
+    "exact_original_specs_Secrets_PVCs_and_final_closed_account_state": true
+  },
+  "owned_QA_object_UID_deletions": 6,
+  "temporary_node_rights_revoked_actual_mounted_SA_403": true,
+  "Longhorn_scheduling_restored": true,
+  "maintenance_removed_qualified_two_GPUs": true,
+  "three_accepted_workers_six_qualified_GPUs": true,
+  "only_GPU4_now_in_maintenance": true,
+  "evidence": [
+    "gpu1-final-source-gpu-20261118/README.md",
+    "gpu1-final-source-lifecycle-20261118/README.md",
+    "source-release-reconcile-20261118/README.md"
+  ],
+  "private_promotion_manifest_sha256": "f264be693799a174d34081178b10a687fa70ae8a1e836bfa889dafacf44cbe7c",
+  "remaining_scope": [
+    "GPU4 serial OS/runtime/acceptance",
+    "additional cross-cgroup/custom exports/forced numeric PID reuse",
+    "advanced R620 features",
+    "human SSO/external/teaching/distributed",
+    "startup bursts p95/max",
+    "main controller cutover936.8s exceeds60s",
+    "complete recovery/restore qualification"
+  ],
+  "full_platform_acceptance": false
+}

@@ -1,16 +1,19 @@
 # GPU2 upstream sharing pilot — 2026-11-16
 
-**2026-11-18 current state:** GPU2 and GPU3 retain scoped worker acceptance.
-GPU1 passed Ubuntu/R620, coldboot/NRI, stock KAI, all six CPS/CIT GPU profiles,
-and both CPU/member lifecycle cases. Its two first active STOP-response-loss
-cases returned generic409 after concurrent cleanup; the strict accepted200
-witness remains open. A narrow Source integration fix is under development;
-GPU1 remains quarantined and GPU4 has not entered maintenance. Normal Hubs
-are restored (CPS385/CIT323), all QA credentials/grants/memberships are closed,
-and the eight QA configuration objects plus two temporary Hub RBAC objects
-are removed. See [current status](evidence/upstream-sharing-20261116/gpu2-current-status.json)
-and [six-profile evidence](evidence/upstream-sharing-20261116/gpu1-source-workspaces-20261118/continuation-cit20-20261118/README.md).
-The controller cutover, all-eight-GPU rollout and full platform gates remain open.
+**2026-11-18 current state:** GPU2, GPU3 and GPU1 have scoped worker acceptance,
+with six qualified GPUs back in normal service. GPU1 passed hardware, coldboot/NRI,
+stock KAI and final Source image `d52d0a7a…`: all six CPS/CIT GPU profiles, both
+CPU/member lifecycles, and both strict first-active backend200 Stop-response-loss
+cases. The Source cleanup-race fix is deployed on both services. QA memberships,
+credentials and five grants are closed; both exact normal Hubs are restored
+(CPS387/CIT325), six temporary objects are deleted and temporary node rights revoked.
+See the [GPU1 worker receipt](evidence/upstream-sharing-20261116/gpu1-worker-acceptance-20261118.json),
+[final GPU tests](evidence/upstream-sharing-20261116/gpu1-final-source-gpu-20261118/README.md),
+[lifecycle tests](evidence/upstream-sharing-20261116/gpu1-final-source-lifecycle-20261118/README.md)
+and [current status](evidence/upstream-sharing-20261116/gpu2-current-status.json).
+GPU4 is cordoned and fenced for maintenance; local data/services are being
+preserved before OS nomination. Its OS/driver remain unchanged. Controller cutover,
+all-eight-GPU rollout, startup bursts and full platform gates remain open.
 
 **2026-11-17 historical checkpoint:** GPU2 passed the scoped fixed-profile worker
 acceptance and is restored to shared placement and Longhorn scheduling. Its old
