@@ -1,0 +1,48 @@
+{
+  "observedAt": "2026-11-18T14:41:04.866811+00:00",
+  "scope": "Default-off personal dedicated GPU compatibility image staging; not hardware acceptance or UI enablement",
+  "sourceCommit": "1e9af2ff4c6d58b0073034cc20071e5c34ceb7ba",
+  "CPSOwnerRevision": "3df01e0ec870e6e2b4d176ecb9e6513b45891f15",
+  "gateway": {
+    "image": "sha256:91a72d8fae52d194a63befdc8e3bd80bc54ef2480f2a293f381de3a8bc086843",
+    "generation": 443,
+    "ready": true,
+    "defaultOff": true,
+    "installedModulesMatchReviewedSource": true,
+    "allFourSQLiteSchemasAndLogicalTablesExact": true,
+    "existingReservationAPIs200Inactive": true,
+    "manifestSHA256": "35c1f74bfac8eb551a8678e2dc5708c4ad0a525b4f8210ab3bae268c6482bbe0"
+  },
+  "hub": {
+    "image": "sha256:b04cf689487735b8607e80cd51890f789c685caa296608c42836b1c8881d42b2",
+    "generation": 394,
+    "ready": true,
+    "preservation": {
+      "stableNativeTablesExact": true,
+      "configCryptoReferencesExact": true,
+      "CITEntireSnapshotExact": true,
+      "otherSingleuserPodsExact": true,
+      "entireHubSpecOnlyImageChanged": true,
+      "beforeGeneration": 393,
+      "afterGeneration": 394,
+      "newOwnerRevision": "3df01e0ec870e6e2b4d176ecb9e6513b45891f15"
+    },
+    "functionalAndInstalledVerification": "PASS: six installed modules match reviewed release; CPUhelper/Home/spawn/renderer exact, default OFF, health and existing native service API HTTP200, old Pod absent and one writer",
+    "manifestSHA256": "3f2d24e634e28e07df5e2de8866d95cab73bc07f6feb46a874426c915c7645f5"
+  },
+  "storageDefaults": "Already live renderer991: master Project share and Scratch1 default on within original role eligibility; manual uncheck honored",
+  "realLab": "Stopped after configured four-hour lifetime interval; exact caller inferred, not proven; confirmed normal reservation cleanup and retained Bound PVC; no Root Start/Stop",
+  "cache": "CPS stock puller removes only unused RAPIDS/Xpra and unused quay fallback; all namespaces audited, no CIT prune needed; GPU1 imageFS76.97percent used after ordinary GC",
+  "workerEligibility": {
+    "gpu1": "qualified",
+    "gpu2": "qualified",
+    "gpu3": "qualified",
+    "gpu4": "Ready but cordoned/unqualified maintenance; CPS5/10/20 passed, remaining gates open"
+  },
+  "remaining": [
+    "Dedicated personal one/twoGPU device visibility CUDA normal cleanup conflict and CPU-reset acceptance",
+    "Remaining six legitimate legacy canonical identity links",
+    "GPU4 CIT and CPU/member/fault acceptance then explicit promotion",
+    "Original broader full-platform and timing gates"
+  ]
+}

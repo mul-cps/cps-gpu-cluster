@@ -433,3 +433,18 @@ The final installed runtime rejects the FIRST fresh GPU CREATE during an actual 
 Normal Source-registry activation code is separately reviewed: source445 tests and each installed CPS/CIT closure444 tests pass, with one notebook-runner test deselected per image. Published Hub images `0bbeb426…` and `bf138c57…` are not yet deployed. Current live Hubs remain `2a73a06…`/`d24a4b11…`. The fixed catalogb28 remains unchanged; a final immutable acceptance record must bind it to actual current driver/runtime/app artifacts rather than treating historical8d/d8 evidence as current attestation.
 
 GPU2 remains unqualified for normal placement pending the real workflow/placement/observability gates in [current status](evidence/upstream-sharing-20261116/gpu2-current-status.json). Before enabling another worker, Fractioning's selector becomes the explicit `fractioning-runtime=upstream` pool; GPU2 is its sole current member. The hostname restriction is removed while no real allocations are active, causing only GPU2's daemon rollout. This also recreates its metrics collector after driver availability; the first cold-start collector had permanently fallen back without NVML. Two unchanged released0.1.9 Prometheus monitors are added; actual collection still requires measured verification.
+
+
+## Current staged state — 18 November 2026, 14:42 UTC
+
+This update supersedes the historical rollout status above. All four workers now report Ubuntu26.04.1 and kernel7.0.0-43. GPU1/2/3 are qualified and schedulable (six GPUs); GPU4 is Ready with two advertised GPUs but remains cordoned and fenced. GPU4 has passed actual CPS5/10/20 Source cycles; its remaining CIT, CPU/member and fault gates still precede explicit promotion.
+
+Allowed CPS network mounts now default on: the network master, Project share and Scratch1 use the original role eligibility; manual unchecked choices remain honored. Renderer991 and native Home/spawn assets remain unchanged through the image staging below.
+
+Reviewed dedicated-personal compatibility source1e9af2ff is installed with the feature OFF: Gateway443 image91a72d8f and CPS Hub394 imageb04cf689, owned by CPS GitOps revision3df01e0e. Real health/native reservation API reads return200, installed modules match the reviewed source, old application Pods are gone, all four Gateway SQLite schemas/logical tables match native backups, and Hub stable native tables/configuration/crypto plus the entire CIT snapshot remain exact. The six personal GPU choices are not yet restored. Paired configuration passed independent review but remains unapplied pending the owned-fixture1/2GPU, conflict, confirmed cleanup and CPU-reset qualification. No new canonical mappings or grants were fabricated.
+
+The real shared-gpu-lab stopped at13:27 after approximately its configured four-hour lifetime. Its reservation cleanup is confirmed and its home PVC remains Bound. The timing supports the lifetime explanation; exact caller attribution was not logged. Root issued no Start or Stop for that real workspace.
+
+Stock CPS pre-puller pruning removed only unused RAPIDS/Xpra and replaced an unused fallback with the already cached CPU image. All namespace references were audited; CIT does not require equivalent pruning. Ordinary garbage collection brought GPU1 to76.97percent imageFS utilization. No manual image/data deletion or kubelet threshold changes were used. Other workers retain their measured headroom; no blanket low-watermark claim is made.
+
+See [default-off staging receipt](evidence/upstream-sharing-20261116/personal-gpu-defaultoff-stage-20261118.json). Full-platform qualification, unresolved legitimate identity links, GPU4 promotion and the original timing/restore gates remain open.
