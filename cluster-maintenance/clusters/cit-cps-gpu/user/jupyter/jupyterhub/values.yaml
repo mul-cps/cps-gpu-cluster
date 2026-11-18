@@ -43,12 +43,33 @@ hub:
       mountPath: /usr/local/share/jupyterhub/shared-home-templates/home.html
       stringData: |
         {% extends "templates/home.html" %}
+        {% block stylesheet %}
+          {{ super() }}
+          <style>
+            #shared-workspaces { margin-top: 2.5rem; margin-bottom: 2rem; }
+            #shared-workspaces .shared-heading { font-size: 1.5rem; margin-bottom: .4rem; }
+            #shared-workspaces .shared-status { color: var(--bs-secondary-color); margin-bottom: 1.25rem; }
+            #shared-workspaces .shared-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 28rem), 1fr)); gap: 1rem; padding: 0; }
+            #shared-workspaces .shared-card { height: 100%; border-radius: .75rem; box-shadow: 0 .125rem .25rem rgba(0, 0, 0, .035); }
+            #shared-workspaces .shared-card-body { display: flex; align-items: center; gap: 1rem; padding: 1.25rem; }
+            #shared-workspaces .shared-copy { flex: 1; min-width: 0; }
+            #shared-workspaces .shared-title { font-size: 1.05rem; font-weight: 600; line-height: 1.45; margin: 0 0 .3rem; overflow-wrap: anywhere; }
+            #shared-workspaces .shared-subtitle { color: var(--bs-secondary-color); font-size: .875rem; margin: 0; }
+            #shared-workspaces .shared-actions { display: flex; align-items: center; flex-wrap: wrap; justify-content: flex-end; gap: .75rem; }
+            #shared-workspaces .shared-badge { font-weight: 500; padding: .45em .7em; }
+            #shared-workspaces .shared-open { min-width: 5rem; white-space: nowrap; }
+            @media (max-width: 575.98px) {
+              #shared-workspaces .shared-card-body { align-items: stretch; flex-direction: column; }
+              #shared-workspaces .shared-actions { justify-content: space-between; }
+            }
+          </style>
+        {% endblock stylesheet %}
         {% block main %}
           {{ super() }}
           <section id="shared-workspaces" class="container" aria-labelledby="shared-heading">
-            <h2 id="shared-heading">Shared workspaces</h2>
-            <p id="shared-status" role="status">Loading shared workspaces…</p>
-            <ul id="shared-list" class="list-unstyled"></ul>
+            <h2 id="shared-heading" class="shared-heading">Shared workspaces</h2>
+            <p id="shared-status" class="shared-status" role="status">Loading shared workspaces…</p>
+            <ul id="shared-list" class="list-unstyled shared-grid"></ul>
           </section>
         {% endblock main %}
         {% block script %}
@@ -107,26 +128,36 @@ hub:
               if (!next) {
                 for (const record of records.values()) {
                   const row = document.createElement("li");
-                  row.className = "mb-2";
-                  row.style.overflowWrap = "anywhere";
-                  const label = document.createElement("strong");
-                  label.textContent = record.groups.size ? Array.from(record.groups).sort().join(", ") : record.owner + "/" + record.name;
-                  row.appendChild(label);
-                  const detail = document.createElement("span");
-                  detail.textContent = " — " + record.owner + "/" + (record.name || "default");
-                  row.appendChild(detail);
+                  row.className = "card shared-card";
+                  const body = document.createElement("div");
+                  body.className = "card-body shared-card-body";
+                  const copy = document.createElement("div");
+                  copy.className = "shared-copy";
+                  const label = document.createElement("h3");
+                  label.className = "shared-title";
+                  label.textContent = record.groups.size ? Array.from(record.groups).sort().join(", ") : "Shared workspace";
+                  copy.appendChild(label);
+                  const subtitle = document.createElement("p");
+                  subtitle.className = "shared-subtitle";
+                  subtitle.textContent = "Shared notebook";
+                  copy.appendChild(subtitle);
+                  body.appendChild(copy);
+                  const actions = document.createElement("div");
+                  actions.className = "shared-actions";
+                  const state = document.createElement("span");
+                  state.className = "badge rounded-pill shared-badge " + (record.href ? "text-success-emphasis bg-success-subtle" : "text-secondary-emphasis bg-secondary-subtle");
+                  state.textContent = record.href ? "Running" : "Unavailable";
+                  actions.appendChild(state);
                   if (record.href) {
                     const open = document.createElement("a");
-                    open.className = "btn btn-sm btn-primary ms-2";
+                    open.className = "btn btn-primary shared-open";
                     open.textContent = "Open";
-                    open.setAttribute("aria-label", "Open shared workspace " + label.textContent + detail.textContent);
+                    open.setAttribute("aria-label", "Open shared workspace " + label.textContent);
                     open.href = record.href;
-                    row.appendChild(open);
-                  } else {
-                    const state = document.createElement("span");
-                    state.textContent = " — Not available";
-                    row.appendChild(state);
+                    actions.appendChild(open);
                   }
+                  body.appendChild(actions);
+                  row.appendChild(body);
                   list.appendChild(row);
                 }
                 status.textContent = records.size ? "Workspaces shared with you directly or through your Hub groups." : "No workspaces are currently shared with you.";
