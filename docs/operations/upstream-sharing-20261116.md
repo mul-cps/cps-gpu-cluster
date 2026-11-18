@@ -1,5 +1,7 @@
 # GPU2 upstream sharing pilot — 2026-11-16
 
+**2026-11-18 latest state:** six GPUs remain normally qualified; GPU4 remains GPU-fenced. Dedicated-personal compatibility is now enabled at the two backends (Gateway444/Hub395, matching9037745a); the dedicated UI remains disabled while qualification finishes. Actual one-/two-device CUDA and CPU reset pass with retained files and requested storage mounts. A documented old NFS-Ganesha/new-kernel compatibility issue blocked a new home; the same home and full native GPU workflow passed after the supported client directory-delegation flag was disabled. That runtime setting is now N on all four workers, with no reboot or GPU/runtime change. Persistence/initramfs/coldboot and the new home's second replica remain open. Canonical409 enforcement works; its public progress explanation needs the reviewed Hub-only fix. All owned test roles/tokens/Pods/reservations are now clean. See the [current partial acceptance receipt](evidence/upstream-sharing-20261116/personal-gpu-native-partial-and-nfs-20261118.json). The timestamped sections below retain prior states and failure witnesses.
+
 **2026-11-18 current state (10:14 UTC):** GPU2, GPU3 and GPU1 have scoped worker acceptance,
 with six qualified GPUs back in normal service. GPU1 passed hardware, coldboot/NRI,
 stock KAI and final Source image `d52d0a7a…`: all six CPS/CIT GPU profiles, both

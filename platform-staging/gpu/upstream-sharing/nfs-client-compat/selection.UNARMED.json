@@ -1,0 +1,11 @@
+{
+  "node": null,
+  "node_uid": null,
+  "boot_id": null,
+  "kernel": null,
+  "root_release": null,
+  "operation_id": null,
+  "canary_sha256": null,
+  "peer_sha256": null,
+  "expected_preimage": null
+}

@@ -1,0 +1,161 @@
+{
+  "observedAt": "2026-11-18T17:03:54.106700+00:00",
+  "scope": "Partial personal GPU/native storage qualification, not full rollout acceptance",
+  "CPSOwnerRevision": "f3a63b1d997870a96390a56cf991f294a3b91a21",
+  "GatewayGeneration": 444,
+  "HubGeneration": 395,
+  "compatibilityHash": "9037745ae5953952f5b65ba6732949b46230116203ec6f08fc15f9f671bf788d",
+  "backendEnabled": true,
+  "dedicatedGPUUIEnabled": false,
+  "originalMajorityImagesRetained": true,
+  "cases": [
+    {
+      "case": "A-one",
+      "status": "CUDA/storage/normal cleanup passed; conflict test blocked by three original named servers",
+      "profile": "gpu-pytorch-single",
+      "node": "k3s-wk-gpu1",
+      "hardware": {
+        "uid": 0,
+        "cudaDeviceCount": 1,
+        "allocationMiBEach": 64,
+        "readWriteRoundtrip": true,
+        "retainedWitnessSHA256": "9dd38bf64417265fc64ad0a6a34b45c9ef130b914aa1bb42bb8ca97d269f8cd2",
+        "cpuIsolation": false
+      },
+      "allRequestedStorageDefaultsOn": true,
+      "closed": true,
+      "cleanupErrors": [],
+      "rolePreimageRestored": true,
+      "tokenRevokedAndRawGone": true,
+      "personalBindingsReturned": true,
+      "startHTTP": 202,
+      "stopClientOutcome": "REPLIED",
+      "rootWitnessHardwareSHA256": "b1e312e1cc6a6a1a1bd16f5d7b131defd69712ac56daec8e42d3098fbe6ac30d"
+    },
+    {
+      "case": "A-two",
+      "status": "Two-device CUDA passed; lost Stop reply reconciled without replay",
+      "profile": "gpu-pytorch-dual",
+      "node": "k3s-wk-gpu1",
+      "hardware": {
+        "uid": 0,
+        "cudaDeviceCount": 2,
+        "allocationMiBEach": 64,
+        "readWriteRoundtrip": true,
+        "retainedWitnessSHA256": "9dd38bf64417265fc64ad0a6a34b45c9ef130b914aa1bb42bb8ca97d269f8cd2",
+        "cpuIsolation": false
+      },
+      "allRequestedStorageDefaultsOn": true,
+      "closed": true,
+      "cleanupErrors": [],
+      "rolePreimageRestored": true,
+      "tokenRevokedAndRawGone": true,
+      "personalBindingsReturned": true,
+      "startHTTP": 202,
+      "stopClientOutcome": "UNKNOWN",
+      "rootWitnessHardwareSHA256": "48b20f0667405cb37a57a57cd25c7a8bf0415fcfc77aee0905341d288c0f578d"
+    },
+    {
+      "case": "A-cpu",
+      "status": "CPU reset and retained files passed",
+      "profile": "cpu-default",
+      "node": "k3s-wk-gpu3",
+      "hardware": {
+        "uid": 1000,
+        "cudaDeviceCount": 0,
+        "allocationMiBEach": 0,
+        "readWriteRoundtrip": false,
+        "retainedWitnessSHA256": "9dd38bf64417265fc64ad0a6a34b45c9ef130b914aa1bb42bb8ca97d269f8cd2",
+        "cpuIsolation": true
+      },
+      "allRequestedStorageDefaultsOn": true,
+      "closed": true,
+      "cleanupErrors": [],
+      "rolePreimageRestored": true,
+      "tokenRevokedAndRawGone": true,
+      "personalBindingsReturned": true,
+      "startHTTP": 202,
+      "stopClientOutcome": "REPLIED",
+      "rootWitnessHardwareSHA256": "161bed916bc5098f848c2843de93497f59fde4d7c8c2cf1408db4cb1ef51dd0b"
+    },
+    {
+      "case": "B-before",
+      "status": "Failed Ready150 on Longhorn NFS home EREMOTEIO; normal cleanup passed",
+      "profile": "gpu-pytorch-single",
+      "node": "k3s-wk-gpu1",
+      "hardware": null,
+      "allRequestedStorageDefaultsOn": false,
+      "closed": true,
+      "cleanupErrors": [],
+      "rolePreimageRestored": true,
+      "tokenRevokedAndRawGone": true,
+      "personalBindingsReturned": true,
+      "startHTTP": 202,
+      "stopClientOutcome": "REPLIED",
+      "rootWitnessHardwareSHA256": null
+    },
+    {
+      "case": "B-after",
+      "status": "Same-home NFS/CUDA passed after supported client flag; canonical409 enforced, public message still generic",
+      "profile": "gpu-pytorch-single",
+      "node": "k3s-wk-gpu1",
+      "hardware": {
+        "uid": 0,
+        "cudaDeviceCount": 1,
+        "allocationMiBEach": 64,
+        "readWriteRoundtrip": true,
+        "retainedWitnessSHA256": "9dd38bf64417265fc64ad0a6a34b45c9ef130b914aa1bb42bb8ca97d269f8cd2",
+        "cpuIsolation": false
+      },
+      "allRequestedStorageDefaultsOn": true,
+      "closed": true,
+      "cleanupErrors": [],
+      "rolePreimageRestored": true,
+      "tokenRevokedAndRawGone": true,
+      "personalBindingsReturned": true,
+      "startHTTP": 202,
+      "stopClientOutcome": "REPLIED",
+      "rootWitnessHardwareSHA256": "f24b9ea7f235befbda44d446a727894db5102979b6805a9bedb8d7edf613a6c2"
+    }
+  ],
+  "NFSClientRuntime": {
+    "k3s-wk-gpu1": {
+      "value": "N",
+      "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "reboot": false,
+      "driverOrRuntimeChange": false
+    },
+    "k3s-wk-gpu2": {
+      "value": "N",
+      "bootID": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+      "persistentFilesChanged": false
+    },
+    "k3s-wk-gpu3": {
+      "value": "N",
+      "bootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+      "persistentFilesChanged": false
+    },
+    "k3s-wk-gpu4": {
+      "value": "N",
+      "bootID": "9f770278-3655-42da-b088-a227f5eb45dc",
+      "persistentFilesChanged": false
+    }
+  },
+  "NFSCanarySameOriginalPVC": "b873a508-4fb0-40ff-9851-c77260109f5b",
+  "NFSCanaryBoundReceiptSHA256": "02cf6908dcd895c757e8d517b340e8a8f8f52db81312e27d5d4acf670cab1108",
+  "NFSPersistenceApplied": false,
+  "NFSColdBootQualified": false,
+  "allFourGatewaySQLiteSchemasAndLogicalTablesExactOriginalNativeBackup": true,
+  "sourceForGatewayComparison": "personal-gpu-original-config-live-20261118/Gateway-after-native-cases/verification.safe.json",
+  "canonicalMessagePresentationFix": "Published candidate80ee9d85, not yet deployed; actual native enforcement409 works but SSE currently says HTTP409:error",
+  "counterMetadataCleanup": "Corrected using native JSON body remove:true; only owned row78 removed, original default28 retained; all old A named rows untouched",
+  "storageRedundancy": "New power-user100GiB B home has one of two requested copies; original policy unchanged, GPU4 storage scheduling window still requires release",
+  "remaining": [
+    "New Hub message-image live qualification and fully passing canonical-conflict case",
+    "NFS persistent config/initramfs and coldboot qualification",
+    "Peer storage/GPU progress after client flag change",
+    "Remaining three original image cache/hardware qualifications and six canonical identity links",
+    "GPU4 CIT/CPU/member/fault service acceptance and explicit promotion",
+    "Original controller cutover<=60 and startup burst p95<=180/max<=300 plus broader restore/external/teaching gates"
+  ]
+}
