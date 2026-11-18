@@ -1,0 +1,30 @@
+{
+  "observed": "2026-11-18T00:36:43.368633+00:00",
+  "runtimeContinuityPASS": true,
+  "restartCountSubmittedByFixture": 1,
+  "restartUnit": "cps-nri-hotfix-runtime-continuity.service",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "cordon": true,
+  "maintenanceRetained": true,
+  "qualifiedAbsent": true,
+  "driverUIDCIDUnchanged": true,
+  "fractiondUIDCIDUnchanged": true,
+  "sameGPUAndCPUPodUIDCID": true,
+  "sameGPUHostPIDCgroupInodeAndLeafLimits": true,
+  "CUDAQuotaAndCPUProgressAfterRestart": true,
+  "ownedFixturePodCMRemaining": [],
+  "physical": [
+    {
+      "GPU": "GPU-8df28256-50a3-db30-3706-b69d52f4874f, 620.70.06, 1, 40960",
+      "computeProcesses": ""
+    },
+    {
+      "GPU": "GPU-b1222487-3937-5349-7329-5cbebd15a5db, 620.70.06, 1, 40960",
+      "computeProcesses": ""
+    }
+  ],
+  "coldbootPerformed": false,
+  "stockKAIExecuted": false,
+  "peerOperationsPerformed": false
+}

@@ -1,0 +1,95 @@
+{
+  "observed": "2026-11-18T00:34:59.223036+00:00",
+  "count": 22,
+  "allAbsent": true,
+  "observations": [
+    {
+      "evidence": "child/card-0-after.json",
+      "exists": false
+    },
+    {
+      "evidence": "child/card-1-after.json",
+      "exists": false
+    },
+    {
+      "evidence": "child/final-retired-0.json",
+      "exists": false
+    },
+    {
+      "evidence": "child/final-retired-1.json",
+      "exists": false
+    },
+    {
+      "evidence": "managed-policy/card-0-after.json",
+      "exists": false
+    },
+    {
+      "evidence": "managed-policy/card-1-after.json",
+      "exists": false
+    },
+    {
+      "evidence": "managed-policy/final-retired-0.json",
+      "exists": false
+    },
+    {
+      "evidence": "managed-policy/final-retired-1.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-b/00-vmm/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-b/01-pool/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-b/02-ipc/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-b/03-crash/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-b/04-race/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-b/05-recovery/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-b/06-recovery/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-a/00-vmm/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-a/01-pool/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-a/02-ipc/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-a/03-crash/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-a/04-race/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-a/05-recovery/after.json",
+      "exists": false
+    },
+    {
+      "evidence": "extended-a/06-recovery/after.json",
+      "exists": false
+    }
+  ]
+}

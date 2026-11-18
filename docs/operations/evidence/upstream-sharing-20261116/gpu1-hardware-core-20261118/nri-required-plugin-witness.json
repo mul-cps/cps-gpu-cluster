@@ -1,0 +1,86 @@
+{
+  "summary": {
+    "status": "PASS",
+    "node": "k3s-wk-gpu1",
+    "node_uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+    "expected_boot_id": "b82de564-00cd-4596-a6cf-b4c618e79583",
+    "final_boot_id": "b82de564-00cd-4596-a6cf-b4c618e79583",
+    "fractiond_pod_uid": "628f5b6c-a12e-47ee-b33e-e16eb5e2cadc",
+    "gpu_uuids": [
+      "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+    ],
+    "release_reference": "root-gpu1-core-phaseA-20261118",
+    "hang": "PASS",
+    "recovery_cards": 2,
+    "started_at": 1794961293.9639733,
+    "finished_at": 1794961339.524411
+  },
+  "fractiond_process": {
+    "container_id": "054a9cdc891f2d1361cd5d1f4e7b34c2c2143256b77881200c3d0d03312d7e98",
+    "pod_uid": "628f5b6c-a12e-47ee-b33e-e16eb5e2cadc",
+    "pid": 48698,
+    "starttime": "70772",
+    "stopped_at": 1794961297.9935746,
+    "unit": "cps-nri-hotfix-cont-48698"
+  },
+  "first_required_timeout_rejected": true,
+  "disconnected_required_rejected": true,
+  "CPU_success_while_stopped": true,
+  "missing_required_rejected_CPU_pass": true,
+  "recovery_cards": 2,
+  "Pod_status_projections": [
+    {
+      "source": "first-rejection.json",
+      "PodUID": "54e4c799-ee56-4bf8-852a-c3b5bca51abb",
+      "node": "k3s-wk-gpu1",
+      "phase": "Pending",
+      "containers": [
+        {
+          "name": "main",
+          "waiting_reason": "CreateContainerError",
+          "terminated_exitCode": null,
+          "containerID_present": false,
+          "structured_failure_classification": {
+            "NRI_mentioned": true,
+            "required_plugin_mentioned": true,
+            "unavailable_disconnected_or_missing_mentioned": true
+          }
+        }
+      ]
+    },
+    {
+      "source": "disconnected-rejection.json",
+      "PodUID": "43a97c63-8f7c-4be4-9792-db7931a18132",
+      "node": "k3s-wk-gpu1",
+      "phase": "Pending",
+      "containers": [
+        {
+          "name": "main",
+          "waiting_reason": "CreateContainerError",
+          "terminated_exitCode": null,
+          "containerID_present": false,
+          "structured_failure_classification": {
+            "NRI_mentioned": true,
+            "required_plugin_mentioned": true,
+            "unavailable_disconnected_or_missing_mentioned": true
+          }
+        }
+      ]
+    },
+    {
+      "source": "cpu-during-stop.json",
+      "PodUID": "14695da4-5385-49a8-9747-e07312cc84ba",
+      "node": "k3s-wk-gpu1",
+      "phase": "Succeeded",
+      "containers": [
+        {
+          "name": "main",
+          "waiting_reason": null,
+          "terminated_exitCode": 0,
+          "containerID_present": true
+        }
+      ]
+    }
+  ]
+}

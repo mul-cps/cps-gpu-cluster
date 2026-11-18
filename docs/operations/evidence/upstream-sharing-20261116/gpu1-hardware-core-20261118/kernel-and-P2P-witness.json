@@ -1,0 +1,99 @@
+{
+  "summary": {
+    "status": "PASS",
+    "pod_uid": "2f7831e6-2f1c-475d-988b-4c3392468241",
+    "driver_uid": "74ec5235-668e-4472-9e64-f8a06aa87be2",
+    "results": [
+      {
+        "step": "kernel-reference-pass",
+        "time": 1794961957.6712692,
+        "pid": 51,
+        "gpu_uuid": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "values": 256,
+        "explicit_device_bytes": 2048
+      },
+      {
+        "step": "kernel-reference-pass",
+        "time": 1794961957.8098981,
+        "pid": 51,
+        "gpu_uuid": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+        "values": 256,
+        "explicit_device_bytes": 2048
+      },
+      {
+        "step": "peer-capability",
+        "time": 1794961957.809966,
+        "pid": 51,
+        "destination": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "source": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+        "supported": true
+      },
+      {
+        "step": "direct-peer-copy-and-kernel-mapping-pass",
+        "time": 1794961957.8109837,
+        "pid": 51,
+        "source": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+        "destination": "GPU-8df28256-50a3-db30-3706-b69d52f4874f"
+      },
+      {
+        "step": "peer-capability",
+        "time": 1794961957.8111634,
+        "pid": 51,
+        "destination": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+        "source": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "supported": true
+      },
+      {
+        "step": "direct-peer-copy-and-kernel-mapping-pass",
+        "time": 1794961957.8119173,
+        "pid": 51,
+        "source": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "destination": "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      }
+    ]
+  },
+  "runner_exit_receipt": {
+    "name": "kernel-peer",
+    "started": "2026-11-18T00:32:33.308449+00:00",
+    "finished": "2026-11-18T00:32:45.319485+00:00",
+    "exitCode": 0,
+    "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+    "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+    "GPUUUIDs": [
+      "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+    ]
+  },
+  "UID_guarded_cleanup_target": "2f7831e6-2f1c-475d-988b-4c3392468241",
+  "summary_PASS_precedes_cleanup": true,
+  "runner_exit0_plus_host_after_and_core_cleanup_required": true,
+  "host_after": [
+    {
+      "time": 1794961964.9054384,
+      "node": "k3s-wk-gpu1",
+      "boot_id": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "gpu": "GPU-8df28256-50a3-db30-3706-b69d52f4874f, 620.70.06, 1, 40960",
+      "compute_processes": "",
+      "uvm": {
+        "srcversion": "10301D70B8ED1758BC717E9",
+        "parameters/uvm_reject_managed_memory": "Y",
+        "parameters/uvm_disable_hmm": "Y"
+      },
+      "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+    },
+    {
+      "time": 1794961965.2678244,
+      "node": "k3s-wk-gpu1",
+      "boot_id": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "gpu": "GPU-b1222487-3937-5349-7329-5cbebd15a5db, 620.70.06, 1, 40960",
+      "compute_processes": "",
+      "uvm": {
+        "srcversion": "10301D70B8ED1758BC717E9",
+        "parameters/uvm_reject_managed_memory": "Y",
+        "parameters/uvm_disable_hmm": "Y"
+      },
+      "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+    }
+  ],
+  "Root_core_owned_fixture_remaining": []
+}

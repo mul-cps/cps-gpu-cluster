@@ -1,0 +1,10 @@
+{
+  "status": "local invocation failure before transport; not a hardware rejection result",
+  "exception": "FileNotFoundError",
+  "missing_relative_input": "docs/operations/evidence/upstream-sharing-20261116/managed-policy-load/nri-candidate/resume-guard.py",
+  "original_console_sha256": "7adc135c22db93ddbfcc0265cc9ed7fc90cfd0dd67c8f89d72358be29b8c9ddc",
+  "subsequent_qualified_sibling": "nri-initial-sibling",
+  "subsequent_summary_status": "PASS",
+  "source_log_body_published": false,
+  "no_transport_scope": "Root execution record identifies initial relative-path load failure before live transport; subsequent sibling performed actual released cases"
+}

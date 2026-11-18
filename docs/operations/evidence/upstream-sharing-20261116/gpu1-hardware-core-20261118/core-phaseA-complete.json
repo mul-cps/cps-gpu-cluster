@@ -1,0 +1,81 @@
+{
+  "observed": "2026-11-18T00:34:20.122180+00:00",
+  "corePASS": true,
+  "node": "k3s-wk-gpu1",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "release": "root-gpu1-core-phaseA-20261118",
+  "driverUID": "74ec5235-668e-4472-9e64-f8a06aa87be2",
+  "fractiondUID": "628f5b6c-a12e-47ee-b33e-e16eb5e2cadc",
+  "cordon": true,
+  "maintenanceRetained": true,
+  "qualifiedAbsent": true,
+  "physical": [
+    {
+      "GPU": "GPU-8df28256-50a3-db30-3706-b69d52f4874f, 620.70.06, 1, 40960",
+      "computeProcesses": ""
+    },
+    {
+      "GPU": "GPU-b1222487-3937-5349-7329-5cbebd15a5db, 620.70.06, 1, 40960",
+      "computeProcesses": ""
+    }
+  ],
+  "knownFixturePodCMRemaining": [],
+  "pressureFreshProgress": [
+    {
+      "case": "a-borrower-first",
+      "beforeSuccess": 0,
+      "afterSuccess": 2,
+      "sameUIDCID": true,
+      "waitSeconds": 12,
+      "result": {
+        "protected_peer_progress": true,
+        "borrower_survival_required": false,
+        "idle_borrowing_allowed": true,
+        "managed_rejection_required": true
+      }
+    },
+    {
+      "case": "a-peer-first",
+      "beforeSuccess": 0,
+      "afterSuccess": 3,
+      "sameUIDCID": true,
+      "waitSeconds": 12,
+      "result": {
+        "protected_peer_progress": true,
+        "borrower_survival_required": false,
+        "idle_borrowing_allowed": true,
+        "managed_rejection_required": true
+      }
+    },
+    {
+      "case": "b-borrower-first",
+      "beforeSuccess": 0,
+      "afterSuccess": 2,
+      "sameUIDCID": true,
+      "waitSeconds": 12,
+      "result": {
+        "protected_peer_progress": true,
+        "borrower_survival_required": false,
+        "idle_borrowing_allowed": true,
+        "managed_rejection_required": true
+      }
+    },
+    {
+      "case": "b-peer-first",
+      "beforeSuccess": 1,
+      "afterSuccess": 3,
+      "sameUIDCID": true,
+      "waitSeconds": 12,
+      "result": {
+        "protected_peer_progress": true,
+        "borrower_survival_required": false,
+        "idle_borrowing_allowed": true,
+        "managed_rejection_required": true
+      }
+    }
+  ],
+  "runtimeRestartPerformed": false,
+  "coldbootPerformed": false,
+  "stockKAIExecuted": false
+}

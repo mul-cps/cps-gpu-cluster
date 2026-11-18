@@ -1,0 +1,138 @@
+{
+  "receipts": [
+    {
+      "name": "nri-missing-recovery",
+      "started": "2026-11-18T00:23:11.485145+00:00",
+      "finished": "2026-11-18T00:23:25.979028+00:00",
+      "exitCode": 0,
+      "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "GPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    },
+    {
+      "name": "extended-a",
+      "started": "2026-11-18T00:23:26.067933+00:00",
+      "finished": "2026-11-18T00:25:18.242171+00:00",
+      "exitCode": 0,
+      "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "GPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    },
+    {
+      "name": "extended-b",
+      "started": "2026-11-18T00:25:18.320539+00:00",
+      "finished": "2026-11-18T00:27:11.335466+00:00",
+      "exitCode": 0,
+      "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "GPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    },
+    {
+      "name": "child",
+      "started": "2026-11-18T00:27:11.413767+00:00",
+      "finished": "2026-11-18T00:28:02.263345+00:00",
+      "exitCode": 0,
+      "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "GPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    },
+    {
+      "name": "managed-policy",
+      "started": "2026-11-18T00:28:02.349477+00:00",
+      "finished": "2026-11-18T00:28:52.693623+00:00",
+      "exitCode": 0,
+      "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "GPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    },
+    {
+      "name": "mixed",
+      "started": "2026-11-18T00:28:52.783981+00:00",
+      "finished": "2026-11-18T00:30:06.565689+00:00",
+      "exitCode": 0,
+      "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "GPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    },
+    {
+      "name": "pressure-a-borrower-first",
+      "started": "2026-11-18T00:30:06.652732+00:00",
+      "finished": "2026-11-18T00:30:43.557122+00:00",
+      "exitCode": 0,
+      "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "GPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    },
+    {
+      "name": "pressure-a-peer-first",
+      "started": "2026-11-18T00:30:43.645859+00:00",
+      "finished": "2026-11-18T00:31:18.959375+00:00",
+      "exitCode": 0,
+      "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "GPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    },
+    {
+      "name": "pressure-b-borrower-first",
+      "started": "2026-11-18T00:31:19.050276+00:00",
+      "finished": "2026-11-18T00:31:56.388034+00:00",
+      "exitCode": 0,
+      "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "GPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    },
+    {
+      "name": "pressure-b-peer-first",
+      "started": "2026-11-18T00:31:56.477235+00:00",
+      "finished": "2026-11-18T00:32:33.219570+00:00",
+      "exitCode": 0,
+      "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "GPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    },
+    {
+      "name": "kernel-peer",
+      "started": "2026-11-18T00:32:33.308449+00:00",
+      "finished": "2026-11-18T00:32:45.319485+00:00",
+      "exitCode": 0,
+      "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+      "GPUUUIDs": [
+        "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+      ]
+    }
+  ],
+  "scope": "Root released PhaseA remainder only; separate continuity release retained",
+  "all_exit0": true
+}

@@ -1,0 +1,23 @@
+{
+  "files": {
+    "README.md": "d2f6c9f2d9ee7760ce3425d4ab19385a042f46cb120ac3e08975517d96383dbf",
+    "both-card-api-child-policy-coverage.json": "58aeb90c2c2c7669d030a9a36f14046040c4dd813c931f36ab91d2f9e0b3048e",
+    "both-card-mixed-witness.json": "0f266c55a0e017c37cd4b015a8aa1061c0425ec058385876500411afcbba1377",
+    "core-case-exit-receipts.json": "a2f8c04211b18c863282d94cce674df5693ea5a16c391778f461a3c6cf0cb4ee",
+    "core-phaseA-complete.json": "f4e60c6eebf4d35e93ed4af8aa02b45b70b5fcf79511c521c567b497868f5541",
+    "core-retired-cgroups.json": "8283d25dd1069fb4e33d4be585e4c3445ac0435d9b38058422caa7fc2646d545",
+    "initial-relative-path-failure.json": "e5fc66e8fe255b11de8ebde769dabc94cc12376fd568fd60590a292ab74b6287",
+    "kernel-and-P2P-witness.json": "b01912c0b2175449bc6c3928087e0b5bc1cfd959875f6b1bbc0d231c04de5f1f",
+    "nri-required-plugin-witness.json": "7cc41448d70c041a700a72f8055be0445e31f4eb2fb93a29a032802c8d1f3f1a",
+    "phaseB-complete.json": "9f94ade456832107c35f05f4cfad6922f5bcbb887c1815a55c531157c9808f58",
+    "pressure-progress-witness.json": "d58bfdcd7528b5cfb1522488a4321021f80e8e52907b5f42155c6562f78f27d4",
+    "root-phaseA-release.json": "599078b4d35b803abef4df93ba81963f66969dd075e5e5ab0ee9543e55eebf40",
+    "root-phaseB-release.json": "3a4f2abd5998a4e14342a39d8ef165cdb1da8f4ab1b5ed06c81949dc6de699a3",
+    "runtime-continuity-witness.json": "57eb08decae017e91a640b9b0592943ba4d2d535eebc745fa36085abcf85bb02",
+    "source-evidence-hashes.json": "8dbed5f5a398ebcc5a64d0da03435b86862eacabf2a17d5f7c1474e6a0a14b79",
+    "summary.json": "22323d18d599b78364f6aa24d64c896b60c757593d1049fa1679f56b51822f13"
+  },
+  "source_manifest_sha256": "8dbed5f5a398ebcc5a64d0da03435b86862eacabf2a17d5f7c1474e6a0a14b79",
+  "all_465_source_size_SHA_verified": true,
+  "safe_projection_only": true
+}

@@ -1,0 +1,12 @@
+[
+  {
+    "kind": "ClusterRole",
+    "name": "cps-gpu1-source-qa-node-read-20261118",
+    "uid": "3e711d3e-2b2a-410f-a472-0aa7a4e3d31c"
+  },
+  {
+    "kind": "ClusterRoleBinding",
+    "name": "cps-gpu1-source-qa-node-read-20261118",
+    "uid": "b7f7684a-47fe-4fe8-a08e-63824c3ea0c7"
+  }
+]

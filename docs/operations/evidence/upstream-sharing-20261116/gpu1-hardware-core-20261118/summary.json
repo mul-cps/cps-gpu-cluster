@@ -1,0 +1,45 @@
+{
+  "observed": "2026-11-18T00:49:31.877299+00:00",
+  "scope": "GPU1 PhaseA core hardware and separately Root-released same-boot single K3s restart continuity only",
+  "source_review_HEAD": "6041014f90a5250c751dc50dcfaed200785d1a67",
+  "node": "k3s-wk-gpu1",
+  "NodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "tested_boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "GPU_UUIDs": [
+    "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+    "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+  ],
+  "core_PASS": true,
+  "both_cards_5_10_20_mixed_both_orders": true,
+  "fresh_pressure_progress_four_orders": true,
+  "required_NRI_first_timeout_disconnected_missing_plugin_reject_CPU_independent": true,
+  "two_card_recovery": 2,
+  "raw_API_VMM_pool_IPC_crash_race_recovery_both_cards": true,
+  "child_aggregation_and_managed_policy_both_cards": true,
+  "both_direction_direct_P2P_and_kernel_reference": true,
+  "retired_cgroups_all22_absent": true,
+  "runtime_continuity_PASS": true,
+  "restart_submitted_by_fixture": 1,
+  "separate_Root_PhaseB_release_retained": true,
+  "final_idle_cards_MiB": [
+    1,
+    1
+  ],
+  "fences_at_recorded_end": {
+    "cordoned": true,
+    "maintenance_retained": true,
+    "qualified_absent": true
+  },
+  "acceptance_boundaries": {
+    "coldboot": false,
+    "stock_KAI": false,
+    "Source_lifecycle": false,
+    "worker_acceptance": false,
+    "Source_QA_unarmed": true
+  },
+  "initial_local_relative_path_failure_retained": true,
+  "source_manifest_entries_size_and_SHA_verified": 465,
+  "fixtures_or_private_Pod_specs_or_raw_logs_vendored": false,
+  "same_GPU_and_CPU_PodUID_CID": true,
+  "same_GPU_hostPID_cgroup_inode_and_recorded_limits": true
+}

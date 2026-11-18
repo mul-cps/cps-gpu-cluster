@@ -1,0 +1,9 @@
+{
+  "files": {
+    "README.md": "bf3c9d34e5e6dbccd836dcb81f37b3d907001c33ca441dde77ae64ee12876afc",
+    "actual-hub-token-results.json": "bc0b78f1f6ee23e03d25903e8ad9016924bcd79836bdc302c3e4e32ade405877",
+    "root-owned-object-UIDs.json": "22672c680d7c76156a14512ba7eb1f39830adbf0f1d1e32a76d482a08164754e"
+  },
+  "original_before_and_Gateway_proofs_unchanged": true,
+  "no_raw_token_or_private_config": true
+}

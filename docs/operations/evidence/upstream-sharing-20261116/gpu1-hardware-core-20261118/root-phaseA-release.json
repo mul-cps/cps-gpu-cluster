@@ -1,0 +1,23 @@
+{
+  "observed": "2026-11-18T00:19:50.698879+00:00",
+  "release": "root-gpu1-core-phaseA-20261118",
+  "selectedNodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "candidateManifestSha256": "0f7e059d3150d3af6a19b7f49a239de1dd66551eee7d842259c8f95f8374f150",
+  "mutableSelectionBeforeSha256": "b802f3f372f7b64e905dbc312908a793b60c29512cb575461668adcaf376da6e",
+  "mutableSelectionActualSha256": "0253dec2f33861d933ef6d9b6736cb12aef4ac0bfa94340e24629acdf4229f94",
+  "allOwnedCPUFixturesAbsent": true,
+  "cordoned": true,
+  "maintenanceTaintRetained": true,
+  "qualificationAbsent": true,
+  "coldbootOrRestartAuthorized": false,
+  "stockKAISchedulingWindowAuthorized": false,
+  "runtimeCompleteReceipt": {
+    "file_name": "runtime-transfer-complete.safe.json",
+    "sha256": "768f29b19f103fbbbfa25902c02b18e910fdb9d94fb109925c336c3c3093e921"
+  },
+  "cpuStorageReceipt": {
+    "file_name": "root-cpu-storage-passed.safe.json",
+    "sha256": "f7798f4fae59fc930e3e67daa258eb65a129c4db05359a16b98f3cef119a1f58"
+  }
+}

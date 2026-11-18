@@ -1,7 +1,7 @@
 {
   "scope": "GPU1 runtime installed and CPU/storage probes with completed normal cleanup; GPU hardware, coldboot and worker acceptance not claimed",
   "files": {
-    "README.md": "33ba8298b7d71cd9a25a081d5eb0b6fd1faf05a702bb567dd86f5f2aee157f72",
+    "README.md": "c74946336f09684394467d48e4c17b1216e75c37132fe08233c362735f0bb53f",
     "actual-r620-both-cards.safe.json": "31b46bc0f22c2b6470363acf239306c04aeef4ae4129c45d168829797731e87c",
     "cleanup-wrong-uid-negative.safe.json": "6b09ac2dada1045f36148965e45cca6420bb6beebf7648a35e7a81460c7d0996",
     "cordon-investigation.safe.json": "eb5573f40dbe1e22e24bd2647278c66a8b9b736925b7a1cfa0a3b69ba44a9f84",
@@ -17,6 +17,7 @@
     "owned-cleanup-replies.safe.json": "0990b98171ced6da59a36044ed7279c827a2a55de177e099bfde8d5d1ee088f2",
     "post-toolkit-runtime-marker.safe.json": "367daf6278bac6b40b34dd935d8883f4dfb2d43d85190b5f44cb9b3d16d2d3c6",
     "runtime-transfer-complete.safe.json": "768f29b19f103fbbbfa25902c02b18e910fdb9d94fb109925c336c3c3093e921",
-    "source-provenance.safe.json": "17163ed73326d981c8fa5aedb1c8722b8793ee0acef3f38e8cba4993fd9cea54"
+    "source-provenance.safe.json": "17163ed73326d981c8fa5aedb1c8722b8793ee0acef3f38e8cba4993fd9cea54",
+    "cordon-cause-correction.safe.json": "443feb949d479d950cdcfe64f45f8663c78ac76c457f547a9ad0b2b541001b61"
   }
 }

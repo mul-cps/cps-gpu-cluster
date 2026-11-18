@@ -1,0 +1,113 @@
+{
+  "observed": "2026-11-18T00:35:43.381315+00:00",
+  "role_UID": "3e711d3e-2b2a-410f-a472-0aa7a4e3d31c",
+  "binding_UID": "b7f7684a-47fe-4fe8-a08e-63824c3ea0c7",
+  "owned_ledger": "../root-temporary-hub-read-owned.safe.json",
+  "actual_Hub_mounted_tokens_only": true,
+  "no_proxy_TLS_verified": true,
+  "no_credentials_or_Node_actions": true,
+  "Source_QA_unarmed": true,
+  "no_new_boot_or_runtime_facts_frozen": true,
+  "probes": [
+    {
+      "observed": "2026-11-18T00:35:43.179251+00:00",
+      "actual_mounted_SA_subject_matches": true,
+      "actual_mounted_token_PodUID_bound": true,
+      "direct_kubernetes_service_TLS_CA_and_hostname_verified": true,
+      "environment_proxies_disabled": true,
+      "token_never_output": true,
+      "results": [
+        {
+          "method": "GET",
+          "path": "/api/v1/nodes/k3s-wk-gpu1",
+          "HTTPstatus": 200,
+          "NodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/nodes/k3s-wk-gpu2",
+          "HTTPstatus": 403,
+          "NodeUID": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/nodes/k3s-wk-gpu3",
+          "HTTPstatus": 403,
+          "NodeUID": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/nodes/k3s-wk-gpu4",
+          "HTTPstatus": 403,
+          "NodeUID": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/nodes",
+          "HTTPstatus": 403,
+          "NodeUID": null
+        }
+      ],
+      "namespace": "jupyterhub",
+      "Pod": "hub-955cff6c5-9znvc",
+      "PodUID": "5ab5e642-07e2-44ab-a0a8-ef3a7f4e3fb9",
+      "serviceAccount": "hub",
+      "RoleUID": "3e711d3e-2b2a-410f-a472-0aa7a4e3d31c",
+      "BindingUID": "b7f7684a-47fe-4fe8-a08e-63824c3ea0c7",
+      "only_exact_GPU1_GET_authorized": true,
+      "Root_owns_later_UID_guarded_cleanup": true,
+      "no_token_mint_RBAC_Source_or_Node_mutation": true,
+      "postcoldboot_selection_inputs_not_changed": true
+    },
+    {
+      "observed": "2026-11-18T00:35:43.286796+00:00",
+      "actual_mounted_SA_subject_matches": true,
+      "actual_mounted_token_PodUID_bound": true,
+      "direct_kubernetes_service_TLS_CA_and_hostname_verified": true,
+      "environment_proxies_disabled": true,
+      "token_never_output": true,
+      "results": [
+        {
+          "method": "GET",
+          "path": "/api/v1/nodes/k3s-wk-gpu1",
+          "HTTPstatus": 200,
+          "NodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d"
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/nodes/k3s-wk-gpu2",
+          "HTTPstatus": 403,
+          "NodeUID": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/nodes/k3s-wk-gpu3",
+          "HTTPstatus": 403,
+          "NodeUID": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/nodes/k3s-wk-gpu4",
+          "HTTPstatus": 403,
+          "NodeUID": null
+        },
+        {
+          "method": "GET",
+          "path": "/api/v1/nodes",
+          "HTTPstatus": 403,
+          "NodeUID": null
+        }
+      ],
+      "namespace": "cit-jhub",
+      "Pod": "hub-ddf455d78-qtdpt",
+      "PodUID": "da0ba4c0-0c19-443f-87e9-2957b887685d",
+      "serviceAccount": "hub",
+      "RoleUID": "3e711d3e-2b2a-410f-a472-0aa7a4e3d31c",
+      "BindingUID": "b7f7684a-47fe-4fe8-a08e-63824c3ea0c7",
+      "only_exact_GPU1_GET_authorized": true,
+      "Root_owns_later_UID_guarded_cleanup": true,
+      "no_token_mint_RBAC_Source_or_Node_mutation": true,
+      "postcoldboot_selection_inputs_not_changed": true
+    }
+  ]
+}

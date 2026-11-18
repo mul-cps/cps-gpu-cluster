@@ -1,0 +1,94 @@
+{
+  "extended-a/summary.json": {
+    "status": "hardware-cases-passed",
+    "node": "k3s-wk-gpu1",
+    "node_uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+    "gpu_uuid": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+    "cases": [
+      "vmm",
+      "pool",
+      "ipc",
+      "crash",
+      "race",
+      "recovery",
+      "recovery"
+    ],
+    "probe_sha256": "1d9c5a5a15f44aa01deab76b67c2e3d3d890258cc245bffa5c458d1455db0cff",
+    "parent_idle_release": "root-gpu1-core-phaseA-20261118"
+  },
+  "extended-b/summary.json": {
+    "status": "hardware-cases-passed",
+    "node": "k3s-wk-gpu1",
+    "node_uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+    "gpu_uuid": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+    "cases": [
+      "vmm",
+      "pool",
+      "ipc",
+      "crash",
+      "race",
+      "recovery",
+      "recovery"
+    ],
+    "probe_sha256": "1d9c5a5a15f44aa01deab76b67c2e3d3d890258cc245bffa5c458d1455db0cff",
+    "parent_idle_release": "root-gpu1-core-phaseA-20261118"
+  },
+  "child/summary.json": {
+    "status": "PASS",
+    "gpu_uuids": [
+      "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+    ],
+    "expected_boot_id": "b82de564-00cd-4596-a6cf-b4c618e79583",
+    "probe_sha256": "88c81166cfe2aa44c6a8e932ff81468e9e3f870054b8c9349c3a044b16b72b8f",
+    "executor_sha256": "b9828cacbfcb646b0d28ed6fdef438f969ecd552ee77cfcc68d4aec2b0a21857",
+    "cleanup_errors": [],
+    "remaining_owned": [],
+    "ambiguous_creates": [],
+    "cards": [
+      {
+        "gpu_uuid": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "pod_uid": "a68755f7-56cf-497e-b454-2282c453a9eb",
+        "container_id": "006ce18bd09a1485c736fb8eee129b2d14e3eee51a1710647ad11f38b3ed8e1e",
+        "status": "PASS",
+        "finished_at": 1794961655.580677
+      },
+      {
+        "gpu_uuid": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+        "pod_uid": "3cf882c6-67a7-49d4-8a12-6705fcd9f233",
+        "container_id": "13cba0ba64c21a07c6da03e36e6d008d4897d0c0a65fbedd73471e45cbd93661",
+        "status": "PASS",
+        "finished_at": 1794961677.4256923
+      }
+    ]
+  },
+  "managed-policy/summary.json": {
+    "status": "PASS",
+    "gpu_uuids": [
+      "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "GPU-b1222487-3937-5349-7329-5cbebd15a5db"
+    ],
+    "expected_boot_id": "b82de564-00cd-4596-a6cf-b4c618e79583",
+    "probe_sha256": "6122d6b6c6e3722382f922442a629c899b9004add1bd8f21f3275346ba4f4a39",
+    "executor_sha256": "131d28af807ea7f17ecb4c066f03b4a95b5815d02eee0b10aab2066eab882ce2",
+    "cleanup_errors": [],
+    "remaining_owned": [],
+    "ambiguous_creates": [],
+    "cards": [
+      {
+        "gpu_uuid": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "pod_uid": "311ea7c0-c478-46fd-82c8-193b77ef7a99",
+        "container_id": "b324c6aaf679e01e3bfe70c4faaaee28efbfd0b75c994f74d14c9ce684ac7521",
+        "status": "PASS",
+        "finished_at": 1794961705.5999486
+      },
+      {
+        "gpu_uuid": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+        "pod_uid": "3138fcb1-77be-4a25-a4f3-108e234e61c3",
+        "container_id": "500fefdf47f16a6b5cc264f4918d9fac74e755b8f6356847416a4d03ecb53582",
+        "status": "PASS",
+        "finished_at": 1794961727.9703872
+      }
+    ]
+  }
+}

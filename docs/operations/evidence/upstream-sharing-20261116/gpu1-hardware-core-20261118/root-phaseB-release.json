@@ -1,0 +1,19 @@
+{
+  "authorizedAt": "2026-11-18T00:33:03.376450+00:00",
+  "release": "root-gpu1-phaseB-runtime-continuity-20261118",
+  "operation": "single existing qualified nri_candidate_hotfix_followup.py restart case",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "conditionalOn": "entire released core remainder completed exit0 with owned GPU cleanup and fresh closed-node/runtime preflight",
+  "unit": "cps-nri-hotfix-runtime-continuity.service",
+  "unitUnusedVerified": {
+    "LoadState": "not-found",
+    "ActiveState": "inactive",
+    "SubState": "dead"
+  },
+  "preserveSurvivorPodUIDCIDcgroup": true,
+  "sameBootRequired": true,
+  "coldbootAuthorized": false,
+  "stockKAIWindowAuthorized": false,
+  "noAutomaticRetryAfterSubmission": true
+}

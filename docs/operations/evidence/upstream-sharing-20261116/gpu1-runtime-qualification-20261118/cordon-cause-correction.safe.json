@@ -1,0 +1,19 @@
+{
+  "observed": "2026-11-18T00:58:45.432363+00:00",
+  "causeResolved": true,
+  "actor": "Root intended Longhorn IM availability window commands",
+  "firstPatchFileMtime": "2026-11-18T00:11:53.362877+00:00",
+  "secondPatchFileMtime": "2026-11-18T00:53:37.243490+00:00",
+  "matchingIMPodCreationTimes": [
+    "2026-11-18T00:11:53Z",
+    "2026-11-18T00:53:37Z"
+  ],
+  "postWriteAssertionFailure": "Root compared spec containing unschedulable:false against Kubernetes response where false is omitted; check_output had already returned success from live PATCH before the assertion",
+  "dryRunReproducesFalseOmitted": true,
+  "literalComparisonFalse": true,
+  "semanticComparisonTrue": true,
+  "noNewLiveMutationForReproduction": true,
+  "previousUnknownActorInterpretationSuperseded": true,
+  "maintenanceTaintAndQualificationFenceRetainedThroughout": true,
+  "noControllerRemedyRequired": true
+}

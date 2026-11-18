@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-11-18T00:25:44.615441+00:00",
+  "as_of": "2026-11-18T01:00:25.463492+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2/GPU3 fixed-profile workers accepted; GPU1 Ubuntu26.04.1/R620/runtime/CPU+Longhorn probes verified, guarded hardware sharing qualification in progress; GPU4 unchanged",
+  "phase": "GPU2/GPU3 fixed-profile workers accepted; GPU1 core+runtime continuity passed and new-boot startup verified; post-reboot CPU/storage/NRI/KAI and CPS/CIT acceptance remain; GPU4 read-only preparation only",
   "gpu_eligibility": "GPU2/GPU3 qualified for new/restarted upstream shared placement. GPU1 remains quarantined for runtime and worker qualification; GPU4 remains an unqualified legacy worker.",
   "driver": {
     "version": "620.70.06",
@@ -409,7 +409,11 @@
     "GPU_hardware_qualification_in_progress": true,
     "coldboot_runtime_qualification_pending": true,
     "runtime_evidence": "gpu1-runtime-qualification-20261118/README.md",
-    "unexpected_cordon_clear_cause": "unknown; maintenance taint and absent qualification retained, cordon restored by guarded CAS"
+    "unexpected_cordon_clear_cause": "resolved: Root intended IM-window PATCH succeeded; post-write check misread omitted false field; primary fences retained",
+    "GPU_hardware_core_phaseA_passed": true,
+    "runtime_continuity_passed": true,
+    "runtime_coldboot_startup_verified": true,
+    "hardware_core_evidence": "gpu1-hardware-core-20261118/summary.json"
   },
   "controller_cutover": {
     "accepted_preservation_handoff": true,
@@ -450,7 +454,9 @@
     "gateway_actual_GET_GPU1_GPU2_GPU3": 200,
     "gateway_actual_GET_GPU4": 403,
     "gateway_actual_LIST": 403,
-    "hub_temporary_QA_permission_installed": false,
-    "evidence": "gpu1-source-node-read-20261118/README.md"
+    "hub_temporary_QA_permission_installed": true,
+    "evidence": "gpu1-source-node-read-20261118/README.md",
+    "hub_actual_GET_GPU1": 200,
+    "hub_actual_GET_GPU2_GPU3_GPU4_LIST": 403
   }
 }
