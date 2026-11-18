@@ -35,7 +35,7 @@ Member discovery uses JupyterHub's native self/group Shares API through a Home
 template extension, not the unpublished custom Source access API/Overview.
 The first Home release mounted the template but did not activate it because
 the reviewed Pod templates retain immutable runtime Secrets. The corrected
-standard `config.d` extraFile is now actually loaded by both Hubs (currently CPS391/CIT328),
+standard `config.d` extraFile is now actually loaded by both Hubs (currently CPS393/CIT328),
 with unchanged existing crypto, stable access/workspace-account records and
 the original running notebook Pod/container. The user confirmed the native Home
 shared list appeared. Responsive cards are now deployed; a genuine Open click
@@ -43,16 +43,33 @@ from the styled cards remains unverified.
 See [native Home rollout](evidence/upstream-sharing-20261116/native-hub-home-20261118/README.md).
 The empty Notice fallback is deployed on both Sources as “No additional notices.”
 CPS also has the compact native personal spawn form and CPU reset image `b045f8a3…`.
-Its live disposable personal CPU acceptance remains open: an initial check rejected
-native expanded token scopes before user creation; the owned token was revoked
-and cleanup confirmed. Dedicated personal GPU choices remain disabled until their
-canonical policy and reservation path is implemented and qualified.
+Its normal configuration now defaults Network storage, Project share and Scratch1
+on where the existing role permits access; current-form unchecks remain authoritative.
+The upstream CPU pre-puller now pins the actual `efc3b485…` image and completed
+on all three eligible workers. The ordinary Hub configuration is restored.
+Disposable personal CPU acceptance now passes on normal Hub 393: public notebook
+HTTP 200, actual UID 1000, no GPU devices, NVIDIA_VISIBLE_DEVICES=void, normal
+Stop 204 and confirmed user/Pod/PVC/Secret removal with all 58 grants and the real
+shared notebook unchanged. The150second readiness gate stayed unchanged. Earlier
+cases retain the 149-second cold-pull deadline failure and empty SSH-pod CA-store
+probe failure; the final public probe used Root-local strict TLS, no proxy and no
+redirects. Transient fresh-volume NFS/subPath mount retries remain recorded. The user explicitly requested retaining dedicated GPU choices
+during migration; a same-reservation compatibility path is being implemented before
+removing the temporary UI/backend block.
 
 The obsolete `accelerator=r615-canary-maintenance` key was removed from all four
 workers by UID/resourceVersion/full-label/spec guarded patches. The three legacy
 MPS/HAMI DaemonSets stayed at zero and the user's running notebook was preserved.
 GPU1/2/3 retain qualification; GPU4's maintenance and storage fences are unchanged.
 This deprecates a label, not the historical runtime/custody evidence.
+
+GPU4 subsequently passed actual CPS 5/10/20 GiB Source workloads on both cards,
+including typed CUDA OOM, Torch CPU reference, SDK/files,45-second progress,
+stored metrics, normal Stop/charge return and confirmed idempotent Stop. Its
+temporary QA window and credential are closed, temporary objects/Node permission
+removed, and five QA grants closed while all other 53 rows stayed exact. CIT,
+CPU/member and strict Stop-loss final gates remain open; GPU4 is cordoned and
+unqualified. See the [CPS partial receipt](evidence/upstream-sharing-20261116/gpu4-cps-source-partial-20261118.json).
 Gateway node observation now permits exact GET of GPU4 as well as GPU1/2/3;
 the actual service-account token still receives403 for LIST and an unlisted node.
 Controller cutover, all-eight-GPU rollout, startup bursts and full platform gates remain open.

@@ -22,10 +22,10 @@ new section. Mounted bytes and healthy rollout did not establish active renderin
 The correction uses the standard chart `config.d` loader through a second
 `hub.extraFiles` entry. Its one-line configuration has SHA256
 `f430ed6a5700061a1570c77094003c81586136953197d4d302e5495d2df7ed87`.
-Both actual startup logs confirm it loaded. CPS391/CIT328 are Ready with the
+Both actual startup logs confirm it loaded. CPS393/CIT328 are Ready with the
 exact files and reviewed Pod templates; existing runtime Secrets remain pinned.
-Current source owners are CPS `20e8988cb57d5c58d225713bddba0f03689a3fd3`
-(includes the personal CPU form and safe CPU reset image) and CIT
+Current source owners are CPS `e8d05376cce4fc9ff7ed8857ba7134ade9f855a9`
+(includes the personal CPU form/reset, permitted network-mount defaults and pinned CPU pre-puller) and CIT
 `f7689464be40b42e74f501367ba04ce3305f42f7`.
 
 [Preservation](configd-preservation.safe.json) confirms the original running

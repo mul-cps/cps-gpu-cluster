@@ -1,0 +1,66 @@
+{
+  "observed": "2026-11-18T12:46:49.255081+00:00",
+  "scope": "CPS-only GPU4 5/10/20 GiB actual Source acceptance; not full worker promotion",
+  "node": "k3s-wk-gpu4",
+  "nodeUID": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+  "bootID": "9f770278-3655-42da-b088-a227f5eb45dc",
+  "CPSProfilesPassed": [
+    5,
+    10,
+    20
+  ],
+  "bothPhysicalGPUsExercised": true,
+  "normalStopHTTP200AndConfirmedReplayHTTP200AllThree": true,
+  "payloadHashesIndependentlyVerified": 21,
+  "credentialRevokedAbsentAuthDenied": true,
+  "nodeCordonedMaintenanceRetainedUnqualified": true,
+  "allFiveQAGrantsClosedOther53RawExact": true,
+  "normalCPSHub393ReadyAndRealLabUIDCIDSpecPreserved": true,
+  "CITTests": "not run; genuine operator sign-in outstanding",
+  "CPU_member_strictStopLossTests": "not yet run for final worker acceptance",
+  "nativeQAZeroMembershipCleanup": "pending supported cleanup cohort; no stale credential reuse",
+  "personalDedicatedGPUCompatibility": "user requested retaining six legacy choices; implementation in progress; not enabled by storage release",
+  "evidence": {
+    "CPS3IndependentManifest": {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-qa-cps-only-stopguard-20261118/gpu-case/metrics/actual-cps3-manifest.safe.json",
+      "sha256": "0b0fdf4ed5851039f02f9e2b6c11f07ec1c4e18b5f64b12c890f9949448b13bf"
+    },
+    "CPS3IndependentSummary": {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-qa-cps-only-stopguard-20261118/gpu-case/metrics/independent-cps3.safe.json",
+      "sha256": "05ab1c8fdbb4290d694db1d7e4a4bb5a620679dcb814cd27ae81f80a0602fc9d"
+    },
+    "credentialClosure": {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-qa-cps-only-stopguard-20261118/credential-packet/closure.safe.json",
+      "sha256": "fdac3d06b1cb9280110b4bc6caeced518f6eb36d2bda76e1b26cb56fca7cedcd"
+    },
+    "QASchedulingWindowClosed": {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-qa-cps-only-stopguard-20261118/Root-QA-scheduling-window/closed.safe.json",
+      "sha256": "c5b7ac0dd70b1f8392e9c9391fd8fc25e154006ccf2df9d3b90be84f2534db51"
+    },
+    "temporaryObjectRetirement": {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-qa-cps-only-stopguard-20261118/Root-retire-QA-objects-actual/ledger.safe.json",
+      "sha256": "cd1bcab192e7e4ded76f5e5426b93a0c23096de4573e7a6631fdc6b81fb58093"
+    },
+    "temporaryHubNodePermissionRemoved": {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-qa-cps-only-stopguard-20261118/Root-retire-QA-objects-actual/actual-serviceaccount-denied.safe.json",
+      "sha256": "a62bb45c82b747790382b16317b1959615180a844fbbe9ff2cb6cc6cc7d4a447"
+    },
+    "fiveGrantsClosed": {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-qa-cps-only-stopguard-20261118/final-close-preparation/actual/complete.safe.json",
+      "sha256": "9d6effe05cfb02ed158fb69801f64d4e93c54068d4694acfab30744024b4bee5"
+    },
+    "normalHub393Restoration": {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/personal-storage-defaults-live-20261118/preservation.safe.json",
+      "sha256": "0554231bd3e36ad01bd4008e0f1820d8cf967d4b3424bc5a4617b9a611b5b56d"
+    },
+    "CPUImagePrePullerActual": {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/personal-storage-defaults-live-20261118/prepuller-actual.safe.json",
+      "sha256": "7a8ba768c64d813343e9c969c4620beaeca8cb040de8ada2cbe45e633200e55d"
+    },
+    "personalHumanCPUFinal": {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/personal-cpu-human-qa-actual-qa-cpu-20261118-e833e56ed358-I6-393/Root-final-reconciliation.safe.json",
+      "sha256": "4bb70de6b5fb9a22dedb669af2726f33811e92862320565aa8b18e0ac8793382"
+    }
+  },
+  "personalHumanCPUAcceptance": "passed separately on normal Hub393; not Source CPU/member acceptance"
+}
