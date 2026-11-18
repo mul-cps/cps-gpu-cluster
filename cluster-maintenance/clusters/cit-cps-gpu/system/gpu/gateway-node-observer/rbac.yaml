@@ -9,6 +9,7 @@ rules:
   - k3s-wk-gpu2
   - k3s-wk-gpu3
   - k3s-wk-gpu1
+  - k3s-wk-gpu4
   resources:
   - nodes
   verbs:
