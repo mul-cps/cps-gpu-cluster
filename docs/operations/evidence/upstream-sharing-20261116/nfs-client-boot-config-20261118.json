@@ -1,0 +1,86 @@
+{
+  "scope": "Four serial native selected-kernel boot configuration updates, not coldboot or full worker acceptance",
+  "kernel": "7.0.0-43-generic",
+  "runnerSHA256": "950dfa31ab7e16cf7ee0f24ccc9bb0e244d212ec9da04f638377dd3eab3211e9",
+  "helperSHA256": "60d0b86b7943327ead580a5fc5fe106ef02409bea3bcdea79c1cc497bb4ce149",
+  "workers": [
+    {
+      "node": "k3s-wk-gpu4",
+      "nodeUID": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+      "bootID": "9f770278-3655-42da-b088-a227f5eb45dc",
+      "operationID": "b2b406fa-abba-442c-9b91-c6098a122cb3",
+      "nativeReturnCode": 0,
+      "verifiedBackupCount": 19,
+      "newInitrdSHA256": "38198c209a4f6e6e0a57cbd636ae256e0562fae92a8f7158168e1e29dd2773d6",
+      "embeddedConfig": [
+        {
+          "relativePath": "etc/modprobe.d/90-cps-nfs-directory-delegations.conf",
+          "sha256": "117ebbe7065e97456efd7702b9a82805acff9aab99eda5d3bfcb6e4027edba28"
+        }
+      ],
+      "rebootPerformed": false,
+      "runtimeParameterWritten": false,
+      "coldbootQualified": false,
+      "reconcileReceiptSHA256": "17c228cb20a15beb181241a4ae570e0b8339a01869d78baa87237db57c055751"
+    },
+    {
+      "node": "k3s-wk-gpu2",
+      "nodeUID": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "bootID": "8874dcda-ced2-4aa4-b5cb-71a0871abdd5",
+      "operationID": "3ba4ae71-6252-4e1e-9eac-3185374e83e2",
+      "nativeReturnCode": 0,
+      "verifiedBackupCount": 19,
+      "newInitrdSHA256": "00042881a9032b57318e9df0ef9ac43d88ad8d07465418884fe58fedf442b9e2",
+      "embeddedConfig": [
+        {
+          "relativePath": "etc/modprobe.d/90-cps-nfs-directory-delegations.conf",
+          "sha256": "117ebbe7065e97456efd7702b9a82805acff9aab99eda5d3bfcb6e4027edba28"
+        }
+      ],
+      "rebootPerformed": false,
+      "runtimeParameterWritten": false,
+      "coldbootQualified": false,
+      "reconcileReceiptSHA256": "3cacdbcc3fef99d9b7b26a3f3101e25067d900be0efa51dc9dd9dc806132a5ae"
+    },
+    {
+      "node": "k3s-wk-gpu3",
+      "nodeUID": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+      "bootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+      "operationID": "d9becdce-2f1a-4eea-85f6-df4f075a05d6",
+      "nativeReturnCode": 0,
+      "verifiedBackupCount": 19,
+      "newInitrdSHA256": "839e650905891a9cd01a0ca04015542675084a5ff45babd81e6c31d849883426",
+      "embeddedConfig": [
+        {
+          "relativePath": "etc/modprobe.d/90-cps-nfs-directory-delegations.conf",
+          "sha256": "117ebbe7065e97456efd7702b9a82805acff9aab99eda5d3bfcb6e4027edba28"
+        }
+      ],
+      "rebootPerformed": false,
+      "runtimeParameterWritten": false,
+      "coldbootQualified": false,
+      "reconcileReceiptSHA256": "e995c784650b496de6b6cb5e5d926b454eac9c0b6420b0217f37626c130b7ba3"
+    },
+    {
+      "node": "k3s-wk-gpu1",
+      "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "operationID": "ed10e241-c1f3-4d16-beda-27b85b1792eb",
+      "nativeReturnCode": 0,
+      "verifiedBackupCount": 19,
+      "newInitrdSHA256": "0c3c26edab96ea8da29f39a185b890a9c2f5ec8cc97a59c538f4c324c0c8801c",
+      "embeddedConfig": [
+        {
+          "relativePath": "etc/modprobe.d/90-cps-nfs-directory-delegations.conf",
+          "sha256": "117ebbe7065e97456efd7702b9a82805acff9aab99eda5d3bfcb6e4027edba28"
+        }
+      ],
+      "rebootPerformed": false,
+      "runtimeParameterWritten": false,
+      "coldbootQualified": false,
+      "reconcileReceiptSHA256": "1c066c4d4aae405bbf8954af7e69e119254d0b7480f90362ce15bf42a89d882a"
+    }
+  ],
+  "GPU4StillFenced": true,
+  "coldbootAcceptanceOpen": true
+}

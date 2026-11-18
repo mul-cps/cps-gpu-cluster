@@ -1,9 +1,9 @@
 {
-  "observedAt": "2026-11-18T17:29:02.357036+00:00",
+  "observedAt": "2026-11-18T17:52:20.134545+00:00",
   "scope": "Partial personal GPU/native storage qualification, not full rollout acceptance",
-  "CPSOwnerRevision": "fb0eb4a4b05c001bba9f9a0b9fa7b62bdaf28bfc",
+  "CPSOwnerRevision": "7a9203ab5b782189723cce6ec8aac0d12e27613e",
   "GatewayGeneration": 444,
-  "HubGeneration": 396,
+  "HubGeneration": 397,
   "compatibilityHash": "9037745ae5953952f5b65ba6732949b46230116203ec6f08fc15f9f671bf788d",
   "backendEnabled": true,
   "dedicatedGPUUIEnabled": false,
@@ -195,8 +195,9 @@
     "initialTransportFailure": "Driver image has no Python; failure occurred before CUDA. Explicit reviewed resume reused GPU2 storage without repeating its nonce.",
     "successfulTransport": "Existing host Python3 through pinned kured and official R620 libcuda; no dependency installation",
     "hostRuntimeNAllFour": true,
-    "persistenceStillPending": true,
-    "GPU4ServiceAcceptance": false
+    "persistenceStillPending": false,
+    "GPU4ServiceAcceptance": false,
+    "coldbootStillPending": true
   },
   "nfsRootfsPersistence": {
     "nodes": 4,
@@ -204,7 +205,7 @@
     "option": "options nfsv4 directory_delegations=N",
     "effectiveOptionVerified": true,
     "runtimeChanged": false,
-    "initramfsRegenerated": false,
+    "initramfsRegenerated": true,
     "rebooted": false,
     "coldbootQualified": false,
     "sourceHelperSHA256": "60d0b86b7943327ead580a5fc5fe106ef02409bea3bcdea79c1cc497bb4ce149",
@@ -213,6 +214,28 @@
       "2173a9d9-4be3-4077-aeca-96d4dc66fdb6",
       "e634024c-435e-4f58-87c7-c0dd63dd5786",
       "06884bed-fc02-4e81-a80d-26427a9e2f4a"
-    ]
+    ],
+    "embeddedOptionVerifiedAllFour": true
+  },
+  "DaskOriginalTensorFlowFix": {
+    "originalImage": "sha256:593fbba67a2ed22250ad842270c2d7701ddb3e2d0607cb2500e980026c1df754",
+    "beforeCase": "personal-gpu-qa-c61ddfbf0335",
+    "failure": "Read-only home Dask projection aborts original permission hook before CUDA",
+    "onlyConfigChange": "Move unchanged Dask YAML projection to /etc/dask/distributed.yaml",
+    "noEnvironmentOrImageChange": true,
+    "immutableRuntimeSecret": "cps-dask-config-11a38336e5328a69",
+    "immutableRuntimeUID": "8f5593f2-5239-468b-b4d3-a367f39b81e9",
+    "afterCase": "personal-gpu-qa-47d79b2afe8a",
+    "actualReadyAndPublic200": true,
+    "actualDaskVersion": "2025.2.0",
+    "actualPaths": [
+      "/etc/dask",
+      "/opt/conda/etc/dask",
+      "/home/jovyan/.config/dask"
+    ],
+    "actualDashboardMatchesProjection": true,
+    "dataSHA256": "7d8490c57d307e22a4b2b29c465ea9bbd1f6e249f9eb6904c4002192fe669beb",
+    "CUDAQualification": "pending: inherited test-only image391 assertion rejected real TF593; normal cleanup passed",
+    "fourProfileUIActivation": "pending"
   }
 }

@@ -45,6 +45,14 @@ The helper NEVER runs a generator or reboot. [lsinitramfs](https://manpages.ubun
 
 Cold-boot acceptance remains false in every helper receipt. Later acceptance must observe a fresh boot identity, loaded parameter `N`, effective configuration, the same persistent home/storage read/write and retained-file witnesses, CUDA/peer progress and ordinary cleanup. Do not reboot/unload a live NFS client merely to test persistence. Retire the compatibility option only after a released server fix is actually serving the affected RWX volumes and the same cases pass; a changed manager version alone is insufficient.
 
+## Separately released native boot-image rebuild
+
+`regenerate_selected.py` retains the exact runner used for the four-worker 2026-11-18 integration. It defaults to proposal-only. This cluster's measured backend is initramfs-tools0.151ubuntu1; dracut-install alone did not indicate a dracut backend. An exact selection binds the current native tool and boot-image hashes, Node/boot identity, original boot metadata, and the completed persistence journal. Run only through a retained standard systemd oneshot after a separate explicit Root release; never through an ephemeral container command that can die with the transport.
+
+The runner obtains native apt/dpkg locks and an operator lock, checks independent or combined filesystem space, retains verified root0600 original images/configuration, and invokes exactly `update-initramfs -u -k 7.0.0-43-generic`. It verifies other boot metadata, unchanged runtime/host identity, retained nfsv4, and exact embedded option bytes after native extraction. It does not install packages, choose another kernel, retry, restore, reboot, or unload a module. A lost reply requires read-only reconciliation of the same systemd unit and operation journal. Successful regeneration remains coldboot-pending.
+
+The public [boot-configuration receipt](../../../../docs/operations/evidence/upstream-sharing-20261116/nfs-client-boot-config-20261118.json) records the actual four serial operations. Their private frozen selections, backups, logs and submit/reconcile transport remain in the Root evidence directory; they are not automatic GitOps actions.
+
 ## Offline checks
 
 ```sh
