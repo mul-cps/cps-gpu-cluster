@@ -1,0 +1,66 @@
+{
+  "observed": "2026-11-18T10:12:07.522949+00:00",
+  "identity": "system:serviceaccount:cps-compute:cps-compute-controller",
+  "transport": "actual gateway mounted service-account token; no impersonation",
+  "results": [
+    {
+      "resource": "k3s-wk-gpu1",
+      "status": 200,
+      "uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "reason": null
+    },
+    {
+      "resource": "k3s-wk-gpu2",
+      "status": 200,
+      "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "reason": null
+    },
+    {
+      "resource": "k3s-wk-gpu3",
+      "status": 200,
+      "uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+      "reason": null
+    },
+    {
+      "resource": "k3s-wk-gpu4",
+      "status": 200,
+      "uid": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+      "reason": null
+    },
+    {
+      "resource": "unlisted-node-negative-control",
+      "status": 403,
+      "uid": null,
+      "reason": "Forbidden"
+    },
+    {
+      "resource": "LIST",
+      "status": 403,
+      "uid": null,
+      "reason": "Forbidden"
+    }
+  ],
+  "clusterrole_uid": "c62b67ff-dc75-46a9-a0e9-c0da08b260ac",
+  "rules": [
+    {
+      "apiGroups": [
+        ""
+      ],
+      "resourceNames": [
+        "k3s-wk-gpu2",
+        "k3s-wk-gpu3",
+        "k3s-wk-gpu1",
+        "k3s-wk-gpu4"
+      ],
+      "resources": [
+        "nodes"
+      ],
+      "verbs": [
+        "get"
+      ]
+    }
+  ],
+  "source_commit": "92345c70e6fdae34329519867ed23e7259b67dce",
+  "source_change": "one exact resourceName added; no list/watch/patch privilege",
+  "acceptance": "node observation prerequisite only; GPU4 remains unqualified"
+}

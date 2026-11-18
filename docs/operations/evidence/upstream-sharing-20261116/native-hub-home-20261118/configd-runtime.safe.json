@@ -1,0 +1,23 @@
+{
+  "observed": "2026-11-18T10:09:37.573874+00:00",
+  "hubs": {
+    "jupyterhub": {
+      "installed_sha256": {
+        "/usr/local/share/jupyterhub/shared-home-templates/home.html": "7ebb47c6c69a3a7ce729f33cacac17ec10bacec95e96a3bba95f6f354a86d223",
+        "/usr/local/etc/jupyterhub/jupyterhub_config.d/90-shared-home.py": "f430ed6a5700061a1570c77094003c81586136953197d4d302e5495d2df7ed87"
+      },
+      "actual_startup_config_loader_confirmed": true,
+      "genuine_user_home_and_open_acceptance": "PENDING_USER_REFRESH",
+      "browser_automation": "unavailable: documented DOM/screenshot/CDP methods fail"
+    },
+    "cit-jhub": {
+      "installed_sha256": {
+        "/usr/local/share/jupyterhub/shared-home-templates/home.html": "7ebb47c6c69a3a7ce729f33cacac17ec10bacec95e96a3bba95f6f354a86d223",
+        "/usr/local/etc/jupyterhub/jupyterhub_config.d/90-shared-home.py": "f430ed6a5700061a1570c77094003c81586136953197d4d302e5495d2df7ed87"
+      },
+      "actual_startup_config_loader_confirmed": true,
+      "genuine_user_home_and_open_acceptance": "PENDING_USER_REFRESH",
+      "browser_automation": "unavailable: documented DOM/screenshot/CDP methods fail"
+    }
+  }
+}

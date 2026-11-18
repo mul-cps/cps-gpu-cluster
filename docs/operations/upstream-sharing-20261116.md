@@ -1,25 +1,54 @@
 # GPU2 upstream sharing pilot — 2026-11-16
 
-**2026-11-18 current state:** GPU2, GPU3 and GPU1 have scoped worker acceptance,
+**2026-11-18 current state (10:14 UTC):** GPU2, GPU3 and GPU1 have scoped worker acceptance,
 with six qualified GPUs back in normal service. GPU1 passed hardware, coldboot/NRI,
 stock KAI and final Source image `d52d0a7a…`: all six CPS/CIT GPU profiles, both
 CPU/member lifecycles, and both strict first-active backend200 Stop-response-loss
 cases. The Source cleanup-race fix is deployed on both services. QA memberships,
-credentials and five grants are closed; both exact normal Hubs are restored
-(CPS387/CIT325), six temporary objects are deleted and temporary node rights revoked.
+credentials and five grants are closed; the then-normal Hubs were restored
+(CPS387/CIT325), six temporary objects were deleted and temporary node rights revoked.
 See the [GPU1 worker receipt](evidence/upstream-sharing-20261116/gpu1-worker-acceptance-20261118.json),
 [final GPU tests](evidence/upstream-sharing-20261116/gpu1-final-source-gpu-20261118/README.md),
 [lifecycle tests](evidence/upstream-sharing-20261116/gpu1-final-source-lifecycle-20261118/README.md)
 and [current status](evidence/upstream-sharing-20261116/gpu2-current-status.json).
 GPU4 now boots Ubuntu26.04.1/kernel7.0.0-43; its sole SUC operation is reconciled
 as OS-verified and nomination removed. Matched R620 and upstream runtime are
-installed on both cards. It remains cordoned, maintenance-tainted and unqualified
-while hardware/fault tests run; coldboot, KAI and Source acceptance still follow.
+installed on both cards. Warm enforcement/contention, runtime restart continuity,
+coldboot/NRI failure and recovery, CPU/AppArmor, Longhorn/fast-scratch read/write
+and the fifteen-role stock-KAI qualification have passed with confirmed cleanup.
+Its final boot is `9f770278-3655-42da-b088-a227f5eb45dc`. It remains cordoned,
+maintenance-tainted, Longhorn-scheduling-disabled and unqualified until final
+CPS/CIT Source lifecycle acceptance and restoration of paused services.
 Original local data inventories, mounts/PVC/PV identities and scoped recovery files
 are preserved. One upstream GPU Operator controller relist reconciled its stale
 node-owner label; peer GPU runtimes did not restart. See
 [GPU4 OS/runtime stage](evidence/upstream-sharing-20261116/gpu4-os-runtime-stage-20261118.json)
 and the [earlier drain/OS submission](evidence/upstream-sharing-20261116/gpu4-pre-os-progress-20261118.json).
+The [post-coldboot stage receipt](evidence/upstream-sharing-20261116/gpu4-postcoldboot-stage-20261118.json)
+binds the five verified hardware/storage/KAI manifests; this is not worker promotion.
+
+Both Sources currently run `be824ee5…` (source `9725e3b9…`, generation125):
+controlled Start errors, effective membership expiry handling, current-request
+XSRF headers, readable Notice widths and content-versioned assets. The user's
+`shared-gpu-lab` is running on qualified GPU1; preserve its Pod and allocation.
+Member discovery uses JupyterHub's native self/group Shares API through a Home
+template extension, not the unpublished custom Source access API/Overview.
+The first Home release mounted the template but did not activate it because
+the reviewed Pod templates retain immutable runtime Secrets. The corrected
+standard `config.d` extraFile is now actually loaded by both Hubs (CPS389/CIT327),
+with unchanged existing crypto, stable access/workspace-account records and
+the original running notebook Pod/container. Genuine browser Home/Open acceptance
+is pending the user's refresh; installed bytes and startup logs alone are not that gate.
+See [native Home rollout](evidence/upstream-sharing-20261116/native-hub-home-20261118/README.md).
+The empty Notice text fallback is still a separate release in preparation.
+
+The obsolete `accelerator=r615-canary-maintenance` key was removed from all four
+workers by UID/resourceVersion/full-label/spec guarded patches. The three legacy
+MPS/HAMI DaemonSets stayed at zero and the user's running notebook was preserved.
+GPU1/2/3 retain qualification; GPU4's maintenance and storage fences are unchanged.
+This deprecates a label, not the historical runtime/custody evidence.
+Gateway node observation now permits exact GET of GPU4 as well as GPU1/2/3;
+the actual service-account token still receives403 for LIST and an unlisted node.
 Controller cutover, all-eight-GPU rollout, startup bursts and full platform gates remain open.
 
 **2026-11-17 historical checkpoint:** GPU2 passed the scoped fixed-profile worker

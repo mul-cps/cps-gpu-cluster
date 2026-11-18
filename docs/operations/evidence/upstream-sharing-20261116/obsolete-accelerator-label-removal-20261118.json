@@ -1,0 +1,12 @@
+{
+  "at": "2026-11-18T10:14:05.583072+00:00",
+  "nodes": [
+    "k3s-wk-gpu2",
+    "k3s-wk-gpu3",
+    "k3s-wk-gpu1",
+    "k3s-wk-gpu4"
+  ],
+  "acceleratorAbsent": true,
+  "allGuardsPassed": true,
+  "noPodDSDriverSourceOrStorageMutation": true
+}

@@ -1,0 +1,43 @@
+{
+  "running_notebook_pods_and_containers_exact": true,
+  "services": {
+    "cps": {
+      "namespace": "jupyterhub",
+      "generation": 389,
+      "ready": true,
+      "installed_template_sha256": "7ebb47c6c69a3a7ce729f33cacac17ec10bacec95e96a3bba95f6f354a86d223",
+      "pod_template_exact_gitops": true,
+      "stable_db_tables_equal": true,
+      "database_tables": 14,
+      "existing_secret_crypto_keys_exact": true,
+      "hub_secret_values_only_template_fields_changed": true,
+      "referenced_resource_uids_exact": true,
+      "changed_secret_cm_keys": {
+        "secret/hub": [
+          "shared-home",
+          "shared-home-config",
+          "values.yaml"
+        ]
+      }
+    },
+    "cit": {
+      "namespace": "cit-jhub",
+      "generation": 327,
+      "ready": true,
+      "installed_template_sha256": "7ebb47c6c69a3a7ce729f33cacac17ec10bacec95e96a3bba95f6f354a86d223",
+      "pod_template_exact_gitops": true,
+      "stable_db_tables_equal": true,
+      "database_tables": 13,
+      "existing_secret_crypto_keys_exact": true,
+      "hub_secret_values_only_template_fields_changed": true,
+      "referenced_resource_uids_exact": true,
+      "changed_secret_cm_keys": {
+        "secret/hub": [
+          "shared-home",
+          "shared-home-config",
+          "values.yaml"
+        ]
+      }
+    }
+  }
+}

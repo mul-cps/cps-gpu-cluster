@@ -1,0 +1,54 @@
+{
+  "observed": "2026-11-18T10:15:45.900160+00:00",
+  "node": "k3s-wk-gpu4",
+  "node_uid": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+  "boot_id": "9f770278-3655-42da-b088-a227f5eb45dc",
+  "scope": "post-coldboot hardware/storage/KAI evidence; NOT final worker promotion",
+  "qualified": false,
+  "cordoned": true,
+  "evidence": [
+    {
+      "manifest": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-hardware-warm-20261118-boot438728/warm-evidence-manifest.safe.json",
+      "sha256": "07762184ae11a84787fa882af8a836cc28d75aa9ed6fb5ab4147de9a668bda71",
+      "verified_payload_files": 465
+    },
+    {
+      "manifest": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-runtime-continuity-20261118-boot438728/manifest.safe.json",
+      "sha256": "4e8a95b7b2cfcd128751b23cbf9222054fbbddf0e5443acf1c8dec9e565a03af",
+      "verified_payload_files": 93
+    },
+    {
+      "manifest": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-hardware-postcoldboot-20261118-boot9f770/evidence-manifest.safe.json",
+      "sha256": "f2cf11c449dceaf101cada1770b1cb60208b8aa7b3f7528c9cd14aa8317678e8",
+      "verified_payload_files": 118
+    },
+    {
+      "manifest": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-cpu-storage-postcoldboot-actual-20261118/actual-manifest.safe.json",
+      "sha256": "54fd4f497ec78819f10c170188eedaaa9fded8ba28e99a03973544fe772a97fd",
+      "verified_payload_files": 83
+    },
+    {
+      "manifest": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-kai-qualification-20261118-boot9f770/reconciled-attempt-20261118/evidence-manifest.safe.json",
+      "sha256": "3bcd27ad6b67da3048e177d4e7ef024a021710de1f5e6591b6d54a3856f6c78a",
+      "verified_payload_files": 134
+    }
+  ],
+  "warm_12_steps_exit_zero": true,
+  "postcold_nri_repeat_exit_zero": true,
+  "stock_kai_status": "PASS",
+  "storage_owned_cleanup": {
+    "at": "2026-11-18T09:11:56.480607+00:00",
+    "errors": [],
+    "remainingKnownUIDs": []
+  },
+  "open": [
+    "GPU4 final-artifact CPS/CIT service lifecycle",
+    "restore paused CPU services and Longhorn scheduling",
+    "explicit worker promotion and all-eight-GPU acceptance",
+    "native Home genuine browser/member Open acceptance",
+    "controller cutover <=60 seconds",
+    "startup bursts p95<=180/max<=300",
+    "advanced R620 features separately",
+    "ordinary/distributed/external/teaching/monitoring/recovery/full-restore requirements"
+  ]
+}
