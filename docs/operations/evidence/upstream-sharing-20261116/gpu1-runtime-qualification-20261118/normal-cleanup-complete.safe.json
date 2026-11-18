@@ -1,0 +1,38 @@
+{
+  "observed": "2026-11-18T00:22:42.956471+00:00",
+  "resources": [
+    {
+      "kind": "ConfigMap",
+      "name": "gpu1-apparmor-probe-20261118",
+      "originalUID": "1eed4c31-7b9f-4965-b1e6-869ce89b603b",
+      "absent": true
+    },
+    {
+      "kind": "Pod",
+      "name": "gpu1-apparmor-smoke-20261118",
+      "originalUID": "aacf3723-0bbf-422d-90b7-4c75d4f8008b",
+      "absent": true
+    },
+    {
+      "kind": "PersistentVolumeClaim",
+      "name": "gpu1-storage-smoke-20261118",
+      "originalUID": "0667bdcb-e2b9-4283-a269-b93885cf666f",
+      "absent": true
+    },
+    {
+      "kind": "Pod",
+      "name": "gpu1-storage-smoke-20261118",
+      "originalUID": "91154610-3d2c-4a6a-a667-3fb293691589",
+      "absent": true
+    }
+  ],
+  "disposablePVName": "pvc-0667bdcb-e2b9-4283-a269-b93885cf666f",
+  "disposablePVUID": "7345406d-b50c-4696-a6b2-bca17669f7d6",
+  "disposablePVAbsent": true,
+  "disposableLonghornVolume": "pvc-0667bdcb-e2b9-4283-a269-b93885cf666f",
+  "disposableLonghornVolumeAbsent": true,
+  "allOwnedFixturesGone": true,
+  "cordonStillTrue": true,
+  "qualificationAbsent": true,
+  "forcedDeletionOrFinalizerRemoval": false
+}

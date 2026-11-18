@@ -1,0 +1,28 @@
+[
+  {
+    "time": 1794960260.1083088,
+    "node": "k3s-wk-gpu1",
+    "boot_id": "b82de564-00cd-4596-a6cf-b4c618e79583",
+    "gpu": "GPU-8df28256-50a3-db30-3706-b69d52f4874f, 620.70.06, 0, 40960",
+    "compute_processes": "",
+    "uvm": {
+      "srcversion": "10301D70B8ED1758BC717E9",
+      "parameters/uvm_reject_managed_memory": "Y",
+      "parameters/uvm_disable_hmm": "Y"
+    },
+    "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+  },
+  {
+    "time": 1794960260.5184379,
+    "node": "k3s-wk-gpu1",
+    "boot_id": "b82de564-00cd-4596-a6cf-b4c618e79583",
+    "gpu": "GPU-b1222487-3937-5349-7329-5cbebd15a5db, 620.70.06, 4, 40960",
+    "compute_processes": "",
+    "uvm": {
+      "srcversion": "10301D70B8ED1758BC717E9",
+      "parameters/uvm_reject_managed_memory": "Y",
+      "parameters/uvm_disable_hmm": "Y"
+    },
+    "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18"
+  }
+]

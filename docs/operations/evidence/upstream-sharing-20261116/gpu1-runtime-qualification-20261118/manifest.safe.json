@@ -1,0 +1,22 @@
+{
+  "scope": "GPU1 runtime installed and CPU/storage probes with completed normal cleanup; GPU hardware, coldboot and worker acceptance not claimed",
+  "files": {
+    "README.md": "33ba8298b7d71cd9a25a081d5eb0b6fd1faf05a702bb567dd86f5f2aee157f72",
+    "actual-r620-both-cards.safe.json": "31b46bc0f22c2b6470363acf239306c04aeef4ae4129c45d168829797731e87c",
+    "cleanup-wrong-uid-negative.safe.json": "6b09ac2dada1045f36148965e45cca6420bb6beebf7648a35e7a81460c7d0996",
+    "cordon-investigation.safe.json": "eb5573f40dbe1e22e24bd2647278c66a8b9b736925b7a1cfa0a3b69ba44a9f84",
+    "cordon-restored.safe.json": "870c3e0ef70d3aea2e2347b58853638a8c0d08c992f0d03f546d0df0435b34c7",
+    "cpu-storage-passed.safe.json": "f7798f4fae59fc930e3e67daa258eb65a129c4db05359a16b98f3cef119a1f58",
+    "first-start-nvml.safe.json": "1c0af921001e3aa25e14c3e54c48a5a1809daadb8f94a3149f2ede2b2873ecc2",
+    "fractioning-all-stock-targets.safe.json": "6e3840ed9f06eb94dfcf695b816d74e7cf1b26b574ce293318191fe84660f31f",
+    "fractioning-ready.safe.json": "d1975bbafa9e1ea31272d60b3b2b83b3bf2f390c451d4f76130e05fb42011229",
+    "memacct-mig.safe.json": "783718ae750defcbfdb25eb3d77a23900987dd1d9ef7395ba3bbfba5ed7fa4ca",
+    "normal-cleanup-complete.safe.json": "ec308d742eb735059569b2fb86def3975a9a63e83d6c4e6153983887a8b55845",
+    "nri-aa-actual.safe.json": "612716304b304cdb3cd3d1dbeb9f3e9802951d9779702a55749c868840b2ce62",
+    "operator-peer-reconciliation.safe.json": "917a5e91a57991a29c2fe3eaaf0b1d8f692a9c3d32f4cef25689e536adb2f724",
+    "owned-cleanup-replies.safe.json": "0990b98171ced6da59a36044ed7279c827a2a55de177e099bfde8d5d1ee088f2",
+    "post-toolkit-runtime-marker.safe.json": "367daf6278bac6b40b34dd935d8883f4dfb2d43d85190b5f44cb9b3d16d2d3c6",
+    "runtime-transfer-complete.safe.json": "768f29b19f103fbbbfa25902c02b18e910fdb9d94fb109925c336c3c3093e921",
+    "source-provenance.safe.json": "17163ed73326d981c8fa5aedb1c8722b8793ee0acef3f38e8cba4993fd9cea54"
+  }
+}

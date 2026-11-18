@@ -1,0 +1,10 @@
+{
+  "observed": "2026-11-18T00:07:46.097669+00:00",
+  "revision": "36834c7107b442f5ccb7ad2f29474c6d15964ffe",
+  "ownerUID": "1534d096-8e43-4028-b4bc-2dd5c604181c",
+  "allOtherSpecExact": true,
+  "pathsExact": [
+    "cluster-maintenance/clusters/cit-cps-gpu"
+  ],
+  "onlyChangedPathWithinOwnedTree": "system/gpu/gateway-node-observer/rbac.yaml"
+}

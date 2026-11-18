@@ -1,7 +1,7 @@
 {
   "scope": "GPU1 host OS verified after normal reboot; runtime and Kubernetes storage/workload and worker acceptance pending",
   "files": {
-    "README.md": "5a025a87b90d5b3ad9480115e4aca5cb20d1a5ce0d1200426dd23ff15850a0ef",
+    "README.md": "7b2d5c32a1afc5f7000ad640b57ececa1bbd51ff0e16d0665d4afb00a452f59f",
     "authorization.safe.json": "ae02f2774478580f2125f7776a8731db8e0be410d6a3da18574f7f930faedd9e",
     "completed-pre-reboot.safe.json": "614c732846493f97003d3271c4024ce571aee01b79dd93bdbcc7c79292960276",
     "configuration-backup-metadata.safe.json": "ed913ea034e2f68a84f98fc36942fa815a42ef60860695ec843317b8392879bd",

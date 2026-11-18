@@ -1,0 +1,58 @@
+{
+  "operation": {
+    "operation": "gpu1-nri-required-20261118",
+    "node": "k3s-wk-gpu1",
+    "started_at": "2026-11-17T23:58:00.082587+00:00",
+    "nominal_version": "v1.34.9+k3s1",
+    "stock_outer_sha256": "80eebb578e36a04ca460575fab419a3336b32c84205a0ae954ff16636181d9f7",
+    "candidate_outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+    "candidate_inner_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+    "candidate_archive": "2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa",
+    "original_configuration_hashes": {
+      "/etc/systemd/system/k3s-agent.service": "65ef9bc2d2ec743511b87007c9591bcd7e86f52cb375e585429a99f82fb975d4",
+      "/etc/systemd/system/k3s-agent.service.env": "fddce084277ff92566d352b85a5fc892da3fef9db3432075249ec9e1951a5479",
+      "/var/lib/rancher/k3s/agent/etc/containerd/config-v3.toml.tmpl": "dc9420d1d91a415d0d6e097d396c137310e986affe89705c4463c6702c5202ed",
+      "/etc/systemd/system/k3s-agent.service.d/30-apparmor-compat.conf": "b350ab02c446a1acbc0669d37299a8245b6fc36e8fc1753e42bd1f5580b51747"
+    },
+    "status": "restart submitted; worker acceptance not established",
+    "restart_unit": "cps-gpu1-nri-required-20261118.service"
+  },
+  "outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+  "running_processes": {
+    "13628": {
+      "exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+      "sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a"
+    },
+    "13668": {
+      "exe": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa/bin/k3s",
+      "sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a"
+    }
+  },
+  "data_current": "/var/lib/rancher/k3s/data/2277a2c458beda093f8367b944c2fbb2e5f53a00f17776759721fb781b3874fa",
+  "nri": {
+    "disable": false,
+    "socket_path": "/var/run/nri/nri.sock",
+    "default_validator": {
+      "enable": true,
+      "required_plugins": []
+    }
+  },
+  "apparmor": {
+    "node": "k3s-wk-gpu1",
+    "node_uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+    "ip": "10.21.0.38",
+    "expected_boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+    "expected_kernel": "7.0.0-43-generic",
+    "expected_os_version": "26.04",
+    "k3s_version": "v1.34.9+k3s1",
+    "containerd_version": "v2.2.5-k3s2",
+    "parent_release": "root-gpu1-runtime-b82de564-20261118",
+    "profile_sha256": "30e2fc1210fc99c4e7060ea6bf7f931f6d6c03fbdc499f5f0584fb5c01c92875",
+    "status": "installed: acceptance not established",
+    "stock_raw_sha256": "8fd644921ce685e50f6dc8f57db6adb3fa0433d3fae7fa39cfdd673bd951dd82",
+    "baseline_sha256": "21888f007c25c39922acc64267b277ae6f43255e7314fd2a52dcf675c8533994",
+    "service_restarted": false
+  },
+  "profile_sha256": "30e2fc1210fc99c4e7060ea6bf7f931f6d6c03fbdc499f5f0584fb5c01c92875",
+  "hardening_sysctl": 1
+}

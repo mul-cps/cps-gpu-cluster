@@ -1,0 +1,90 @@
+{
+  "exact_receipts": [
+    {
+      "destination": "runtime-transfer-complete.safe.json",
+      "source": "gpu1-runtime-transfer-prep-20261118/live-operation-20261118/runtime-transfer-complete.safe.json",
+      "source_sha256": "768f29b19f103fbbbfa25902c02b18e910fdb9d94fb109925c336c3c3093e921",
+      "projection": "exact safe JSON receipt"
+    },
+    {
+      "destination": "nri-aa-actual.safe.json",
+      "source": "gpu1-runtime-transfer-prep-20261118/live-operation-20261118/nri-aa-actual.safe.json",
+      "source_sha256": "612716304b304cdb3cd3d1dbeb9f3e9802951d9779702a55749c868840b2ce62",
+      "projection": "exact safe JSON receipt"
+    },
+    {
+      "destination": "actual-r620-both-cards.safe.json",
+      "source": "gpu1-runtime-transfer-prep-20261118/live-operation-20261118/actual-r620-both-cards.safe.json",
+      "source_sha256": "31b46bc0f22c2b6470363acf239306c04aeef4ae4129c45d168829797731e87c",
+      "projection": "exact safe JSON receipt"
+    },
+    {
+      "destination": "memacct-mig.safe.json",
+      "source": "gpu1-runtime-transfer-prep-20261118/live-operation-20261118/memacct-mig.safe.json",
+      "source_sha256": "783718ae750defcbfdb25eb3d77a23900987dd1d9ef7395ba3bbfba5ed7fa4ca",
+      "projection": "exact safe JSON receipt"
+    },
+    {
+      "destination": "fractioning-ready.safe.json",
+      "source": "gpu1-runtime-transfer-prep-20261118/live-operation-20261118/fractioning-ready.safe.json",
+      "source_sha256": "d1975bbafa9e1ea31272d60b3b2b83b3bf2f390c451d4f76130e05fb42011229",
+      "projection": "exact safe JSON receipt"
+    },
+    {
+      "destination": "operator-peer-reconciliation.safe.json",
+      "source": "gpu1-runtime-transfer-prep-20261118/live-operation-20261118/operator-peer-reconciliation.safe.json",
+      "source_sha256": "917a5e91a57991a29c2fe3eaaf0b1d8f692a9c3d32f4cef25689e536adb2f724",
+      "projection": "exact safe JSON receipt"
+    },
+    {
+      "destination": "post-toolkit-runtime-marker.safe.json",
+      "source": "gpu1-runtime-transfer-prep-20261118/live-operation-20261118/post-toolkit-runtime-marker.safe.json",
+      "source_sha256": "367daf6278bac6b40b34dd935d8883f4dfb2d43d85190b5f44cb9b3d16d2d3c6",
+      "projection": "exact safe JSON receipt"
+    },
+    {
+      "destination": "fractioning-all-stock-targets.safe.json",
+      "source": "gpu1-runtime-transfer-prep-20261118/live-operation-20261118/fractioning-all-stock-targets.safe.json",
+      "source_sha256": "6e3840ed9f06eb94dfcf695b816d74e7cf1b26b574ce293318191fe84660f31f",
+      "projection": "exact safe JSON receipt"
+    },
+    {
+      "destination": "cpu-storage-passed.safe.json",
+      "source": "gpu1-cpu-storage-smoke-20261118/root-cpu-storage-passed.safe.json",
+      "source_sha256": "f7798f4fae59fc930e3e67daa258eb65a129c4db05359a16b98f3cef119a1f58",
+      "projection": "exact safe JSON receipt"
+    },
+    {
+      "destination": "cordon-restored.safe.json",
+      "source": "gpu1-cpu-storage-smoke-20261118/root-observed-cordon-restored.safe.json",
+      "source_sha256": "870c3e0ef70d3aea2e2347b58853638a8c0d08c992f0d03f546d0df0435b34c7",
+      "projection": "exact safe JSON receipt"
+    },
+    {
+      "destination": "cordon-investigation.safe.json",
+      "source": "gpu1-cordon-investigation-20261118/findings.safe.json",
+      "source_sha256": "eb5573f40dbe1e22e24bd2647278c66a8b9b736925b7a1cfa0a3b69ba44a9f84",
+      "projection": "exact safe JSON receipt"
+    },
+    {
+      "destination": "cleanup-wrong-uid-negative.safe.json",
+      "source": "gpu1-cpu-storage-smoke-20261118/root-delete-uid-precondition-negative.safe.json",
+      "source_sha256": "6b09ac2dada1045f36148965e45cca6420bb6beebf7648a35e7a81460c7d0996",
+      "projection": "exact safe JSON receipt"
+    },
+    {
+      "destination": "normal-cleanup-complete.safe.json",
+      "source": "gpu1-cpu-storage-smoke-20261118/root-normal-cleanup-complete.safe.json",
+      "source_sha256": "ec308d742eb735059569b2fb86def3975a9a63e83d6c4e6153983887a8b55845",
+      "projection": "exact safe JSON receipt"
+    }
+  ],
+  "private_material_excluded": [
+    "full Pod/Node specifications",
+    "configuration values",
+    "credentials",
+    "archives",
+    "private log bodies"
+  ],
+  "no_new_cluster_actions_for_projection": true
+}

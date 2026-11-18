@@ -1,0 +1,26 @@
+{
+  "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "nvidia_runtime": {
+    "runtime_type": "io.containerd.runc.v2",
+    "options": {
+      "BinaryName": "/usr/local/nvidia/toolkit/nvidia-container-runtime",
+      "SystemdCgroup": true
+    }
+  },
+  "runtime_binary_sha256": "60c55ad599f9475db59a66b6183ae877161f24afc997265ce5a64306057f8976",
+  "driver_ready_marker_mtime_ns": 1794960308779925574,
+  "original_configs_unchanged": {
+    "/etc/systemd/system/k3s-agent.service": true,
+    "/etc/systemd/system/k3s-agent.service.env": true,
+    "/var/lib/rancher/k3s/agent/etc/containerd/config-v3.toml.tmpl": true,
+    "/etc/systemd/system/k3s-agent.service.d/30-apparmor-compat.conf": true
+  },
+  "nri": {
+    "disable": false,
+    "socket_path": "/var/run/nri/nri.sock",
+    "default_validator": {
+      "enable": true,
+      "required_plugins": []
+    }
+  }
+}

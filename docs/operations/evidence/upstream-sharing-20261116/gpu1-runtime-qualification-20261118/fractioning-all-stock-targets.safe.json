@@ -1,0 +1,64 @@
+{
+  "targets": [
+    {
+      "labels": {
+        "container": "metricsd",
+        "endpoint": "metrics",
+        "instance": "10.42.7.231:2112",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd",
+        "namespace": "gpu-fractioning",
+        "pod": "gpu-fractioning-fractiond-p57lq"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-11-18T00:07:44.871281223Z",
+      "scrapeUrl": "http://10.42.7.231:2112/metrics"
+    },
+    {
+      "labels": {
+        "container": "metricsd",
+        "endpoint": "metrics",
+        "instance": "10.42.3.152:2112",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd",
+        "namespace": "gpu-fractioning",
+        "pod": "gpu-fractioning-fractiond-wnv4l"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-11-18T00:07:34.588443489Z",
+      "scrapeUrl": "http://10.42.3.152:2112/metrics"
+    },
+    {
+      "labels": {
+        "container": "metricsd",
+        "endpoint": "metrics",
+        "instance": "10.42.4.139:2112",
+        "job": "gpu-fractioning/gpu-fractioning-metricsd",
+        "namespace": "gpu-fractioning",
+        "pod": "gpu-fractioning-fractiond-gw9t5"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-11-18T00:07:26.930588753Z",
+      "scrapeUrl": "http://10.42.4.139:2112/metrics"
+    },
+    {
+      "labels": {
+        "container": "manager",
+        "endpoint": "http",
+        "instance": "10.42.7.64:8080",
+        "job": "gpu-fractioning-metrics",
+        "namespace": "gpu-fractioning",
+        "pod": "gpu-fractioning-769db7746b-4djcm",
+        "service": "gpu-fractioning-metrics"
+      },
+      "health": "up",
+      "lastError": "",
+      "lastScrape": "2026-11-18T00:07:41.177600582Z",
+      "scrapeUrl": "http://10.42.7.64:8080/metrics"
+    }
+  ],
+  "initial_node_only_count_expectation_was_wrong": true,
+  "node_local_metrics_targets": 1,
+  "shared_operator_target": 1
+}

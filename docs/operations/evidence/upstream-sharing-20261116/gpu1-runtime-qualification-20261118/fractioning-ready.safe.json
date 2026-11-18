@@ -1,0 +1,38 @@
+{
+  "selected": [
+    {
+      "namespace": "gpu-fractioning",
+      "name": "gpu-fractioning-fractiond-gw9t5",
+      "uid": "628f5b6c-a12e-47ee-b33e-e16eb5e2cadc",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "fractiond",
+          "restartCount": 0,
+          "ready": true
+        },
+        {
+          "name": "metricsd",
+          "restartCount": 0,
+          "ready": true
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-fractioning",
+      "name": "gpu-fractioning-mpsd-6lqsf",
+      "uid": "e1345782-0064-4b46-b92a-cbd8f48c473e",
+      "phase": "Running",
+      "ready": true,
+      "containers": [
+        {
+          "name": "mpsd",
+          "restartCount": 0,
+          "ready": true
+        }
+      ]
+    }
+  ],
+  "peer_uids_unchanged": true
+}

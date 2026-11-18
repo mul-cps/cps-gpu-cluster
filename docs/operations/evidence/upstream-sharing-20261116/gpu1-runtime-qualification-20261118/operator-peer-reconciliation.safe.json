@@ -1,0 +1,10 @@
+{
+  "authorized_controller_restart_only": [
+    {
+      "old_name": "gpu-operator-7b85bfcb6c-dwzzt",
+      "old_uid": "c54e4b0f-c161-4992-9a37-f99659c0c2fc"
+    }
+  ],
+  "peer_operand_uids_unchanged": 28,
+  "observed": "2026-11-18T00:03:15.641988+00:00"
+}

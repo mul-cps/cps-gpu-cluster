@@ -1,0 +1,12 @@
+{
+  "RegistryDwords": [
+    "RegistryDwords: \"RmMemacctMode=1\""
+  ],
+  "mig": [
+    "GPU-8df28256-50a3-db30-3706-b69d52f4874f, Disabled",
+    "GPU-b1222487-3937-5349-7329-5cbebd15a5db, Disabled"
+  ],
+  "nouveau_absent": true,
+  "initial_host_query_without_driver_library_path_rc": 12,
+  "corrected_observer_library_path_used": true
+}

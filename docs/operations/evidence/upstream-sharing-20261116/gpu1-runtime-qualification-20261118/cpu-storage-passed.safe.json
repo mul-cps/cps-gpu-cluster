@@ -1,0 +1,73 @@
+{
+  "observed": "2026-11-18T00:18:50.349742+00:00",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "CPUAppArmorProbePassed": true,
+  "selectedLonghornWriteFsyncReadPassed": true,
+  "pods": [
+    {
+      "name": "gpu1-apparmor-smoke-20261118",
+      "uid": "aacf3723-0bbf-422d-90b7-4c75d4f8008b",
+      "nodeName": "k3s-wk-gpu1",
+      "phase": "Succeeded",
+      "imageID": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+      "events": [
+        {
+          "event": "identity",
+          "pid": 7,
+          "uid": 1000,
+          "profile": "cri-containerd.apparmor.d//&unconfined (enforce)",
+          "cgroup": "0::/"
+        },
+        {
+          "event": "signal_received",
+          "pid": 8
+        },
+        {
+          "event": "signal_send",
+          "result": "pass",
+          "child": 8
+        },
+        {
+          "event": "ptrace_attach_detach",
+          "result": "pass"
+        },
+        {
+          "event": "sigkill",
+          "result": "pass"
+        },
+        {
+          "event": "reaped",
+          "status": 9,
+          "result": "pass"
+        },
+        {
+          "event": "mount_negative",
+          "result": "pass",
+          "errno": 1,
+          "uid": 1000,
+          "profile": "cri-containerd.apparmor.d//&unconfined (enforce)",
+          "probeSHA256": "23ffe82b21aa91face3a3017b725393ba3e998d9d83a882d8306a050fcc072b4",
+          "nvidiaDevices": [],
+          "mountDenialIsNotUniquelyAttributedToAppArmor": true
+        }
+      ]
+    },
+    {
+      "name": "gpu1-storage-smoke-20261118",
+      "uid": "91154610-3d2c-4a6a-a667-3fb293691589",
+      "nodeName": "k3s-wk-gpu1",
+      "phase": "Succeeded",
+      "imageID": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+      "events": [
+        {
+          "bytes": 4194324,
+          "sha256": "d87a6c613644fa29a9cca71766c283f0ead7a19c5f9df1e5ab954c08a669515c",
+          "uid": 1000,
+          "result": "RW_FSYNC_PASS"
+        }
+      ]
+    }
+  ],
+  "cleanupPending": true
+}

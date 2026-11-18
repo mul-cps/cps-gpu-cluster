@@ -1,0 +1,80 @@
+{
+  "observed": "2026-11-18T00:11:01.156383+00:00",
+  "scope": "Permanent Gateway named-node observer GET only; no Hub permission applied",
+  "source_commit": "36834c7107b442f5ccb7ad2f29474c6d15964ffe",
+  "source_path": "cluster-maintenance/clusters/cit-cps-gpu/system/gpu/gateway-node-observer/rbac.yaml",
+  "source_delta": "append ONLY k3s-wk-gpu1 to existing resourceNames list",
+  "RoleUID_before_after": "c62b67ff-dc75-46a9-a0e9-c0da08b260ac",
+  "BindingUID_before_after": "7046107b-908e-41ea-b90c-fd9c55815afd",
+  "binding_roleRef_subjects_exact_unchanged": true,
+  "only_subject": "system:serviceaccount:cps-compute:cps-compute-controller",
+  "only_permissions": {
+    "apiGroup": "",
+    "resource": "nodes",
+    "verb": "get",
+    "resourceNames": [
+      "k3s-wk-gpu2",
+      "k3s-wk-gpu3",
+      "k3s-wk-gpu1"
+    ]
+  },
+  "actual_mounted_token_proofs": {
+    "direct_https_kubernetes_default_svc": true,
+    "mounted_CA_CERT_REQUIRED_hostname_verified": true,
+    "environment_proxy_disabled": true,
+    "token_PodUID_bound_and_subject_expected": true,
+    "token_never_output_or_minted": true,
+    "PodUID_stable": true
+  },
+  "before": {
+    "gateway": {
+      "/api/v1/nodes/k3s-wk-gpu1": 403,
+      "/api/v1/nodes/k3s-wk-gpu2": 200,
+      "/api/v1/nodes/k3s-wk-gpu3": 200,
+      "/api/v1/nodes": 403
+    },
+    "cps-hub": {
+      "/api/v1/nodes/k3s-wk-gpu1": 403,
+      "/api/v1/nodes/k3s-wk-gpu2": 403,
+      "/api/v1/nodes/k3s-wk-gpu3": 403,
+      "/api/v1/nodes": 403
+    },
+    "cit-hub": {
+      "/api/v1/nodes/k3s-wk-gpu1": 403,
+      "/api/v1/nodes/k3s-wk-gpu2": 403,
+      "/api/v1/nodes/k3s-wk-gpu3": 403,
+      "/api/v1/nodes": 403
+    }
+  },
+  "after_gateway": {
+    "/api/v1/nodes/k3s-wk-gpu1": {
+      "HTTPstatus": 200,
+      "NodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d"
+    },
+    "/api/v1/nodes/k3s-wk-gpu2": {
+      "HTTPstatus": 200,
+      "NodeUID": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+    },
+    "/api/v1/nodes/k3s-wk-gpu3": {
+      "HTTPstatus": 200,
+      "NodeUID": "7b3b5113-158d-4e0d-bd63-898a508fe806"
+    },
+    "/api/v1/nodes/k3s-wk-gpu4": {
+      "HTTPstatus": 403,
+      "NodeUID": null
+    },
+    "/api/v1/nodes": {
+      "HTTPstatus": 403,
+      "NodeUID": null
+    }
+  },
+  "SAR_impersonation_caveat": {
+    "Root_reported_kubectl_auth_as_results": "G1 GET and LIST yes for Gateway and both HubSAs",
+    "actual_mounted_token_results_contradicted_that_before_pin": true,
+    "authority_for_acceptance": "actual caller token native Kubernetes HTTP response, not SAR/--as via operator access route",
+    "reason_for_discrepancy": "not established; no claim that arbitrary caller has broad permission"
+  },
+  "Hub_QA_role": "Draft held offline; no create/apply/change. Actual both Hubs currently deny G1/G2/G3/list. Separate Root QA release required.",
+  "no_Source_calls_grants_credentials_or_other_RBAC_changes": true,
+  "Root_Fleet_revision_only_CAS_paths_otherSpec_exact": true
+}

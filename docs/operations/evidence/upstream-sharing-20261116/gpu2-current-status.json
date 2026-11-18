@@ -1,8 +1,8 @@
 {
-  "as_of": "2026-11-17T23:58:14.684812+00:00",
+  "as_of": "2026-11-18T00:25:44.615441+00:00",
   "worker": "k3s-wk-gpu2",
   "worker_acceptance": true,
-  "phase": "GPU2/GPU3 fixed-profile workers accepted; GPU1 Ubuntu26.04.1 host verified on kernel7.0.0-43, selected runtime transfer in progress; GPU4 unchanged",
+  "phase": "GPU2/GPU3 fixed-profile workers accepted; GPU1 Ubuntu26.04.1/R620/runtime/CPU+Longhorn probes verified, guarded hardware sharing qualification in progress; GPU4 unchanged",
   "gpu_eligibility": "GPU2/GPU3 qualified for new/restarted upstream shared placement. GPU1 remains quarantined for runtime and worker qualification; GPU4 remains an unqualified legacy worker.",
   "driver": {
     "version": "620.70.06",
@@ -58,7 +58,7 @@
     "source": "1c160751676bce808fe8a2ae86b0a495b61c0f72",
     "cps_image": "sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097",
     "cit_image": "sha256:bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6",
-    "cps_gitops_pin": "550a835e57c52147858f2b89a36622878b8a5ea1",
+    "cps_gitops_pin": "36834c7107b442f5ccb7ad2f29474c6d15964ffe",
     "cit_gitops_pin": "dc14b6586b9527011b1c48a4d25852ea696695c3",
     "fleet_both_ready": false,
     "live_catalog": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
@@ -396,12 +396,20 @@
     "release_operation_status": "os-verified",
     "release_operation": "gpu1-ubuntu-20261117",
     "release_operation_evidence": "gpu1-os-rollout-20261118/README.md",
-    "OS_acceptance": false,
+    "OS_acceptance": true,
     "worker_acceptance": false,
     "expected_storage_degraded_with_two_current_remote_RW": true,
     "host_OS_verified": true,
-    "OS_workload_storage_acceptance_pending": true,
-    "runtime_installation_in_progress": true
+    "OS_workload_storage_acceptance_pending": false,
+    "runtime_installation_in_progress": false,
+    "runtime_installation_verified": true,
+    "CPU_AppArmor_probe_passed": true,
+    "Longhorn_write_fsync_read_passed": true,
+    "owned_CPU_storage_fixtures_cleanup_complete": true,
+    "GPU_hardware_qualification_in_progress": true,
+    "coldboot_runtime_qualification_pending": true,
+    "runtime_evidence": "gpu1-runtime-qualification-20261118/README.md",
+    "unexpected_cordon_clear_cause": "unknown; maintenance taint and absent qualification retained, cordon restored by guarded CAS"
   },
   "controller_cutover": {
     "accepted_preservation_handoff": true,
@@ -437,5 +445,12 @@
     "host_OS_verified": true,
     "workerAccepted": false,
     "evidence": "gpu1-os-rollout-20261118/post-reboot-host-verified.safe.json"
+  },
+  "gpu1_node_read_permission": {
+    "gateway_actual_GET_GPU1_GPU2_GPU3": 200,
+    "gateway_actual_GET_GPU4": 403,
+    "gateway_actual_LIST": 403,
+    "hub_temporary_QA_permission_installed": false,
+    "evidence": "gpu1-source-node-read-20261118/README.md"
   }
 }

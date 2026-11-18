@@ -1,0 +1,25 @@
+{
+  "source_sha256": "2bcf856cb9701a405267106350788a4e2bbcb4e55cee3d270295e2164585383a",
+  "pod_uid": "628f5b6c-a12e-47ee-b33e-e16eb5e2cadc",
+  "events": [
+    {
+      "time": "2026-11-18T00:06:03.086033892Z",
+      "level": "INFO",
+      "msg": "starting gpu-fractioning-metrics",
+      "version": "v0.1.9",
+      "commit": "fb75540"
+    },
+    {
+      "time": "2026-11-18T00:06:03.098946082Z",
+      "level": "INFO",
+      "msg": "NVML initialized; GPU process metrics enabled"
+    },
+    {
+      "time": "2026-11-18T00:06:03.099243887Z",
+      "level": "INFO",
+      "msg": "starting GPU metrics exporter"
+    }
+  ],
+  "manual_metrics_restart_performed": false,
+  "coldboot_qualification": false
+}

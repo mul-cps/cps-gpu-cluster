@@ -1,0 +1,47 @@
+{
+  "scope": "metadata-only projection of four successful official deletion replies",
+  "objects": [
+    {
+      "kind": "Status",
+      "name": "gpu1-apparmor-probe-20261118",
+      "uid": "1eed4c31-7b9f-4965-b1e6-869ce89b603b",
+      "namespace": "cattle-system",
+      "delete_reply_returncode": 0,
+      "status": "Success",
+      "deletionTimestamp": null,
+      "source_sha256": "11d40bf0f16f0501829cc1fb1dde494a25b043a879acdc10a4038a74e8532d14"
+    },
+    {
+      "kind": "Pod",
+      "name": "gpu1-apparmor-smoke-20261118",
+      "uid": "aacf3723-0bbf-422d-90b7-4c75d4f8008b",
+      "namespace": "cattle-system",
+      "delete_reply_returncode": 0,
+      "status": null,
+      "deletionTimestamp": "2026-11-18T00:18:50Z",
+      "source_sha256": "52c5f919af4e77554d7cdd400c980eddbd3de4d28755430fc04227d850a993e3"
+    },
+    {
+      "kind": "PersistentVolumeClaim",
+      "name": "gpu1-storage-smoke-20261118",
+      "uid": "0667bdcb-e2b9-4283-a269-b93885cf666f",
+      "namespace": "cattle-system",
+      "delete_reply_returncode": 0,
+      "status": null,
+      "deletionTimestamp": "2026-11-18T00:18:51Z",
+      "source_sha256": "18eef1490feccd79f0c06fe2cbfc3cdda56784c518ac45e85f3a1f394a0bed78"
+    },
+    {
+      "kind": "Pod",
+      "name": "gpu1-storage-smoke-20261118",
+      "uid": "91154610-3d2c-4a6a-a667-3fb293691589",
+      "namespace": "cattle-system",
+      "delete_reply_returncode": 0,
+      "status": null,
+      "deletionTimestamp": "2026-11-18T00:18:50Z",
+      "source_sha256": "875c5658d4ba6b627eea3c9bc76b814c81b5b0a1882413e1c2f183dcdf5db79f"
+    }
+  ],
+  "final_absence_not_proven_by_delete_replies": true,
+  "cpu_storage_pass_receipt_retains_cleanupPending_true": true
+}

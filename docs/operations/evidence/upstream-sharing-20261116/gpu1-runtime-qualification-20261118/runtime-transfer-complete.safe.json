@@ -1,0 +1,78 @@
+{
+  "observed": "2026-11-18T00:07:53.480630+00:00",
+  "scope": "selected runtime installation, not GPU1 qualification",
+  "node": "k3s-wk-gpu1",
+  "node_uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "ready": true,
+  "cordoned": true,
+  "maintenance_retained": true,
+  "qualified_absent": true,
+  "gpu_capacity": 2,
+  "driver_cr_uid": "76473758-0114-4e6c-b250-62f6da33b3aa",
+  "driver_cr_spec_unchanged": true,
+  "peer_operand_uids_unchanged": 28,
+  "authorized_operator_restart_exception": [
+    {
+      "name": "gpu-operator-7b85bfcb6c-dwzzt",
+      "uid": "c54e4b0f-c161-4992-9a37-f99659c0c2fc"
+    }
+  ],
+  "fractioning": [
+    {
+      "namespace": "gpu-fractioning",
+      "name": "gpu-fractioning-fractiond-gw9t5",
+      "uid": "628f5b6c-a12e-47ee-b33e-e16eb5e2cadc",
+      "runtimeClassName": "nvidia",
+      "containers": [
+        {
+          "name": "fractiond",
+          "containerID": "containerd://054a9cdc891f2d1361cd5d1f4e7b34c2c2143256b77881200c3d0d03312d7e98",
+          "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/fractiond@sha256:29c5fca25c1b35f22cf9f1e6c53acaa79d0b9f722ed6e8417caf438c06cd3739",
+          "restartCount": 0,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-18T00:05:56Z"
+            }
+          },
+          "ready": true
+        },
+        {
+          "name": "metricsd",
+          "containerID": "containerd://bf2d95008a3a1733f3f29b408c9bfe99452804bb084d93b2b12b7db497f53c89",
+          "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/metricsd@sha256:7a619c92651d0744bcd80745be264f3b6c213ad4f3a12fef19a339df422af2bf",
+          "restartCount": 0,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-18T00:06:03Z"
+            }
+          },
+          "ready": true
+        }
+      ]
+    },
+    {
+      "namespace": "gpu-fractioning",
+      "name": "gpu-fractioning-mpsd-6lqsf",
+      "uid": "e1345782-0064-4b46-b92a-cbd8f48c473e",
+      "runtimeClassName": "nvidia",
+      "containers": [
+        {
+          "name": "mpsd",
+          "containerID": "containerd://f5fd6cea6f0e2ea43ddfab827634c178a989ab7b74c10bdc18389351c0f8e256",
+          "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/mpsd@sha256:f161d6c653c668e49e384ae15794421777464248c5e533660ac26b006787b102",
+          "restartCount": 0,
+          "state": {
+            "running": {
+              "startedAt": "2026-11-18T00:06:03Z"
+            }
+          },
+          "ready": true
+        }
+      ]
+    }
+  ],
+  "stock_metrics_targets_up": 4,
+  "gpu_tests_executed": false,
+  "coldboot_qualified": false
+}

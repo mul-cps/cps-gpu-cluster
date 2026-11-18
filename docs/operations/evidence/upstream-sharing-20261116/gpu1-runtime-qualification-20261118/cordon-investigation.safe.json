@@ -1,0 +1,46 @@
+{
+  "observed": "2026-11-18T00:18:03.685024+00:00",
+  "cause": "UNKNOWN: no retained API audit request identifies the writer",
+  "observed_unschedulable_absent": true,
+  "observed_transition_time": "2026-11-18T00:11:53Z",
+  "root_cordon_restored_at": "2026-11-18T00:13:24.992387+00:00",
+  "node_uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "b82de564-00cd-4596-a6cf-b4c618e79583",
+  "current_cordoned": true,
+  "maintenance_NoSchedule_retained": true,
+  "qualification_absent": true,
+  "managed_fields_not_actor_proof": [
+    {
+      "manager": "k3s",
+      "time": "2026-11-18T00:11:51Z",
+      "subresource": "status",
+      "spec_fields": []
+    },
+    {
+      "manager": "k3s",
+      "time": "2026-11-18T00:11:53Z",
+      "subresource": null,
+      "spec_fields": [
+        "f:podCIDR",
+        "f:podCIDRs",
+        "f:providerID",
+        "f:taints"
+      ]
+    },
+    {
+      "manager": "rancher",
+      "time": "2026-11-18T00:11:53Z",
+      "subresource": null,
+      "spec_fields": []
+    }
+  ],
+  "checks": {
+    "SUC": "actual Plan cordon=false/no drain; controller completion23:55:10, no matching00:11:53 action log",
+    "Kured": "startup23:54:39 only in bounded logs; no matching reboot/uncordon action",
+    "K3s": "bounded three control-plane journals and GPU1 agent journal yielded no matching writer; CP YAML has no audit-log-path/policy; CP1 actual kube-apiserver startup line contains no audit flags",
+    "Rancher": "three controller logs have no matching GPU1/uncordon action; no audit sidecar/volume observed; managed-field timestamps alone do not identify writer",
+    "NRI_installer": "unchanged reviewed helper changes outer artifact and restarts service only; no Kubernetes Node mutation route"
+  },
+  "remediation": "None proposed without a proven cause. Existing exact pre-probe NodeUID/boot/cordon guards remain. On recurrence retain new observation and hold action.",
+  "investigation_live_mutations": false
+}

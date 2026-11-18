@@ -1,0 +1,29 @@
+{
+  "observed": "2026-11-18T00:13:24.992387+00:00",
+  "rootAttemptedWindowPatch": false,
+  "preWindowGuardRefusedBeforeMutation": true,
+  "foundUnschedulableAlreadyCleared": true,
+  "maintenanceTaintNeverRemoved": true,
+  "qualificationAlwaysAbsent": true,
+  "IMAlreadyCreatedUID": "3ed75d87-b02a-4d2f-9fb9-2a2e121a5158",
+  "cordonRestoredByGuardedCAS": true,
+  "specManagers": [
+    {
+      "manager": "k3s",
+      "time": "2026-11-18T00:11:53Z",
+      "spec": {
+        "f:podCIDR": {},
+        "f:podCIDRs": {
+          ".": {},
+          "v:\"10.42.4.0/24\"": {}
+        },
+        "f:providerID": {},
+        "f:taints": {}
+      }
+    }
+  ],
+  "upgradeLabels": {
+    "nvidia.com/mig.config.state": "success",
+    "plan.upgrade.cattle.io/cps-ubuntu-gpu1-ubuntu-20261117": "5a7bfc4aa1ce82fde37054c385bb45c1f734d4495a7fab615c431dd2"
+  }
+}

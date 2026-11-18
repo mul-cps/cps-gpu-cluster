@@ -1,0 +1,6 @@
+diff --git a/cluster-maintenance/clusters/cit-cps-gpu/system/gpu/gateway-node-observer/rbac.yaml b/cluster-maintenance/clusters/cit-cps-gpu/system/gpu/gateway-node-observer/rbac.yaml
+index 42ef590e..f6514feb 100644
+--- a/cluster-maintenance/clusters/cit-cps-gpu/system/gpu/gateway-node-observer/rbac.yaml
++++ b/cluster-maintenance/clusters/cit-cps-gpu/system/gpu/gateway-node-observer/rbac.yaml
+@@ -10,0 +11 @@ rules:
++  - k3s-wk-gpu1
