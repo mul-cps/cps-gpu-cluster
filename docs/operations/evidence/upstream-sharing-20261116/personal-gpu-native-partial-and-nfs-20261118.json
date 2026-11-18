@@ -1,9 +1,9 @@
 {
-  "observedAt": "2026-11-18T17:03:54.106700+00:00",
+  "observedAt": "2026-11-18T17:24:31.753879+00:00",
   "scope": "Partial personal GPU/native storage qualification, not full rollout acceptance",
-  "CPSOwnerRevision": "f3a63b1d997870a96390a56cf991f294a3b91a21",
+  "CPSOwnerRevision": "fb0eb4a4b05c001bba9f9a0b9fa7b62bdaf28bfc",
   "GatewayGeneration": 444,
-  "HubGeneration": 395,
+  "HubGeneration": 396,
   "compatibilityHash": "9037745ae5953952f5b65ba6732949b46230116203ec6f08fc15f9f671bf788d",
   "backendEnabled": true,
   "dedicatedGPUUIEnabled": false,
@@ -157,5 +157,46 @@
     "Remaining three original image cache/hardware qualifications and six canonical identity links",
     "GPU4 CIT/CPU/member/fault service acceptance and explicit promotion",
     "Original controller cutover<=60 and startup burst p95<=180/max<=300 plus broader restore/external/teaching gates"
-  ]
+  ],
+  "nativeDenialMessageFix": {
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:80ee9d8514d3033a7e8bda4959207e6ed8eb064ad569a03302f30364e869fac5",
+    "moduleSHA256": "4c27dc1ade2a7d79b33f0cd3137d9d654dae3a10464803e7cb6a23d78732a636",
+    "healthyAndInstalled": true,
+    "stableNativeTablesConfigCryptoCITExact": true,
+    "liveDenialTest": "pending: I4 native Ready/public200 passed; test witness creation precondition failed on retained existing file; normal cleanup passed",
+    "finalArtifactTests": "340 pass; same 24 inherited fixture errors; zero failures"
+  },
+  "peerStoragePartial": {
+    "nodes": [
+      "k3s-wk-gpu2",
+      "k3s-wk-gpu3",
+      "k3s-wk-gpu4"
+    ],
+    "storageReadWriteFsyncRetainedFiles": true,
+    "bothCardsCUDA64MiBReadWriteFree": true,
+    "probePodsNormallyRemoved": true,
+    "retainedNonces": 3,
+    "initialTransportFailure": "Driver image has no Python; failure occurred before CUDA. Explicit reviewed resume reused GPU2 storage without repeating its nonce.",
+    "successfulTransport": "Existing host Python3 through pinned kured and official R620 libcuda; no dependency installation",
+    "hostRuntimeNAllFour": true,
+    "persistenceStillPending": true,
+    "GPU4ServiceAcceptance": false
+  },
+  "nfsRootfsPersistence": {
+    "nodes": 4,
+    "target": "/etc/modprobe.d/90-cps-nfs-directory-delegations.conf",
+    "option": "options nfsv4 directory_delegations=N",
+    "effectiveOptionVerified": true,
+    "runtimeChanged": false,
+    "initramfsRegenerated": false,
+    "rebooted": false,
+    "coldbootQualified": false,
+    "sourceHelperSHA256": "60d0b86b7943327ead580a5fc5fe106ef02409bea3bcdea79c1cc497bb4ce149",
+    "operations": [
+      "84b0e327-9935-498e-90e9-7740829f2ff6",
+      "2173a9d9-4be3-4077-aeca-96d4dc66fdb6",
+      "e634024c-435e-4f58-87c7-c0dd63dd5786",
+      "06884bed-fc02-4e81-a80d-26427a9e2f4a"
+    ]
+  }
 }
