@@ -1,0 +1,40 @@
+{
+  "node": "k3s-wk-gpu1",
+  "nodeUIDSHA256": "2d9d164ebb8cc6c77a2f9c23a7b156f1132bc66b1291168c221970b33296d5da",
+  "bootIDSHA256": "6a88ae35bb4180f6a56d49e577317d60fde9e3d1338f37a6602aa9c44adbe157",
+  "cards": {
+    "A": {
+      "hardwareUUIDSHA256": "6f1563eff7c774d3e60fbf1753904cdb3f9042cb5c04420fb4a3df7617e123d3",
+      "model": "NVIDIA A100-PCIE-40GB"
+    },
+    "B": {
+      "hardwareUUIDSHA256": "75fe32482214889fb0899b45792f4e5223b3eb3d6c8a89a6890ed1dc65f74175",
+      "model": "NVIDIA A100-PCIE-40GB"
+    }
+  },
+  "driverVersion": "620.70.06",
+  "driverImage": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+  "fractiondImage": "ghcr.io/kai-scheduler/gpu-fractioning/fractiond@sha256:29c5fca25c1b35f22cf9f1e6c53acaa79d0b9f722ed6e8417caf438c06cd3739",
+  "notebookImage": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
+  "sourceImage": "ghcr.io/mul-cps/e2x-course-hub@sha256:d52d0a7a6af988e2cf709fa1756305ca03115e169f55b9837f2a4964b990065c",
+  "sourceCommit": "2bb5c1499838ff1455d1feb94970ffb0dd23065b",
+  "sourceModuleProof": {
+    "cps": {
+      "uid": 10001,
+      "gid": 10001,
+      "compute_sha256": "dc0b4e57c48a805ca225e6306f9509928b53d51ac99025d38d52b808d7dd6a47",
+      "workspaces_sha256": "57d221127df70051103125269fab706ef6075f1fbf3ad9e8802dc58aad0b16c9"
+    },
+    "cit": {
+      "uid": 10001,
+      "gid": 10001,
+      "compute_sha256": "dc0b4e57c48a805ca225e6306f9509928b53d51ac99025d38d52b808d7dd6a47",
+      "workspaces_sha256": "57d221127df70051103125269fab706ef6075f1fbf3ad9e8802dc58aad0b16c9"
+    }
+  },
+  "QAConfigModuleSHA256": "6f57f6b20b069a1baabff883d168e035d81147de5f87f101cdba4c4f3200f75d",
+  "policyHash": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
+  "MIG": "disabled in rollout design; no new MIG-mode measurement claimed here",
+  "runtimeEvidence": "gpu1-source-final-qa-20261118/root-gpu-controlled-window-release.safe.json",
+  "sourceDeploymentEvidence": "gpu1-source-final-qa-20261118/root-final-Source-images.safe.json"
+}

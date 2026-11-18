@@ -1,0 +1,524 @@
+{
+  "observedUTC": "2026-11-18T05:06:40.471707+00:00",
+  "scope": "Final Source d52 GPU1 six serial shared profiles",
+  "allSixPassed": true,
+  "bothCardsExercised": true,
+  "independentStoredScrapesOnly": true,
+  "metricsEvidence": "gpu1-source-final-qa-20261118/gpu-case/metrics/matrix-stored.safe.json",
+  "rootMeasuredEvidence": "gpu1-source-final-qa-20261118/root-six-GPU-measured.safe.json",
+  "profiles": [
+    {
+      "source": "cps",
+      "profileGiB": 5,
+      "memberCount": 1,
+      "card": "A",
+      "completedUTC": "2026-11-18T04:58:23.900891+00:00",
+      "startToPodReadySeconds": 12.129629850387573,
+      "startLatencyScope": "six serial starts; not burst qualification",
+      "withinCapFillBytes": 4831838208,
+      "progressSeconds": 45.00030363899896,
+      "progressSteps": 792375,
+      "progressWindowBytes": 67108864,
+      "aboveCapCUDAResult": 2,
+      "torchVersion": "2.11.0+cu129",
+      "torchCUDAReferenceMatches": true,
+      "retainedSentinelVerified": true,
+      "SDKWorkspacePrincipalVerified": true,
+      "softAndHardLimitMiB": 5120,
+      "normalStopAndCapacityReturnConfirmed": true,
+      "evidence": {
+        "terminal": "gpu1-source-final-qa-20261118/gpu-case/six-profile-terminal.safe.json",
+        "pod": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cps5-final-d52-20261118-pod-evidence.json",
+        "jupyter": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cps5-final-d52-20261118-jupyter-evidence.json",
+        "preleaf": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cps5-final-d52-20261118-leaf-before.private.json"
+      },
+      "metrics": {
+        "rawRunningUTC": "2026-11-18T04:57:05.338583+00:00",
+        "rawFreedUTC": "2026-11-18T04:57:50.456559+00:00",
+        "rawWindowSeconds": 45.11797285079956,
+        "allocatedBytes": 4831838208,
+        "queryEvaluationPointsNotIndependentScrapes": true
+      },
+      "storedMetrics": [
+        {
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T04:57:14.914000+00:00",
+            "2026-11-18T04:57:44.914000+00:00"
+          ],
+          "minimum": 5268045824.0,
+          "maximum": 5268045824.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T04:57:14.914000+00:00",
+            "2026-11-18T04:57:44.914000+00:00"
+          ],
+          "minimum": 79.0,
+          "maximum": 82.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T04:57:14.914000+00:00",
+            "2026-11-18T04:57:44.914000+00:00"
+          ],
+          "minimum": 100.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ]
+    },
+    {
+      "source": "cps",
+      "profileGiB": 10,
+      "memberCount": 2,
+      "card": "A",
+      "completedUTC": "2026-11-18T05:00:01.323109+00:00",
+      "startToPodReadySeconds": 13.12880277633667,
+      "startLatencyScope": "six serial starts; not burst qualification",
+      "withinCapFillBytes": 10200547328,
+      "progressSeconds": 45.00020941799994,
+      "progressSteps": 796891,
+      "progressWindowBytes": 67108864,
+      "aboveCapCUDAResult": 2,
+      "torchVersion": "2.11.0+cu129",
+      "torchCUDAReferenceMatches": true,
+      "retainedSentinelVerified": true,
+      "SDKWorkspacePrincipalVerified": true,
+      "softAndHardLimitMiB": 10240,
+      "normalStopAndCapacityReturnConfirmed": true,
+      "evidence": {
+        "terminal": "gpu1-source-final-qa-20261118/gpu-case/six-profile-terminal.safe.json",
+        "pod": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cps10-final-d52-20261118-pod-evidence.json",
+        "jupyter": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cps10-final-d52-20261118-jupyter-evidence.json",
+        "preleaf": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cps10-final-d52-20261118-leaf-before.private.json"
+      },
+      "metrics": {
+        "rawRunningUTC": "2026-11-18T04:59:00.633870+00:00",
+        "rawFreedUTC": "2026-11-18T04:59:45.752452+00:00",
+        "rawWindowSeconds": 45.118579149246216,
+        "allocatedBytes": 10200547328,
+        "queryEvaluationPointsNotIndependentScrapes": true
+      },
+      "storedMetrics": [
+        {
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T04:59:14.914000+00:00",
+            "2026-11-18T04:59:44.914000+00:00"
+          ],
+          "minimum": 10636754944.0,
+          "maximum": 10636754944.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T04:59:14.914000+00:00",
+            "2026-11-18T04:59:44.914000+00:00"
+          ],
+          "minimum": 82.0,
+          "maximum": 83.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T04:59:14.914000+00:00",
+            "2026-11-18T04:59:44.914000+00:00"
+          ],
+          "minimum": 100.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ]
+    },
+    {
+      "source": "cps",
+      "profileGiB": 20,
+      "memberCount": 4,
+      "card": "B",
+      "completedUTC": "2026-11-18T05:01:35.288198+00:00",
+      "startToPodReadySeconds": 15.066391229629517,
+      "startLatencyScope": "six serial starts; not burst qualification",
+      "withinCapFillBytes": 20937965568,
+      "progressSeconds": 45.0002268850003,
+      "progressSteps": 794479,
+      "progressWindowBytes": 67108864,
+      "aboveCapCUDAResult": 2,
+      "torchVersion": "2.11.0+cu129",
+      "torchCUDAReferenceMatches": true,
+      "retainedSentinelVerified": true,
+      "SDKWorkspacePrincipalVerified": true,
+      "softAndHardLimitMiB": 20480,
+      "normalStopAndCapacityReturnConfirmed": true,
+      "evidence": {
+        "terminal": "gpu1-source-final-qa-20261118/gpu-case/six-profile-terminal.safe.json",
+        "pod": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cps20-final-d52-20261118-pod-evidence.json",
+        "jupyter": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cps20-final-d52-20261118-jupyter-evidence.json",
+        "preleaf": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cps20-final-d52-20261118-leaf-before.private.json"
+      },
+      "metrics": {
+        "rawRunningUTC": "2026-11-18T05:00:36.317605+00:00",
+        "rawFreedUTC": "2026-11-18T05:01:21.440109+00:00",
+        "rawWindowSeconds": 45.122506856918335,
+        "allocatedBytes": 20937965568,
+        "queryEvaluationPointsNotIndependentScrapes": true
+      },
+      "storedMetrics": [
+        {
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T05:00:44.926000+00:00",
+            "2026-11-18T05:01:14.914000+00:00"
+          ],
+          "minimum": 21374173184.0,
+          "maximum": 21374173184.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T05:00:44.926000+00:00",
+            "2026-11-18T05:01:14.914000+00:00"
+          ],
+          "minimum": 78.0,
+          "maximum": 82.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T05:00:44.926000+00:00",
+            "2026-11-18T05:01:14.914000+00:00"
+          ],
+          "minimum": 100.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ]
+    },
+    {
+      "source": "cit",
+      "profileGiB": 5,
+      "memberCount": 1,
+      "card": "A",
+      "completedUTC": "2026-11-18T05:03:03.584531+00:00",
+      "startToPodReadySeconds": 12.331404209136963,
+      "startLatencyScope": "six serial starts; not burst qualification",
+      "withinCapFillBytes": 4831838208,
+      "progressSeconds": 45.00022899900068,
+      "progressSteps": 796572,
+      "progressWindowBytes": 67108864,
+      "aboveCapCUDAResult": 2,
+      "torchVersion": "2.11.0+cu129",
+      "torchCUDAReferenceMatches": true,
+      "retainedSentinelVerified": true,
+      "SDKWorkspacePrincipalVerified": true,
+      "softAndHardLimitMiB": 5120,
+      "normalStopAndCapacityReturnConfirmed": true,
+      "evidence": {
+        "terminal": "gpu1-source-final-qa-20261118/gpu-case/six-profile-terminal.safe.json",
+        "pod": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cit5-final-d52-20261118-pod-evidence.json",
+        "jupyter": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cit5-final-d52-20261118-jupyter-evidence.json",
+        "preleaf": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cit5-final-d52-20261118-leaf-before.private.json"
+      },
+      "metrics": {
+        "rawRunningUTC": "2026-11-18T05:02:07.790654+00:00",
+        "rawFreedUTC": "2026-11-18T05:02:52.921106+00:00",
+        "rawWindowSeconds": 45.13044762611389,
+        "allocatedBytes": 4831838208,
+        "queryEvaluationPointsNotIndependentScrapes": true
+      },
+      "storedMetrics": [
+        {
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T05:02:14.914000+00:00",
+            "2026-11-18T05:02:44.914000+00:00"
+          ],
+          "minimum": 5268045824.0,
+          "maximum": 5268045824.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T05:02:14.914000+00:00",
+            "2026-11-18T05:02:44.914000+00:00"
+          ],
+          "minimum": 75.0,
+          "maximum": 83.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T05:02:14.914000+00:00",
+            "2026-11-18T05:02:44.914000+00:00"
+          ],
+          "minimum": 100.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ]
+    },
+    {
+      "source": "cit",
+      "profileGiB": 10,
+      "memberCount": 2,
+      "card": "B",
+      "completedUTC": "2026-11-18T05:04:35.208167+00:00",
+      "startToPodReadySeconds": 13.491136074066162,
+      "startLatencyScope": "six serial starts; not burst qualification",
+      "withinCapFillBytes": 10200547328,
+      "progressSeconds": 45.00021884200032,
+      "progressSteps": 795280,
+      "progressWindowBytes": 67108864,
+      "aboveCapCUDAResult": 2,
+      "torchVersion": "2.11.0+cu129",
+      "torchCUDAReferenceMatches": true,
+      "retainedSentinelVerified": true,
+      "SDKWorkspacePrincipalVerified": true,
+      "softAndHardLimitMiB": 10240,
+      "normalStopAndCapacityReturnConfirmed": true,
+      "evidence": {
+        "terminal": "gpu1-source-final-qa-20261118/gpu-case/six-profile-terminal.safe.json",
+        "pod": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cit10-final-d52-20261118-pod-evidence.json",
+        "jupyter": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cit10-final-d52-20261118-jupyter-evidence.json",
+        "preleaf": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cit10-final-d52-20261118-leaf-before.private.json"
+      },
+      "metrics": {
+        "rawRunningUTC": "2026-11-18T05:03:39.006286+00:00",
+        "rawFreedUTC": "2026-11-18T05:04:24.131870+00:00",
+        "rawWindowSeconds": 45.12557911872864,
+        "allocatedBytes": 10200547328,
+        "queryEvaluationPointsNotIndependentScrapes": true
+      },
+      "storedMetrics": [
+        {
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T05:03:44.914000+00:00",
+            "2026-11-18T05:04:14.914000+00:00"
+          ],
+          "minimum": 10636754944.0,
+          "maximum": 10636754944.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T05:03:44.914000+00:00",
+            "2026-11-18T05:04:14.914000+00:00"
+          ],
+          "minimum": 8.0,
+          "maximum": 82.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T05:03:44.914000+00:00",
+            "2026-11-18T05:04:14.914000+00:00"
+          ],
+          "minimum": 32.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ]
+    },
+    {
+      "source": "cit",
+      "profileGiB": 20,
+      "memberCount": 4,
+      "card": "A",
+      "completedUTC": "2026-11-18T05:06:07.991358+00:00",
+      "startToPodReadySeconds": 13.232304811477661,
+      "startLatencyScope": "six serial starts; not burst qualification",
+      "withinCapFillBytes": 20937965568,
+      "progressSeconds": 45.00031578099879,
+      "progressSteps": 791843,
+      "progressWindowBytes": 67108864,
+      "aboveCapCUDAResult": 2,
+      "torchVersion": "2.11.0+cu129",
+      "torchCUDAReferenceMatches": true,
+      "retainedSentinelVerified": true,
+      "SDKWorkspacePrincipalVerified": true,
+      "softAndHardLimitMiB": 20480,
+      "normalStopAndCapacityReturnConfirmed": true,
+      "evidence": {
+        "terminal": "gpu1-source-final-qa-20261118/gpu-case/six-profile-terminal.safe.json",
+        "pod": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cit20-final-d52-20261118-pod-evidence.json",
+        "jupyter": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cit20-final-d52-20261118-jupyter-evidence.json",
+        "preleaf": "gpu1-source-final-qa-20261118/gpu-case/probes/registry-qa-gpu1-cit20-final-d52-20261118-leaf-before.private.json"
+      },
+      "metrics": {
+        "rawRunningUTC": "2026-11-18T05:05:10.814865+00:00",
+        "rawFreedUTC": "2026-11-18T05:05:55.940583+00:00",
+        "rawWindowSeconds": 45.12571430206299,
+        "allocatedBytes": 20937965568,
+        "queryEvaluationPointsNotIndependentScrapes": true
+      },
+      "storedMetrics": [
+        {
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T05:05:44.914000+00:00"
+          ],
+          "minimum": 21374173184.0,
+          "maximum": 21374173184.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T05:05:44.914000+00:00"
+          ],
+          "minimum": 82.0,
+          "maximum": 82.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T05:05:44.914000+00:00"
+          ],
+          "minimum": 100.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "invalidNonfiniteOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ]
+    }
+  ]
+}

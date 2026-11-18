@@ -1,0 +1,30 @@
+{
+  "createdUTC": "2026-11-18T05:11:37.559767+00:00",
+  "snapshotEndUTC": "2026-11-18T05:07:18.189436+00:00",
+  "scope": "PUBLIC_SAFE_FINAL_D52_GPU1_SIX_SERIAL_SHARED_GPU_CYCLES_ONLY",
+  "allSixGPUProfilesPassed": true,
+  "CPU_fault_workerAcceptanceOpenAtSnapshot": true,
+  "publicProjectionOnly": true,
+  "files": {
+    "README.md": {
+      "sha256": "d7778ed0ab61b6647377b37c6cb7739fb51292db65b73829df10d8df78e37132",
+      "bytes": 4050
+    },
+    "canonical-and-credential-closure.safe.json": {
+      "sha256": "3882ae45e713264ced8523333ff7fd2afc1876d9469adbdab74945d9a21f507a",
+      "bytes": 1539
+    },
+    "private-evidence-hashes.safe.json": {
+      "sha256": "d552be447cb48b6bd6e4e3debab058fc063d38f8a8f544f17d84df8cdbf43295",
+      "bytes": 6579
+    },
+    "runtime.safe.json": {
+      "sha256": "51905895c626a40f51f19ef1d57b720ada4b5023957f67d43343a5dc4499d3e1",
+      "bytes": 2125
+    },
+    "six-profiles-and-metrics.safe.json": {
+      "sha256": "6e9143589b7551b8572ea3d29f923dbe94ee39e7129de798befec1387b5f467f",
+      "bytes": 20793
+    }
+  }
+}
