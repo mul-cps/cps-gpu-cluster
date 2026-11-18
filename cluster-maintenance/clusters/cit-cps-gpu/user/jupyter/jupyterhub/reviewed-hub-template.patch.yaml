@@ -129,7 +129,7 @@
               name: native-lifecycle147-hub-2ca9dccf4f4b81f4-control
         - name: CPS_NATIVE_GROUP_POLICY_TRANSITION_REFERENCE
           value: /etc/cps-native-proof/policy-transition.json
-        image: ghcr.io/mul-cps/cps-compute@sha256:b045f8a33fc46accb7a1202b9dfa1e13cfae6dd38a2088a8531c611b9a0dd7de
+        image: ghcr.io/mul-cps/cps-compute@sha256:b04cf689487735b8607e80cd51890f789c685caa296608c42836b1c8881d42b2
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 30
