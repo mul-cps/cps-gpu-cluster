@@ -1,0 +1,68 @@
+{
+  "time": "2026-11-18T19:38:31.901387+00:00",
+  "workers": [
+    {
+      "node": "k3s-wk-gpu1",
+      "rootFs": {
+        "time": "2026-11-18T19:38:24Z",
+        "availableBytes": 119024287744,
+        "capacityBytes": 518933680128,
+        "usedBytes": 399892615168,
+        "inodesFree": 62863687,
+        "inodes": 65404928,
+        "inodesUsed": 2541241
+      },
+      "imageFs": {
+        "time": "2026-11-18T19:38:20Z",
+        "availableBytes": 119024287744,
+        "capacityBytes": 518933680128,
+        "usedBytes": 151657701376,
+        "inodesFree": 62863687,
+        "inodes": 65404928,
+        "inodesUsed": 2339194
+      }
+    },
+    {
+      "node": "k3s-wk-gpu2",
+      "rootFs": {
+        "time": "2026-11-18T19:38:23Z",
+        "availableBytes": 92599771136,
+        "capacityBytes": 518933680128,
+        "usedBytes": 426317131776,
+        "inodesFree": 61074331,
+        "inodes": 65404928,
+        "inodesUsed": 4330597
+      },
+      "imageFs": {
+        "time": "2026-11-18T19:38:26Z",
+        "availableBytes": 92599771136,
+        "capacityBytes": 518933680128,
+        "usedBytes": 246515740672,
+        "inodesFree": 61074331,
+        "inodes": 65404928,
+        "inodesUsed": 3861156
+      }
+    },
+    {
+      "node": "k3s-wk-gpu3",
+      "rootFs": {
+        "time": "2026-11-18T19:38:25Z",
+        "availableBytes": 117062356992,
+        "capacityBytes": 518933680128,
+        "usedBytes": 401854545920,
+        "inodesFree": 62540899,
+        "inodes": 65404928,
+        "inodesUsed": 2864029
+      },
+      "imageFs": {
+        "time": "2026-11-18T19:38:23Z",
+        "availableBytes": 117062356992,
+        "capacityBytes": 518933680128,
+        "usedBytes": 168871895040,
+        "inodesFree": 62540899,
+        "inodes": 65404928,
+        "inodesUsed": 2684069
+      }
+    }
+  ]
+}

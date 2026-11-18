@@ -1,0 +1,40 @@
+{
+  "time": "2026-11-18T19:38:07.765262+00:00",
+  "policyUID": "40f89f68-da5b-452b-981a-28298ca61da7",
+  "bindingUID": "620b91f2-2267-4a0d-b2eb-fc9b54cf2abc",
+  "observedGeneration": 1,
+  "typeWarnings": [],
+  "actions": [
+    "Warn",
+    "Audit"
+  ],
+  "cases": [
+    {
+      "proposal": "old-ro",
+      "accepted": true,
+      "expectedWarning": false,
+      "realPodCreated": false
+    },
+    {
+      "proposal": "old-rw",
+      "accepted": true,
+      "expectedWarning": true,
+      "realPodCreated": false
+    },
+    {
+      "proposal": "target-rw",
+      "accepted": true,
+      "expectedWarning": false,
+      "realPodCreated": false
+    },
+    {
+      "proposal": "unrelated-rw",
+      "accepted": true,
+      "expectedWarning": false,
+      "realPodCreated": false
+    }
+  ],
+  "productionDataMoved": false,
+  "denyEnforcementQualified": false,
+  "auditSinkDeliveryQualified": false
+}

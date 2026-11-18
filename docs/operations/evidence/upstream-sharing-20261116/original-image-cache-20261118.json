@@ -1,0 +1,71 @@
+{
+  "at": "2026-11-18T19:23:55.636466+00:00",
+  "allOriginalTargetImagesPulled3Nodes": [
+    {
+      "node": "k3s-wk-gpu2",
+      "podUID": "d0809785-7bf6-4a25-9c80-359aa3d1eac8",
+      "images": {
+        "comfyui": {
+          "spec": "ghcr.io/mul-cps/cps-jupyter-notebook:main-comfyui@sha256:ae3dede57292cec34d0222bbde6a2995c305289df62a6a0aaf10e30c029aa77d",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ae3dede57292cec34d0222bbde6a2995c305289df62a6a0aaf10e30c029aa77d",
+          "exitCode": 0
+        },
+        "desktop-ros2": {
+          "spec": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2@sha256:842b90a868e60f61b6aed854b27481fb44dc781cb71d7c0ab7e7e0934c97a10e",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:842b90a868e60f61b6aed854b27481fb44dc781cb71d7c0ab7e7e0934c97a10e",
+          "exitCode": 0
+        },
+        "tf": {
+          "spec": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code@sha256:593fbba67a2ed22250ad842270c2d7701ddb3e2d0607cb2500e980026c1df754",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:593fbba67a2ed22250ad842270c2d7701ddb3e2d0607cb2500e980026c1df754",
+          "exitCode": 0
+        }
+      }
+    },
+    {
+      "node": "k3s-wk-gpu1",
+      "podUID": "8dcfbe66-1d67-408b-beff-7e905d1a444d",
+      "images": {
+        "comfyui": {
+          "spec": "ghcr.io/mul-cps/cps-jupyter-notebook:main-comfyui@sha256:ae3dede57292cec34d0222bbde6a2995c305289df62a6a0aaf10e30c029aa77d",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ae3dede57292cec34d0222bbde6a2995c305289df62a6a0aaf10e30c029aa77d",
+          "exitCode": 0
+        },
+        "desktop-ros2": {
+          "spec": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2@sha256:842b90a868e60f61b6aed854b27481fb44dc781cb71d7c0ab7e7e0934c97a10e",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:842b90a868e60f61b6aed854b27481fb44dc781cb71d7c0ab7e7e0934c97a10e",
+          "exitCode": 0
+        },
+        "tf": {
+          "spec": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code@sha256:593fbba67a2ed22250ad842270c2d7701ddb3e2d0607cb2500e980026c1df754",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:593fbba67a2ed22250ad842270c2d7701ddb3e2d0607cb2500e980026c1df754",
+          "exitCode": 0
+        }
+      }
+    },
+    {
+      "node": "k3s-wk-gpu3",
+      "podUID": "54b1a513-a513-4b5e-94ff-e634fd04bffa",
+      "images": {
+        "comfyui": {
+          "spec": "ghcr.io/mul-cps/cps-jupyter-notebook:main-comfyui@sha256:ae3dede57292cec34d0222bbde6a2995c305289df62a6a0aaf10e30c029aa77d",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ae3dede57292cec34d0222bbde6a2995c305289df62a6a0aaf10e30c029aa77d",
+          "exitCode": 0
+        },
+        "desktop-ros2": {
+          "spec": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-desktop-ros2@sha256:842b90a868e60f61b6aed854b27481fb44dc781cb71d7c0ab7e7e0934c97a10e",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:842b90a868e60f61b6aed854b27481fb44dc781cb71d7c0ab7e7e0934c97a10e",
+          "exitCode": 0
+        },
+        "tf": {
+          "spec": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-tf-code@sha256:593fbba67a2ed22250ad842270c2d7701ddb3e2d0607cb2500e980026c1df754",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:593fbba67a2ed22250ad842270c2d7701ddb3e2d0607cb2500e980026c1df754",
+          "exitCode": 0
+        }
+      }
+    }
+  ],
+  "HubSpecGenerationPodAndCIDUnchanged": true,
+  "allGPUOperatorPodUIDsCIDsRestartCountsUnchanged": true,
+  "manualGCOrThresholdChanges": false
+}

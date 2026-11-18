@@ -1,0 +1,12 @@
+{
+  "fixtureOnly": true,
+  "all4SQLiteLogicalExact": true,
+  "dataInventoryExact": true,
+  "dummyProtected13Exact": true,
+  "dataFiles": 117,
+  "dataBytes": 11254727,
+  "noProductionReceiptsOrWritesClaim": true,
+  "fixtureSource": "/work/checkpoint-rehearsal-fe1ee77f0f31",
+  "fixtureTarget": "/target/checkpoint-rehearsal-fe1ee77f0f31",
+  "cleanupRequiredByRoot": true
+}
