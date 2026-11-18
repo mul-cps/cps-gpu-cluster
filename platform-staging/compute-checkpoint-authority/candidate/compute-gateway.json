@@ -1,0 +1,761 @@
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "compute-gateway",
+    "namespace": "cps-compute"
+  },
+  "spec": {
+    "progressDeadlineSeconds": 600,
+    "replicas": 1,
+    "revisionHistoryLimit": 10,
+    "selector": {
+      "matchLabels": {
+        "app": "compute-gateway"
+      }
+    },
+    "strategy": {
+      "type": "Recreate"
+    },
+    "template": {
+      "metadata": {
+        "annotations": {
+          "compute.cps.unileoben.ac.at/policy-hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+          "cps.compute/cpu-policy-revision": "2026-10-12T19:07:48.371996+00:00",
+          "cps.compute/hub-peer-image": "sha256:413bdee650fd3c246ca35a7dd16347945dad6a92ec07e96678abb5cbd5ca68a8",
+          "cps.compute/native-hub-consumer-revision": "56e4c93db31f247e7a44a6face4a0ad18603167b",
+          "cps.compute/observer-recovery-qualification": "20261017-01",
+          "cps.compute/protected-capture-source": "5b50e7959b07c9216390eefdef55eb9639d3af98",
+          "cps.compute/qualified-policy-sha256": "sha256:ab019d8091c2c8529f2917897ef3d7ade095dfd057adc80b4c2a0bfe366f589f",
+          "cps.compute/qualified-runtime-sha256": "sha256:eaa3fa1e15b619668cbe84e33e4a9262e6a7e2393c63ea1d32f3c29d25ac1fa2",
+          "cps.unileoben.ac.at/native-approval-stage": "sdk-ed9777ea",
+          "cps.unileoben.ac.at/upstream-policy-hash": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
+          "cps.unileoben.ac.at/upstream-source": "b5a7729c6f9519ba88d02a4861d741df897dbf1b",
+          "kubectl.kubernetes.io/restartedAt": "2026-10-12T15:01:31+02:00"
+        },
+        "labels": {
+          "app": "compute-gateway"
+        }
+      },
+      "spec": {
+        "automountServiceAccountToken": false,
+        "containers": [
+          {
+            "command": [
+              "uvicorn",
+              "cps_compute.runtime:create_runtime",
+              "--factory",
+              "--workers",
+              "1",
+              "--host",
+              "0.0.0.0",
+              "--port",
+              "8000",
+              "--ssl-keyfile",
+              "/tls/tls.key",
+              "--ssl-certfile",
+              "/tls/tls.crt"
+            ],
+            "env": [
+              {
+                "name": "CPS_METRICS_CPS_TOKEN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "cps",
+                    "name": "cps-compute-metrics"
+                  }
+                }
+              },
+              {
+                "name": "CPS_METRICS_CIT_TOKEN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "cit",
+                    "name": "cps-compute-metrics"
+                  }
+                }
+              },
+              {
+                "name": "CPS_COMPUTE_CONFIG",
+                "value": "/upstream-config/runtime.json"
+              },
+              {
+                "name": "CPS_NATIVE_GROUP_APPROVALS_PATH",
+                "value": "/var/run/cps-native-approvals/approval.json"
+              },
+              {
+                "name": "CPS_NATIVE_GROUP_APPROVAL_REFERENCE",
+                "value": "/var/run/cps-native-approvals/reference.json"
+              },
+              {
+                "name": "CPS_NATIVE_APPROVAL_POD_UID",
+                "valueFrom": {
+                  "fieldRef": {
+                    "apiVersion": "v1",
+                    "fieldPath": "metadata.uid"
+                  }
+                }
+              },
+              {
+                "name": "CPS_NATIVE_APPROVAL_POD_NAME",
+                "valueFrom": {
+                  "fieldRef": {
+                    "apiVersion": "v1",
+                    "fieldPath": "metadata.name"
+                  }
+                }
+              },
+              {
+                "name": "CPS_NATIVE_APPROVAL_POD_NAMESPACE",
+                "valueFrom": {
+                  "fieldRef": {
+                    "apiVersion": "v1",
+                    "fieldPath": "metadata.namespace"
+                  }
+                }
+              },
+              {
+                "name": "CPS_NATIVE_APPROVAL_COMPONENT",
+                "value": "gateway"
+              },
+              {
+                "name": "CPS_NATIVE_APPROVAL_PUBLISHER_PATH",
+                "value": "/var/run/cps-native-approvals/publisher.json"
+              },
+              {
+                "name": "CPS_NATIVE_GROUP_QUALIFICATION_REFERENCE",
+                "value": "/etc/cps-native-proof/reference.json"
+              },
+              {
+                "name": "CPS_NATIVE_GROUP_APPROVAL_HEAD",
+                "value": "/etc/cps-native-head-binding.json"
+              },
+              {
+                "name": "CPS_NATIVE_KAI_COORDINATOR_CONFIG",
+                "value": "/kai-private/config/coordinator.json"
+              },
+              {
+                "name": "CPS_NATIVE_GROUP_POLICY_TRANSITION_REFERENCE",
+                "value": "/etc/cps-native-proof/policy-transition.json"
+              }
+            ],
+            "envFrom": [
+              {
+                "secretRef": {
+                  "name": "cps-compute-gateway"
+                }
+              }
+            ],
+            "image": "ghcr.io/mul-cps/cps-compute@sha256:91a72d8fae52d194a63befdc8e3bd80bc54ef2480f2a293f381de3a8bc086843",
+            "imagePullPolicy": "IfNotPresent",
+            "name": "gateway",
+            "ports": [
+              {
+                "containerPort": 8000,
+                "name": "http",
+                "protocol": "TCP"
+              }
+            ],
+            "readinessProbe": {
+              "failureThreshold": 3,
+              "periodSeconds": 10,
+              "successThreshold": 1,
+              "tcpSocket": {
+                "port": "http"
+              },
+              "timeoutSeconds": 1
+            },
+            "resources": {
+              "limits": {
+                "cpu": "2",
+                "memory": "1Gi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            },
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/upstream-config",
+                "name": "upstream-runtime",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/upstream-policy",
+                "name": "upstream-policy",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/data",
+                "name": "data"
+              },
+              {
+                "mountPath": "/config",
+                "name": "config",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/policy",
+                "name": "policy",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/tls",
+                "name": "tls",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/trust",
+                "name": "trust",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/storage-bridge",
+                "name": "storage-bridge",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                "name": "api",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/argo-reader",
+                "name": "argo-ui-reader",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/var/run/cps-native-approvals/approval.json",
+                "name": "cps-native-approval-document",
+                "readOnly": true,
+                "subPath": "approval.json"
+              },
+              {
+                "mountPath": "/var/run/cps-native-approvals/reference.json",
+                "name": "cps-native-approval-reference",
+                "readOnly": true,
+                "subPath": "reference.json"
+              },
+              {
+                "mountPath": "/var/run/cps-native-approvals/publisher.json",
+                "name": "cps-native-approval-publisher",
+                "readOnly": true,
+                "subPath": "publisher.json"
+              },
+              {
+                "mountPath": "/etc/cps-native-proof/reference.json",
+                "name": "cps-native-qualification-reference",
+                "readOnly": true,
+                "subPath": "reference.json"
+              },
+              {
+                "mountPath": "/var/run/cps-native-approvals/head-anchor.json",
+                "name": "cps-native-head-anchor",
+                "readOnly": true,
+                "subPath": "anchor.json"
+              },
+              {
+                "mountPath": "/etc/cps-native-head-binding.json",
+                "name": "cps-native-head-binding",
+                "readOnly": true,
+                "subPath": "head-binding.json"
+              },
+              {
+                "mountPath": "/var/run/cps-kai-api",
+                "name": "cps-kai-api",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/kai-private",
+                "name": "kai-private",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/etc/cps-native-proof/policy-transition.json",
+                "name": "cps-native-policy-transition-reference",
+                "readOnly": true,
+                "subPath": "reference.json"
+              }
+            ]
+          },
+          {
+            "args": [
+              "--config",
+              "/capture-private/server/config.json"
+            ],
+            "command": [
+              "python",
+              "-m",
+              "cps_compute.native_group_capture_server"
+            ],
+            "env": [
+              {
+                "name": "PYTHONDONTWRITEBYTECODE",
+                "value": "1"
+              },
+              {
+                "name": "CPS_NATIVE_GROUP_QUALIFICATION_REFERENCE",
+                "value": "/etc/cps-native-proof/reference.json"
+              },
+              {
+                "name": "CPS_NATIVE_GROUP_POLICY_TRANSITION_REFERENCE",
+                "value": "/etc/cps-native-proof/policy-transition.json"
+              }
+            ],
+            "image": "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5",
+            "imagePullPolicy": "IfNotPresent",
+            "name": "approval-capture",
+            "ports": [
+              {
+                "containerPort": 8001,
+                "name": "capture",
+                "protocol": "TCP"
+              }
+            ],
+            "readinessProbe": {
+              "failureThreshold": 3,
+              "initialDelaySeconds": 2,
+              "periodSeconds": 5,
+              "successThreshold": 1,
+              "tcpSocket": {
+                "port": "capture"
+              },
+              "timeoutSeconds": 1
+            },
+            "resources": {
+              "limits": {
+                "cpu": "500m",
+                "memory": "512Mi"
+              },
+              "requests": {
+                "cpu": "50m",
+                "memory": "128Mi"
+              }
+            },
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              },
+              "readOnlyRootFilesystem": true,
+              "runAsGroup": 10001,
+              "runAsNonRoot": true,
+              "runAsUser": 10001
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/capture-private",
+                "name": "capture-private",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/data",
+                "name": "data",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/policy",
+                "name": "policy",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/tls",
+                "name": "tls",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                "name": "api",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/etc/cps-native-proof/reference.json",
+                "name": "cps-native-qualification-reference",
+                "readOnly": true,
+                "subPath": "reference.json"
+              },
+              {
+                "mountPath": "/etc/cps-native-proof/policy-transition.json",
+                "name": "cps-native-policy-transition-reference",
+                "readOnly": true,
+                "subPath": "reference.json"
+              }
+            ]
+          }
+        ],
+        "dnsPolicy": "ClusterFirst",
+        "imagePullSecrets": [
+          {
+            "name": "cps-compute-image-pull"
+          }
+        ],
+        "initContainers": [
+          {
+            "command": [
+              "python",
+              "-c",
+              "from pathlib import Path; import os; p=Path('/capture-private/server'); p.mkdir(mode=0o700); [(p.joinpath(n).write_bytes(Path('/capture-seed').joinpath(n).read_bytes()),os.chmod(p/n,0o600)) for n in ('config.json','qualification.json','export.token')]"
+            ],
+            "image": "ghcr.io/mul-cps/cps-compute@sha256:5f1dd4f55710f1cdf97d24a1165b265681c61c67578680b8f5ef8bd67a34fc3c",
+            "imagePullPolicy": "IfNotPresent",
+            "name": "capture-private-inputs",
+            "resources": {
+              "limits": {
+                "cpu": "100m",
+                "memory": "128Mi"
+              },
+              "requests": {
+                "cpu": "10m",
+                "memory": "32Mi"
+              }
+            },
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              },
+              "readOnlyRootFilesystem": true,
+              "runAsGroup": 10001,
+              "runAsNonRoot": true,
+              "runAsUser": 10001
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/capture-seed",
+                "name": "capture-seed",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/capture-private",
+                "name": "capture-private"
+              }
+            ]
+          },
+          {
+            "command": [
+              "python",
+              "-c",
+              "from pathlib import Path; import os,stat; os.umask(0o077); p=Path('/kai-private/config'); p.mkdir(mode=0o700,exist_ok=True); directory=os.open(p,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW); assert os.fstat(directory).st_uid==os.geteuid(), 'Private config owner differs'; os.fchmod(directory,0o700); exec(\"for n in ('coordinator.json','policy.json','deployment.json'):\\n fd=os.open(n,os.O_WRONLY|os.O_CREAT|os.O_NOFOLLOW,0o600,dir_fd=directory)\\n s=os.fstat(fd)\\n assert stat.S_ISREG(s.st_mode) and s.st_uid==os.geteuid() and s.st_nlink==1 and stat.S_IMODE(s.st_mode)==0o600\\n os.ftruncate(fd,0)\\n stream=os.fdopen(fd,'wb'); stream.write(Path('/kai-seed').joinpath(n).read_bytes()); stream.flush(); os.fsync(stream.fileno()); stream.close()\"); os.close(directory); state=Path('/data/native-kai-runtime-private'); state.mkdir(mode=0o700,exist_ok=True); fd=os.open(state,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW); assert os.fstat(fd).st_uid==os.geteuid(), 'Private state owner differs'; os.fchmod(fd,0o700); exec(\"import fcntl\\nchildren=[]\\ntry:\\n names=('writer.lock','custody.sqlite','custody.sqlite-journal','custody.sqlite-wal','custody.sqlite-shm')\\n present=[]\\n for name in names:\\n  try: os.stat(name,dir_fd=fd,follow_symlinks=False)\\n  except FileNotFoundError: continue\\n  present.append(name)\\n assert not present or 'writer.lock' in present, 'Existing custody requires its original writer lock'\\n for name in present:\\n  child=os.open(name,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK,dir_fd=fd)\\n  children.append(child)\\n  info=os.fstat(child)\\n  assert stat.S_ISREG(info.st_mode) and info.st_uid==os.geteuid() and info.st_nlink==1, 'Owned single-link private state inode required'\\n  assert stat.S_IMODE(info.st_mode) in (0o600,0o660), 'Unexpected private state permissions'\\n  if name=='writer.lock': fcntl.flock(child,fcntl.LOCK_EX|fcntl.LOCK_NB)\\n # Normalize only fixed owned inodes after every proof, under the old lock.\\n for child in children: os.fchmod(child,0o600)\\nfinally:\\n for child in reversed(children): os.close(child)\\n\"); os.close(fd)"
+            ],
+            "image": "ghcr.io/mul-cps/cps-compute@sha256:5f1dd4f55710f1cdf97d24a1165b265681c61c67578680b8f5ef8bd67a34fc3c",
+            "imagePullPolicy": "IfNotPresent",
+            "name": "native-kai-private-inputs",
+            "resources": {},
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              },
+              "readOnlyRootFilesystem": true,
+              "runAsGroup": 10001,
+              "runAsNonRoot": true,
+              "runAsUser": 10001
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/kai-seed",
+                "name": "kai-seed",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/kai-private",
+                "name": "kai-private"
+              },
+              {
+                "mountPath": "/data",
+                "name": "data"
+              }
+            ]
+          }
+        ],
+        "nodeSelector": {
+          "kubernetes.io/hostname": "k3s-wk-gpu3"
+        },
+        "restartPolicy": "Always",
+        "schedulerName": "default-scheduler",
+        "securityContext": {
+          "fsGroup": 10001,
+          "fsGroupChangePolicy": "OnRootMismatch",
+          "runAsNonRoot": true,
+          "runAsUser": 10001,
+          "seccompProfile": {
+            "type": "RuntimeDefault"
+          }
+        },
+        "serviceAccount": "cps-compute-controller",
+        "serviceAccountName": "cps-compute-controller",
+        "terminationGracePeriodSeconds": 30,
+        "volumes": [
+          {
+            "name": "upstream-runtime",
+            "secret": {
+              "defaultMode": 256,
+              "secretName": "cps-personal-gpu-compat-6048d20fbda37388"
+            }
+          },
+          {
+            "configMap": {
+              "defaultMode": 292,
+              "name": "cps-upstream-policy-2b2ad6ce656d"
+            },
+            "name": "upstream-policy"
+          },
+          {
+            "name": "data",
+            "persistentVolumeClaim": {
+              "claimName": "compute-state-checkpoint-20261118"
+            }
+          },
+          {
+            "name": "config",
+            "secret": {
+              "defaultMode": 420,
+              "secretName": "cps-selected-runtime-41925018c0014a28"
+            }
+          },
+          {
+            "configMap": {
+              "defaultMode": 420,
+              "name": "cps-nbi24-2b797e61d7d69c18"
+            },
+            "name": "policy"
+          },
+          {
+            "name": "tls",
+            "secret": {
+              "defaultMode": 420,
+              "secretName": "cps-compute-gateway-tls"
+            }
+          },
+          {
+            "configMap": {
+              "defaultMode": 420,
+              "name": "cps-compute-gateway-ca"
+            },
+            "name": "trust"
+          },
+          {
+            "name": "storage-bridge",
+            "secret": {
+              "defaultMode": 288,
+              "secretName": "cps-workspace-control-bridge"
+            }
+          },
+          {
+            "name": "api",
+            "projected": {
+              "defaultMode": 288,
+              "sources": [
+                {
+                  "serviceAccountToken": {
+                    "expirationSeconds": 3600,
+                    "path": "token"
+                  }
+                },
+                {
+                  "configMap": {
+                    "items": [
+                      {
+                        "key": "ca.crt",
+                        "path": "ca.crt"
+                      }
+                    ],
+                    "name": "kube-root-ca.crt"
+                  }
+                },
+                {
+                  "downwardAPI": {
+                    "items": [
+                      {
+                        "fieldRef": {
+                          "apiVersion": "v1",
+                          "fieldPath": "metadata.namespace"
+                        },
+                        "path": "namespace"
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name": "argo-ui-reader",
+            "secret": {
+              "defaultMode": 288,
+              "items": [
+                {
+                  "key": "token",
+                  "path": "token"
+                }
+              ],
+              "secretName": "cps-argo-ui-reader"
+            }
+          },
+          {
+            "configMap": {
+              "defaultMode": 292,
+              "items": [
+                {
+                  "key": "approval.json",
+                  "path": "approval.json"
+                }
+              ],
+              "name": "cps-runtime-initial-approval-cbf7d39ba84ad7f8"
+            },
+            "name": "cps-native-approval-document"
+          },
+          {
+            "configMap": {
+              "defaultMode": 292,
+              "items": [
+                {
+                  "key": "reference.json",
+                  "path": "reference.json"
+                }
+              ],
+              "name": "cps-runtime-approval-reference-0121e58b6c0bb5f3"
+            },
+            "name": "cps-native-approval-reference"
+          },
+          {
+            "configMap": {
+              "defaultMode": 292,
+              "items": [
+                {
+                  "key": "publisher.json",
+                  "path": "publisher.json"
+                }
+              ],
+              "name": "cps-selected-publisher-dca8222730087f2b"
+            },
+            "name": "cps-native-approval-publisher"
+          },
+          {
+            "name": "capture-seed",
+            "secret": {
+              "defaultMode": 292,
+              "secretName": "cps-selected-capture-082fc732f8556e7f"
+            }
+          },
+          {
+            "emptyDir": {},
+            "name": "capture-private"
+          },
+          {
+            "configMap": {
+              "defaultMode": 292,
+              "items": [
+                {
+                  "key": "reference.json",
+                  "path": "reference.json"
+                }
+              ],
+              "name": "cps-runtime-qualification-ref-4124810ead361061"
+            },
+            "name": "cps-native-qualification-reference"
+          },
+          {
+            "configMap": {
+              "defaultMode": 420,
+              "items": [
+                {
+                  "key": "anchor.json",
+                  "path": "anchor.json"
+                }
+              ],
+              "name": "cps-runtime-anchor-gateway-7f8d4c449f924b7a"
+            },
+            "name": "cps-native-head-anchor"
+          },
+          {
+            "configMap": {
+              "defaultMode": 420,
+              "items": [
+                {
+                  "key": "head-binding.json",
+                  "path": "head-binding.json"
+                }
+              ],
+              "name": "cps-runtime-head-binding-gateway-9981335ddef7626e"
+            },
+            "name": "cps-native-head-binding"
+          },
+          {
+            "name": "cps-kai-api",
+            "projected": {
+              "defaultMode": 288,
+              "sources": [
+                {
+                  "serviceAccountToken": {
+                    "audience": "https://kubernetes.default.svc.cluster.local",
+                    "expirationSeconds": 3600,
+                    "path": "credentials/token"
+                  }
+                },
+                {
+                  "configMap": {
+                    "items": [
+                      {
+                        "key": "ca.crt",
+                        "path": "ca.crt"
+                      }
+                    ],
+                    "name": "kube-root-ca.crt"
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "emptyDir": {},
+            "name": "kai-private"
+          },
+          {
+            "configMap": {
+              "defaultMode": 292,
+              "name": "cps-selected-kai-30297de47a41540c"
+            },
+            "name": "kai-seed"
+          },
+          {
+            "configMap": {
+              "defaultMode": 292,
+              "items": [
+                {
+                  "key": "reference.json",
+                  "path": "reference.json"
+                }
+              ],
+              "name": "cps-nbi24-4f890b17dd295c3d"
+            },
+            "name": "cps-native-policy-transition-reference"
+          }
+        ]
+      }
+    }
+  }
+}

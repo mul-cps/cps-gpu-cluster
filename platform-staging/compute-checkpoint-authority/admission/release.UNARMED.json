@@ -1,0 +1,20 @@
+{
+  "rootRelease": null,
+  "policyUID": null,
+  "bindingUID": null,
+  "expectedValidationActions": [
+    "Warn",
+    "Audit"
+  ],
+  "requestedValidationActions": [
+    "Deny",
+    "Audit"
+  ],
+  "oldWritersStoppedReceiptSHA256": null,
+  "oldWriterPodUIDs": null,
+  "oldWriterContainerIDs": null,
+  "clockStartedAt": null,
+  "targetClaimUID": "bfe673db-6d32-4ddd-a8a7-94cf9b86890e",
+  "requireActualNegativeDryRunForbidden": true,
+  "requirePositiveReadOnlyAndNewClaimDryRuns": true
+}

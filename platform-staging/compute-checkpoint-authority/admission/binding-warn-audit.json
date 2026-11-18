@@ -1,0 +1,14 @@
+{
+  "apiVersion": "admissionregistration.k8s.io/v1",
+  "kind": "ValidatingAdmissionPolicyBinding",
+  "metadata": {
+    "name": "cps-retired-compute-state-write-fence"
+  },
+  "spec": {
+    "policyName": "cps-retired-compute-state-write-fence",
+    "validationActions": [
+      "Warn",
+      "Audit"
+    ]
+  }
+}

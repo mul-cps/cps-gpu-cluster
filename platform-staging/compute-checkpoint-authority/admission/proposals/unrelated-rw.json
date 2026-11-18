@@ -1,0 +1,66 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "namespace": "cps-compute",
+    "name": "cps-checkpoint-admission-unrelated-rw"
+  },
+  "spec": {
+    "automountServiceAccountToken": false,
+    "restartPolicy": "Never",
+    "activeDeadlineSeconds": 30,
+    "securityContext": {
+      "runAsNonRoot": true,
+      "runAsUser": 10001,
+      "runAsGroup": 10001,
+      "seccompProfile": {
+        "type": "RuntimeDefault"
+      }
+    },
+    "containers": [
+      {
+        "name": "probe",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:91a72d8fae52d194a63befdc8e3bd80bc54ef2480f2a293f381de3a8bc086843",
+        "command": [
+          "python",
+          "-c",
+          "pass"
+        ],
+        "securityContext": {
+          "allowPrivilegeEscalation": false,
+          "readOnlyRootFilesystem": true,
+          "capabilities": {
+            "drop": [
+              "ALL"
+            ]
+          }
+        },
+        "resources": {
+          "requests": {
+            "cpu": "10m",
+            "memory": "32Mi"
+          },
+          "limits": {
+            "cpu": "100m",
+            "memory": "64Mi"
+          }
+        },
+        "volumeMounts": [
+          {
+            "name": "data",
+            "mountPath": "/data"
+          }
+        ]
+      }
+    ],
+    "volumes": [
+      {
+        "name": "data",
+        "persistentVolumeClaim": {
+          "claimName": "compute-state-backup",
+          "readOnly": false
+        }
+      }
+    ]
+  }
+}

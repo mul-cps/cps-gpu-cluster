@@ -1,0 +1,61 @@
+{
+  "schemaVersion": 1,
+  "ownerMode": "explicit-operator-delivery-not-GitOps",
+  "status": "BASELINE-current",
+  "currentManifestDirectory": "baseline",
+  "currentClaim": {
+    "namespace": "cps-compute",
+    "name": "compute-state",
+    "uid": "d791faac-9c82-42dc-87ad-541ae9edc89a",
+    "pvName": "pvc-d791faac-9c82-42dc-87ad-541ae9edc89a"
+  },
+  "candidateClaim": {
+    "namespace": "cps-compute",
+    "name": "compute-state-checkpoint-20261118",
+    "uid": "bfe673db-6d32-4ddd-a8a7-94cf9b86890e",
+    "pvName": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e",
+    "pvUID": "63513db8-9ec4-48f9-947d-8faf5ba0ccea"
+  },
+  "candidateManifestDirectory": "candidate",
+  "candidateRelease": null,
+  "cutoverReceipt": null,
+  "resources": [
+    {
+      "kind": "Deployment",
+      "namespace": "cps-compute",
+      "name": "compute-gateway",
+      "uid": "f5f9b266-433d-4825-83de-d51e31c71648",
+      "capturedGeneration": 444,
+      "baselineSpecSHA256": "9df073233ece8ffd1f71d1afd79bc93c5ea3e07e52d691201de53a2c7c7dd0bb",
+      "candidateSpecSHA256": "5241f3f52ab86ae71ef593f496392aefc9f8513c8e708877fd12365b73d16aea",
+      "sourceVolume": "data"
+    },
+    {
+      "kind": "Deployment",
+      "namespace": "cps-compute",
+      "name": "native-lifecycle147-gateway",
+      "uid": "b0cb0842-5bce-4a0d-a63a-6c8d682ea454",
+      "capturedGeneration": 35,
+      "baselineSpecSHA256": "8683db7f9cfb1e9fdf0c58ee621f896e4fcb1a3f11b40c6b44a3facc53939971",
+      "candidateSpecSHA256": "05f494aa7e03e3e2d17ee93d2a566b8f4de0417d72a8eae8e98cd54e1c45f43e",
+      "sourceVolume": "data"
+    },
+    {
+      "kind": "CronJob",
+      "namespace": "cps-compute",
+      "name": "compute-state-backup",
+      "uid": "8924e2ab-df98-466f-924c-3100bae8b5b3",
+      "capturedGeneration": 12,
+      "baselineSpecSHA256": "d40d907d2c3f0ee0cf84275bb0460406e499b7d8623e8b36dfa4efb097b923cf",
+      "candidateSpecSHA256": "be2f90f0337a6c828c7a3d174fcae7595deb07701cbfbeaf0a71d087f26963f9",
+      "sourceVolume": "source"
+    }
+  ],
+  "retiredClaim": null,
+  "forbiddenAfterTargetWrite": [
+    "automatic-failback",
+    "rollout-undo",
+    "apply-historical-operation-snapshot",
+    "scale-historical-old-claim-ReplicaSet"
+  ]
+}

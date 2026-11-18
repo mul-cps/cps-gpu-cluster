@@ -1,0 +1,141 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "CronJob",
+  "metadata": {
+    "name": "compute-state-backup",
+    "namespace": "cps-compute"
+  },
+  "spec": {
+    "concurrencyPolicy": "Forbid",
+    "failedJobsHistoryLimit": 3,
+    "jobTemplate": {
+      "metadata": {},
+      "spec": {
+        "activeDeadlineSeconds": 300,
+        "backoffLimit": 1,
+        "template": {
+          "metadata": {
+            "labels": {
+              "app": "compute-state-backup"
+            }
+          },
+          "spec": {
+            "affinity": {
+              "podAffinity": {
+                "requiredDuringSchedulingIgnoredDuringExecution": [
+                  {
+                    "labelSelector": {
+                      "matchLabels": {
+                        "app": "compute-gateway"
+                      }
+                    },
+                    "topologyKey": "kubernetes.io/hostname"
+                  }
+                ]
+              }
+            },
+            "automountServiceAccountToken": false,
+            "containers": [
+              {
+                "command": [
+                  "python",
+                  "/scripts/backup-state.py"
+                ],
+                "env": [
+                  {
+                    "name": "BACKUP_IMAGE",
+                    "value": "ghcr.io/mul-cps/cps-compute@sha256:0e00dc36e896366cc93508ce223c27fb89fe3cd795f1793fdf9a42ebcde9d2f5"
+                  },
+                  {
+                    "name": "BACKUP_POLICY_HASH",
+                    "value": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0"
+                  }
+                ],
+                "image": "ghcr.io/mul-cps/cps-compute@sha256:9e695015ebd110a44bc3cb83e178508251ca33f601e3ae5aa360c514ee9caff5",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "backup",
+                "resources": {
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "256Mi"
+                  },
+                  "requests": {
+                    "cpu": "50m",
+                    "memory": "64Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                  {
+                    "mountPath": "/data",
+                    "name": "source"
+                  },
+                  {
+                    "mountPath": "/backup",
+                    "name": "backup"
+                  },
+                  {
+                    "mountPath": "/scripts",
+                    "name": "script",
+                    "readOnly": true
+                  }
+                ]
+              }
+            ],
+            "dnsPolicy": "ClusterFirst",
+            "imagePullSecrets": [
+              {
+                "name": "cps-compute-image-pull"
+              }
+            ],
+            "restartPolicy": "Never",
+            "schedulerName": "default-scheduler",
+            "securityContext": {
+              "fsGroup": 10001,
+              "fsGroupChangePolicy": "OnRootMismatch",
+              "runAsNonRoot": true,
+              "runAsUser": 10001,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "terminationGracePeriodSeconds": 30,
+            "volumes": [
+              {
+                "name": "source",
+                "persistentVolumeClaim": {
+                  "claimName": "compute-state-checkpoint-20261118"
+                }
+              },
+              {
+                "name": "backup",
+                "persistentVolumeClaim": {
+                  "claimName": "compute-state-backup"
+                }
+              },
+              {
+                "configMap": {
+                  "defaultMode": 420,
+                  "name": "compute-state-backup"
+                },
+                "name": "script"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "schedule": "17 2 * * *",
+    "successfulJobsHistoryLimit": 1,
+    "suspend": false
+  }
+}

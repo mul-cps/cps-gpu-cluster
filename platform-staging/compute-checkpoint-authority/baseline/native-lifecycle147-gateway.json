@@ -1,0 +1,250 @@
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "native-lifecycle147-gateway",
+    "namespace": "cps-compute"
+  },
+  "spec": {
+    "progressDeadlineSeconds": 600,
+    "replicas": 1,
+    "revisionHistoryLimit": 10,
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/name": "native-lifecycle147-gateway"
+      }
+    },
+    "strategy": {
+      "type": "Recreate"
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app.kubernetes.io/name": "native-lifecycle147-gateway"
+        }
+      },
+      "spec": {
+        "automountServiceAccountToken": true,
+        "containers": [
+          {
+            "command": [
+              "uvicorn",
+              "cps_compute.runtime:create_runtime",
+              "--factory",
+              "--workers",
+              "1",
+              "--host",
+              "0.0.0.0",
+              "--port",
+              "8000",
+              "--ssl-keyfile",
+              "/pilot-tls/tls.key",
+              "--ssl-certfile",
+              "/pilot-tls/tls.crt"
+            ],
+            "env": [
+              {
+                "name": "CIT_CONSOLE_POLICY_TOKEN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "CIT_CONSOLE_POLICY_TOKEN",
+                    "name": "cps-compute-gateway"
+                  }
+                }
+              },
+              {
+                "name": "CIT_HUB_OBSERVER_TOKEN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "CIT_HUB_OBSERVER_TOKEN",
+                    "name": "cps-compute-gateway"
+                  }
+                }
+              },
+              {
+                "name": "CPS_CONSOLE_POLICY_TOKEN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "CPS_CONSOLE_POLICY_TOKEN",
+                    "name": "cps-compute-gateway"
+                  }
+                }
+              },
+              {
+                "name": "CPS_HUB_OBSERVER_TOKEN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "CPS_HUB_OBSERVER_TOKEN",
+                    "name": "cps-compute-gateway"
+                  }
+                }
+              },
+              {
+                "name": "CPS_METRICS_CIT_TOKEN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "cit",
+                    "name": "cps-compute-metrics"
+                  }
+                }
+              },
+              {
+                "name": "CPS_METRICS_CPS_TOKEN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "key": "cps",
+                    "name": "cps-compute-metrics"
+                  }
+                }
+              },
+              {
+                "name": "CPS_COMPUTE_CONFIG",
+                "value": "/pilot-runtime/runtime.json"
+              },
+              {
+                "name": "PYTHONDONTWRITEBYTECODE",
+                "value": "1"
+              }
+            ],
+            "image": "ghcr.io/mul-cps/cps-compute@sha256:2701165c10ed941016ad110bf02195de41ef000cd58efc111cb569ac611889d9",
+            "imagePullPolicy": "IfNotPresent",
+            "name": "gateway",
+            "ports": [
+              {
+                "containerPort": 8000,
+                "name": "http",
+                "protocol": "TCP"
+              }
+            ],
+            "readinessProbe": {
+              "failureThreshold": 3,
+              "periodSeconds": 10,
+              "successThreshold": 1,
+              "tcpSocket": {
+                "port": "http"
+              },
+              "timeoutSeconds": 1
+            },
+            "resources": {
+              "limits": {
+                "cpu": "2",
+                "memory": "1Gi"
+              },
+              "requests": {
+                "cpu": "100m",
+                "memory": "256Mi"
+              }
+            },
+            "securityContext": {
+              "allowPrivilegeEscalation": false,
+              "capabilities": {
+                "drop": [
+                  "ALL"
+                ]
+              }
+            },
+            "terminationMessagePath": "/dev/termination-log",
+            "terminationMessagePolicy": "File",
+            "volumeMounts": [
+              {
+                "mountPath": "/data",
+                "name": "data"
+              },
+              {
+                "mountPath": "/trust",
+                "name": "trust",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/storage-bridge",
+                "name": "storage-bridge",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/pilot-runtime",
+                "name": "pilot-runtime",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/pilot-policy",
+                "name": "pilot-policy",
+                "readOnly": true
+              },
+              {
+                "mountPath": "/pilot-tls",
+                "name": "pilot-tls",
+                "readOnly": true
+              }
+            ]
+          }
+        ],
+        "dnsPolicy": "ClusterFirst",
+        "imagePullSecrets": [
+          {
+            "name": "cps-compute-image-pull"
+          }
+        ],
+        "nodeSelector": {
+          "kubernetes.io/hostname": "k3s-wk-gpu2"
+        },
+        "restartPolicy": "Always",
+        "schedulerName": "default-scheduler",
+        "securityContext": {
+          "fsGroup": 10001,
+          "fsGroupChangePolicy": "OnRootMismatch",
+          "runAsNonRoot": true,
+          "runAsUser": 10001,
+          "seccompProfile": {
+            "type": "RuntimeDefault"
+          }
+        },
+        "serviceAccount": "native-lifecycle147-gateway",
+        "serviceAccountName": "native-lifecycle147-gateway",
+        "terminationGracePeriodSeconds": 30,
+        "volumes": [
+          {
+            "name": "data",
+            "persistentVolumeClaim": {
+              "claimName": "compute-state"
+            }
+          },
+          {
+            "configMap": {
+              "defaultMode": 420,
+              "name": "cps-compute-gateway-ca"
+            },
+            "name": "trust"
+          },
+          {
+            "name": "storage-bridge",
+            "secret": {
+              "defaultMode": 288,
+              "secretName": "cps-workspace-control-bridge"
+            }
+          },
+          {
+            "name": "pilot-runtime",
+            "secret": {
+              "defaultMode": 420,
+              "secretName": "cps-lifecycle147-measured-runtime-998f2e643110ab5c"
+            }
+          },
+          {
+            "configMap": {
+              "defaultMode": 420,
+              "name": "cps-lifecycle147-measured-policy-5c900f6503991d1c"
+            },
+            "name": "pilot-policy"
+          },
+          {
+            "name": "pilot-tls",
+            "secret": {
+              "defaultMode": 420,
+              "secretName": "cps-lifecycle147-tls-58c1d5053a6767ca"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

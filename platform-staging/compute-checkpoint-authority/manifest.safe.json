@@ -1,0 +1,105 @@
+{
+  "status": "PREPARED_UNARMED",
+  "rootRelease": null,
+  "currentPointer": "BASELINE-current",
+  "sourceRoot": "/home/bjoern/.codex/worktrees/708f/cps-gpu-cluster/platform-staging/compute-checkpoint-authority",
+  "files": {
+    ".gitignore": {
+      "sha256": "862263fa1f46c20f0d1e4dac5ffcc75abd55c08211b2c3864c5f8764b9d87793",
+      "bytes": 19
+    },
+    "README.md": {
+      "sha256": "9d92adc4ce68743ef29bbe845e785119d4fabf4d832b931ee6980d2382076d01",
+      "bytes": 7337
+    },
+    "admission/binding-warn-audit.json": {
+      "sha256": "8c46f21ce4696ae83d2377f32b1f2ff6407746c5fe008271c31b3d55fa23b248",
+      "bytes": 310
+    },
+    "admission/policy.json": {
+      "sha256": "a3448c7017d3222c734345cf9765034c3e5dbfc39a0e438e8c7781b71fc3c3ba",
+      "bytes": 1270
+    },
+    "admission/proposals/old-ro.json": {
+      "sha256": "1c61bdea567857f1785bb066d33e4512b9d168854e51d22be471a1cdc1ede40e",
+      "bytes": 1452
+    },
+    "admission/proposals/old-rw.json": {
+      "sha256": "3048443118d1dc22123ee5ea7b29470edcf1b4a9de1a05eeb05e784b7ab9ec81",
+      "bytes": 1453
+    },
+    "admission/proposals/target-rw.json": {
+      "sha256": "4fc1b7c39654025858c7bf798578acdd8868269f677f3180899abd832e1fca5e",
+      "bytes": 1476
+    },
+    "admission/proposals/unrelated-rw.json": {
+      "sha256": "3c2f63bd92435f5344a214e0a298cade8b349ea85d8beb22f8c8a4899e212977",
+      "bytes": 1466
+    },
+    "admission/release.UNARMED.json": {
+      "sha256": "48860f8ba59df854eb7e0b6d579f2b145436fd640979f0cad47339229c2e7dc3",
+      "bytes": 484
+    },
+    "assert_delivery.py": {
+      "sha256": "bee4fa8e2c4f5f531f88c66cf040555b3e08d57bf171671920486d88657906c6",
+      "bytes": 2915
+    },
+    "baseline/compute-gateway.json": {
+      "sha256": "9c2cdf0bb7c88dd295b55914d65bfda60082ce3cd6d91b6c99968d652cb769da",
+      "bytes": 26181
+    },
+    "baseline/compute-state-backup.json": {
+      "sha256": "404a7bb7fa0295b515855b994307002956cfe0cc0e242024272d5cc31ad41ba6",
+      "bytes": 4309
+    },
+    "baseline/native-lifecycle147-gateway.json": {
+      "sha256": "0134df91ee35e2ea46dbafcd0788e2248ab6474539d801d44b1a48d08da76924",
+      "bytes": 7138
+    },
+    "candidate/compute-gateway.json": {
+      "sha256": "c294d01048601f4933b9df7538636a0621dc59904cd6f0c68802af29f218b1b2",
+      "bytes": 26201
+    },
+    "candidate/compute-state-backup.json": {
+      "sha256": "e4b59019e1411b9c0d4f0cb3aec1f6e0fe6b5758bee7707d35a66c152228c9a5",
+      "bytes": 4329
+    },
+    "candidate/native-lifecycle147-gateway.json": {
+      "sha256": "52c980ad48f20467e226dc2913b702978f23915be4532ea2bc57c83839d41806",
+      "bytes": 7158
+    },
+    "current-delivery.json": {
+      "sha256": "0325a858a96d1a59e75db443b123276032cbf30dd8cd16608a5767f12a6bd316",
+      "bytes": 2195
+    },
+    "tests/go.mod": {
+      "sha256": "0e83b9b56c917f67b355264dbf198919a8012b5a8c33ce292136723d2964de80",
+      "bytes": 478
+    },
+    "tests/go.sum": {
+      "sha256": "3ff8eaa99a8d1e0afdc4cbe1d5c4bbd7c7d071d39fb44655b6ade9634499aac9",
+      "bytes": 2659
+    },
+    "tests/policy_test.go": {
+      "sha256": "6e6b700698b9e6213ebae9fd1c4bc2b88773aa924d7725d104c6301ee9adfae3",
+      "bytes": 2891
+    },
+    "tests/test_source.py": {
+      "sha256": "fa1a4cc8d66a595cdb8b3d3811fbe39bfd89902669e970f6b7871c1aa2182938",
+      "bytes": 3289
+    }
+  },
+  "sourcePythonTests": 7,
+  "CELVolumeCases": 9,
+  "CELNamespaceCases": 4,
+  "CELProposalCases": 4,
+  "serverDryRuns": 5,
+  "liveChanges": false,
+  "notClaimed": [
+    "live admission enforcement",
+    "cutover",
+    "HA",
+    "source publication",
+    "post-target-write rollback safety"
+  ]
+}
