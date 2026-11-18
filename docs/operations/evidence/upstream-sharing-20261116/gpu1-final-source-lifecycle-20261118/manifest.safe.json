@@ -1,0 +1,39 @@
+{
+  "created": "2026-11-18T05:24:37.726526+00:00",
+  "scope": "SAFE_CPU2_STRICT_ACTIVE200_2_SOURCE_LIFECYCLE_PROJECTION",
+  "files": {
+    "source-candidate-and-scope.safe.json": {
+      "sha256": "9c05ca5c10341eb8a645bf931034dd5fa9d1590a796ff21530ac3b1de99de668",
+      "bytes": 653
+    },
+    "cpu-member-two-source-actuals.safe.json": {
+      "sha256": "5bdd2d06a513b1480becc0840a629584d88fc73dcb75f5d6add0d512b6ddad6a",
+      "bytes": 7062
+    },
+    "strict-active200-two-source-actuals.safe.json": {
+      "sha256": "206cc069b8bb62c417f395d8eff84144c8ae21ed1ad42c773d9d8dc15df39d33",
+      "bytes": 3390
+    },
+    "stored-metrics-two-fault-windows.safe.json": {
+      "sha256": "cffcda2731497e061a90180b6680f81e64bdfd8d542ea3eeb5616c2a3aee6e53",
+      "bytes": 4966
+    },
+    "cleanup-state-bounded-snapshot.safe.json": {
+      "sha256": "b40884ce593783bf3e70e0cd386eb6f6e6f9aa93f405e3e93118c187000afecb",
+      "bytes": 2237
+    },
+    "README.md": {
+      "sha256": "5f7be0567d7cb141ca3db8ac9477161852fa24a0ad0b91479deb9262d8512af4",
+      "bytes": 2296
+    },
+    "whitelisted-source-hashes.safe.json": {
+      "sha256": "6c6041df2c1b20df1b17c6fcdffe44ffc6dffdb525a1aa84e17a3974cb9bd59d",
+      "bytes": 7499
+    }
+  },
+  "privateReferenceCount": 35,
+  "workerAcceptanceClaim": false,
+  "faultCredentialClosureClaim": false,
+  "normalHubRestorationClaim": false,
+  "noLiveActionsByProjection": true
+}

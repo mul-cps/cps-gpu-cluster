@@ -1,0 +1,11 @@
+{
+  "SourceFixCommit": "2bb5c1499838ff1455d1feb94970ffb0dd23065b",
+  "actualBothSourceImage": "ghcr.io/mul-cps/e2x-course-hub@sha256:d52d0a7a6af988e2cf709fa1756305ca03115e169f55b9837f2a4964b990065c",
+  "actualBothSourceGeneration": 123,
+  "actualImageProofObserved": "2026-11-18T04:40:06.207825+00:00",
+  "qualificationScope": "Two CPU/member owner-held lifecycle flows and two STRICT first-active accepted200 STOP response-loss cases on the final Source image",
+  "GPU6Matrix": "Completed separately; not reprojected as new execution here",
+  "workerAcceptance": false,
+  "normalHubRestorationClaim": false,
+  "humanBrowserOrTwoHumanSSOClaim": false
+}

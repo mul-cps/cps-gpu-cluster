@@ -1,0 +1,86 @@
+{
+  "bothPASS": true,
+  "actualOuterRunnerExit": 0,
+  "strictDriverSHA256": "30ca9611f6c556bb6d34615f7163343275ebd27c2dafe8b207bb9c359eba97be",
+  "sources": [
+    {
+      "source": "cps",
+      "observed": "2026-11-18T05:17:48.623278+00:00",
+      "duplicateRequestHTTPStatuses": [
+        400,
+        200
+      ],
+      "oneActualPodUID": "752488c4-da50-4214-bd7a-e8b2890d477c",
+      "oneActualAttempt": "06a90111-6258-4ffb-b061-f46221d8775e",
+      "actualNode": "k3s-wk-gpu1",
+      "NodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "originalFirstACTIVEBackendHTTP": 200,
+      "requestCount": 1,
+      "backendResponseFullyConsumed": true,
+      "downstreamResponseBytes": 0,
+      "clientException": "RemoteDisconnected",
+      "clientReceivedHTTPStatus": null,
+      "requestForwardedUnix": 1794979055.854544,
+      "backendHeadersUnix": 1794979064.866697,
+      "clientEOFUnix": 1794979064.8672745,
+      "innerFixtureExit": 0,
+      "accepted200": true,
+      "freshSourceStoppedPodGoneLeaseInactiveAttemptNullBeforeReplay": true,
+      "replayHTTP": 200,
+      "actual45sGPUProbe": {
+        "progressSeconds": 45.00027702400257,
+        "progressSteps": 795243,
+        "fillBytes": 4831838208,
+        "aboveHardCapTypedCUDAExit": 2,
+        "torchCPUReferenceMatches": true,
+        "SDKPrincipalKind": "workspace",
+        "retainedOwnedFileSHA256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97"
+      }
+    },
+    {
+      "source": "cit",
+      "observed": "2026-11-18T05:19:17.928182+00:00",
+      "duplicateRequestHTTPStatuses": [
+        200,
+        400
+      ],
+      "oneActualPodUID": "1e217609-daf3-4a2a-a089-91b6957fa66a",
+      "oneActualAttempt": "b5d9f1f7-686d-44e4-9fd2-b15d33fb6944",
+      "actualNode": "k3s-wk-gpu1",
+      "NodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "originalFirstACTIVEBackendHTTP": 200,
+      "requestCount": 1,
+      "backendResponseFullyConsumed": true,
+      "downstreamResponseBytes": 0,
+      "clientException": "RemoteDisconnected",
+      "clientReceivedHTTPStatus": null,
+      "requestForwardedUnix": 1794979148.9049046,
+      "backendHeadersUnix": 1794979154.2375596,
+      "clientEOFUnix": 1794979154.2381105,
+      "innerFixtureExit": 0,
+      "accepted200": true,
+      "freshSourceStoppedPodGoneLeaseInactiveAttemptNullBeforeReplay": true,
+      "replayHTTP": 200,
+      "actual45sGPUProbe": {
+        "progressSeconds": 45.00019136799892,
+        "progressSteps": 791677,
+        "fillBytes": 4831838208,
+        "aboveHardCapTypedCUDAExit": 2,
+        "torchCPUReferenceMatches": true,
+        "SDKPrincipalKind": "workspace",
+        "retainedOwnedFileSHA256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97"
+      }
+    }
+  ],
+  "noIdleOrReplay200Substitution": true,
+  "historicalFailure": {
+    "firstActiveBackendHTTP": 409,
+    "innerFixtureExit": 1,
+    "oldOuterPASSExit0": "MISCLASSIFIED; retained historical evidence, not accepted200 qualification"
+  },
+  "newStrictReporting": "Any non200 original backend or nonzero inner exit fails finalqualification after retainingcleanup; current both original200/inner0/outer0"
+}

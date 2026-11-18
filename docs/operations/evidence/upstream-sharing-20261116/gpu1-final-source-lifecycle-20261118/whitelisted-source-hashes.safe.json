@@ -1,0 +1,147 @@
+{
+  "referenceRoot": "Private artifact root; paths relative only",
+  "references": {
+    "gpu1-source-final-qa-20261118/root-final-Source-images.safe.json": {
+      "sha256": "2d6b776f105ff435ffddfff4598a9df4a13a0fe6b95d04fec644f489b2ec0c4a",
+      "bytes": 1712
+    },
+    "source-release-reconcile-20261118/final-image-build/manifest.safe.json": {
+      "sha256": "5d17ac3c946f0b756a2e8e326d5fcaee9ee9c856f91d929e99ed0c59e27dc1e4",
+      "bytes": 3192
+    },
+    "source-release-reconcile-20261118/final-image-build/runtime-uid10001/manifest.safe.json": {
+      "sha256": "ad628b27c6ab42388094fd50b1fdd52afb4e783efbe9a9b50de892c617e8b393",
+      "bytes": 926
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/cpu-member-terminal.safe.json": {
+      "sha256": "1418b2a9de4e13d9c710321c5970383ceb3f306716c949e15e1c93fe886bc6b2",
+      "bytes": 803
+    },
+    "gpu1-source-final-qa-20261118/cpu-runner-review-FINAL.manifest.safe.json": {
+      "sha256": "b8a9f883a7076cb7bada4cdf61e74227f75788343af9d9a2bb05b4076c1aa928",
+      "bytes": 1706
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/cps-authoritative-remove-automatic-stop.safe.json": {
+      "sha256": "b50306957b8e9b11b97dc57dd713347a80f1c661be145add61859e96ff021318",
+      "bytes": 1549
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/probes/registry-qa-gpu1-cps-cpu-held-final-d52-20261118-pod-evidence.json": {
+      "sha256": "f1f3eb50d2d53542cf0992abad63882cca99abb0e70e3f0b8662b41a8501012b",
+      "bytes": 775
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/probes/registry-qa-gpu1-cps-cpu-held-final-d52-20261118-jupyter-evidence.json": {
+      "sha256": "120162e2bfcbc91483225fa86bb0ed4ef65605c95c2eccc3de31677b713b7e8d",
+      "bytes": 782
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/probes/registry-qa-gpu1-cps-cpu-bcd-final-d52-20261118-pod-evidence.json": {
+      "sha256": "32c91caf93860bb27361e73c19bcfdcb683df187477835b2b336e9545dfe709b",
+      "bytes": 775
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/probes/registry-qa-gpu1-cps-cpu-bcd-final-d52-20261118-jupyter-evidence.json": {
+      "sha256": "3ad60c8b034050ecd16b66c6fae8f6a671b7b519263728965c179f8649c9b05e",
+      "bytes": 782
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/cps-membership-witness-executor.private.json": {
+      "sha256": "e00debbce948c3dc18305d148265b3d78d459043e0febc5b2bd83ef32157a543",
+      "bytes": 1001
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/cps-confirmed-stop.safe.json": {
+      "sha256": "a45641915c8102735aaeb82f066cc15f3630d3344e9641c8abb4b4564e72494e",
+      "bytes": 141
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/cit-authoritative-remove-automatic-stop.safe.json": {
+      "sha256": "51ec2c0e7bd07b21cda1c6c25d429fc7e74f0689509b1380d2f42edcb65eb503",
+      "bytes": 1547
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/probes/registry-qa-gpu1-cit-cpu-held-final-d52-20261118-pod-evidence.json": {
+      "sha256": "d0fb211818b697d87bc5f2e74f486a1d6d89852fcc00774f9e9f9d41bacc0941",
+      "bytes": 772
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/probes/registry-qa-gpu1-cit-cpu-held-final-d52-20261118-jupyter-evidence.json": {
+      "sha256": "73069b93feee7908b579be82d5c317c1709e97c38507800a0e7a56bd6c9466a9",
+      "bytes": 782
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/probes/registry-qa-gpu1-cit-cpu-bcd-final-d52-20261118-pod-evidence.json": {
+      "sha256": "5af2fdbe384353cbf7380966918c6dce70fcc6ccd8573d82240e091a0cb08c9a",
+      "bytes": 773
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/probes/registry-qa-gpu1-cit-cpu-bcd-final-d52-20261118-jupyter-evidence.json": {
+      "sha256": "4f2a9340c92de0131fc09b867e728a73403e29dc73ce0b830193d5947e653729",
+      "bytes": 782
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/cit-membership-witness-executor.private.json": {
+      "sha256": "2cfe8f596f7723529180b9655cbb6d4939dedea2af6f1f095fc5d34c017d0e6f",
+      "bytes": 1041
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/cit-confirmed-stop.safe.json": {
+      "sha256": "4ca12d2b5408d96f324d280ea436570cec3ddec20aeb6ebcd583875474553b21",
+      "bytes": 141
+    },
+    "gpu1-source-final-qa-20261118/root-strict-first-active200-qualification.safe.json": {
+      "sha256": "e5c239131b11be461d630ff9048df1b8c7231ae9f5dee5807ff400c4d5ad1e14",
+      "bytes": 774
+    },
+    "gpu1-source-final-qa-20261118/fault-case/strict-terminal-HOLD-for-root-cleanup.safe.json": {
+      "sha256": "15cc6984108991c753930aa91b30d4061f027d662eacd8d76eea5809a82d5986",
+      "bytes": 1308
+    },
+    "gpu1-source-final-qa-20261118/fault-case/cps-duplicate-stop-loss.safe.json": {
+      "sha256": "a01685ff5911f24d77dca922c7e766bb8a2c3c2cf871878622a4c14e911d4c0b",
+      "bytes": 1239
+    },
+    "gpu1-source-final-qa-20261118/fault-case/probes/registry-qa-gpu1-cps-duplicate-e6-jupyter-evidence.json": {
+      "sha256": "4074a96db5f83d02f8be1e677ef169e9d88a1080ca0d37fce68611be4338c156",
+      "bytes": 1738
+    },
+    "gpu1-source-final-qa-20261118/fault-case/probes/registry-qa-gpu1-cps-duplicate-e6-pod-evidence.json": {
+      "sha256": "1c9cacddefd2c0fa773e1670074b6af14def7fb104c1a57e4673fcb65e158aba",
+      "bytes": 1128
+    },
+    "gpu1-source-final-qa-20261118/fault-case/cit-duplicate-stop-loss.safe.json": {
+      "sha256": "afb601db11d41e08e8430b5dd610261510cae7af7eb4d921cbb5d0e7858b3844",
+      "bytes": 1240
+    },
+    "gpu1-source-final-qa-20261118/fault-case/probes/registry-qa-gpu1-cit-duplicate-e6-jupyter-evidence.json": {
+      "sha256": "99dbe5cd335f7f3650f1212e50dd5d1c6348073990d65cb087dcd5a89cae5578",
+      "bytes": 1741
+    },
+    "gpu1-source-final-qa-20261118/fault-case/probes/registry-qa-gpu1-cit-duplicate-e6-pod-evidence.json": {
+      "sha256": "9b8ec1fffd50bd6067ce403acf651826f10106f61fb34dc9e7d3ba478b009bfe",
+      "bytes": 1126
+    },
+    "gpu1-source-final-qa-20261118/fault-case/metrics/matrix-stored.safe.json": {
+      "sha256": "4fdcd3774d647f2ffdf689d71c51c00f866a049b4a2dc667c7cb89ac9ef554cd",
+      "bytes": 5962
+    },
+    "gpu1-source-final-qa-20261118/gpu-case/cohort-closed-observed.safe.json": {
+      "sha256": "1280ae4bc5640c1583f3cd29ad3e2d2bed44a250664fef88b848a8cacdc04c5f",
+      "bytes": 517
+    },
+    "gpu1-source-final-qa-20261118/gpu-case/credential-packet/closure.safe.json": {
+      "sha256": "74151f0a5f2e2aa2d44f2a54127eea0db593760fdc9aaf17aa3e30eda9f0c196",
+      "bytes": 419
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/cohort-closed-observed.safe.json": {
+      "sha256": "cf3906c4b2dbb0065b294823a9f6060572f0bd4e0d5b6f16bf7149ee9c2c5fec",
+      "bytes": 739
+    },
+    "gpu1-source-final-qa-20261118/cpu-case/credential-packet/closure.safe.json": {
+      "sha256": "5222550d5f06b4ca30d19c32132dedca6a2caefe83ca0f3618d4a5503db09cb8",
+      "bytes": 419
+    },
+    "gpu1-source-final-qa-20261118/final-close-command-preparation/cps-FINAL-supported-cleanup.safe.json": {
+      "sha256": "5eeab097841b68bfeeb38504c181162bcddb71295e6a6202e50b1df23ca7b94a",
+      "bytes": 10167
+    },
+    "gpu1-source-final-qa-20261118/final-close-command-preparation/cit-FINAL-supported-cleanup.safe.json": {
+      "sha256": "87893ed8ff344af66a2732647e39ffdae3236b72834599f27d92ca075012ddbb",
+      "bytes": 6813
+    },
+    "gpu1-source-final-qa-20261118/root-final-account-continuity.safe.json": {
+      "sha256": "7351cfe27241cb6a9af9d2bff1ab94231f1f123e4b2cb3af70b8c0eda0b71435",
+      "bytes": 961
+    }
+  },
+  "noCredentialTokenFilesReferenced": true,
+  "hashReferencesAreNotPublicCopiesOfBodies": true
+}

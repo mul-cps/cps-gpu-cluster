@@ -1,0 +1,63 @@
+{
+  "publishedObservation": "2026-11-18T05:24:37.726216+00:00",
+  "GPUAndCPUCredentialCohorts": [
+    {
+      "cohort": "gpu-case",
+      "observed": "2026-11-18T05:08:16.845317+00:00",
+      "actualOwnedCredentialsRevokedAbsentAuthDenied": true,
+      "errors": [],
+      "rawHandoffsAbsent": true,
+      "done": true,
+      "watchInactivePID0": true
+    },
+    {
+      "cohort": "cpu-case",
+      "observed": "2026-11-18T05:15:15.844704+00:00",
+      "actualOwnedCredentialsRevokedAbsentAuthDenied": true,
+      "errors": [],
+      "rawHandoffsAbsent": true,
+      "done": true,
+      "watchInactivePID0": true
+    }
+  ],
+  "faultCohortAtTestCompletion": "HOLD: Root final supported BCD cleanup/baseline capture required; Root owns later credential close",
+  "faultCredentialClosureNotClaimedInThisSnapshot": true,
+  "RootSupportedFinalMembershipCleanupSubsequentlyObserved": [
+    {
+      "source": "cps",
+      "observed": "2026-11-18T05:20:29.295882+00:00",
+      "scope": "Only owned QA workspace/group/course, not all production Source records",
+      "memberships": 0,
+      "HubGroupUsers": 0,
+      "Shares": 0,
+      "barrierFalseAllPendingNull": true,
+      "SourceStopped": true,
+      "PodAbsent": true,
+      "leaseInactive": true,
+      "attemptNull": true,
+      "allExistingPVCUIDBoundPVPreserved": true,
+      "retainedQAFilePreservedNoUserDataDeletion": true,
+      "noDirectDBRBACIdentityWrites": true
+    },
+    {
+      "source": "cit",
+      "observed": "2026-11-18T05:20:48.409812+00:00",
+      "scope": "Only owned QA workspace/group/course, not all production Source records",
+      "memberships": 0,
+      "HubGroupUsers": 0,
+      "Shares": 0,
+      "barrierFalseAllPendingNull": true,
+      "SourceStopped": true,
+      "PodAbsent": true,
+      "leaseInactive": true,
+      "attemptNull": true,
+      "allExistingPVCUIDBoundPVPreserved": true,
+      "retainedQAFilePreservedNoUserDataDeletion": true,
+      "noDirectDBRBACIdentityWrites": true
+    }
+  ],
+  "closedNativeBaselinesCaptured": true,
+  "stableQAIdentityReceiptRolesGroupsAndUnrelatedRealWorkspaceStatePreserved": true,
+  "noHumanOrRoleIdentifiersPublished": true,
+  "noPrematureAllCredentialsClosedNormalHubRestoredWorkerAcceptanceClaim": true
+}

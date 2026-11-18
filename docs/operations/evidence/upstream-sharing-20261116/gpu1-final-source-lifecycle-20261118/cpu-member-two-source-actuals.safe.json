@@ -1,0 +1,180 @@
+{
+  "bothPASS": true,
+  "sources": [
+    {
+      "source": "cps",
+      "stages": [
+        {
+          "stage": "held",
+          "profile": "interactive-cpu",
+          "actualNode": "k3s-wk-gpu3",
+          "actualNodeUID": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+          "actualBootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+          "PodUID": "76cbd084-2b76-434c-9a8a-e01b4869ed31",
+          "containers": [
+            {
+              "name": "notebook",
+              "image_id": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
+              "container_id": "containerd://7ab99ab725935df54f5a6c7a8f15601a56c3aa4e38750ddf07516f39ddaa1123",
+              "restarts": 0
+            }
+          ],
+          "RuntimeClass": null,
+          "GPUAssignmentAnnotationsAbsent": true,
+          "GPUDeviceNodes": [],
+          "libcudaLoadable": false,
+          "torchCudaAvailable": false,
+          "SDKPrincipalKind": "workspace",
+          "retainedOwnedFileSHA256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+          "actualJupyterKernelExecution": true
+        },
+        {
+          "stage": "bcd",
+          "profile": "interactive-cpu",
+          "actualNode": "k3s-wk-gpu3",
+          "actualNodeUID": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+          "actualBootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+          "PodUID": "4648c4b8-ac71-4e3f-8fae-768a6498da81",
+          "containers": [
+            {
+              "name": "notebook",
+              "image_id": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
+              "container_id": "containerd://8947379ea76a526f97a357e2d06b8fc1c661a2ad9c65f1d8ff4137ed3a6194b8",
+              "restarts": 0
+            }
+          ],
+          "RuntimeClass": null,
+          "GPUAssignmentAnnotationsAbsent": true,
+          "GPUDeviceNodes": [],
+          "libcudaLoadable": false,
+          "torchCudaAvailable": false,
+          "SDKPrincipalKind": "workspace",
+          "retainedOwnedFileSHA256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+          "actualJupyterKernelExecution": true
+        }
+      ],
+      "authoritativeMemberRemovalHTTP": 200,
+      "memberLabelOnly": "A; no canonical/human identifier published",
+      "RTCInitialBinarySyncFrameBytes": [
+        13,
+        46
+      ],
+      "heldReadyUnix": 1794978603.6792004,
+      "removeStartedUnix": 1794978603.6813903,
+      "automaticConnectionClosures": [
+        {
+          "socket": "rtc_owner_2",
+          "unix": 1794978606.4292576
+        },
+        {
+          "socket": "rtc_owner_1",
+          "unix": 1794978606.4294355
+        },
+        {
+          "socket": "kernel_owner",
+          "unix": 1794978606.4306133
+        }
+      ],
+      "allThreeClosedUnix": 1794978606.4306676,
+      "allThreeClosedBeforeManualSTOP": true,
+      "criticalAdmissionReserveSeconds": 500,
+      "notWholeTransportWorstCaseGuarantee": true,
+      "conservativeWatchStopUnix": 1794979677.288369,
+      "hardDeadlineAndAllThreeSupervisorSTOPReceiptAbsenceCheckedAtThreeCheckpoints": true,
+      "closureWaitCapSecondsUnchanged": 360,
+      "autoReconcileCapSecondsUnchanged": 110,
+      "freshBCDStartReserveSeconds": 360,
+      "nativeGroupShareAndCentralBCDRosterWitnessPASS": true,
+      "normalStopPodGoneLeaseInactiveAttemptNull": true,
+      "heldConnectionsAreOwnerConnectionsNotTwoHumanSSOSessions": true
+    },
+    {
+      "source": "cit",
+      "stages": [
+        {
+          "stage": "held",
+          "profile": "interactive-cpu",
+          "actualNode": "k3s-wk-gpu3",
+          "actualNodeUID": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+          "actualBootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+          "PodUID": "82a40657-9b62-4e14-86b5-9c7a9eb112a1",
+          "containers": [
+            {
+              "name": "notebook",
+              "image_id": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
+              "container_id": "containerd://1b104e5b5c5d0fecc2827be00c83c35a5f53fa254e7e1835d16f9b589a2280c7",
+              "restarts": 0
+            }
+          ],
+          "RuntimeClass": null,
+          "GPUAssignmentAnnotationsAbsent": true,
+          "GPUDeviceNodes": [],
+          "libcudaLoadable": false,
+          "torchCudaAvailable": false,
+          "SDKPrincipalKind": "workspace",
+          "retainedOwnedFileSHA256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+          "actualJupyterKernelExecution": true
+        },
+        {
+          "stage": "bcd",
+          "profile": "interactive-cpu",
+          "actualNode": "k3s-wk-gpu3",
+          "actualNodeUID": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+          "actualBootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+          "PodUID": "2ebb1495-aba2-4c1b-aa4c-002c5632fd65",
+          "containers": [
+            {
+              "name": "notebook",
+              "image_id": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194",
+              "container_id": "containerd://fd7a06388b08d9663ea29954815fbb3ba86c6ed5454f941bbbfb64f3f51885ed",
+              "restarts": 0
+            }
+          ],
+          "RuntimeClass": null,
+          "GPUAssignmentAnnotationsAbsent": true,
+          "GPUDeviceNodes": [],
+          "libcudaLoadable": false,
+          "torchCudaAvailable": false,
+          "SDKPrincipalKind": "workspace",
+          "retainedOwnedFileSHA256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+          "actualJupyterKernelExecution": true
+        }
+      ],
+      "authoritativeMemberRemovalHTTP": 200,
+      "memberLabelOnly": "A; no canonical/human identifier published",
+      "RTCInitialBinarySyncFrameBytes": [
+        13,
+        56
+      ],
+      "heldReadyUnix": 1794978709.0554357,
+      "removeStartedUnix": 1794978709.058146,
+      "automaticConnectionClosures": [
+        {
+          "socket": "rtc_owner_2",
+          "unix": 1794978711.7748508
+        },
+        {
+          "socket": "rtc_owner_1",
+          "unix": 1794978711.7750983
+        },
+        {
+          "socket": "kernel_owner",
+          "unix": 1794978711.7766838
+        }
+      ],
+      "allThreeClosedUnix": 1794978711.776739,
+      "allThreeClosedBeforeManualSTOP": true,
+      "criticalAdmissionReserveSeconds": 500,
+      "notWholeTransportWorstCaseGuarantee": true,
+      "conservativeWatchStopUnix": 1794979677.288369,
+      "hardDeadlineAndAllThreeSupervisorSTOPReceiptAbsenceCheckedAtThreeCheckpoints": true,
+      "closureWaitCapSecondsUnchanged": 360,
+      "autoReconcileCapSecondsUnchanged": 110,
+      "freshBCDStartReserveSeconds": 360,
+      "nativeGroupShareAndCentralBCDRosterWitnessPASS": true,
+      "normalStopPodGoneLeaseInactiveAttemptNull": true,
+      "heldConnectionsAreOwnerConnectionsNotTwoHumanSSOSessions": true
+    }
+  ],
+  "normalOwnerLifecycleOnly": true
+}

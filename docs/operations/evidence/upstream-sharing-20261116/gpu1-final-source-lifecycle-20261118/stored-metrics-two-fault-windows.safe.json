@@ -1,0 +1,133 @@
+{
+  "completedActualProfiles": 2,
+  "allThreeMetricsEachStoredNonzero": true,
+  "countMeaning": "Distinct original stored scrape timestamps within each actual raw45s window; query-grid points not independent scrapes",
+  "windows": [
+    {
+      "tag": "gpu1-cit-duplicate-e6",
+      "profile": "interactive-shared-5",
+      "podUID": "1e217609-daf3-4a2a-a089-91b6957fa66a",
+      "containerID": "containerd://46388f7904404504b5960f00cde788107ff814467f26e98aae000c28bd4dfe60",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "rawRunningUTC": "2026-11-18T05:18:19.170722+00:00",
+      "rawFreedUTC": "2026-11-18T05:19:04.293353+00:00",
+      "rawWindowSeconds": 45.122628927230835,
+      "allocatedBytes": 4831838208,
+      "metrics": [
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T05:18:44.914000+00:00"
+          ],
+          "minimum": 5268045824.0,
+          "maximum": 5268045824.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T05:18:44.914000+00:00"
+          ],
+          "minimum": 82.0,
+          "maximum": 82.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T05:18:44.914000+00:00"
+          ],
+          "minimum": 100.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ]
+    },
+    {
+      "tag": "gpu1-cps-duplicate-e6",
+      "profile": "interactive-shared-5",
+      "podUID": "752488c4-da50-4214-bd7a-e8b2890d477c",
+      "containerID": "containerd://58bffad6994757f8b73c3363bd9db5654b0357a2c6d95f1e7e7cf8afe71b8adb",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "rawRunningUTC": "2026-11-18T05:16:46.366182+00:00",
+      "rawFreedUTC": "2026-11-18T05:17:31.481143+00:00",
+      "rawWindowSeconds": 45.114956855773926,
+      "allocatedBytes": 4831838208,
+      "metrics": [
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T05:17:14.914000+00:00"
+          ],
+          "minimum": 5268045824.0,
+          "maximum": 5268045824.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T05:17:14.914000+00:00"
+          ],
+          "minimum": 82.0,
+          "maximum": 82.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T05:17:14.914000+00:00"
+          ],
+          "minimum": 100.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ]
+    }
+  ]
+}
