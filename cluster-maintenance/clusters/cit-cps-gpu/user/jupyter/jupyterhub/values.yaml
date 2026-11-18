@@ -2767,7 +2767,7 @@ singleuser:
             }
         }
     dask-dashboard-config:
-      mountPath: /home/jovyan/.config/dask/distributed.yaml
+      mountPath: /etc/dask/distributed.yaml
       stringData: |
         distributed:
           dashboard:

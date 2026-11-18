@@ -310,7 +310,7 @@
       - name: secret
         secret:
           defaultMode: 420
-          secretName: cps-personal-gpu-compat-e268ad93002d0873
+          secretName: cps-dask-config-11a38336e5328a69
       - emptyDir: {}
         name: ca-bundle
       - configMap:
