@@ -2642,8 +2642,8 @@ hub:
 
 singleuser:
   image:
-    name: quay.io/jupyter/tensorflow-notebook
-    tag: "2025-11-06"
+    name: ghcr.io/mul-cps/cps-jupyter-notebook
+    tag: "latest-standard-cpu@sha256:efc3b485006f9d4e1e1b1eeacdd75c92bf00bfe02141f5d91ff28eaadb6eb72f"
     pullPolicy: Always
 
   serviceAccountName: dask-sa
@@ -2875,9 +2875,6 @@ prePuller:
     datascience:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
       tag: "latest-standard-cpu@sha256:efc3b485006f9d4e1e1b1eeacdd75c92bf00bfe02141f5d91ff28eaadb6eb72f"
-    rapidsai:
-      name: nvcr.io/nvidia/rapidsai/base
-      tag: "24.08-cuda12.2-py3.10"
     cps-pytorch:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
       tag: "latest-pytorch-code"
@@ -2887,9 +2884,6 @@ prePuller:
     cps-desktop-ros2:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
       tag: "latest-desktop-ros2"
-    cps-desktop-ros2-xpra:
-      name: ghcr.io/mul-cps/cps-jupyter-notebook
-      tag: "latest-desktop-ros2-xpra"
     cps-comfyui:
       name: ghcr.io/mul-cps/cps-jupyter-notebook
       tag: "main-comfyui"
