@@ -1,0 +1,70 @@
+{
+  "observed": "2026-11-18T02:59:33.580512+00:00",
+  "tag": "gpu1-cit20-continuation-20261118",
+  "profile": "interactive-shared-20",
+  "podUID": "d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f",
+  "containerID": "containerd://1e5eb0f446a2c447218186dbf560031cdbeddf7f7153059d66b460da0445f1e0",
+  "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+  "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+  "rawRunningUTC": "2026-11-18T02:58:35.717232+00:00",
+  "rawFreedUTC": "2026-11-18T02:59:20.862030+00:00",
+  "rawWindowSeconds": 45.14478540420532,
+  "allocatedBytes": 20937965568,
+  "eventSourceSHA256": "b0a391a5438494abb50d1062cf9612f9923a138adf054751f166eb0e63f42ec9",
+  "podSourceSHA256": "2535a708440803f62fea84abca7a253f2860dafffe00f4ed345c5ce454ebfb41",
+  "metrics": [
+    {
+      "invalidNonfiniteOriginalSamples": 0,
+      "metric": "gpu_fractioning_gpu_memory_used_bytes",
+      "seriesCount": 1,
+      "independentStoredScrapeCountWithinRawWindow": 2,
+      "sampleUTC": [
+        "2026-11-18T02:58:44.914000+00:00",
+        "2026-11-18T02:59:14.914000+00:00"
+      ],
+      "minimum": 21374173184.0,
+      "maximum": 21374173184.0,
+      "nonzeroOriginalSamples": 2,
+      "zeroOriginalSamples": 0,
+      "priorWindowStaleSamplesExcluded": 0,
+      "postFreeSamplesExcluded": 0,
+      "coverage": "stored-nonzero"
+    },
+    {
+      "invalidNonfiniteOriginalSamples": 0,
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+      "seriesCount": 1,
+      "independentStoredScrapeCountWithinRawWindow": 2,
+      "sampleUTC": [
+        "2026-11-18T02:58:44.914000+00:00",
+        "2026-11-18T02:59:14.914000+00:00"
+      ],
+      "minimum": 76.0,
+      "maximum": 76.0,
+      "nonzeroOriginalSamples": 2,
+      "zeroOriginalSamples": 0,
+      "priorWindowStaleSamplesExcluded": 0,
+      "postFreeSamplesExcluded": 0,
+      "coverage": "stored-nonzero"
+    },
+    {
+      "invalidNonfiniteOriginalSamples": 0,
+      "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+      "seriesCount": 1,
+      "independentStoredScrapeCountWithinRawWindow": 2,
+      "sampleUTC": [
+        "2026-11-18T02:58:44.914000+00:00",
+        "2026-11-18T02:59:14.914000+00:00"
+      ],
+      "minimum": 100.0,
+      "maximum": 100.0,
+      "nonzeroOriginalSamples": 2,
+      "zeroOriginalSamples": 0,
+      "priorWindowStaleSamplesExcluded": 0,
+      "postFreeSamplesExcluded": 0,
+      "coverage": "stored-nonzero"
+    }
+  ],
+  "queryEvaluationPointsNotIndependentScrapes": true
+}

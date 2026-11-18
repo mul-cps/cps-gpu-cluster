@@ -1,0 +1,97 @@
+{
+  "scope": "whitelistedCIT20actualfiles only; notentireN",
+  "references": {
+    "gpu-case/probes/registry-qa-gpu1-cit20-continuation-20261118-jupyter-evidence.json": {
+      "sha256": "b0a391a5438494abb50d1062cf9612f9923a138adf054751f166eb0e63f42ec9",
+      "bytes": 1747,
+      "privateHashReferenceOnly": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cit20-continuation-20261118-pod-evidence.json": {
+      "sha256": "2535a708440803f62fea84abca7a253f2860dafffe00f4ed345c5ce454ebfb41",
+      "bytes": 1128,
+      "privateHashReferenceOnly": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cit20-continuation-20261118-leaf-before.private.json": {
+      "sha256": "c3d81d754cd47c72e1417272948cf736855150d2a2e9ab9ea9e852f8c089788c",
+      "bytes": 2337,
+      "privateHashReferenceOnly": true
+    },
+    "gpu-case/metrics/gpu1-cit20-continuation-20261118-stored.safe.json": {
+      "sha256": "914f7b12c3a16be0017fa64d1bd77e419acf1d968a6fed0f637e096eb50ee70b",
+      "bytes": 2700,
+      "privateHashReferenceOnly": false
+    },
+    "gpu-case/CIT20-terminal.safe.json": {
+      "sha256": "86962ba810011f6b51d2d6d3c684a4568f2a6a10cc929b1801b1d2ccf70b73c1",
+      "bytes": 359,
+      "privateHashReferenceOnly": false
+    },
+    "gpu-case/cit-confirmed-stop.safe.json": {
+      "sha256": "69a9799cbb4f0971b23158dbc3cde14d9a947f21ff339b7a24fd33b8a67dcd9c",
+      "bytes": 141,
+      "privateHashReferenceOnly": false
+    },
+    "gpu-case/credential-packet/closure.safe.json": {
+      "sha256": "23d2162c74edf7da80afd3a95e41e9b331224b0124840e2f1111fd74cc0d174f",
+      "bytes": 305,
+      "privateHashReferenceOnly": false
+    },
+    "gpu-case/credential-packet/done": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "privateHashReferenceOnly": false
+    },
+    "root-stage3-CPU-release.safe.json": {
+      "sha256": "d74ea928806da87001e702125dd1d745f3a7a9eb279af2417500a0275eb1d1fa",
+      "bytes": 984,
+      "privateHashReferenceOnly": false
+    },
+    "gpu-case/cit-start-gpu1-cit20-continuation-20261118-last.private.json": {
+      "sha256": "a7890efba7931743decd4eceb568403beb1ea86571ba90f960c13619c136e7ce",
+      "bytes": 743,
+      "privateHashReferenceOnly": true
+    },
+    "gpu-case/cit-stop-once-last.private.json": {
+      "sha256": "c6d175a4f2f248d999db22650078af5b50b9c5dee2d59896d44b7974279fbd47",
+      "bytes": 743,
+      "privateHashReferenceOnly": true
+    },
+    "gpu-case/cit-stop-confirmed-replay-last.private.json": {
+      "sha256": "c6d175a4f2f248d999db22650078af5b50b9c5dee2d59896d44b7974279fbd47",
+      "bytes": 743,
+      "privateHashReferenceOnly": true
+    },
+    "live-observation/cit-d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f-1.private.json": {
+      "sha256": "80b6d4f89b2e25ca19ef43fa647baaebbddec5194e40ad4f17f78d31be14a4da",
+      "bytes": 2641,
+      "privateHashReferenceOnly": true
+    },
+    "live-observation/cit-d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f-2.private.json": {
+      "sha256": "5898cd6f0b320ad02386a88861c0f292daf018afa5c5234fb83c279eb2254df7",
+      "bytes": 3621,
+      "privateHashReferenceOnly": true
+    },
+    "live-observation/cit-d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f-3.private.json": {
+      "sha256": "0c16b4877901409eb414938b4dc4e289f2c71505b39e6b93d45e5bc5e19f4c67",
+      "bytes": 3621,
+      "privateHashReferenceOnly": true
+    },
+    "live-observation/cit-d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f-4.private.json": {
+      "sha256": "da798bd81d80ced11ca0c87c2aeecfa75f55ab80969fd7056a21d5b7f5b56473",
+      "bytes": 3621,
+      "privateHashReferenceOnly": true
+    },
+    "live-observation/cit-d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f-5.private.json": {
+      "sha256": "85005f656c3609e751fcb4d8f44f8b4da632162de82b02972d6c78fad3494c27",
+      "bytes": 3621,
+      "privateHashReferenceOnly": true
+    },
+    "live-observation/cit-d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f-6.private.json": {
+      "sha256": "754cf29341ff52d086f14ebb4c820902a7382c2f9ccfb25847e3ebea6734b02e",
+      "bytes": 2646,
+      "privateHashReferenceOnly": true
+    }
+  },
+  "firstWindowParentManifestSHA256": "53c430321f8c9fce8f7dd8e745176ea53ed60ba740aad8d6760bc0504285e5a8",
+  "noRawPrivateBodiesCopied": true
+}

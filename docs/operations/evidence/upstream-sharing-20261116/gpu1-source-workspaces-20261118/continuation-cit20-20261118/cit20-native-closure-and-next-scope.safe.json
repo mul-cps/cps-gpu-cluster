@@ -1,0 +1,27 @@
+{
+  "nativeClosure": {
+    "sources": {
+      "cps": {
+        "noOwnedTokenRemains": true
+      },
+      "cit": {
+        "revoked": [
+          "a752"
+        ],
+        "authorityUnchanged": true,
+        "remainingNOTE": 0,
+        "authDenied": true
+      }
+    },
+    "errors": [],
+    "elapsedSeconds": 5.077475622063503,
+    "deadlineSeconds": 170
+  },
+  "CPSCredentialNeverMinted": true,
+  "RootFreshGPUClosureObservedAt": "2026-11-18T03:03:00.422715+00:00",
+  "bothReservationsInactiveAttemptNullPodsAbsent": true,
+  "previousGPUWatchInactivePID0": true,
+  "CPUAuthorizedSeparatelyButNotCompleteByThisPacket": true,
+  "workerAccepted": false,
+  "noRawTokenOrAuthorityRowsCopied": true
+}

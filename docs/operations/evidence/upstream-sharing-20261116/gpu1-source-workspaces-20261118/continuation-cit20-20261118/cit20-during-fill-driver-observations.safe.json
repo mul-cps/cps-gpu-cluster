@@ -1,0 +1,62 @@
+{
+  "scope": "sameactualPodCID independentRootreadonlyobservations",
+  "observations": [
+    {
+      "observed": "2026-11-18T02:58:25.302218+00:00",
+      "PodUID": "d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f",
+      "CID": "1e5eb0f446a2c447218186dbf560031cdbeddf7f7153059d66b460da0445f1e0",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "driverCurrentUsedMiB": 0,
+      "NVMLPhysicalMemoryUsedMiB": 1,
+      "hostMemoryMaxBytes": 17179869184
+    },
+    {
+      "observed": "2026-11-18T02:58:37.381317+00:00",
+      "PodUID": "d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f",
+      "CID": "1e5eb0f446a2c447218186dbf560031cdbeddf7f7153059d66b460da0445f1e0",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "driverCurrentUsedMiB": 20383,
+      "NVMLPhysicalMemoryUsedMiB": 20391,
+      "hostMemoryMaxBytes": 17179869184
+    },
+    {
+      "observed": "2026-11-18T02:58:48.790992+00:00",
+      "PodUID": "d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f",
+      "CID": "1e5eb0f446a2c447218186dbf560031cdbeddf7f7153059d66b460da0445f1e0",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "driverCurrentUsedMiB": 20383,
+      "NVMLPhysicalMemoryUsedMiB": 20391,
+      "hostMemoryMaxBytes": 17179869184
+    },
+    {
+      "observed": "2026-11-18T02:59:00.547125+00:00",
+      "PodUID": "d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f",
+      "CID": "1e5eb0f446a2c447218186dbf560031cdbeddf7f7153059d66b460da0445f1e0",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "driverCurrentUsedMiB": 20383,
+      "NVMLPhysicalMemoryUsedMiB": 20391,
+      "hostMemoryMaxBytes": 17179869184
+    },
+    {
+      "observed": "2026-11-18T02:59:12.325967+00:00",
+      "PodUID": "d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f",
+      "CID": "1e5eb0f446a2c447218186dbf560031cdbeddf7f7153059d66b460da0445f1e0",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "driverCurrentUsedMiB": 20383,
+      "NVMLPhysicalMemoryUsedMiB": 20391,
+      "hostMemoryMaxBytes": 17179869184
+    },
+    {
+      "observed": "2026-11-18T02:59:24.071234+00:00",
+      "PodUID": "d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f",
+      "CID": "1e5eb0f446a2c447218186dbf560031cdbeddf7f7153059d66b460da0445f1e0",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "driverCurrentUsedMiB": 0,
+      "NVMLPhysicalMemoryUsedMiB": 1,
+      "hostMemoryMaxBytes": 17179869184
+    }
+  ],
+  "driverVsPhysicalAccountingAreDistinct": true,
+  "peakDriverCurrentUsedMiB": 20383,
+  "peakNVMLPhysicalUsedMiB": 20391
+}

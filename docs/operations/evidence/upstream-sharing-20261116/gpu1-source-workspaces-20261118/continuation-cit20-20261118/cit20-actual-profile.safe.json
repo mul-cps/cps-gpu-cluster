@@ -1,0 +1,47 @@
+{
+  "observedProjectionAt": "2026-11-18T03:08:43.531789+00:00",
+  "sourceCaseObserved": "2026-11-18T02:59:33.587367+00:00",
+  "source": "cit",
+  "gib": 20,
+  "tag": "gpu1-cit20-continuation-20261118",
+  "profile": "interactive-shared-20",
+  "PodUID": "d20a54bc-7bd8-4b5e-9c62-6a2fb2e25a5f",
+  "CID": "1e5eb0f446a2c447218186dbf560031cdbeddf7f7153059d66b460da0445f1e0",
+  "NodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+  "boot": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+  "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+  "CUDADeviceCount": 1,
+  "rawRunningUTC": "2026-11-18T02:58:35.717232+00:00",
+  "rawFreedUTC": "2026-11-18T02:59:20.862030+00:00",
+  "rawProgressSeconds": 45.000320598000144,
+  "rawProgressSteps": 793764,
+  "allocatedBytes": 20937965568,
+  "typedAboveHardCUDAResult": 2,
+  "TorchCPUReferenceMatch": true,
+  "TorchVersion": "2.11.0+cu129",
+  "SDK_and_retained_QA_file_probe_passed": true,
+  "retained_sentinel_sha256": "95976f0f1f7a4e6002501a50c74e569bb07a8f6292e591d6e358efb06ddb6f97",
+  "preprobeDriverSoftMiB": 20480,
+  "preprobeDriverHardMiB": 20480,
+  "hostMemoryMaxBytes": 17179869184,
+  "preprobeMiscMaxActual": "",
+  "actualCgroup": "0::/kubepods.slice/kubepods-podd20a54bc_7bd8_4b5e_9c62_6a2fb2e25a5f.slice/cri-containerd-1e5eb0f446a2c447218186dbf560031cdbeddf7f7153059d66b460da0445f1e0.scope\n",
+  "normalHTTPReceipts": {
+    "START": {
+      "HTTP": 200,
+      "sourceSHA256": "a7890efba7931743decd4eceb568403beb1ea86571ba90f960c13619c136e7ce"
+    },
+    "STOP": {
+      "HTTP": 200,
+      "sourceSHA256": "c6d175a4f2f248d999db22650078af5b50b9c5dee2d59896d44b7974279fbd47"
+    },
+    "confirmedReplay": {
+      "HTTP": 200,
+      "sourceSHA256": "c6d175a4f2f248d999db22650078af5b50b9c5dee2d59896d44b7974279fbd47"
+    }
+  },
+  "SourceStoppedPodAbsentLeaseInactiveAttemptNull": true,
+  "SourceStopObservation": "2026-11-18T02:59:31.578024+00:00",
+  "CPUOrFaultProofIncluded": false,
+  "workerAcceptedByThisPacket": false
+}

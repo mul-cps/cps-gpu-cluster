@@ -1,0 +1,36 @@
+{
+  "created": "2026-11-18T03:10:57.490120+00:00",
+  "scope": "actualCIT20continuation +sixGPUmatrix old5/new1separatecohorts; CPUworkerincomplete",
+  "firstWindowParentManifestUnchangedSHA256": "53c430321f8c9fce8f7dd8e745176ea53ed60ba740aad8d6760bc0504285e5a8",
+  "files": {
+    "cit20-actual-profile.safe.json": {
+      "sha256": "81a80bc4805da2b4c725c5df5f6f1c0fc078aeadf75388587c4b3fd66e0de617",
+      "bytes": 1960
+    },
+    "cit20-original-stored-metrics.safe.json": {
+      "sha256": "865e5adb91eb13cddbcbf787487bff22cefc34fb3b2814b65cc801034d9e469a",
+      "bytes": 2541
+    },
+    "cit20-during-fill-driver-observations.safe.json": {
+      "sha256": "e94d7c4562cd3f72ae366ce8b10eaad87d4ac2c22a701ac30b1c3a15073e2cb6",
+      "bytes": 2504
+    },
+    "cit20-native-closure-and-next-scope.safe.json": {
+      "sha256": "bbb957b11755d8e72ea797efede14cfb75136d7991c554496926d7ab588a3a44",
+      "bytes": 697
+    },
+    "six-gpu-profile-matrix.safe.json": {
+      "sha256": "1eed419f6f9a9745f555c5399fbef66aff5b4535e7420c7d670d4cd10993586c",
+      "bytes": 3325
+    },
+    "README.md": {
+      "sha256": "849d201f0ad8a39413a1620285159b74397ef281b619b6161f8e21b1d0e4bdcc",
+      "bytes": 2081
+    },
+    "source-hashes.safe.json": {
+      "sha256": "16d0fd20f50ac9461701dbc3f39ee831b713d48d65fd45f3b3520bd89e77981e",
+      "bytes": 4203
+    }
+  },
+  "noPrivateRawBodies": true
+}
