@@ -1,0 +1,29 @@
+{
+  "observedAt": "2026-11-18T14:49:56.875136+00:00",
+  "scope": "Reviewed configuration staged only; no backend flag or UI enablement",
+  "secrets": [
+    {
+      "component": "hub",
+      "namespace": "jupyterhub",
+      "name": "cps-personal-gpu-compat-8a3d6da5ad9b100d",
+      "uid": "87e8bc19-e826-4dba-90c3-467edfefac6d",
+      "immutable": true,
+      "referencedByApplication": false,
+      "applicationGeneration": 394
+    },
+    {
+      "component": "gateway",
+      "namespace": "cps-compute",
+      "name": "cps-personal-gpu-compat-56e2a7a83c1ba95a",
+      "uid": "73f0ab3c-e164-4dab-911c-dbb7689e2f6f",
+      "immutable": true,
+      "referencedByApplication": false,
+      "applicationGeneration": 443
+    }
+  ],
+  "pairedConfigIndependentReviewManifestSHA256": "948e55f74c27acbb7b17152b3ff5e40df36110b35480ec8c1fdbf9865e686ba6",
+  "compatibilityHash": "0f910c2f5b03087c3c0ce9d74c4f44888af3d3b8e5b154d110acd6089009ec58",
+  "noCanonicalMappingOrGrantChanges": true,
+  "noUserWorkloadStartOrStop": true,
+  "hardwareQARunner": "preparation in progress; no execution released"
+}
