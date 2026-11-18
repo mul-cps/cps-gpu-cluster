@@ -1,0 +1,15 @@
+{
+  "frozenAt": "2026-11-18T02:41:04.372915+00:00",
+  "GatewayAuditSeq": 9404,
+  "GatewayHTTPStatus": 409,
+  "GatewayOutcome": "reservation_conflict",
+  "SourceHTTPStatus": 503,
+  "sameCanonicalQAPersonAcrossCPSAndCIT": true,
+  "canonicalQAPersonUUID": "386feebb-df1a-4f3c-9ef9-6d9c026d5aea",
+  "CPSExactLeaseUnchanged": true,
+  "CITInactiveAttemptNullPodAbsent": true,
+  "normalCleanupFollowed": true,
+  "Source503PresentationResidual": "known first-window presentation mismatch; no UX/status improvement claimed",
+  "privateCanonicalReceiptSHA256": "e4965895dd609726aec47cd8ef973c0696993a75ea0164be935220532e4d122a",
+  "noRawAuthorityRowsCopied": true
+}

@@ -1,0 +1,240 @@
+{
+  "frozenFirstWindowSummarySHA256": "0c1f4d181d84bf5ab911a48693aee9119f649468d30cecac7029838accf8c9e7",
+  "frozenFirstWindowManifestSHA256": "dc1965cff26056bd313735401fdf8d42fc88e26c8d559128d8a1864a999456bd",
+  "sourceReferenceCount": 44,
+  "all44ActualSourceHashesAndSizesVerified": true,
+  "references": {
+    "gpu-case/probes/registry-qa-gpu1-cps5-20261118-pod-evidence.json": {
+      "sha256": "2275142871cba1a747eaaa2c9a44fa342238667881edd9040d0ea886d8562a11",
+      "bytes": 1128,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cps5-20261118-jupyter-evidence.json": {
+      "sha256": "ad543cf8551dc3db6354d25d230ef865f4bd9facb8846d198343555fe5fe06f1",
+      "bytes": 1742,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cps5-20261118-leaf-before.private.json": {
+      "sha256": "8b09e4879951c209e9a18a1720d8429ec959cb44fff5c8bf7c0010aed68ec3cb",
+      "bytes": 2342,
+      "private": true
+    },
+    "gpu-case/metrics/gpu1-cps5-20261118-stored.safe.json": {
+      "sha256": "43eb99706a54618f63cc36215d2d03d03e6614aaf7dcfea60677f592629b2718",
+      "bytes": 2681,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cps5-20261118-start-clock.json": {
+      "sha256": "76fc2d30f03fe0556fb7607f918a3a638cacbf808b3e06d0369ac003c73b75a2",
+      "bytes": 71,
+      "private": false
+    },
+    "shared/source-provider-cps-gpu1-cps-stop-once-1794968658652526951-1794968663820365364.private.json": {
+      "sha256": "396056fda426e7538d90c04273d9c8eb97eb8f6db97e9ae102d6722b3f384c98",
+      "bytes": 165,
+      "private": true
+    },
+    "shared/source-provider-cps-gpu1-cps-stop-confirmed-replay-1794968678439408503-1794968679505431871.private.json": {
+      "sha256": "b741b8ea23e05ba7f09b0422e66c126ef818563a9e9090cc70272a54acd6a86e",
+      "bytes": 744,
+      "private": true
+    },
+    "gpu-case/probes/registry-qa-gpu1-cps10-20261118-pod-evidence.json": {
+      "sha256": "013f093611d21bbf50adeac5f84999daaec4de838a72e8662a0714e07799e251",
+      "bytes": 1131,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cps10-20261118-jupyter-evidence.json": {
+      "sha256": "f84a4334f9238f493825e1e6fec0286adaa770d9bc58d8f7b955f249b03a37a6",
+      "bytes": 1746,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cps10-20261118-leaf-before.private.json": {
+      "sha256": "9c45b17061c2e819bae7c217ea316c9a7ca2e6d34b8ad88c96d69f9e71c38fff",
+      "bytes": 2338,
+      "private": true
+    },
+    "gpu-case/metrics/gpu1-cps10-20261118-stored.safe.json": {
+      "sha256": "236aab3d840e29c9851e08f9eb74b418656607dcc02f45ceaeab8a1f844ac1b6",
+      "bytes": 2689,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cps10-20261118-start-clock.json": {
+      "sha256": "208f8359a22e945a38caa98db43dc16ff4595d79d93fee7e6064ce942baea50d",
+      "bytes": 69,
+      "private": false
+    },
+    "shared/source-provider-cps-gpu1-cps-stop-once-1794968842382056704-1794968845814305937.private.json": {
+      "sha256": "396056fda426e7538d90c04273d9c8eb97eb8f6db97e9ae102d6722b3f384c98",
+      "bytes": 165,
+      "private": true
+    },
+    "shared/source-provider-cps-gpu1-cps-stop-confirmed-replay-1794968858453771497-1794968859513951950.private.json": {
+      "sha256": "ad6a276665aec6ef522bd742c24ef354777e4828a3224eaed72a93de0c2603fa",
+      "bytes": 745,
+      "private": true
+    },
+    "gpu-case/probes/registry-qa-gpu1-cps20-20261118-pod-evidence.json": {
+      "sha256": "3ba17d6e647280ef187530bab7c1732d1f8ab09b28f219dca09c89e72c10719c",
+      "bytes": 1131,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cps20-20261118-jupyter-evidence.json": {
+      "sha256": "e2e618697672ed851df6403faaf15f50fc93be9e08d3efcdd6139d104744d817",
+      "bytes": 1746,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cps20-20261118-leaf-before.private.json": {
+      "sha256": "9a74f97abacb534921ca6a50771706384795b14b61a7cce09452847ab99d7e4f",
+      "bytes": 2328,
+      "private": true
+    },
+    "gpu-case/metrics/gpu1-cps20-20261118-stored.safe.json": {
+      "sha256": "0c398eec0cc701f7a55bd80e602f037d21f8176bfc3b5e7d635fc5bedcc0a1b3",
+      "bytes": 2556,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cps20-20261118-start-clock.json": {
+      "sha256": "e0c8eba2b94fa6bacec81e0e7f2a872f495e3b1dfc0dec9cd4ac14c8b9fbea0c",
+      "bytes": 70,
+      "private": false
+    },
+    "shared/source-provider-cps-gpu1-cps-stop-once-1794968939482417103-1794968945828202559.private.json": {
+      "sha256": "4d6220af547ce4f0c236aab99cee2a501b6b15c881fc19feaa057612f7fe872b",
+      "bytes": 745,
+      "private": true
+    },
+    "shared/source-provider-cps-gpu1-cps-stop-confirmed-replay-1794968947451288144-1794968948510470790.private.json": {
+      "sha256": "4d6220af547ce4f0c236aab99cee2a501b6b15c881fc19feaa057612f7fe872b",
+      "bytes": 745,
+      "private": true
+    },
+    "gpu-case/probes/registry-qa-gpu1-cit5-20261118-pod-evidence.json": {
+      "sha256": "62109e4294ff96b6c6f0d091ccbab5ded2ca7b5e9959231fd8a3f2cfa5ca3aeb",
+      "bytes": 1126,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cit5-20261118-jupyter-evidence.json": {
+      "sha256": "13d354f1a939f1785ecc1efca6c6de51d3e85bba51ac1ecdde429e56a5def392",
+      "bytes": 1741,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cit5-20261118-leaf-before.private.json": {
+      "sha256": "1200ccd883ee3ea7254cb8137ebb4842ad08577a86ede22f4cb82c0a0402ebaa",
+      "bytes": 2335,
+      "private": true
+    },
+    "gpu-case/metrics/gpu1-cit5-20261118-stored.safe.json": {
+      "sha256": "2539b7a2d8af688132ba04e2154b2506f83f09a8be1ccb29df165239db639edd",
+      "bytes": 2550,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cit5-20261118-start-clock.json": {
+      "sha256": "0f8805cba78cd9afdf850097ca832eb203ef9c2f9c6513f7a54ab4a86f2369ab",
+      "bytes": 71,
+      "private": false
+    },
+    "shared/source-provider-cit-gpu1-cit-stop-once-1794969028660657725-1794969032425450893.private.json": {
+      "sha256": "083722f7f577edfc118f6948c5e584319dac25a952fa77ffe6eb6ac1ee6acc6f",
+      "bytes": 742,
+      "private": true
+    },
+    "shared/source-provider-cit-gpu1-cit-stop-confirmed-replay-1794969034052510120-1794969035029898864.private.json": {
+      "sha256": "083722f7f577edfc118f6948c5e584319dac25a952fa77ffe6eb6ac1ee6acc6f",
+      "bytes": 742,
+      "private": true
+    },
+    "gpu-case/probes/registry-qa-gpu1-cit10-20261118-pod-evidence.json": {
+      "sha256": "7581adbca78a2cc14e2866fd35db54144e5df6e70f7f0fc7d6c1f11bcff0d068",
+      "bytes": 1129,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cit10-20261118-jupyter-evidence.json": {
+      "sha256": "0881fc8fedd92424c4490db6d1e586501b2dba1c1c413f1d1e6f1af38ae27cd5",
+      "bytes": 1743,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cit10-20261118-leaf-before.private.json": {
+      "sha256": "0384ea9dd3addd4615f8f4f87a72f4ab897fd666a247043bcfd6161d32ed89fa",
+      "bytes": 2336,
+      "private": true
+    },
+    "gpu-case/metrics/gpu1-cit10-20261118-stored.safe.json": {
+      "sha256": "08389e5e31def2177733ffff618ee828fa83e7b533e447156c0927b02eb5b5d5",
+      "bytes": 2555,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cit10-20261118-start-clock.json": {
+      "sha256": "6d77985ddfd751b37179c25b8f4c4a9bed6684afa71520b4fdffd9e844cf2442",
+      "bytes": 71,
+      "private": false
+    },
+    "shared/source-provider-cit-gpu1-cit-stop-once-1794969121245699241-1794969125092340604.private.json": {
+      "sha256": "396056fda426e7538d90c04273d9c8eb97eb8f6db97e9ae102d6722b3f384c98",
+      "bytes": 165,
+      "private": true
+    },
+    "shared/source-provider-cit-gpu1-cit-stop-confirmed-replay-1794969137185449808-1794969138672161136.private.json": {
+      "sha256": "b993917a9c0d1eb3fe6710e730fc87d1d2dc778b30bed94167a96a0184efc327",
+      "bytes": 743,
+      "private": true
+    },
+    "gpu-case/canonical-denial.private.json": {
+      "sha256": "e4965895dd609726aec47cd8ef973c0696993a75ea0164be935220532e4d122a",
+      "bytes": 9504,
+      "private": true
+    },
+    "gpu-case/credential-packet/closure.safe.json": {
+      "sha256": "c431911cec3152950f1a9f44a4e72cc88a7db765b7753645c59285b21d524114",
+      "bytes": 419,
+      "private": false
+    },
+    "root-gpu-window-closed.safe.json": {
+      "sha256": "3edcd7b84f64056be75bb01e3c8f21125a5aae7ad0974a3e2ee9f4b3dc4ae5bc",
+      "bytes": 469,
+      "private": false
+    },
+    "gpu-case/gpu-cohort-terminal.safe.json": {
+      "sha256": "973a48e024931d1e4a7e2a8cb6b563b3a096d47452ec8753bbb50cbd0e576c20",
+      "bytes": 664,
+      "private": false
+    },
+    "gpu-case/budget-boundary-blocks.safe.json": {
+      "sha256": "91817e482eb348ccb624fb1d8e1e9b6716c4a43a05831f18482afd936c8bd256",
+      "bytes": 618,
+      "private": false
+    },
+    "gpu-case/probes/registry-qa-gpu1-cit20-20261118-start-clock.json": {
+      "sha256": "b3f469c9497d5afab407f820ec2954821e6960ab12820ea4cf5206f777e9f7e4",
+      "bytes": 435,
+      "private": false
+    },
+    "gpu-case/credential-packet/done": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "private": false
+    },
+    "gpu-case/metrics/matrix-stored.safe.json": {
+      "sha256": "ed312dc8a6b286673916f6c76480889fc32b3812e0876ecc1a2f9d252c7a7a90",
+      "bytes": 14762,
+      "private": false
+    },
+    "gpu-first-window-evidence/summary.safe.json": {
+      "sha256": "0c1f4d181d84bf5ab911a48693aee9119f649468d30cecac7029838accf8c9e7",
+      "bytes": 14231,
+      "private": false
+    }
+  },
+  "additionalRootPostCleanupSources": {
+    "root-five-profile-cgroups-cleaned.safe.json": {
+      "sha256": "fa6a1b649cea7b7f2591efe17fe277df5a95c39ab70b7a8b8e6526e3e07d080e",
+      "bytes": 1645
+    },
+    "root-gpu-window-closed.safe.json": {
+      "sha256": "3edcd7b84f64056be75bb01e3c8f21125a5aae7ad0974a3e2ee9f4b3dc4ae5bc",
+      "bytes": 469
+    }
+  },
+  "privateSourcesHashReferencedOnly": true,
+  "noRawConfigurationCredentialsDBCertificatesOrLogBodiesCopied": true
+}

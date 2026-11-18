@@ -1,0 +1,352 @@
+{
+  "scope": "actualcompletedfirstwindowfiveprofilesonly",
+  "profiles": [
+    {
+      "observed": "2026-11-18T02:24:52.718540+00:00",
+      "tag": "gpu1-cps5-20261118",
+      "profile": "interactive-shared-5",
+      "podUID": "9618849b-1346-4def-a26e-5cd5505c64d2",
+      "containerID": "containerd://42b8873cc46443f5e8b8a4a898b2e9c3e357bf4443792be5b0ec45b7a9c7cca4",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "rawRunningUTC": "2026-11-18T02:21:38.984134+00:00",
+      "rawFreedUTC": "2026-11-18T02:22:24.141001+00:00",
+      "rawWindowSeconds": 45.15686345100403,
+      "allocatedBytes": 4831838208,
+      "eventSourceSHA256": "ad543cf8551dc3db6354d25d230ef865f4bd9facb8846d198343555fe5fe06f1",
+      "podSourceSHA256": "2275142871cba1a747eaaa2c9a44fa342238667881edd9040d0ea886d8562a11",
+      "metrics": [
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T02:21:44.914000+00:00",
+            "2026-11-18T02:22:14.914000+00:00"
+          ],
+          "minimum": 5268045824.0,
+          "maximum": 5268045824.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T02:21:44.914000+00:00",
+            "2026-11-18T02:22:14.914000+00:00"
+          ],
+          "minimum": 0.0,
+          "maximum": 82.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 1,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T02:21:44.914000+00:00",
+            "2026-11-18T02:22:14.914000+00:00"
+          ],
+          "minimum": 0.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 1,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ],
+      "queryEvaluationPointsNotIndependentScrapes": true,
+      "containerIDMatchesSummaryRawCIDAfterLiteralContainerdPrefixRemoval": true
+    },
+    {
+      "observed": "2026-11-18T02:27:40.158562+00:00",
+      "tag": "gpu1-cps10-20261118",
+      "profile": "interactive-shared-10",
+      "podUID": "6c102dff-bd05-44f0-b4ee-78cb42669fc0",
+      "containerID": "containerd://91d32bb4b45655e80500cff971b95d2cab4917ebfc6c28fc9026169546bebbfb",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "rawRunningUTC": "2026-11-18T02:26:34.514102+00:00",
+      "rawFreedUTC": "2026-11-18T02:27:19.641154+00:00",
+      "rawWindowSeconds": 45.12704825401306,
+      "allocatedBytes": 10200547328,
+      "eventSourceSHA256": "f84a4334f9238f493825e1e6fec0286adaa770d9bc58d8f7b955f249b03a37a6",
+      "podSourceSHA256": "013f093611d21bbf50adeac5f84999daaec4de838a72e8662a0714e07799e251",
+      "metrics": [
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T02:26:44.914000+00:00",
+            "2026-11-18T02:27:14.914000+00:00"
+          ],
+          "minimum": 10636754944.0,
+          "maximum": 10636754944.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T02:26:44.914000+00:00",
+            "2026-11-18T02:27:14.914000+00:00"
+          ],
+          "minimum": 80.0,
+          "maximum": 82.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 2,
+          "sampleUTC": [
+            "2026-11-18T02:26:44.914000+00:00",
+            "2026-11-18T02:27:14.914000+00:00"
+          ],
+          "minimum": 100.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 2,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ],
+      "queryEvaluationPointsNotIndependentScrapes": true,
+      "containerIDMatchesSummaryRawCIDAfterLiteralContainerdPrefixRemoval": true
+    },
+    {
+      "observed": "2026-11-18T02:29:09.153971+00:00",
+      "tag": "gpu1-cps20-20261118",
+      "profile": "interactive-shared-20",
+      "podUID": "8c162056-d2b4-48dd-85a3-153f9a177daf",
+      "containerID": "containerd://77a1d7ebed69a14fc17b5a936244ac904514e971cc5fb843f438da7e59c5cd5d",
+      "GPUUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "rawRunningUTC": "2026-11-18T02:28:11.000278+00:00",
+      "rawFreedUTC": "2026-11-18T02:28:56.116084+00:00",
+      "rawWindowSeconds": 45.1158082485199,
+      "allocatedBytes": 20937965568,
+      "eventSourceSHA256": "e2e618697672ed851df6403faaf15f50fc93be9e08d3efcdd6139d104744d817",
+      "podSourceSHA256": "3ba17d6e647280ef187530bab7c1732d1f8ab09b28f219dca09c89e72c10719c",
+      "metrics": [
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T02:28:44.914000+00:00"
+          ],
+          "minimum": 21374173184.0,
+          "maximum": 21374173184.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T02:28:44.914000+00:00"
+          ],
+          "minimum": 83.0,
+          "maximum": 83.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T02:28:44.914000+00:00"
+          ],
+          "minimum": 100.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ],
+      "queryEvaluationPointsNotIndependentScrapes": true,
+      "containerIDMatchesSummaryRawCIDAfterLiteralContainerdPrefixRemoval": true
+    },
+    {
+      "observed": "2026-11-18T02:30:35.650421+00:00",
+      "tag": "gpu1-cit5-20261118",
+      "profile": "interactive-shared-5",
+      "podUID": "aded3645-f002-47be-a3f6-327bd76dab80",
+      "containerID": "containerd://9ca3fc2bd67c76f562914d5f14370fb5e8ab8e8f13fc495f8f7a5fbb5c4dd5fb",
+      "GPUUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+      "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "rawRunningUTC": "2026-11-18T02:29:40.894265+00:00",
+      "rawFreedUTC": "2026-11-18T02:30:26.006583+00:00",
+      "rawWindowSeconds": 45.11231303215027,
+      "allocatedBytes": 4831838208,
+      "eventSourceSHA256": "13d354f1a939f1785ecc1efca6c6de51d3e85bba51ac1ecdde429e56a5def392",
+      "podSourceSHA256": "62109e4294ff96b6c6f0d091ccbab5ded2ca7b5e9959231fd8a3f2cfa5ca3aeb",
+      "metrics": [
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T02:30:14.914000+00:00"
+          ],
+          "minimum": 5268045824.0,
+          "maximum": 5268045824.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T02:30:14.914000+00:00"
+          ],
+          "minimum": 83.0,
+          "maximum": 83.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T02:30:14.914000+00:00"
+          ],
+          "minimum": 100.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ],
+      "queryEvaluationPointsNotIndependentScrapes": true,
+      "containerIDMatchesSummaryRawCIDAfterLiteralContainerdPrefixRemoval": true
+    },
+    {
+      "observed": "2026-11-18T02:32:19.333363+00:00",
+      "tag": "gpu1-cit10-20261118",
+      "profile": "interactive-shared-10",
+      "podUID": "dfff6337-5099-44ed-a457-61a6613c3241",
+      "containerID": "containerd://b21c3e692ea531f289b744509bbb1ead77dfd0232c185609d8c0a5caeb116d93",
+      "GPUUUID": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+      "nodeUID": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "bootID": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+      "rawRunningUTC": "2026-11-18T02:31:13.456490+00:00",
+      "rawFreedUTC": "2026-11-18T02:31:58.563919+00:00",
+      "rawWindowSeconds": 45.10742521286011,
+      "allocatedBytes": 10200547328,
+      "eventSourceSHA256": "0881fc8fedd92424c4490db6d1e586501b2dba1c1c413f1d1e6f1af38ae27cd5",
+      "podSourceSHA256": "7581adbca78a2cc14e2866fd35db54144e5df6e70f7f0fc7d6c1f11bcff0d068",
+      "metrics": [
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_memory_used_bytes",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T02:31:44.914000+00:00"
+          ],
+          "minimum": 10636754944.0,
+          "maximum": 10636754944.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T02:31:44.914000+00:00"
+          ],
+          "minimum": 82.0,
+          "maximum": 82.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        },
+        {
+          "invalidNonfiniteOriginalSamples": 0,
+          "metric": "gpu_fractioning_gpu_sm_utilization_percent_normalized",
+          "seriesCount": 1,
+          "independentStoredScrapeCountWithinRawWindow": 1,
+          "sampleUTC": [
+            "2026-11-18T02:31:44.914000+00:00"
+          ],
+          "minimum": 100.0,
+          "maximum": 100.0,
+          "nonzeroOriginalSamples": 1,
+          "zeroOriginalSamples": 0,
+          "priorWindowStaleSamplesExcluded": 0,
+          "postFreeSamplesExcluded": 0,
+          "coverage": "stored-nonzero"
+        }
+      ],
+      "queryEvaluationPointsNotIndependentScrapes": true,
+      "containerIDMatchesSummaryRawCIDAfterLiteralContainerdPrefixRemoval": true
+    }
+  ],
+  "noInterpolatedQueryPointIndependenceClaim": true
+}

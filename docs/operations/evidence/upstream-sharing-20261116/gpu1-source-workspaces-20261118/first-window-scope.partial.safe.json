@@ -1,0 +1,19 @@
+{
+  "frozenAt": "2026-11-18T02:41:04.372915+00:00",
+  "actualCompletedProfiles": 5,
+  "intendedGPUProfiles": 6,
+  "passed": [
+    "cps5",
+    "cps10",
+    "cps20",
+    "cit5",
+    "cit10"
+  ],
+  "CIT20": "NOT_SUBMITTED; local budget guards, no fabricated START timestamp",
+  "CPU_fault_membership_RTC_tests": "NOT_RUN in first window",
+  "workerAcceptedByThisPacket": false,
+  "fullGPUProfileMatrixComplete": false,
+  "fullSourceAcceptance": false,
+  "humanBrowserMemberSSO": "OPEN; no alias/token impersonation",
+  "futureEvidence": "later CIT20/CPU/fault receipts may be appended separately; do not overwrite/relabel this first-window scope"
+}

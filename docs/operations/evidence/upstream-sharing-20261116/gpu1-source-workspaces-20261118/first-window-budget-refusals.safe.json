@@ -1,0 +1,30 @@
+{
+  "oldCIT20Tag": [
+    {
+      "status": "NO_START_SUBMITTED",
+      "reason": "Root requires launch+200s fullprobe+100s normalcleanup budget before any new START; current cohort budget boundary",
+      "source": "cit",
+      "gib": 20,
+      "tag": "gpu1-cit20-20261118",
+      "observed_block_time": "2026-11-18T02:30:45.185244+00:00",
+      "conservative_seconds_to_watch_STOP": 329.6364254951477,
+      "no_submission_clock_time_fabricated": true,
+      "no_existing_clock_removed": true
+    }
+  ],
+  "newUniqueCIT20Tag": {
+    "RootAuthorized": true,
+    "original210SecondGuardRefusedLocally": true,
+    "STARTSubmitted": false,
+    "submissionClockCreated": false
+  },
+  "existingSubmittedClocksPreserved": true,
+  "noSourceOrAuthorityCallsForRefusals": true,
+  "fullProbeDurationAndCleanupBudgetNotShortened": true,
+  "windowOrPermitNotExtended": true,
+  "budgetSummary": {
+    "old_CIT20_tag": "explicit NO_START_SUBMITTED local reserve under330advisory, preserved without fake unix/submissiontime",
+    "new_unique_tag": "Root authorized but original >210s guard refused locally; no START/clockcreated",
+    "tests_or_windows_not_shortened_or_extended": true
+  }
+}

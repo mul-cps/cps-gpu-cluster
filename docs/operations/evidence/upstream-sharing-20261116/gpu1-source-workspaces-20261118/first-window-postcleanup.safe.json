@@ -1,0 +1,92 @@
+{
+  "rootWindowClosed": {
+    "at": "2026-11-18T02:36:41.148338+00:00",
+    "sources": {
+      "cps": {
+        "active": false,
+        "attempt": null,
+        "PodAbsent": true
+      },
+      "cit": {
+        "active": false,
+        "attempt": null,
+        "PodAbsent": true
+      }
+    },
+    "GPU_credentials_closed_and_handoffs_absent": true,
+    "supervisor_inactive_PID0": true,
+    "GPU_profiles_passed": 5,
+    "CIT20_not_submitted": true,
+    "full_six_profile_gate_complete": false,
+    "CPU_cohort_started": false
+  },
+  "nativeCredentialClosure": {
+    "sources": {
+      "cps": {
+        "revoked": [
+          {
+            "id": "a1437",
+            "status": 204,
+            "absent": true
+          }
+        ],
+        "authDenied": true
+      },
+      "cit": {
+        "revoked": [
+          "a747"
+        ],
+        "authorityUnchanged": true,
+        "remainingNOTE": 0,
+        "authDenied": true
+      }
+    },
+    "errors": [],
+    "elapsedSeconds": 4.859272060915828,
+    "deadlineSeconds": 170
+  },
+  "credentialClosureSummary": {
+    "cps": "a1437 revoked204/DBabsent/authDenied",
+    "cit": "a747 absent/authDenied/authorityUnchanged",
+    "errors": [],
+    "raw_handoffs_absent": true,
+    "done": true,
+    "independent_watch_inactive": "Root independent root-gpu-window-closed.safe.json"
+  },
+  "fiveKnownPodCgroups": {
+    "at": "2026-11-18T02:40:46.431060+00:00",
+    "current_boot": "cd940ce3-dfb4-420c-92c5-712afe89eb29",
+    "five_known_PodUID_cgroups": {
+      "9618849b-1346-4def-a26e-5cd5505c64d2": {
+        "cgroup": "/kubepods.slice/kubepods-pod9618849b_1346_4def_a26e_5cd5505c64d2.slice/cri-containerd-42b8873cc46443f5e8b8a4a898b2e9c3e357bf4443792be5b0ec45b7a9c7cca4.scope",
+        "exists": false
+      },
+      "6c102dff-bd05-44f0-b4ee-78cb42669fc0": {
+        "cgroup": "/kubepods.slice/kubepods-pod6c102dff_bd05_44f0_b4ee_78cb42669fc0.slice/cri-containerd-91d32bb4b45655e80500cff971b95d2cab4917ebfc6c28fc9026169546bebbfb.scope",
+        "exists": false
+      },
+      "8c162056-d2b4-48dd-85a3-153f9a177daf": {
+        "cgroup": "/kubepods.slice/kubepods-pod8c162056_d2b4_48dd_85a3_153f9a177daf.slice/cri-containerd-77a1d7ebed69a14fc17b5a936244ac904514e971cc5fb843f438da7e59c5cd5d.scope",
+        "exists": false
+      },
+      "aded3645-f002-47be-a3f6-327bd76dab80": {
+        "cgroup": "/kubepods.slice/kubepods-podaded3645_f002_47be_a3f6_327bd76dab80.slice/cri-containerd-9ca3fc2bd67c76f562914d5f14370fb5e8ab8e8f13fc495f8f7a5fbb5c4dd5fb.scope",
+        "exists": false
+      },
+      "dfff6337-5099-44ed-a457-61a6613c3241": {
+        "cgroup": "/kubepods.slice/kubepods-poddfff6337_5099_44ed_a457_61a6613c3241.slice/cri-containerd-b21c3e692ea531f289b744509bbb1ead77dfd0232c185609d8c0a5caeb116d93.scope",
+        "exists": false
+      }
+    },
+    "all_absent": true,
+    "gpu_physical_memory_used": [
+      "GPU-8df28256-50a3-db30-3706-b69d52f4874f, 1",
+      "GPU-b1222487-3937-5349-7329-5cbebd15a5db, 1"
+    ],
+    "compute_clients": [],
+    "post_cleanup_observation_not_release_ordering_proof": true
+  },
+  "scope": "post-cleanup observations only; NOT an ordering witness for authorization release versus process/cgroup disappearance",
+  "sourceCleanupActual": "both stopped/PodGone/lease inactive attemptnull/no pending SourceRPC",
+  "currentOrFutureWindowStateClaimed": false
+}
