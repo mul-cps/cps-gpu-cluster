@@ -257,14 +257,14 @@ hub:
                   <div class="feedback-widget hidden"><i class="fa fa-spinner"></i></div>
                 </div>
               </div>
-              <p id="personal-unavailable" class="alert alert-warning" role="alert" hidden>That personal GPU profile is unavailable. Choose an available CPU profile explicitly, or open a shared workspace from Home.</p>
+              <p id="personal-unavailable" class="alert alert-warning" role="alert" hidden>Select exactly one profile before starting.</p>
               <div class="personal-shared">
                 <strong>Looking for a shared GPU notebook?</strong>
                 <div>Open shared 5, 10 or 20 GiB workspaces from <a id="personal-shared-link" href="{{ base_url }}home#shared-workspaces">Shared workspaces on Home</a>.</div>
               </div>
               <details id="personal-options" class="personal-options">
                 <summary>Change profile or storage</summary>
-                <p class="personal-options-copy">Choose an available profile below. Unavailable GPU choices cannot be started. Resource numbers are limits; shared CPU time is not a dedicated reservation.</p>
+                <p class="personal-options-copy">Choose a profile below. GPU access and your current allocation are checked when you start. Resource numbers are limits; shared CPU time is not a dedicated reservation.</p>
                 {{ spawner_options_form | safe }}
               </details>
             </form>
@@ -310,42 +310,18 @@ hub:
               if (cards.some(input => input.closest(".option-card").querySelector(".gpu-chip"))) {
                 const note = document.createElement("p");
                 note.className = "hint";
-                note.textContent = "Personal GPU launches are temporarily unavailable. Choose a CPU profile, or open a shared workspace from Home. Dedicated GPU support is not ready for use.";
+                note.textContent = "Dedicated GPU profiles use your existing GPU access and allowance. If another GPU workspace is active, stop it with its normal controls before starting another.";
                 section.insertBefore(note, section.querySelector(".grid"));
               }
             }
           }
           const profileInputs = Array.from(form.querySelectorAll('input[name="profile"]'));
-          const unavailable = new Set();
-          for (const input of profileInputs) {
-            const card = input.closest(".option-card");
-            if (card && card.querySelector(".gpu-chip")) {
-              unavailable.add(input.value);
-              input.disabled = true;
-              card.classList.add("is-unavailable");
-              card.setAttribute("aria-disabled", "true");
-              const badge = document.createElement("span");
-              badge.className = "badge text-secondary-emphasis bg-secondary-subtle ms-2";
-              badge.textContent = "Unavailable";
-              card.querySelector(".option-card-title").appendChild(document.createTextNode(" "));
-              card.querySelector(".option-card-title").appendChild(badge);
-            }
-          }
           const available = new Set(profileInputs.filter(input => !input.disabled).map(input => input.value));
           function canSubmit() {
             const selected = profileInputs.find(input => input.checked);
             const values = new FormData(form).getAll("profile");
             return Boolean(selected && !selected.disabled && available.has(selected.value) && values.length === 1 && values[0] === selected.value);
           }
-          // Prevent the old card click listener from checking a disabled radio.
-          form.addEventListener("click", function (event) {
-            const card = event.target.closest && event.target.closest(".option-card");
-            const input = card && card.querySelector('input[name="profile"]');
-            if (input && unavailable.has(input.value)) {
-              event.preventDefault();
-              event.stopImmediatePropagation();
-            }
-          }, true);
           form.addEventListener("submit", function (event) {
             if (!canSubmit()) {
               event.preventDefault();
