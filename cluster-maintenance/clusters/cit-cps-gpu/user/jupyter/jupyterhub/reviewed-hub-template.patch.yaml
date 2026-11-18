@@ -19,6 +19,7 @@
         kubectl.kubernetes.io/restartedAt: '2026-11-17T13:11:20.023255+00:00'
         cps.unileoben.ac.at/shared-home-sha256: 9ff1637259afbbad79c789e9e6a0cf6754df9b7f43cd90b41c8d258978a237d9
         cps.unileoben.ac.at/shared-home-config-sha256: f430ed6a5700061a1570c77094003c81586136953197d4d302e5495d2df7ed87
+        cps.unileoben.ac.at/personal-spawn-sha256: d4b1363c464dcad9fbe7d730293e061ea0b82e7e4371485ef0ce4b103b077de2
       labels:
         app: jupyterhub
         app.kubernetes.io/component: hub
@@ -127,7 +128,7 @@
               name: native-lifecycle147-hub-2ca9dccf4f4b81f4-control
         - name: CPS_NATIVE_GROUP_POLICY_TRANSITION_REFERENCE
           value: /etc/cps-native-proof/policy-transition.json
-        image: ghcr.io/mul-cps/cps-compute@sha256:0bbeb42640f040a1c26a39c19d368a6ea92bcb18721beba8f68320e7c0edd097
+        image: ghcr.io/mul-cps/cps-compute@sha256:b045f8a33fc46accb7a1202b9dfa1e13cfae6dd38a2088a8531c611b9a0dd7de
         imagePullPolicy: IfNotPresent
         livenessProbe:
           failureThreshold: 30
@@ -228,6 +229,9 @@
           name: files
         - mountPath: /usr/local/etc/jupyterhub/jupyterhub_config.d/90-shared-home.py
           subPath: shared-home-config
+          name: files
+        - mountPath: /usr/local/share/jupyterhub/shared-home-templates/spawn.html
+          subPath: personal-spawn
           name: files
       dnsPolicy: ClusterFirst
       imagePullSecrets:
@@ -408,6 +412,8 @@
             path: shared-home
           - key: shared-home-config
             path: shared-home-config
+          - key: personal-spawn
+            path: personal-spawn
 - op: replace
   path: /spec/strategy
   value:

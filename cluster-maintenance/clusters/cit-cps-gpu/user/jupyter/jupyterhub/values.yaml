@@ -184,6 +184,212 @@ hub:
       stringData: |
         # Use the standard chart config.d loader; runtime credentials stay pinned.
         c.JupyterHub.template_paths = ["/usr/local/share/jupyterhub/shared-home-templates"]
+    personal-spawn:
+      mountPath: /usr/local/share/jupyterhub/shared-home-templates/spawn.html
+      stringData: |
+        {% extends "templates/spawn.html" %}
+        {% block stylesheet %}
+          {{ super() }}
+          <style>
+            .personal-spawn { max-width: 960px; margin: 2rem auto; }
+            .personal-spawn h1 { font-size: 1.75rem; margin-bottom: .5rem; }
+            .personal-spawn .personal-intro { color: var(--bs-secondary-color); margin-bottom: 1.25rem; }
+            .personal-spawn .personal-launch { position: sticky; top: .5rem; z-index: 5; background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: .75rem; padding: 1rem 1.25rem; display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; box-shadow: 0 .125rem .25rem rgba(0,0,0,.04); }
+            .personal-spawn .personal-selection { min-width: 0; flex: 1; }
+            .personal-spawn .personal-selection h2 { font-size: 1.1rem; margin: 0 0 .35rem; overflow-wrap: anywhere; }
+            .personal-spawn .personal-selection p { margin: 0; color: var(--bs-secondary-color); font-size: .9rem; }
+            .personal-spawn .feedback-container { min-width: 7rem; flex-shrink: 0; }
+            .personal-spawn .personal-shared { border-left: 3px solid var(--bs-primary); padding: .65rem 1rem; margin: 1rem 0; background: var(--bs-tertiary-bg); border-radius: .25rem; }
+            .personal-spawn details.personal-options { border: 1px solid var(--bs-border-color); border-radius: .65rem; margin-top: 1rem; }
+            .personal-spawn details.personal-options > summary { padding: 1rem; font-weight: 600; cursor: pointer; }
+            .personal-spawn .personal-options-copy { margin: 0 1rem .75rem; color: var(--bs-secondary-color); }
+            .personal-spawn .hub-ui { max-width: none; margin: 0; padding: 0 1rem 1rem; color: var(--bs-body-color); font-family: inherit; }
+            .personal-spawn .spawn-shell, .personal-spawn .spawn-flip-frame, .personal-spawn .spawn-flip-card { perspective: none !important; transform: none !important; transition: none !important; height: auto !important; min-height: 0 !important; }
+            .personal-spawn .spawn-face { position: static !important; transform: none !important; backface-visibility: visible !important; }
+            .personal-spawn .spawn-face--front, .personal-spawn .flip-controls, .personal-spawn .options-heading, .personal-spawn .debug-panel { display: none !important; }
+            .personal-spawn .face-panel { padding: 0; border: 0; background: transparent; box-shadow: none; }
+            .personal-spawn .grid { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,17rem),1fr)); gap: .75rem; }
+            .personal-spawn .option-section { margin: 1rem 0; }
+            .personal-spawn .section-title { color: var(--bs-body-color); font-size: 1rem; font-weight: 600; }
+            .personal-spawn .option-card { color: var(--bs-body-color); background: var(--bs-body-bg); border: 1px solid var(--bs-border-color); border-radius: .6rem; box-shadow: none; padding: 1rem; min-width: 0; overflow-wrap: anywhere; }
+            .personal-spawn .option-card:focus-within { outline: 2px solid var(--bs-primary); outline-offset: 2px; }
+            .personal-spawn .option-card.is-unavailable { border-style: dashed; background: var(--bs-tertiary-bg); cursor: not-allowed; }
+            .personal-spawn .option-card.is-unavailable:hover { transform: none; box-shadow: none; border-color: var(--bs-border-color); }
+            .personal-spawn .option-card.is-unavailable input { cursor: not-allowed; }
+            .personal-spawn .option-card.selected { border-color: var(--bs-primary); background: var(--bs-primary-bg-subtle); }
+            .personal-spawn .option-card-title { font-size: 1rem; color: var(--bs-body-color); }
+            .personal-spawn .option-card-copy, .personal-spawn .hint, .personal-spawn .help-text, .personal-spawn .mount-details { color: var(--bs-secondary-color); }
+            .personal-spawn .chip, .personal-spawn .mount-pill { color: var(--bs-body-color); background: var(--bs-secondary-bg); border-color: var(--bs-border-color); }
+            .personal-spawn .layer, .personal-spawn .mount-item { background: var(--bs-body-bg); border-color: var(--bs-border-color); border-radius: .6rem; }
+            .personal-spawn .personal-storage { margin-top: 1rem; }
+            .personal-spawn .personal-storage > summary { padding: .75rem 0; font-weight: 600; cursor: pointer; }
+            .personal-spawn .mount-details { overflow-wrap: anywhere; }
+            @media(max-width:575.98px) {
+              .personal-spawn { margin-top: 1rem; }
+              .personal-spawn h1 { font-size: 1.5rem; }
+              .personal-spawn .personal-launch { align-items: stretch; flex-direction: column; padding: .9rem; }
+              .personal-spawn .feedback-container { width: 100%; }
+              .personal-spawn .mount-item-header { flex-wrap: wrap; }
+            }
+          </style>
+        {% endblock stylesheet %}
+        {% block main %}
+          <div class="container personal-spawn">
+            <h1>Start your personal server</h1>
+            <p class="personal-intro">Choose a notebook for your own work. The standard CPU profile is the default.</p>
+            {% if for_user and user.name != for_user.name -%}
+              <p>Spawning server for {{ for_user.name }}</p>
+            {% endif -%}
+            {% if error_message %}
+              <p class="spawn-error-msg alert alert-danger">Error: {{ error_message }}</p>
+            {% elif error_html_message %}
+              <p class="spawn-error-msg alert alert-danger">{{ error_html_message | safe }}</p>
+            {% endif %}
+            <form enctype="multipart/form-data" id="spawn_form" action="{{ url }}" method="post" role="form">
+              <div class="personal-launch">
+                <div class="personal-selection" aria-live="polite">
+                  <h2 id="personal-selected-name">Standard CPU notebook</h2>
+                  <p id="personal-selected-resources">Your currently selected profile starts below.</p>
+                  <p id="personal-selected-purpose"></p>
+                </div>
+                <div class="feedback-container">
+                  <button type="submit" class="btn btn-jupyter form-control">Start</button>
+                  <div class="feedback-widget hidden"><i class="fa fa-spinner"></i></div>
+                </div>
+              </div>
+              <p id="personal-unavailable" class="alert alert-warning" role="alert" hidden>That personal GPU profile is unavailable. Choose an available CPU profile explicitly, or open a shared workspace from Home.</p>
+              <div class="personal-shared">
+                <strong>Looking for a shared GPU notebook?</strong>
+                <div>Open shared 5, 10 or 20 GiB workspaces from <a id="personal-shared-link" href="{{ base_url }}home#shared-workspaces">Shared workspaces on Home</a>.</div>
+              </div>
+              <details id="personal-options" class="personal-options">
+                <summary>Change profile or storage</summary>
+                <p class="personal-options-copy">Choose an available profile below. Unavailable GPU choices cannot be started. Resource numbers are limits; shared CPU time is not a dedicated reservation.</p>
+                {{ spawner_options_form | safe }}
+              </details>
+            </form>
+          </div>
+        {% endblock main %}
+        {% block script %}
+          {{ super() }}
+          <script>
+        (function () {
+          "use strict";
+          const form = document.getElementById("spawn_form");
+          if (!form) return;
+          const hub = window.jhdata && window.jhdata.base_url;
+          if (typeof hub === "string" && hub.startsWith("/") && !hub.startsWith("//")) {
+            const href = hub + "home#shared-workspaces";
+            document.getElementById("personal-shared-link").setAttribute("href", href);
+            for (const link of form.querySelectorAll('a[href="/services/cps-admin/app/"]')) {
+              link.setAttribute("href", href);
+              link.textContent = "Shared workspaces on Home";
+              const hint = link.closest("p");
+              if (hint) hint.replaceChildren(document.createTextNode("Shared GPU notebooks (5, 10 or 20 GiB) are opened from "), link, document.createTextNode(" when available to you."));
+            }
+          }
+          // Move existing control nodes, never clone/recreate or change their values.
+          const options = form.querySelector("#spawn-face-back");
+          if (options) {
+            const layers = Array.from(options.children).filter(node => node.classList.contains("layer"));
+            if (layers.length) {
+              const storage = document.createElement("details");
+              storage.className = "personal-storage";
+              const summary = document.createElement("summary");
+              summary.textContent = "Storage and shared folders";
+              storage.appendChild(summary);
+              const note = document.createElement("p");
+              note.className = "hint";
+              note.textContent = "Your persistent home remains available between sessions. Additional mounts use existing shared storage; they do not create a separate backup. Current selections below are preserved.";
+              storage.appendChild(note);
+              options.insertBefore(storage, layers[0]);
+              for (const layer of layers) storage.appendChild(layer);
+            }
+            for (const section of options.querySelectorAll(".option-section")) {
+              const cards = Array.from(section.querySelectorAll('input[name="profile"]'));
+              if (cards.some(input => input.closest(".option-card").querySelector(".gpu-chip"))) {
+                const note = document.createElement("p");
+                note.className = "hint";
+                note.textContent = "Personal GPU launches are temporarily unavailable. Choose a CPU profile, or open a shared workspace from Home. Dedicated GPU support is not ready for use.";
+                section.insertBefore(note, section.querySelector(".grid"));
+              }
+            }
+          }
+          const profileInputs = Array.from(form.querySelectorAll('input[name="profile"]'));
+          const unavailable = new Set();
+          for (const input of profileInputs) {
+            const card = input.closest(".option-card");
+            if (card && card.querySelector(".gpu-chip")) {
+              unavailable.add(input.value);
+              input.disabled = true;
+              card.classList.add("is-unavailable");
+              card.setAttribute("aria-disabled", "true");
+              const badge = document.createElement("span");
+              badge.className = "badge text-secondary-emphasis bg-secondary-subtle ms-2";
+              badge.textContent = "Unavailable";
+              card.querySelector(".option-card-title").appendChild(document.createTextNode(" "));
+              card.querySelector(".option-card-title").appendChild(badge);
+            }
+          }
+          const available = new Set(profileInputs.filter(input => !input.disabled).map(input => input.value));
+          function canSubmit() {
+            const selected = profileInputs.find(input => input.checked);
+            const values = new FormData(form).getAll("profile");
+            return Boolean(selected && !selected.disabled && available.has(selected.value) && values.length === 1 && values[0] === selected.value);
+          }
+          // Prevent the old card click listener from checking a disabled radio.
+          form.addEventListener("click", function (event) {
+            const card = event.target.closest && event.target.closest(".option-card");
+            const input = card && card.querySelector('input[name="profile"]');
+            if (input && unavailable.has(input.value)) {
+              event.preventDefault();
+              event.stopImmediatePropagation();
+            }
+          }, true);
+          form.addEventListener("submit", function (event) {
+            if (!canSubmit()) {
+              event.preventDefault();
+              event.stopImmediatePropagation();
+              document.getElementById("personal-unavailable").hidden = false;
+            }
+          }, true);
+          // Legacy flip initialization can mark the back face inert/aria-hidden.
+          // Native <details> now owns disclosure accessibility; remove only old flags.
+          function enableOptions() {
+            let panel = form.querySelector("#spawn-face-back");
+            while (panel && panel !== form.querySelector("#personal-options")) {
+              panel.removeAttribute("aria-hidden");
+              panel.removeAttribute("inert");
+              panel = panel.parentElement;
+            }
+          }
+          enableOptions();
+          window.addEventListener("DOMContentLoaded", function () {
+            enableOptions();
+            window.requestAnimationFrame(enableOptions);
+          }, {once: true});
+          form.querySelector("#personal-options").addEventListener("toggle", enableOptions);
+          function updateSelection() {
+            const valid = canSubmit();
+            form.querySelector('button[type="submit"]').disabled = !valid;
+            document.getElementById("personal-unavailable").hidden = valid;
+            for (const radio of profileInputs) {
+              const parent = radio.closest(".option-card");
+              if (parent) parent.classList.toggle("selected", radio.checked);
+            }
+            const input = form.querySelector('input[name="profile"]:checked');
+            const card = input && input.closest(".option-card");
+            if (!card) return;
+            document.getElementById("personal-selected-name").textContent = card.querySelector(".option-card-title").textContent;
+            document.getElementById("personal-selected-resources").textContent = card.querySelector(".option-card-copy").textContent;
+            const gpu = card.querySelector(".gpu-chip");
+            document.getElementById("personal-selected-purpose").textContent = gpu ? "Unavailable: choose a CPU profile explicitly, or use Shared workspaces on Home." : input.value === "cpu-desktop" ? "A browser desktop for graphical applications; no GPU reserved." : "For notebooks and CPU work; no GPU reserved.";
+          }
+          form.addEventListener("change", updateSelection);
+          updateSelection();
+        }());
+          </script>
+        {% endblock script %}
   extraEnv:
     - name: OAUTH_CLIENT_SECRET
       # client-secret sourced from jupyterhub-oauth-secret, now SOPS-managed — see oauth-sopssecret.yaml
