@@ -1,0 +1,41 @@
+{
+  "all_non_label_image_config_equal": true,
+  "base_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:478ec4f55f4a10ae9b04c7ddb7792c041cbe36556911a3661e64f59e2527f126",
+  "base_layers_preserved": true,
+  "build_receipt_was_predeployment": true,
+  "causal_regression": {
+    "initial_missing_dependency_failure_retained": true,
+    "installed_dependency_candidate_exit": 0,
+    "installed_dependency_old_exit": 1,
+    "old_exact_generic_409_reproduced": true,
+    "project_full_suite": {
+      "passed": 401,
+      "subtests_passed": 560
+    }
+  },
+  "config_digest": "sha256:9d8635c4ef6aa6274d1fe0029dd56ee719f1dec0561720d9161fbc89413275ce",
+  "final_image_qualification": {
+    "dependency_installs": false,
+    "exit_code": 0,
+    "gid": 10001,
+    "live_actions": false,
+    "module_ownership_mode": "0:0 0644",
+    "network": "none",
+    "read_only": true,
+    "source_overlay": false,
+    "tests_passed": 72,
+    "uid": 10001
+  },
+  "final_published_digest_tests": 72,
+  "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:d52d0a7a6af988e2cf709fa1756305ca03115e169f55b9837f2a4964b990065c",
+  "only_production_files_changed": [
+    "compute.py",
+    "workspaces.py"
+  ],
+  "production_modules": {
+    "compute": "dc0b4e57c48a805ca225e6306f9509928b53d51ac99025d38d52b808d7dd6a47",
+    "workspaces": "57d221127df70051103125269fab706ef6075f1fbf3ad9e8802dc58aad0b16c9"
+  },
+  "source_branch": "fix/source-release-reconcile-20261118",
+  "source_commit": "2bb5c1499838ff1455d1feb94970ffb0dd23065b"
+}

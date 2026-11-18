@@ -1,0 +1,82 @@
+{
+  "entire_deployment_spec_except_image_preserved": true,
+  "gitops_rollout_claimed": false,
+  "old_last_applied_configuration_not_reapplied": true,
+  "order": [
+    "cps",
+    "cit"
+  ],
+  "services": {
+    "cit": {
+      "apply_at": "2026-11-18T04:26:54.975187+00:00",
+      "deployment_uid": "54466777-ece9-4d63-bcd8-8156caba55af",
+      "generation": 123,
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:d52d0a7a6af988e2cf709fa1756305ca03115e169f55b9837f2a4964b990065c",
+      "management": {
+        "fleet_owner_proven": false,
+        "observed_managers": [
+          "kubectl-client-side-apply",
+          "kubectl-patch",
+          "k3s"
+        ]
+      },
+      "module_hashes": {
+        "compute_sha256": "dc0b4e57c48a805ca225e6306f9509928b53d51ac99025d38d52b808d7dd6a47",
+        "workspaces_sha256": "57d221127df70051103125269fab706ef6075f1fbf3ad9e8802dc58aad0b16c9"
+      },
+      "new_pod_uid": "5478746b-5703-4fd6-9359-2c95812c8d42",
+      "new_writer_ready": true,
+      "old_pod_uid": "5aa253d5-3f96-4854-9320-7f3bb11f1bd9",
+      "old_writer_gone": true,
+      "only_image_changed_fullspec_exact": true,
+      "preservation": {
+        "config_secret_pvc_pv_equal": true,
+        "crypto_hash_equal": true,
+        "mounted_config_equal": true,
+        "protected_gateway_hubs_equal": true,
+        "rbac_bindings_unchanged": true,
+        "service_equal": true,
+        "source_sqlite_semantic_equal": true,
+        "spec_except_image_equal": true
+      },
+      "runtime_uid": 10001,
+      "single_writer": true
+    },
+    "cps": {
+      "apply_at": "2026-11-18T04:24:16.470789+00:00",
+      "deployment_uid": "cea488be-b5c5-481f-b41d-169d22f56f33",
+      "generation": 123,
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:d52d0a7a6af988e2cf709fa1756305ca03115e169f55b9837f2a4964b990065c",
+      "management": {
+        "fleet_owner_proven": false,
+        "observed_managers": [
+          "kubectl-client-side-apply",
+          "kubectl-patch",
+          "k3s"
+        ]
+      },
+      "module_hashes": {
+        "compute_sha256": "dc0b4e57c48a805ca225e6306f9509928b53d51ac99025d38d52b808d7dd6a47",
+        "workspaces_sha256": "57d221127df70051103125269fab706ef6075f1fbf3ad9e8802dc58aad0b16c9"
+      },
+      "new_pod_uid": "bee59930-6626-4d5c-84bf-a6c91dccb30f",
+      "new_writer_ready": true,
+      "old_pod_uid": "27060a8f-7c40-44ee-8be6-bfba13d592dd",
+      "old_writer_gone": true,
+      "only_image_changed_fullspec_exact": true,
+      "preservation": {
+        "config_secret_pvc_pv_equal": true,
+        "crypto_hash_equal": true,
+        "mounted_config_equal": true,
+        "protected_gateway_hubs_equal": true,
+        "rbac_bindings_unchanged": true,
+        "service_equal": true,
+        "source_sqlite_semantic_equal": true,
+        "spec_except_image_equal": true
+      },
+      "runtime_uid": 10001,
+      "single_writer": true
+    }
+  },
+  "sqlite_restore_performed": false
+}

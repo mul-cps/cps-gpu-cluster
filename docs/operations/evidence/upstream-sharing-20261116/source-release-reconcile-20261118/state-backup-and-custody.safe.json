@@ -1,0 +1,90 @@
+{
+  "active_notebook_uids_at_snapshot": [],
+  "all_node_fences_equal": true,
+  "backups": {
+    "cit": {
+      "bytes": 4767744,
+      "integrity_check": "ok",
+      "method": "read-only source SQLite online backup to memory, serialized to protected local file; no restore",
+      "mode": "0o600",
+      "sha256": "d09e8de55df207c992935ee8a45bbbced3809a2335a54da28283a2c558f7a96a",
+      "tables": {
+        "audit": 1513,
+        "console_owner": 1,
+        "email_links": 0,
+        "records": 30,
+        "reviewed_account_aliases": 7,
+        "workspace_accounts": 6
+      }
+    },
+    "cps": {
+      "bytes": 29507584,
+      "integrity_check": "ok",
+      "method": "read-only source SQLite online backup to memory, serialized to protected local file; no restore",
+      "mode": "0o600",
+      "sha256": "4afd9d125ee26af9c37bdd40d1e4be0ce2eae08e56e5d3f524269b882e11f526",
+      "tables": {
+        "audit": 6002,
+        "console_owner": 1,
+        "email_links": 0,
+        "records": 72,
+        "reviewed_account_aliases": 9,
+        "workspace_accounts": 13
+      }
+    }
+  },
+  "cps_still_ready_after_cit": true,
+  "gateway_control_semantic_tables_equal": true,
+  "gateway_reservation_tables_equal": true,
+  "node_fences": [
+    {
+      "name": "k3s-wk-gpu1",
+      "qualified": null,
+      "taints": [
+        {
+          "effect": "NoSchedule",
+          "key": "cps.unileoben.ac.at/maintenance",
+          "value": "upstream-pilot"
+        }
+      ],
+      "uid": "b13bebdd-60c2-4bbd-8fce-a39312ec264d",
+      "unschedulable": false
+    },
+    {
+      "name": "k3s-wk-gpu2",
+      "qualified": "qualified",
+      "taints": [],
+      "uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "unschedulable": false
+    },
+    {
+      "name": "k3s-wk-gpu3",
+      "qualified": "qualified",
+      "taints": [],
+      "uid": "7b3b5113-158d-4e0d-bd63-898a508fe806",
+      "unschedulable": false
+    },
+    {
+      "name": "k3s-wk-gpu4",
+      "qualified": null,
+      "taints": [],
+      "uid": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+      "unschedulable": false
+    }
+  ],
+  "schema_roles_accounts_and_workspace_semantic_rows_preserved": true,
+  "source_workspace_markers": {
+    "cit-admin": {
+      "archive_pending": 0,
+      "states": {
+        "stopped": 6
+      }
+    },
+    "cps-admin": {
+      "archive_pending": 0,
+      "states": {
+        "stopped": 13
+      }
+    }
+  }
+}

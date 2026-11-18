@@ -1,0 +1,35 @@
+{
+  "files": {
+    "README.md": {
+      "bytes": 4303,
+      "sha256": "30988a116cf923e1ef0048d0b8a0bbe383483f0a6fb7c1d02dfd386ac3a94a74"
+    },
+    "authenticated-readonly-health.safe.json": {
+      "bytes": 1322,
+      "sha256": "0cefbb1f977739aefa1a6da0d3a5b4cec058bef8787ac7e380426e1ba8a4a0b1"
+    },
+    "scope-and-open-gates.safe.json": {
+      "bytes": 774,
+      "sha256": "8822c93b0a9d4835441a02f9634f6ce79c5072554300b9ad3b9d87ed21aa7fa3"
+    },
+    "serial-deployment-and-preservation.safe.json": {
+      "bytes": 2933,
+      "sha256": "67b5d695e3618df085a724af2e1f325a7f5b457e22178156a31b2d012331719a"
+    },
+    "source-and-final-artifact.safe.json": {
+      "bytes": 1493,
+      "sha256": "3a2ebf9c1ee43217f3bd614a00fe56bb9d7ab7e1e4337668bda5d0b0b3da79da"
+    },
+    "state-backup-and-custody.safe.json": {
+      "bytes": 2389,
+      "sha256": "44f3de6925c77ed1b995d9aa45455addc7104095f6a1b99a0493acb28bfa475f"
+    },
+    "whitelisted-source-hashes.safe.json": {
+      "bytes": 4479,
+      "sha256": "5501c7e056a0485bf649bb0f0617ca56c61b8ddc31a78385d90f5e8e1d5b5caf"
+    }
+  },
+  "full_platform_acceptance": false,
+  "strict_live_active_stop200_gate": "OPEN",
+  "worker_acceptance": false
+}

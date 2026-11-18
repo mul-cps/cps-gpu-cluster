@@ -1,0 +1,37 @@
+{
+  "credential_closure": {
+    "both_authorizations_denied_after_closure": true,
+    "both_native_credentials_absent_and_denied": true,
+    "both_raw_handoffs_absent": true,
+    "closure_errors": [],
+    "done_marker_present": true,
+    "independently_observed_at": "2026-11-18T04:35:55.794061+00:00",
+    "operator_authority_unchanged": true,
+    "watch_inactive": true
+  },
+  "no_health_endpoint_claimed": true,
+  "route": "/services/{source}-admin/api/platform-status",
+  "service_port": 10101,
+  "services": {
+    "cit": {
+      "GET_only": true,
+      "at": "2026-11-18T04:28:51.423537+00:00",
+      "genuine_existing_operator": true,
+      "live_active_STOP200_fault_gate_not_claimed": true,
+      "local_workspaces_HTTP200_and_exact_QA_stopped": true,
+      "no_Source_lifecycle_or_grant_changes": true,
+      "platform_status_HTTP200": true
+    },
+    "cps": {
+      "GET_only": true,
+      "at": "2026-11-18T04:25:49.381836+00:00",
+      "genuine_existing_operator": true,
+      "live_active_STOP200_fault_gate_not_claimed": true,
+      "local_workspaces_HTTP200_and_exact_QA_stopped": true,
+      "no_Source_lifecycle_or_grant_changes": true,
+      "platform_status_HTTP200": true
+    }
+  },
+  "source_lifecycle_fault_acceptance_claimed": false,
+  "unauthenticated_redirect_not_counted_as_typed_health": true
+}

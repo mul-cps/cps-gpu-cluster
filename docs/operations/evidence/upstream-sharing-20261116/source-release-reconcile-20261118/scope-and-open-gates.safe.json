@@ -1,0 +1,21 @@
+{
+  "driver_or_scheduler_changes": false,
+  "exact_generic_409_only": true,
+  "full_platform_acceptance": false,
+  "gpu1_maintenance_fence_retained": true,
+  "gpu1_qualification_label_absent": true,
+  "gpu1_worker_accepted": false,
+  "gpu4_maintenance_started": false,
+  "hubs_or_gateway_spec_changed": false,
+  "live_active_backend200_first_response_loss_gate": "OPEN",
+  "mandatory_initial_reservation_get_preserved": true,
+  "new_roles_or_grants": false,
+  "no_second_release_post_or_sleep_added": true,
+  "old_backend409_outcomes_counted_as_accepted200": false,
+  "source_fix_delivered": true,
+  "source_modules_only": [
+    "e2x_course_hub/cps/compute.py",
+    "e2x_course_hub/cps/workspaces.py"
+  ],
+  "unknown_active_replaced_or_ambiguous_states_fail_closed": true
+}

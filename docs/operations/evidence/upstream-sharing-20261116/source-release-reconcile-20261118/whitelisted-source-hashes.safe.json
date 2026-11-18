@@ -1,0 +1,114 @@
+{
+  "files": {
+    "RED.log": {
+      "bytes": 2775,
+      "sha256": "09dbaeb8b2fb3816a9ac66bb6198d74eebe87204bbd1512b1ca93070c4bed0d8"
+    },
+    "final-image-build/config-diff.safe.json": {
+      "bytes": 673,
+      "sha256": "d44feb734eab89e33bfa3d021e09b5318c605cef38ceb4d72ed9cec716b81518"
+    },
+    "final-image-build/manifest.safe.json": {
+      "bytes": 3192,
+      "sha256": "5d17ac3c946f0b756a2e8e326d5fcaee9ee9c856f91d929e99ed0c59e27dc1e4"
+    },
+    "final-image-build/runtime-uid10001/manifest.safe.json": {
+      "bytes": 926,
+      "sha256": "ad628b27c6ab42388094fd50b1fdd52afb4e783efbe9a9b50de892c617e8b393"
+    },
+    "full-suite-corrected-project-venv.log": {
+      "bytes": 530,
+      "sha256": "906f637449c8cdba14db494091faa6e42d5d6f359d7ed7d9f497208aafa84376"
+    },
+    "installed-dependency-tests.safe.json": {
+      "bytes": 2041,
+      "sha256": "3c8d32330a639b747a73c05d1f361b4e0b112a2cd167fb0bf32bcd378f79c420"
+    },
+    "manifest.safe.json": {
+      "bytes": 3437,
+      "sha256": "f9b4564074b42127a139e994ac6711598e0f9b3cd4589407998435e936e21122"
+    },
+    "precommit-full-suite.log": {
+      "bytes": 530,
+      "sha256": "aee9c95e43cf9b3f41749ccc6cb586f57d9fc461255bad9e46fb9efdefd1c2db"
+    },
+    "rollout-actual/cit/baseline.safe.json": {
+      "bytes": 19721,
+      "sha256": "14ed664ce4790d13bbc6cce4f133601e096a5a0d85834b46c8d0eef66aa9dfab"
+    },
+    "rollout-actual/cit/manifest.json": {
+      "bytes": 1287,
+      "sha256": "7bfb76cf0a2fd9498ea08942fb076a99b937eea34ae4d01ca334f1dcd47b1438"
+    },
+    "rollout-actual/cit/post/custody-semantic-post.safe.json": {
+      "bytes": 2099,
+      "sha256": "8d905e58762588cde21aa0e8f8e37833c23e2317edb9cb215b49ec429407d5a7"
+    },
+    "rollout-actual/cit/post/manifest.json": {
+      "bytes": 891,
+      "sha256": "9f5713ecb72e779c860ef911546370b9454d54497f9aadcd51952879e24657ed"
+    },
+    "rollout-actual/cit/post/node-fences.safe.json": {
+      "bytes": 774,
+      "sha256": "517849c2182d370da2528f794c6d968178e18d3b6ae87708ef0da49c82a95b8a"
+    },
+    "rollout-actual/cit/post/root-authenticated-health.safe.json": {
+      "bytes": 336,
+      "sha256": "eb232cb347379680e15f2484785440064b9d728b85e3c21a8ccf5f9a23812872"
+    },
+    "rollout-actual/cit/post/verification.safe.json": {
+      "bytes": 856,
+      "sha256": "d2bd2d13ad302be0a0e51f871a0f17af73cb900afd16066e48ef5262fdca3872"
+    },
+    "rollout-actual/cit/root-apply.safe.json": {
+      "bytes": 418,
+      "sha256": "ac1774b7f626d9b5934471ee2721226ce91221001cb93ea30193842f84dcfe5c"
+    },
+    "rollout-actual/cit/sqlite-backup.safe.json": {
+      "bytes": 315,
+      "sha256": "94a381af32ee8c215db215f07d00f8f2be5495e3be6ee19b3db5c539a1bf1683"
+    },
+    "rollout-actual/cps/baseline.safe.json": {
+      "bytes": 19722,
+      "sha256": "d196b664fc743f8a81f1fc9b9e1e5881ef13471af0f68ce719d0f2a7ac65b10b"
+    },
+    "rollout-actual/cps/manifest.json": {
+      "bytes": 1618,
+      "sha256": "9aae58637d9c5dbb3bd69f6de56fcb4b610056d495b909d07cac45797497b0da"
+    },
+    "rollout-actual/cps/post/manifest.json": {
+      "bytes": 691,
+      "sha256": "864b0346d480a04f86c7715f080677581910ccaf0d4442735de5b2265263d899"
+    },
+    "rollout-actual/cps/post/root-authenticated-health.safe.json": {
+      "bytes": 355,
+      "sha256": "b2a0162f974bda79bae8a226593a429274da333c53863c1f8778f8d15796a0e3"
+    },
+    "rollout-actual/cps/post/verification.safe.json": {
+      "bytes": 752,
+      "sha256": "7968eb03ea8fd100e397e281f1d0eac46aec58b1eefae21c6090ddbbafa9236b"
+    },
+    "rollout-actual/cps/root-apply.safe.json": {
+      "bytes": 494,
+      "sha256": "ce39ae7220872927c87bf16b3b5d76df4e1ecc1b8db692f7e67cf1855bdead98"
+    },
+    "rollout-actual/cps/sqlite-backup.safe.json": {
+      "bytes": 317,
+      "sha256": "5c4bda471c3a051d128cec2b208272e254ea600f7d2f846fd2f0db086313de3e"
+    },
+    "rollout-readonly-credentials/closure.safe.json": {
+      "bytes": 419,
+      "sha256": "d824f0d9abe6af5ab60e5d169f5841fac8b38a471c2f933b39d2780c8c69bf0d"
+    },
+    "rollout-readonly-credentials/done": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "rollout-readonly-credentials/root-independent-closure.safe.json": {
+      "bytes": 367,
+      "sha256": "1dece640a8c3f40ba764189caa40ad746df5bb7e470ddd5e85120cb533ef74a6"
+    }
+  },
+  "private_source_root": "source-release-reconcile-20261118",
+  "raw_specs_env_secret_token_database_or_log_bodies_published": false
+}
