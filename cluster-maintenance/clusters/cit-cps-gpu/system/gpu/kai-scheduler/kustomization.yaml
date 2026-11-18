@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+# Apply only the stock per-component replica setting; no global replica change.
+patches:
+- target:
+    group: kai.scheduler
+    version: v1
+    kind: Config
+    name: kai-config
+  patch: |-
+    - op: add
+      path: /spec/admission/replicas
+      value: 2

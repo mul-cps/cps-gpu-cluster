@@ -16,6 +16,16 @@ binder:
   cdiEnabled: true
 admission:
   gpuFractionRuntimeClassName: nvidia
+  # Preserve the existing admission-pdb minAvailable: 1; avoid overlapping PDBs.
+  podDisruptionBudget:
+    enabled: false
+  affinity:
+    podAntiAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+      - labelSelector:
+          matchLabels:
+            app: admission
+        topologyKey: kubernetes.io/hostname
 kaiConfig:
   render: true
 kaiConfigDeployer:

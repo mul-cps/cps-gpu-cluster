@@ -19,3 +19,7 @@ diff:
     operations:
     - op: remove
       path: /status
+
+# v0.18.1 supports Config admission.replicas but does not expose it in Helm values.
+kustomize:
+  dir: .
