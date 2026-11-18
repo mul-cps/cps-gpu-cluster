@@ -1,5 +1,5 @@
 {
-  "observedAt": "2026-11-18T17:24:31.753879+00:00",
+  "observedAt": "2026-11-18T17:29:02.357036+00:00",
   "scope": "Partial personal GPU/native storage qualification, not full rollout acceptance",
   "CPSOwnerRevision": "fb0eb4a4b05c001bba9f9a0b9fa7b62bdaf28bfc",
   "GatewayGeneration": 444,
@@ -163,8 +163,24 @@
     "moduleSHA256": "4c27dc1ade2a7d79b33f0cd3137d9d654dae3a10464803e7cb6a23d78732a636",
     "healthyAndInstalled": true,
     "stableNativeTablesConfigCryptoCITExact": true,
-    "liveDenialTest": "pending: I4 native Ready/public200 passed; test witness creation precondition failed on retained existing file; normal cleanup passed",
-    "finalArtifactTests": "340 pass; same 24 inherited fixture errors; zero failures"
+    "liveDenialTest": "PASS: I5 owned native Start/CUDA/storage/actionable canonical409/no second Pod/normal Stop/role and token closure",
+    "finalArtifactTests": "340 pass; same 24 inherited fixture errors; zero failures",
+    "actualCase": "personal-gpu-qa-08434077eb3c",
+    "receipts": {
+      "hardware.safe.json": "ca93ad44a24a8d0a90266cf3cdceea4cca7720997c6f96eeb454c38628acf8ea",
+      "canonical-conflict.safe.json": "6f90e58488d23d1ab048ef69b1a3b9fed96caac5c1d805c749a1218078da76d8",
+      "closure.safe.json": "903a1a649ee7e94890a6a7e22dde6c0af7558bd5c0c06e8def2e529124069fd0",
+      "credential-closure.safe.json": "c765646ecd5f1392495fde74a58ba37d966c92182e8ada4d68324c228b33816a"
+    },
+    "allPersonalBindingsAfter": 0,
+    "nativeFixtureSpawnersAfter": [
+      {
+        "rowId": 28,
+        "name": "",
+        "server_id": null,
+        "unresolvedPersonalGeneration": false
+      }
+    ]
   },
   "peerStoragePartial": {
     "nodes": [
