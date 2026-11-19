@@ -1,0 +1,130 @@
+{
+  "date": "2026-11-19",
+  "executionScope": "Kubernetes qualification Jobs",
+  "dedicatedCuda": {
+    "cudaDevices": 1,
+    "bytesVerified": 4096,
+    "gpu": "GPU-8df28256-50a3-db30-3706-b69d52f4874f, 620.70.06"
+  },
+  "singleNodeNccl": {
+    "node": "k3s-wk-gpu1",
+    "ranks": [
+      {
+        "rank": 0,
+        "backend": "nccl",
+        "sum": 3,
+        "gpu": "NVIDIA A100-PCIE-40GB"
+      },
+      {
+        "rank": 1,
+        "backend": "nccl",
+        "sum": 3,
+        "gpu": "NVIDIA A100-PCIE-40GB"
+      }
+    ]
+  },
+  "twoNodeNccl": {
+    "nodesByRank": [
+      "k3s-wk-gpu1",
+      "k3s-wk-gpu3"
+    ],
+    "ranks": [
+      {
+        "rank": 0,
+        "backend": "nccl",
+        "sum": 3,
+        "hostname": "nccl-gpu1-gpu3-20261119-r0-88r7l",
+        "gpu": "GPU-8df28256-50a3-db30-3706-b69d52f4874f, 620.70.06"
+      },
+      {
+        "rank": 1,
+        "backend": "nccl",
+        "sum": 3,
+        "hostname": "nccl-gpu1-gpu3-20261119-r1-crnhj",
+        "gpu": "GPU-0a9f2da8-59f5-1cb0-9ead-d9fce56b69e5, 620.70.06"
+      }
+    ]
+  },
+  "prometheus": {
+    "time": "2026-11-19T16:33:22.023517+00:00",
+    "targets": {
+      "fractiond": 4,
+      "operator": 1,
+      "dcgm": 4
+    },
+    "devices": {
+      "DCGM_FI_DEV_GPU_UTIL": 8,
+      "DCGM_FI_DEV_FB_USED": 8,
+      "DCGM_FI_DEV_XID_ERRORS": 8
+    },
+    "fractioning": {
+      "gpu_fractioning_nodes_ready": [
+        4.0
+      ],
+      "gpu_fractioning_nodes_degraded": [
+        0.0
+      ],
+      "gpu_fractioning_daemon_ready_nodes": [
+        4.0,
+        4.0
+      ],
+      "gpu_fractioning_daemon_desired_nodes": [
+        4.0,
+        4.0
+      ]
+    }
+  },
+  "isolatedGpu3BackupRestore": {
+    "isolatedRestore": true,
+    "backup": "20261119T163352.058528Z",
+    "databases": {
+      "control.sqlite": {
+        "sha256": "b67ed0c6dc9d4ae1e43e49c9db46fb39e41ab56f45328c5b5a7203745a6443f1",
+        "integrity": "ok",
+        "requiredTables": [
+          "grant_record"
+        ]
+      },
+      "reservations.sqlite": {
+        "sha256": "8baf0bea0935ed398743319b03121b8a92002d7e01f658cab2ffdc44542b71c6",
+        "integrity": "ok",
+        "requiredTables": [
+          "reservation",
+          "reservation_binding"
+        ]
+      },
+      "native-kai-private/custody.sqlite": {
+        "sha256": "7cbdeec65fb1e0069c2baaa1eff3d019dbacdf7e54cc219fd311c5af96862b6a",
+        "integrity": "ok",
+        "requiredTables": [
+          "native_pending_custody",
+          "native_pending_seed",
+          "native_reservation_delete"
+        ]
+      },
+      "native-kai-runtime-private/custody.sqlite": {
+        "sha256": "106501ccf43a48d1a1938eeec2a05f43fce020211bba6cfd1eee2edf918121a5",
+        "integrity": "ok",
+        "requiredTables": [
+          "native_pending_custody",
+          "native_pending_seed",
+          "native_reservation_delete"
+        ]
+      }
+    }
+  },
+  "sourceSHA256": {
+    "ordinary-gpu-dXN0Ed/gpu1-result.safe.json": "627a47f894dda63468f109ba69370d35d1ba0986630489eba9e20ab0de4ba331",
+    "ordinary-gpu-dXN0Ed/nccl-result.safe.log": "0ced2b001fb7a69e17ff26275af41b185eb6e3dd9b5286ce6b6ea6c434a27d4e",
+    "ordinary-gpu-dXN0Ed/multi-nccl-r0.safe.log": "abdff203f610f7ca0cc5c127b42f9cada3b7d92f256463c8ef192b5fe1753596",
+    "ordinary-gpu-dXN0Ed/multi-nccl-r1.safe.log": "9326c6079ded3c7d49fce99bfb259c40e8ff48878fbd9cced303728b73670170",
+    "monitoring-live-20261119/scrape.safe.json": "78c9518c9a04f6b724c978c0880829dc9717548b9c53fed919d539076aeb4f02",
+    "gpu3-current-backup-tPhGQt/restore-result.safe.json": "6d2788387da9c8c3f56bdd92c0afd2d6876fc80645ad7712af7fd1f103d3cf17"
+  },
+  "open": [
+    "Concurrent CPS/CIT start, p95 and maximum",
+    "Normal tenant distributed submission",
+    "Workspace metrics and alert delivery",
+    "Live service recovery from backup"
+  ]
+}
