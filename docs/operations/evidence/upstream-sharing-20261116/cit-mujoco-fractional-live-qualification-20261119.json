@@ -1,0 +1,75 @@
+{
+  "profile": "gpu-mujoco-xpra",
+  "account": "akadmin",
+  "source": "cit",
+  "apiQualification": [
+    {
+      "gib": 1,
+      "askedExplicitly": false,
+      "node": "k3s-wk-gpu1",
+      "limitMiB": 1024,
+      "desktopHTTP": 200,
+      "egl": "NVIDIA A100-PCIE-40GB/PCIe/SSE2",
+      "cleanup": {
+        "complete": true,
+        "nativeStopped": true,
+        "podGone": true,
+        "canonicalInactive": true,
+        "noRoleGrantMapChanges": true
+      },
+      "staleGenerationReconciledOnStart": true,
+      "proofSHA256": {
+        "hardware.safe.json": "219b440a844d64fcc5acaba88049aa866a4bbd7ebea648809de7d6522bbb259d",
+        "runtime-before.safe.json": "8df104588f8dbc32218e824d0bad6d4a136fac0de570c64f2e3c62e3fe0c41b7",
+        "runtime-after.safe.json": "102dca89516898143249e79e27523b4650b9e7eac7312d71c53f1c330c0c9433",
+        "complete.safe.json": "ffefd1820594b69793705f13635129a98494b98c016a0b12f6b4f12e8aada8df"
+      }
+    },
+    {
+      "gib": 10,
+      "askedExplicitly": true,
+      "node": "k3s-wk-gpu1",
+      "limitMiB": 10240,
+      "desktopHTTP": 200,
+      "egl": "NVIDIA A100-PCIE-40GB/PCIe/SSE2",
+      "cleanup": {
+        "complete": true,
+        "nativeStopped": true,
+        "podGone": true,
+        "canonicalInactive": true,
+        "noRoleGrantMapChanges": true
+      },
+      "staleGenerationReconciledOnStart": false,
+      "proofSHA256": {
+        "hardware.safe.json": "2f6a177bb3ce9a8e9de164ad58790f0d159648beff0065477ffa213b34be3152",
+        "runtime-before.safe.json": "67008b5a29ee4ba6967f38836aa4e13aa755a7512782dff8c79d00dcc25ff7c5",
+        "runtime-after.safe.json": "c92228373c7818f5164a10e8353f7a4cccd6ad1035ba2bcc701497ce5bc678e2",
+        "complete.safe.json": "ffefd1820594b69793705f13635129a98494b98c016a0b12f6b4f12e8aada8df"
+      }
+    },
+    {
+      "gib": 20,
+      "askedExplicitly": true,
+      "node": "k3s-wk-gpu1",
+      "limitMiB": 20480,
+      "desktopHTTP": 200,
+      "egl": "NVIDIA A100-PCIE-40GB/PCIe/SSE2",
+      "cleanup": {
+        "complete": true,
+        "nativeStopped": true,
+        "podGone": true,
+        "canonicalInactive": true,
+        "noRoleGrantMapChanges": true
+      },
+      "staleGenerationReconciledOnStart": false,
+      "proofSHA256": {
+        "hardware.safe.json": "d85ad2403e4e9b0fce4ddf3aa46ea1577ae8d2fa8588436fbf13599396fee239",
+        "runtime-before.safe.json": "10734f3399a873aaa6d28fe1424bced701f627cdeb936d8102f3e70d7cf02d01",
+        "runtime-after.safe.json": "63373fe93b0f679b405be8cce02967fe1caea07c3a354686f97cd92937b33347",
+        "complete.safe.json": "ffefd1820594b69793705f13635129a98494b98c016a0b12f6b4f12e8aada8df"
+      }
+    }
+  ],
+  "browserSSOVerified": false,
+  "rinoLaunchVerified": false
+}
