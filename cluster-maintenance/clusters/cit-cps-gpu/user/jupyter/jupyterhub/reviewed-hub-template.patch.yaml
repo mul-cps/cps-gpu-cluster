@@ -12,15 +12,17 @@
         cps.unileoben.ac.at/cpu-addon-values-sha256: ca45d2b26ad4b0d8208d70dd14bcfcacc9ce4df368e503c5d7c5ab481900b5d5
         cps.unileoben.ac.at/current-custody-request-sha256: 83312908e3e4bf45b674e31dec9a52195dc074d505382657dedbd59039911594
         cps.unileoben.ac.at/native-approval-stage: sdk-156c6f5b
+        cps.unileoben.ac.at/personal-spawn-sha256: a7014c9a0be6b14d6fdba2888a84c789410a7b09f58ee5079480f83fe8e666b5
         cps.unileoben.ac.at/personal-spawn-ui-sha256: b048ab982036edc8fc3d21ea1afd9d7978f4aee429e99c3ad149ea353afaee0e
+        cps.unileoben.ac.at/shared-home-config-sha256: f430ed6a5700061a1570c77094003c81586136953197d4d302e5495d2df7ed87
+        cps.unileoben.ac.at/shared-home-sha256: 9ff1637259afbbad79c789e9e6a0cf6754df9b7f43cd90b41c8d258978a237d9
+        cps.unileoben.ac.at/storage-defaults-config-sha256: bba5b104102ff364e93d166cdfbbcc830d686fed73998908d871539e616a9b5a
         cps.unileoben.ac.at/upstream-helper-settings: a3eff91b1c4c2f27931fa3dafbb7a510f35a4e9423e36cc1610dda089099a92b
         cps.unileoben.ac.at/upstream-policy-hash: sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb
         cps.unileoben.ac.at/upstream-runtime-bootstrap: 0d9c42a691fcdd5c26ddcc4f7b1f3ba63c351dd377043e802f3dc1baf2b7bd52
         kubectl.kubernetes.io/restartedAt: '2026-11-17T13:11:20.023255+00:00'
-        cps.unileoben.ac.at/shared-home-sha256: 9ff1637259afbbad79c789e9e6a0cf6754df9b7f43cd90b41c8d258978a237d9
-        cps.unileoben.ac.at/shared-home-config-sha256: f430ed6a5700061a1570c77094003c81586136953197d4d302e5495d2df7ed87
-        cps.unileoben.ac.at/personal-spawn-sha256: a7014c9a0be6b14d6fdba2888a84c789410a7b09f58ee5079480f83fe8e666b5
-        cps.unileoben.ac.at/storage-defaults-config-sha256: bba5b104102ff364e93d166cdfbbcc830d686fed73998908d871539e616a9b5a
+        cps.unileoben.ac.at/gpu4-source-qa-module: 02df022334e9897b3ec3138ee60d13a59c014901cdf8189dc81689285b7082cc
+        cps.unileoben.ac.at/gpu4-source-qa-permit: 9c91d99ab4284b4bb671123f0331bbe2340dd9c1a2effb3b5c90121e1c8bf855
       labels:
         app: jupyterhub
         app.kubernetes.io/component: hub
@@ -226,14 +228,17 @@
           name: upstream-policy
           readOnly: true
         - mountPath: /usr/local/share/jupyterhub/shared-home-templates/home.html
+          name: files
           subPath: shared-home
-          name: files
         - mountPath: /usr/local/etc/jupyterhub/jupyterhub_config.d/90-shared-home.py
+          name: files
           subPath: shared-home-config
-          name: files
         - mountPath: /usr/local/share/jupyterhub/shared-home-templates/spawn.html
-          subPath: personal-spawn
           name: files
+          subPath: personal-spawn
+        - name: cps-gpu4-source-qa
+          mountPath: /etc/cps-gpu4-source-qa
+          readOnly: true
       dnsPolicy: ClusterFirst
       imagePullSecrets:
       - name: cps-native-image-pull
@@ -310,7 +315,7 @@
       - name: secret
         secret:
           defaultMode: 420
-          secretName: cps-dask-config-11a38336e5328a69
+          secretName: cps-hub-gpu1-qa-74cb5b7bbcaf
       - emptyDir: {}
         name: ca-bundle
       - configMap:
@@ -407,7 +412,7 @@
         name: upstream-policy
       - name: files
         secret:
-          secretName: hub
+          defaultMode: 420
           items:
           - key: shared-home
             path: shared-home
@@ -415,6 +420,11 @@
             path: shared-home-config
           - key: personal-spawn
             path: personal-spawn
+          secretName: hub
+      - name: cps-gpu4-source-qa
+        configMap:
+          name: cps-gpu4-source-qa-9c91d99ab428
+          defaultMode: 420
 - op: replace
   path: /spec/strategy
   value:
