@@ -1,0 +1,23 @@
+{
+  "case": "cit-personal-qa-0fa4033040b6",
+  "result": "FAIL",
+  "podUID": "e860f3ef-87a5-4a56-8b64-5833d176ab99",
+  "node": "k3s-wk-gpu1",
+  "requestAndLimitMiB": 1024,
+  "podReachedReady": true,
+  "admissionDryRun": {
+    "submittedRuntimeClass": null,
+    "admittedRuntimeClass": "nvidia"
+  },
+  "gatewayObserveHTTP": 400,
+  "reservationAtReconciliation": {
+    "phase": "creating",
+    "podUID": null,
+    "nodeUID": null
+  },
+  "originalPodStopped": true,
+  "kubeletTeardownRecorded": true,
+  "originalHomePVCBound": true,
+  "capacityReturnedVerified": false,
+  "liveDesktopVerified": false
+}
