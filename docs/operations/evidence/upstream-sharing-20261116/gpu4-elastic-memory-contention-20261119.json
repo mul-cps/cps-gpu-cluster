@@ -58,5 +58,33 @@
     "gpu4-elastic-contention-V5xwsV/mps-window.private.log": "0b4485f5c604750e9aa990fbebc94eace3bb0036596a03e9ee767a0adf74af31",
     "gpu4-elastic-reverse-WkgiKB/mps-window.private.log": "195bea58ee48345c583ce223f93d87ac233f9f56d9206d45cd67faea5c7a441d",
     "gpu4-elastic-reverse-WkgiKB/physical-gpu-inventory.private.txt": "f38e730536ee6dd345220a033e6d7322d32899e91ded72475dbd488e6b61adda"
-  }
+  },
+  "crossedCardAndOrder": [
+    {
+      "case": "card1-forward",
+      "physicalGPUIndex": 1,
+      "protected20CUDAResult": 2,
+      "borrowerPhaseBeforeCleanup": "Running",
+      "sha256": {
+        "observations.private.json": "5f0790cd70ae1094caa336fc4906701923cc09453e2dbbfaf04fdf38df78a9ac",
+        "borrower-post-contention.private.json": "9584ce0c8aa6c253c9502b700f7d40810c1d11c6d55647bd90d1d5eb27243223",
+        "probe-start.safe.txt": "62dd5892f7c103c5298fa20b5f89edb34e10c2977ba9202e4c46a17f62b99df6",
+        "probe-end.safe.txt": "75872ed16c9ca9f72c4920ea94e6bac5d9e1a2b42d1bf222261350dc86b1df88",
+        "mps.private.log": "97c6dad651f3d4d3a182c68e3d131acbad9d48a12af7824ae7f126eefab94ad6"
+      }
+    },
+    {
+      "case": "card0-reverse",
+      "physicalGPUIndex": 0,
+      "protected20CUDAResult": 0,
+      "borrowerPhaseBeforeCleanup": "Failed",
+      "sha256": {
+        "observations.private.json": "e66c9ce3f05831281728eac0423744ab7f2040d1a2559e02a59466b9177240b0",
+        "borrower-post-contention.private.json": "121145b8e2f160dac0dcae2b36954898fdc5722eb86f3cc3eec83c7827cb5758",
+        "probe-start.safe.txt": "75872ed16c9ca9f72c4920ea94e6bac5d9e1a2b42d1bf222261350dc86b1df88",
+        "probe-end.safe.txt": "f629c003f299da2392ab650a431f4b548efe717d202a33380637dfa193bb009e",
+        "mps.private.log": "8543afbce9ef221dca58dac6aa10ece7961a6da970735489de106fe215f2d0bc"
+      }
+    }
+  ]
 }
