@@ -1,0 +1,13 @@
+{
+  "source": "cps",
+  "at": "2026-11-19T11:01:06.460337+00:00",
+  "generation": 403,
+  "PodName": "hub-7cb66bdf5-llxrf",
+  "PodUID": "52e7d7cb-a2a1-4b17-87cf-4275ea64632a",
+  "normalEntireSpecExact": true,
+  "normalSecretUIDDataMountedHashesExact": true,
+  "QAModuleMountAbsent": true,
+  "oldQAPodGone": true,
+  "ReadyZeroRestarts": true,
+  "health200": true
+}

@@ -1,0 +1,20 @@
+{
+  "CITDeniedHTTP": 503,
+  "gatewayCause": "reservation_conflict",
+  "gatewayAuditSeq": 9874,
+  "gatewayActor": "cit",
+  "gatewayTarget": "cit:upstream-registry-qualification-20261116-cit",
+  "gatewayTime": "2026-11-19T10:54:16.669108+00:00",
+  "canonicalPersonSHA256": "474f5c391f57dd9fdb4e49eda398d159997abb177425b9590de5864ef6a49691",
+  "CPSActiveLeaseUnchanged": true,
+  "CITPodAbsentInactiveAttemptNull": true,
+  "CPSNormalStop": {
+    "at": "2026-11-19T10:54:30.270166+00:00",
+    "SourceStopped": true,
+    "PodAbsent": true,
+    "leaseInactive": true,
+    "attemptNull": true
+  },
+  "knownUXLimitation": "CIT returns generic503 Hub-spawn error for the canonical conflict; exact conflict enforcement proven, typed quota UX still open",
+  "noBrowserSSOClaim": true
+}

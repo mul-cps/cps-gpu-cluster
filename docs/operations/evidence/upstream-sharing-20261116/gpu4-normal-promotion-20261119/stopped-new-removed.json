@@ -1,0 +1,11 @@
+{
+  "nativeDELETE": 204,
+  "removeJSONBodyTrue": true,
+  "onlyStoppedNewRowRemoved": true,
+  "allOtherNativeRowsExact": true,
+  "nativeAccountGroupsRolesExact": true,
+  "homePVCAndPV_UID_SpecExact": true,
+  "upstreamNamedSharedPVCDeleteSkipped": true,
+  "noFileIORequested": true,
+  "noNewCredential": true
+}

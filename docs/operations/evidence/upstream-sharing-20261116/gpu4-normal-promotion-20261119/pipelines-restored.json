@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-19T11:25:52.295383+00:00",
+  "deploymentUID": "7d92b551-ec12-4ab0-94ce-407f84e6cc22",
+  "onlyReplicas0to1SpecChange": true,
+  "immutableB48ImagePreserved": true,
+  "PodUID": "76999b6f-2afa-4ee5-b749-ec79e2950490",
+  "Node": "k3s-wk-gpu4",
+  "ReadyZeroRestarts": true,
+  "nativeHTTP": {
+    "HTTP": 200,
+    "bodyBytes": 15
+  },
+  "originalPVCAndPVUIDEntireSpecsRetained": true,
+  "prestartupDataFilesystemIdentityProof": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-core-promotion-audit-20261119/pipelines-current-data-identity.safe.json"
+}

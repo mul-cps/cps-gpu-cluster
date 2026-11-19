@@ -1,0 +1,18 @@
+{
+  "scope": "coreworker operational cycle complete; globalSLO/advanced/browser/distributed/recovery still open",
+  "files": {
+    "operational-restore-complete.json": "7bbd57d1a3ce8a852cd67197f39c2cf553834b94c98446832b1c6ba04fb04e10",
+    "core-promotion.json": "81beeaded285ea28a56be310496c86e83398af77859602d5e7759afa30bfe773",
+    "core-audit.json": "4a6df0c9e04983cc3bd8d61fc840769c99e81789be743b150f351e98192a8f68",
+    "CPS-normal.json": "0b71ad5f2843813f4edc41d73e69e92761311db02b3ec797abc2c05686d7f029",
+    "CIT-normal.json": "67b75df813bcf7dedac82df643a5ea0142c3091cb792f6f77dea1c36dbe1069d",
+    "temporary-objects-removed.json": "a2511975ea77ce2f17b7dd37be3c86b4c384fa480c583849a900ddd1832944bd",
+    "five-grants-closed.json": "9199408b6bab5333916b800f9693e52af218945009e9b234e9318010649c1fad",
+    "pipelines-restored.json": "ce7c4757b93f7512f94972a82ae92cbb15459033af635419f5c92fb1fd5a6fde",
+    "stopped-new-removed.json": "ddaadade8f222720aa3ebacc850c66550f4d03740d7267f4616025895d2e1899",
+    "cps-zero.json": "5b555c3844446e7ff329b897ba686d09baab177245599b2f42fbf235da0b54ea",
+    "cps-SA-denied.json": "3f4f55a573ddd3c478915fe068863b9baf8c804db89f64e60e7851fde9f8adce",
+    "cit-zero.json": "381992695e77564ec8b5acaf4f6968a8ca73506aab4a394ae7e12433d621e49f",
+    "cit-SA-denied.json": "3f4f55a573ddd3c478915fe068863b9baf8c804db89f64e60e7851fde9f8adce"
+  }
+}

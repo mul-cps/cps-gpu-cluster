@@ -1,0 +1,40 @@
+{
+  "source": "cps",
+  "observed": "2026-11-19T10:49:21.901384+00:00",
+  "duplicate_request_statuses": [
+    200,
+    400
+  ],
+  "one_pod_uid": "cab1c3b4-cc03-400b-926d-28f31a86d06a",
+  "one_attempt": "d4937c2b-a92a-4b2b-9e0c-0850f1181ee6",
+  "gpu_node": "k3s-wk-gpu4",
+  "loss": {
+    "forwarded_response_bytes": 0,
+    "request_count": 1,
+    "target_path": "/services/cps-admin/api/workspaces/upstream-registry-qualification-20261116-cps/stop",
+    "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "forwarded_unix": 1795085352.8196056,
+    "backend_status": 200,
+    "backend_headers_unix": 1795085357.6664135,
+    "backend_body_sha256": "e5b440225351cff6f3ada31b4dd07d749dcd83f29b649f8c29daa2c29a8141c5",
+    "backend_response_consumed": true,
+    "downstream_close_unix": 1795085357.6665833,
+    "client_exception_type": "RemoteDisconnected",
+    "client_eof_unix": 1795085357.6669993,
+    "client_received_http_status": null
+  },
+  "inherited_fixture_exit_code": 0,
+  "accepted200": true,
+  "inherited_fixture_requires_backend_200": true,
+  "SourceStopped": true,
+  "PodAbsent": true,
+  "leaseInactive": true,
+  "attemptNull": true,
+  "fresh_cleanup_before_replay": true,
+  "replay_status": 200,
+  "originalNoDispatchHarnessFailureRetained": true,
+  "noRepeatedStartOrUnconfirmedStop": true,
+  "firstActiveStopHTTPCount": 1,
+  "confirmedReplayHTTPCount": 1,
+  "derivedFieldClarification": "Original boolean label incorrectly omitted distinction between firstACTIVE Stop and explicitconfirmed replay; rawloss/replayevidence unchanged"
+}

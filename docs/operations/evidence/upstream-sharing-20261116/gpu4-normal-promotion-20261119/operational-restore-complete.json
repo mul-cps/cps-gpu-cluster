@@ -1,0 +1,57 @@
+{
+  "at": "2026-11-19T11:28:54.120845+00:00",
+  "all7NodesReady": true,
+  "all4GPUWorkersNormallyQualifiedSchedulableNoMaintenanceTaints": true,
+  "advertisedNormallyEligibleGPUs": 8,
+  "AlertmanagerOnGPU4AllContainersReady": true,
+  "longhornGPU4SchedulingRestored": true,
+  "all17AttachedLonghornVolumesHealthy": true,
+  "PipelinesNormalHTTP200": {
+    "at": "2026-11-19T11:25:52.295383+00:00",
+    "deploymentUID": "7d92b551-ec12-4ab0-94ce-407f84e6cc22",
+    "onlyReplicas0to1SpecChange": true,
+    "immutableB48ImagePreserved": true,
+    "PodUID": "76999b6f-2afa-4ee5-b749-ec79e2950490",
+    "Node": "k3s-wk-gpu4",
+    "ReadyZeroRestarts": true,
+    "nativeHTTP": {
+      "HTTP": 200,
+      "bodyBytes": 15
+    },
+    "originalPVCAndPVUIDEntireSpecsRetained": true,
+    "prestartupDataFilesystemIdentityProof": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-core-promotion-audit-20261119/pipelines-current-data-identity.safe.json"
+  },
+  "normalHubs": {
+    "cps": {
+      "source": "cps",
+      "at": "2026-11-19T11:01:06.460337+00:00",
+      "generation": 403,
+      "PodName": "hub-7cb66bdf5-llxrf",
+      "PodUID": "52e7d7cb-a2a1-4b17-87cf-4275ea64632a",
+      "normalEntireSpecExact": true,
+      "normalSecretUIDDataMountedHashesExact": true,
+      "QAModuleMountAbsent": true,
+      "oldQAPodGone": true,
+      "ReadyZeroRestarts": true,
+      "health200": true
+    },
+    "cit": {
+      "source": "cit",
+      "at": "2026-11-19T11:02:43.732746+00:00",
+      "generation": 336,
+      "PodName": "hub-59b87f64f7-2j422",
+      "PodUID": "719f36d0-b1b9-47f3-80cd-1966aa1e3fa9",
+      "normalEntireSpecExact": true,
+      "normalSecretUIDDataMountedHashesExact": true,
+      "QAModuleMountAbsent": true,
+      "oldQAPodGone": true,
+      "ReadyZeroRestarts": true,
+      "health200": true
+    }
+  },
+  "sixTemporaryObjectsRemoved": true,
+  "HubSAGet4ListAgain403": true,
+  "allQACohortsAndFiveGrantsClosed": true,
+  "coreWorkerCycleComplete": true,
+  "globalFinalAcceptanceComplete": false
+}

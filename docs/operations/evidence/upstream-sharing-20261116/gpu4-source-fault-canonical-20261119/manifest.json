@@ -1,0 +1,9 @@
+{
+  "scope": "actual bothSource strictfault and crossSource canonical quota; no fullworker/globalSLO claim",
+  "files": {
+    "cps-duplicate-stop-loss.safe.json": "7ba5a59949e557dfc413385c432ac2b8bf583e24995b97c8f03820e384713781",
+    "cit-duplicate-stop-loss.safe.json": "a5356f06f3290129cd9baf5767fdd70e25b4b1f14ac29a833e629fd150f77b7f",
+    "canonical.safe.json": "588783e6cc2d2f7067473a30b115371948dfc44a59e67f9b87f04a569bf15bea",
+    "credential-closure.safe.json": "b9d13acd127a1165943e438400763bd9a6a2e4ca61ed46fd7a390afd9232f7b1"
+  }
+}

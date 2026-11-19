@@ -1,0 +1,102 @@
+{
+  "at": "2026-11-19T11:13:30.123572+00:00",
+  "scope": "Read-only core GPU4 promotion audit, not actual promotion or whole-platform acceptance",
+  "coreVerdict": "PASS_C0_I0",
+  "selectedNodeUID": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+  "selectedBoot": "0085f8ba-9dd5-4d8d-a3be-438f8aeb0967",
+  "currentBootGates": [
+    "durable NFS compatibility coldboot + verified hypervisor console",
+    "physical both-card CUDA",
+    "CPU nonroot/noGPU/AppArmor/signal lifecycle",
+    "stock KAI15 bothphysicalcards mixed5/10/20 AB+BA/independentprogress/OOM/cleanup",
+    "NRI hung/disconnected/missing failclosed + CPUindependence + bothcardrecovery",
+    "Longhorn fsync writer/separate reader/backendcleanup",
+    "fastscratch fsync writer/separate reader/backendcleanup",
+    "NFS fsync writer/separateROreader/retainedfile/ownednoncecleanup",
+    "CIT5/10/20actualSourceGPU cycles; CPS/CIT CPU/member,strict200replyloss,canonical conflict + closedcohorts + normalrestore"
+  ],
+  "priorExactArtifactGates": [
+    "warm bothcardVMM/pools/IPC/crash/race/recovery",
+    "childaggregation",
+    "managed/UVM policy",
+    "mixedbothorders",
+    "CUDAkernel/directionalP2P",
+    "runtime continuity samePodUID/CID/cgroup afterrestart"
+  ],
+  "priorEvidenceNotRelabeledCurrentBoot": true,
+  "independentPriorPayloadHashesVerified": 676,
+  "freshHealth": {
+    "all7NodesReady": true,
+    "allWorkersPressureFalse": true,
+    "all4WorkerTwoGPUs": true,
+    "all4PhysicalR620MIGoffIdleNoComputeApps": true,
+    "all4ExactRuntimeHashesCRIruncUVMguardsNFSNAppArmorY": true,
+    "all17AttachedLonghornVolumesHealthy": true
+  },
+  "operationalRestorationStillRequired": [
+    "Root explicit promotion and maintenance fence removal; re-enable LH G4 normal scheduling",
+    "Alertmanager existinglocalPVC PodPending becausemaintenance taint: verify Ready afterfence removal",
+    "Our rollout paused open-webui-pipelines1to0; restore ONLYowner pipelines.replicaCount1 retaining exactb48image/PVC/data/config, verifyReady/nativehealth"
+  ],
+  "notCorePromotionFailures": [
+    "CIT canonicalconflict presentation503 is measuredUX residual; reservation_conflict enforcement proven",
+    "Source humanbrowserSSO/Open acceptance separate",
+    "controllercutover<=60 and startupburstp95<=180/max<=300 unachieved",
+    "advancedR620features/ordinarydistributed/external/teaching/monitoring/recovery/fullrestore remain globalscope"
+  ],
+  "mutationsPerformed": false,
+  "references": [
+    {
+      "path": "/home/bjoern/.codex/worktrees/708f/cps-gpu-cluster/docs/operations/evidence/upstream-sharing-20261116/gpu4-postcoldboot-stage-20261118.json",
+      "sha256": "1e8f57b89ec6de86aff6547577850f448622481d90cfe15f19d2f348927ad5b9"
+    },
+    {
+      "path": "/home/bjoern/.codex/worktrees/708f/cps-gpu-cluster/docs/operations/evidence/upstream-sharing-20261116/gpu4-os-runtime-stage-20261118.json",
+      "sha256": "b6cd6d676eb791023eb6dc2c2d99074ab5aadc0fd0be666fd6160e0ba286fca7"
+    },
+    {
+      "path": "/home/bjoern/.codex/worktrees/708f/cps-gpu-cluster/docs/operations/evidence/upstream-sharing-20261116/gpu4-nfs-coldboot-20261119.json",
+      "sha256": "1b25370296a5ee96e032a12e9f63bb331da141b6fe58e586963323ce8effc178"
+    },
+    {
+      "path": "/home/bjoern/.codex/worktrees/708f/cps-gpu-cluster/docs/operations/evidence/upstream-sharing-20261116/gpu4-kai-currentboot-20261119.json",
+      "sha256": "e73c92865e8e6b77ac27ccc64700048dbb21e32f9704b2f9144852f25d819886"
+    },
+    {
+      "path": "/home/bjoern/.codex/worktrees/708f/cps-gpu-cluster/docs/operations/evidence/upstream-sharing-20261116/gpu4-nri-currentboot-20261119.json",
+      "sha256": "5b3c873d98ab31bf8ddee9631bf035f8930207fe889c7fa9f0d1b3f87883e9c1"
+    },
+    {
+      "path": "/home/bjoern/.codex/worktrees/708f/cps-gpu-cluster/docs/operations/evidence/upstream-sharing-20261116/gpu4-storage-currentboot-20261119.json",
+      "sha256": "b6b1458bd3d85a9e9a4ffab6e74627444181229c9d991272a4bd35cc9f9e632c"
+    },
+    {
+      "path": "/home/bjoern/.codex/worktrees/708f/cps-gpu-cluster/docs/operations/evidence/upstream-sharing-20261116/gpu4-nfs-persistence-currentboot-20261119.json",
+      "sha256": "b94609bd7fcf05842a7ab34505d32e631eab5abef170d52adee327cb9e6c4d6c"
+    },
+    {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-current-final-active-20261119/cps-normal-postroll.safe.json",
+      "sha256": "0b71ad5f2843813f4edc41d73e69e92761311db02b3ec797abc2c05686d7f029"
+    },
+    {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-current-final-active-20261119/cit-normal-postroll.safe.json",
+      "sha256": "67b75df813bcf7dedac82df643a5ea0142c3091cb792f6f77dea1c36dbe1069d"
+    },
+    {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-current-final-active-20261119/normal-cleanup-actual/complete.safe.json",
+      "sha256": "a2511975ea77ce2f17b7dd37be3c86b4c384fa480c583849a900ddd1832944bd"
+    },
+    {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-current-final-active-20261119/final-close-preparation/actual/complete.safe.json",
+      "sha256": "9199408b6bab5333916b800f9693e52af218945009e9b234e9318010649c1fad"
+    },
+    {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-current-final-active-20261119/gpu-cohort/final-cycle-runtime/gpu-case/three-v2-terminal.safe.json",
+      "sha256": "67cb108be2c0b0acbf742fcde4af7b33a2a2ee053cda2c4c604cbc90d845439d"
+    },
+    {
+      "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-current-final-active-20261119/cpu-v2-cohort/final-cycle-runtime/cpu-case/cpu-member-terminal.safe.json",
+      "sha256": "14450882725fb5bbc5ed2c6e0c4df740ff0288430efeacb30f0c50946a8cf852"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "source": "cit",
+  "at": "2026-11-19T11:02:43.732746+00:00",
+  "generation": 336,
+  "PodName": "hub-59b87f64f7-2j422",
+  "PodUID": "719f36d0-b1b9-47f3-80cd-1966aa1e3fa9",
+  "normalEntireSpecExact": true,
+  "normalSecretUIDDataMountedHashesExact": true,
+  "QAModuleMountAbsent": true,
+  "oldQAPodGone": true,
+  "ReadyZeroRestarts": true,
+  "health200": true
+}

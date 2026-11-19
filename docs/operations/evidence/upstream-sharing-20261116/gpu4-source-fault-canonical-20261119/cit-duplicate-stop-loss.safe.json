@@ -1,0 +1,35 @@
+{
+  "source": "cit",
+  "observed": "2026-11-19T10:51:40.145093+00:00",
+  "duplicate_request_statuses": [
+    400,
+    200
+  ],
+  "one_pod_uid": "135404f4-acc0-472b-88c0-e3e29b233ada",
+  "one_attempt": "69ff5090-966d-44e0-8811-8890ed0b55ff",
+  "gpu_node": "k3s-wk-gpu4",
+  "loss": {
+    "forwarded_response_bytes": 0,
+    "request_count": 1,
+    "target_path": "/services/cit-admin/api/workspaces/upstream-registry-qualification-20261116-cit/stop",
+    "body_sha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "forwarded_unix": 1795085488.5335925,
+    "backend_status": 200,
+    "backend_headers_unix": 1795085495.9028263,
+    "backend_body_sha256": "7c6595f3ddf9ed91d701fdb4b48f3f2c5c93148c56b2c4ae6a4ee878af3dfa68",
+    "backend_response_consumed": true,
+    "downstream_close_unix": 1795085495.902972,
+    "client_exception_type": "RemoteDisconnected",
+    "client_eof_unix": 1795085495.9033573,
+    "client_received_http_status": null
+  },
+  "inherited_fixture_exit_code": 0,
+  "accepted200": true,
+  "inherited_fixture_requires_backend_200": true,
+  "SourceStopped": true,
+  "PodAbsent": true,
+  "leaseInactive": true,
+  "attemptNull": true,
+  "fresh_cleanup_before_replay": true,
+  "replay_status": 200
+}

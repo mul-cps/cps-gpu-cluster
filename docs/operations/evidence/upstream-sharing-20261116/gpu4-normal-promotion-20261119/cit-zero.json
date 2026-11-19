@@ -1,0 +1,21 @@
+{
+  "descriptor": {
+    "source": "cit",
+    "workspace": "upstream-registry-qualification-20261116-cit",
+    "owner": "cit-ws-4f8bebfab68c2dc3f8cea6df357d874c",
+    "state": "stopped",
+    "memberCount": 0,
+    "groupUsers": [],
+    "barrier": false,
+    "pending": null,
+    "leaseActive": false,
+    "attempt": null,
+    "shares": [],
+    "serviceKind": "service",
+    "serviceName": "cit-admin"
+  },
+  "descriptorSHA256": "71d5751dd4d4da6c6bda4db5d9866ed1cdf90042f85fe09399b738081fc59083",
+  "zeroConfirmed": true,
+  "SourceDBReadOnly": true,
+  "noWrite": true
+}

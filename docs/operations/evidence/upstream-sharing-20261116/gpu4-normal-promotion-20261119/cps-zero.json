@@ -1,0 +1,21 @@
+{
+  "descriptor": {
+    "source": "cps",
+    "workspace": "upstream-registry-qualification-20261116-cps",
+    "owner": "cps-ws-2114b8e3a15e8913cb98083bd5673e45",
+    "state": "stopped",
+    "memberCount": 0,
+    "groupUsers": [],
+    "barrier": false,
+    "pending": null,
+    "leaseActive": false,
+    "attempt": null,
+    "shares": [],
+    "serviceKind": "service",
+    "serviceName": "cps-admin"
+  },
+  "descriptorSHA256": "8db75caffd5ff179a89b9376f7c12ae4bb86b80666cd7ffcf5a865d85c10a6e6",
+  "zeroConfirmed": true,
+  "SourceDBReadOnly": true,
+  "noWrite": true
+}

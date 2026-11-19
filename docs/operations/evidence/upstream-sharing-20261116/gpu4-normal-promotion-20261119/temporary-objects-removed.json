@@ -1,0 +1,8 @@
+{
+  "sixOwnedObjectsRemoved": true,
+  "onlyOriginalUIDs": true,
+  "UIDRVPreconditionsUsed": true,
+  "noProxyStarted": true,
+  "normalRefsAbsentBeforeDeletion": true,
+  "noOriginalSecretOrPermanentRoleRemoved": true
+}
