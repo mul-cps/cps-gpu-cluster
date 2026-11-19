@@ -1,0 +1,31 @@
+{
+  "checkedAt": 1795091965.341326,
+  "status": "PREPARATION_ONLY_NOT_CUTOVER",
+  "sourceAuthority": "compute-state",
+  "sourcePVCUID": "d791faac-9c82-42dc-87ad-541ae9edc89a",
+  "mainGeneration": 448,
+  "nativeGeneration": 35,
+  "currentDeliveryFullSpecsAndClaimVerified": true,
+  "sqliteReadOnlySummary": {
+    "checkedAt": 1795091965.341326,
+    "readOnlyTechnicalFacts": true,
+    "sourcePath": "/data",
+    "reservationCount": 0,
+    "bindingCount": 0,
+    "noncleanCustody": [],
+    "integrityOK": true,
+    "collectorCustodyClean": true,
+    "historySHA256": "4c319457ca09df4c50306cfb5cf88aa19bb48991a4250d6d32c8dc9fb3e0670f",
+    "notStoppedWriterProof": true
+  },
+  "rawTechnicalFactsSHA256": "624d193ec8c2a977685acf46bad20bcb42c8264ad9f267055899ddd7a91f71e2",
+  "I2ManifestSHA256": "e248de954dab4e3d82d70c75401f1466689732bc0373dd77caba4c54d886a0be",
+  "I2PayloadHashesVerified": 132,
+  "independentReview": {
+    "critical": 0,
+    "issues": 1,
+    "holdReason": "403 policy-name substring alone can mistake RBAC failure for admission-policy rejection; require explicit policy and binding attribution."
+  },
+  "liveFenceStopCopyOrAuthoritySwitch": false,
+  "timedAcceptance": false
+}
