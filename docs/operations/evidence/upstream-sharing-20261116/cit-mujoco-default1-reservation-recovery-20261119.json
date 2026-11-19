@@ -1,0 +1,13 @@
+{
+  "case": "cit-personal-qa-0fa4033040b6",
+  "sourceCommit": "8b181d13c6eccf85cb866c056c74bc5a995cbe93",
+  "gatewayImage": "ghcr.io/mul-cps/cps-compute@sha256:1e6f74cf01a214137bc52b965c9ba5033f7ca69fc3a0de9ff7640839f225948c",
+  "gatewayGeneration": 451,
+  "releaseHTTP": 200,
+  "reviewedStoppedRecovery": true,
+  "reservationCount": 0,
+  "bindingCount": 0,
+  "temporaryRecoveryDisabled": true,
+  "hubGenerationStillUnresolvedAfterRestart": true,
+  "nativeUserAndDefaultSpawnerPreserved": true
+}
