@@ -1,0 +1,257 @@
+{
+  "at": "2026-11-19T05:24:55.567136+00:00",
+  "operation": {
+    "at": "2026-11-18T21:17:57.632002+00:00",
+    "operationUUID": "8228ee17-e4db-4a32-8e7d-392b77572a70",
+    "rootRelease": "Root-GPU4-NFS-coldboot-8228ee17-e4db-4a32-8e7d-392b77572a70",
+    "node": "k3s-wk-gpu4",
+    "nodeUID": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+    "oldBootID": "9f770278-3655-42da-b088-a227f5eb45dc",
+    "unit": "cps-gpu4-nfs-coldboot-20261118",
+    "action": "one normal guest reboot via durable systemd timer",
+    "force": false,
+    "automaticRetry": false,
+    "quarantineRetained": true,
+    "rollbackBackup": "existing dated backup accepted by user; no fresh VM backup/clone",
+    "safetyReceipt": "immediate-safe-preflight.safe.json",
+    "consoleReceipt": "console-transport.safe.json"
+  },
+  "submission": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "Running timer as unit: cps-gpu4-nfs-coldboot-20261118.timer\nWill run service as unit: cps-gpu4-nfs-coldboot-20261118.service\n",
+    "operationUUID": "8228ee17-e4db-4a32-8e7d-392b77572a70",
+    "state": "SUBMITTED"
+  },
+  "recoveryIdentity": {
+    "at": "2026-11-18T20:51:22.192900+00:00",
+    "authorizedFirstContactPin": true,
+    "independentlyPreknownSSHKey": false,
+    "pinnedHostFingerprint": "256 SHA256:/R638MlpBZoqF6hstFRFSY/PYVdxQrW0blPYONKzBiQ cit-gpu-01.unileoben.ac.at (ED25519)",
+    "hypervisor": "cit-gpu-01",
+    "vmid": 104,
+    "VMNameMatchesTrustedGuest": true,
+    "SMBIOSUUIDMatchesTrustedGuest": true,
+    "allConfiguredNICMACsMatchTrustedGuest": true,
+    "nodeUID": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+    "guestBootID": "9f770278-3655-42da-b088-a227f5eb45dc",
+    "SSHReadOnlyCommandsSucceeded": true,
+    "hypervisorOrGuestChanged": false,
+    "consoleSessionVerified": false
+  },
+  "consoleTransport": {
+    "at": "2026-11-18T21:08:46.128203+00:00",
+    "strictPinnedHypervisorSSH": true,
+    "VM104Serial0Opened": true,
+    "trustedGuestMarker": "CPS-GPU4-CONSOLE-VERIFY-98f152845d4f4c89bb3f443ffb5452f8",
+    "exactMarkerObservedOnProxmoxSerialTransport": true,
+    "sessionEndedBy30sClientTimeout": true,
+    "noGuestLoginOrRebootInConsoleTest": true
+  },
+  "preReboot": {
+    "at": "2026-11-18T21:16:54.088648+00:00",
+    "peers3Ready6GPU": true,
+    "selectedUIDBootAndFencesExact": true,
+    "selectedUserPodsAndPVCConsumers": 0,
+    "attachedVolumeCount": 17,
+    "allAttachedHave2RemoteRW": true,
+    "attachedQuorum": [
+      {
+        "volume": "pvc-07dd1975-494a-4dd0-a9a0-84d75f514dd7",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-1651fba7-6ecd-4615-92f5-8780f1f3857e",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-19834c8e-bb63-46ba-b928-e9a9dddeef43",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-3c984fe1-3120-41e4-8bd8-386ed59a2139",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-4300bb37-4a26-4d07-b4dc-9ee81150187b",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-471c5b9a-b330-402f-8974-6777d4759616",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-764c6600-0466-4f6e-9f4a-e1badf8c1022",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-779c3159-a609-46a5-aea9-36d54075e715",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-7adadc35-e1f4-44c6-b231-d43038fcc0b4",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-9e3d0ef6-9ffe-4171-a572-88423c9b01b9",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-c33f6629-2433-4ecb-98f1-8fa633e3d765",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-c7795ba0-87bf-4bb8-8b90-b60fb76a1c78",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-d1c75e8a-6510-4f7a-a826-e5e860453389",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-d791faac-9c82-42dc-87ad-541ae9edc89a",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-e6258a24-de2e-4321-a6eb-945dc2a53eb7",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-e8de6e65-be1b-4a5c-ac71-d84599a7788f",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      },
+      {
+        "volume": "pvc-ed8b6472-0e95-43e8-b2e2-4694ea1c97aa",
+        "remoteRWNodes": [
+          "k3s-wk-gpu1",
+          "k3s-wk-gpu2",
+          "k3s-wk-gpu3"
+        ]
+      }
+    ],
+    "detachedStoppedReplicaCacheEntries": [],
+    "selectedComputeClients": 0,
+    "noPDBBlock": true,
+    "noRebootRequestedYet": true,
+    "ruling": "Nonempty IM cache alone is not a live replica: require desired/currentStopped, detached volume, no liveengine reference and healthy outsidecopy."
+  },
+  "postboot": {
+    "kernel": "7.0.0-43-generic",
+    "nfsEffective": "N",
+    "manualParameterWrite": false,
+    "modprobeConfigSHA256": "117ebbe7065e97456efd7702b9a82805acff9aab99eda5d3bfcb6e4027edba28",
+    "selectedInitrdSHA256": "38198c209a4f6e6e0a57cbd636ae256e0562fae92a8f7158168e1e29dd2773d6",
+    "uvm": {
+      "srcversion": "10301D70B8ED1758BC717E9",
+      "parameters/uvm_reject_managed_memory": "Y",
+      "parameters/uvm_disable_hmm": "Y"
+    },
+    "at": "2026-11-18T21:26:34.028727+00:00",
+    "newBootID": "0085f8ba-9dd5-4d8d-a3be-438f8aeb0967",
+    "nodeUID": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+    "warmWriteNotPerformed": true,
+    "priorFindmntInvocationFailureRetained": true
+  },
+  "current": {
+    "at": "2026-11-19T05:16:52.787608+00:00",
+    "nodeUID": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+    "bootID": "0085f8ba-9dd5-4d8d-a3be-438f8aeb0967",
+    "cordoned": true,
+    "qualification": null,
+    "cards": [
+      "GPU-4768a9e7-e285-16d7-371d-95ad77f46ff4, 620.70.06, 40960, 1, Disabled",
+      "GPU-72940107-8c9d-bfcb-0630-f4e9e720b793, 620.70.06, 40960, 1, Disabled"
+    ],
+    "host": {
+      "/sys/module/nfsv4/parameters/directory_delegations": "N",
+      "/sys/module/nvidia_uvm/srcversion": "10301D70B8ED1758BC717E9",
+      "/sys/module/nvidia_uvm/parameters/uvm_reject_managed_memory": "Y",
+      "/sys/module/nvidia_uvm/parameters/uvm_disable_hmm": "Y",
+      "/sys/module/apparmor/parameters/enabled": "Y",
+      "kernel": "7.0.0-43-generic",
+      "initrdSHA256": "38198c209a4f6e6e0a57cbd636ae256e0562fae92a8f7158168e1e29dd2773d6"
+    }
+  },
+  "physicalCUDA": {
+    "cudaDeviceCount": 2,
+    "allocationMiBEach": 64,
+    "readWriteRoundtrip": true
+  },
+  "cpuConfinement": {
+    "at": "2026-11-19T05:20:03.146611+00:00",
+    "uid1000": true,
+    "noGPUDevices": true,
+    "signalPtraceKillReapPass": true,
+    "confinedAppArmorProfile": true,
+    "mountDeniedUnderCombinedControls": true,
+    "normalOwnedCleanupComplete": true,
+    "boot": "0085f8ba-9dd5-4d8d-a3be-438f8aeb0967"
+  },
+  "workerAcceptanceComplete": false,
+  "GPU4StillQuarantined": true,
+  "remaining": "Current-boot KAI mixed-profile test/cleanup, NRI fault and service/storage acceptance; controller timing and final all-eight gates remain open."
+}

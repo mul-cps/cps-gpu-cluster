@@ -1,0 +1,55 @@
+{
+  "status": "PASS",
+  "bootID": "0085f8ba-9dd5-4d8d-a3be-438f8aeb0967",
+  "longhorn": {
+    "status": "PASS",
+    "writer": {
+      "bytes": 4194324,
+      "sha256": "d87a6c613644fa29a9cca71766c283f0ead7a19c5f9df1e5ab954c08a669515c",
+      "uid": 1000,
+      "result": "RW_FSYNC_PASS"
+    },
+    "reader": {
+      "bytes": 4194324,
+      "sha256": "d87a6c613644fa29a9cca71766c283f0ead7a19c5f9df1e5ab954c08a669515c",
+      "uid": 1000,
+      "result": "PERSISTENT_READ_PASS"
+    },
+    "PV": "pvc-fc4a3d18-f6f8-4e03-b9a8-cda7fcfe2ac2",
+    "PVCUID": "fc4a3d18-f6f8-4e03-b9a8-cda7fcfe2ac2",
+    "backendAbsent": true,
+    "bootID": "0085f8ba-9dd5-4d8d-a3be-438f8aeb0967"
+  },
+  "fastScratch": {
+    "status": "PASS",
+    "writer": {
+      "bytes": 4194324,
+      "sha256": "d87a6c613644fa29a9cca71766c283f0ead7a19c5f9df1e5ab954c08a669515c",
+      "uid": 1000,
+      "result": "RW_FSYNC_PASS"
+    },
+    "reader": {
+      "bytes": 4194324,
+      "sha256": "d87a6c613644fa29a9cca71766c283f0ead7a19c5f9df1e5ab954c08a669515c",
+      "uid": 1000,
+      "result": "PERSISTENT_READ_PASS"
+    },
+    "PV": "pvc-4e158bd4-67b5-4abc-8408-8de788d17102",
+    "PVCUID": "4e158bd4-67b5-4abc-8408-8de788d17102",
+    "backendAbsent": true,
+    "bootID": "0085f8ba-9dd5-4d8d-a3be-438f8aeb0967"
+  },
+  "originalActiveVolumesRetainUIDAndTwoRemoteRunningRW": 17,
+  "additionalActiveVolumesObserved": [
+    "pvc-924ea6ea-17f4-44ad-8665-bbbb98bce232-e-0"
+  ],
+  "ownedPodsAbsent": true,
+  "cordoned": true,
+  "at": "2026-11-19T05:36:00.509912+00:00",
+  "artifactDirectory": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-storage-currentboot-20261119",
+  "harnessCorrections": [
+    "Admission guard initially rejected standard Kubernetes container and toleration defaults before Pod creation; original owned PVC reconciled by UID, no duplicate PVC creation",
+    "Final exact active-volume set equality rejected one additional concurrent legitimate volume; all original17 same UID and >=2 remote runningRW independently reverified; no test rerun or user mutation"
+  ],
+  "scope": "Disposable 4MiB+20byte fsync writer then separate read-only reader, normal UID/RV consumer/PVC deletion, PV and Longhorn backend or actual NVMe scratch directory absence. Not general user data or NFS acceptance."
+}

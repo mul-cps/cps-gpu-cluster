@@ -1,0 +1,43 @@
+{
+  "status": "PASS",
+  "cleanup": "PASS",
+  "elapsed_seconds": 169.08570018806495,
+  "candidate_selection": {
+    "node": "k3s-wk-gpu4",
+    "node_uid": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+    "node_ip": "10.21.0.41",
+    "gpu_uuids": [
+      "GPU-4768a9e7-e285-16d7-371d-95ad77f46ff4",
+      "GPU-72940107-8c9d-bfcb-0630-f4e9e720b793"
+    ],
+    "expected_boot_id": "0085f8ba-9dd5-4d8d-a3be-438f8aeb0967",
+    "driver_pod": "nvidia-gpu-driver-ubuntu26.04-8665b5f4cf-r2g5j",
+    "driver_pod_uid": "3b805e29-c508-4b6f-9414-881d9429c606",
+    "driver_cid": "326793cd48b03b14f68c222163d13d3aadeb7d3137cfeaec4f8438d896591902",
+    "fractiond_pod": "gpu-fractioning-fractiond-4jd2l",
+    "fractiond_pod_uid": "fb9703c9-9591-46c4-9763-f099da6cd374",
+    "fractiond_cid": "319d3846b0eb51f3d21dffc719cc74a772d068ad8ea0e0ff2f5aaad37e51b985",
+    "release_reference": "root-gpu4-stock-kai-postboot-0085-20261119",
+    "ssh_target": "ubuntu@10.21.0.41",
+    "ssh_key": "/home/bjoern/.ssh/id_ed25519"
+  },
+  "physical_order_mapping": {
+    "b": "GPU-72940107-8c9d-bfcb-0630-f4e9e720b793",
+    "a": "GPU-4768a9e7-e285-16d7-371d-95ad77f46ff4"
+  },
+  "driver_image": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73",
+  "uvm_source_sha256": "5648dbfe43957eb257d9efb715906de0fb6caa43458752544221d90db6efdb18",
+  "k3s_outer_sha256": "6ce276301723a902da671058730611591c59b5f016b816f57f2d97b05c88fe2c",
+  "k3s_inner_containerd_sha256": "0ca3be05fd3fcdd9682e68bbff5821ea15027773404a7e47517b822bcb57387a",
+  "observedRoles": 15,
+  "profilesMiB": [
+    5120,
+    10240,
+    20480
+  ],
+  "qualificationScope": "Current boot stock KAI placement, mixed profiles both physical cards in AB and BA orders, OOM recovery, independent progress and cleanup; not final service acceptance or promotion",
+  "summarySHA256": "d17954f906d907c0455986ce79e2304aa7eaffc7ec66314e00e96c8caaa4d84e",
+  "ownedPodsIndependentlyAbsent": true,
+  "artifactDirectory": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-kai-qualification-20261119-boot0085",
+  "at": "2026-11-19T05:35:07.520471+00:00"
+}

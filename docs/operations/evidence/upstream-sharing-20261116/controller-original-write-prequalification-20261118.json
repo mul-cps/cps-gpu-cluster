@@ -1,0 +1,36 @@
+{
+  "at": "2026-11-18T20:31:55.253099+00:00",
+  "stage": "original-prequalification",
+  "results": [
+    {
+      "source": "cps",
+      "controlWriteVerified": true,
+      "exactSameDisabledGrant": true,
+      "allGrantLogicalAndRawRowsPreserved": true,
+      "auditPrefixPreserved": true,
+      "exactlyOneNewSuccessAudit": true,
+      "auditSequence": 9735,
+      "actor": "cps",
+      "grantLogicalSHA256": "1a2dcba33821ab42ad8ef7c1ea56ea2e80bcadcf410fd42dd364bb45cb1b18bd",
+      "noCredentialsExported": true,
+      "store": "original compute-state",
+      "targetPVCUntouched": true
+    },
+    {
+      "source": "cit",
+      "controlWriteVerified": true,
+      "exactSameDisabledGrant": true,
+      "allGrantLogicalAndRawRowsPreserved": true,
+      "auditPrefixPreserved": true,
+      "exactlyOneNewSuccessAudit": true,
+      "auditSequence": 9736,
+      "actor": "cit",
+      "grantLogicalSHA256": "55595b1e14574eb3b956aea9696e2ae223a97cf9843cf4018df3c4478f841281",
+      "noCredentialsExported": true,
+      "store": "original compute-state",
+      "targetPVCUntouched": true
+    }
+  ],
+  "productionCutoverPerformed": false,
+  "newAuditRecords": 2
+}
