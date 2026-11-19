@@ -1,0 +1,25 @@
+{
+  "passed": [
+    {
+      "source": "cps",
+      "observed": "2026-11-19T10:39:26.047029+00:00",
+      "CPU_before_and_after_member_A_removal": true,
+      "heldOwnerKernelAndTwoOwnerRTCInitialBinarySyncAutomaticClose": true,
+      "retainedFileSDKNoGPU": true,
+      "BCDNativeGroupShareCentralRosterWitness": true,
+      "normalStopConfirmed": true,
+      "humanBrowserSSOClaim": false
+    },
+    {
+      "source": "cit",
+      "observed": "2026-11-19T10:41:26.293130+00:00",
+      "CPU_before_and_after_member_A_removal": true,
+      "heldOwnerKernelAndTwoOwnerRTCInitialBinarySyncAutomaticClose": true,
+      "retainedFileSDKNoGPU": true,
+      "BCDNativeGroupShareCentralRosterWitness": true,
+      "normalStopConfirmed": true,
+      "humanBrowserSSOClaim": false
+    }
+  ],
+  "complete": true
+}

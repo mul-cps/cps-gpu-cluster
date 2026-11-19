@@ -1,0 +1,14 @@
+{
+  "scope": "actual bothSource CPU/member flows; noGPU/fullworker/fault/canonical/browsersso claim",
+  "files": {
+    "cps-authoritative-remove-automatic-stop.safe.json": "7ba2e07f8af99286d07fc416bf3d455c360ad7fb99f30e82fa49e83c0b86d3be",
+    "cps-confirmed-stop.safe.json": "42d9c73b015a6387817557b748126a1f3aa7bde7157b4f0c030762eabe03888f",
+    "gpu4-cps-cpu-held-final-126-20261119-jupyter-evidence.json": "11a25dc14c03e4cbd7c89b2bf403037b512669489f9536a901f549066498a848",
+    "gpu4-cps-cpu-bcd-final-126-20261119-jupyter-evidence.json": "fb714d484f917e1059839e70fc35bb75593430d81a0a230abed1cceafece4c5b",
+    "cit-authoritative-remove-automatic-stop.safe.json": "e70c816da5c179924a640b6c867556baf1e52d885b63e0912ab5c22687591baa",
+    "cit-confirmed-stop.safe.json": "a0e94fafc849c3c708d88590d80d9690fd379df6f3434ce242a14ada9833eac9",
+    "gpu4-cit-cpu-held-final-126-20261119-jupyter-evidence.json": "b68983daf0e6d1a6305b14a7e096dad975850667c64628a4c36007e588cee57b",
+    "gpu4-cit-cpu-bcd-final-126-20261119-jupyter-evidence.json": "27a7189eb2a8b09f79c8ffaf54911167c7d2b1bba96482730237b039298e5b96",
+    "terminal.json": "14450882725fb5bbc5ed2c6e0c4df740ff0288430efeacb30f0c50946a8cf852"
+  }
+}

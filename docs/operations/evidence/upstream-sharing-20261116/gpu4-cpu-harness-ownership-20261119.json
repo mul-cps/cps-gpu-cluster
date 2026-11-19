@@ -1,0 +1,43 @@
+{
+  "status": "harness-failed-before-probe-no-CPU-member-acceptance",
+  "cause": "GPU-specific cleanup helper required active GPUlease/attempt for CPU; CPU intentionally inactive/null",
+  "actualSourceStartHTTP": 200,
+  "actualPodUID": "8abf058e-d503-4dd5-88b4-c27030f29000",
+  "actualNode": "k3s-wk-gpu3",
+  "cleanup": {
+    "SourceHTTP200": true,
+    "SourceStopped": true,
+    "PodGone": true,
+    "leaseInactiveAttemptNull": true,
+    "noForceOrGPURelease": true
+  },
+  "credentialClosure": {
+    "sources": {
+      "cps": {
+        "revoked": [
+          {
+            "id": "a2596",
+            "status": 204,
+            "absent": true
+          }
+        ],
+        "authDenied": true
+      },
+      "cit": {
+        "revoked": [
+          "a802"
+        ],
+        "authorityUnchanged": true,
+        "remainingNOTE": 0,
+        "authDenied": true
+      }
+    },
+    "errors": [],
+    "elapsedSeconds": 11.483946783933789,
+    "deadlineSeconds": 170
+  },
+  "watchInactive": true,
+  "CPUAndFaultNotQualified": true,
+  "successor": "fresh isolated CPU-v2 cohort from verified frozen38files/newNOTE/emptyfsyncedstopdirs; no priorlifecycle state copied",
+  "GPUProductionHelpersUnchanged": true
+}

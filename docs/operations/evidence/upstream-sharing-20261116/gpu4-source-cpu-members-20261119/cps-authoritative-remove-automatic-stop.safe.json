@@ -1,0 +1,63 @@
+{
+  "observed": "2026-11-19T10:38:29.153342+00:00",
+  "SourceRemoveHTTP200": true,
+  "remove_started_unix": 1795084702.4607441,
+  "held_events": [
+    {
+      "event": "rtc_initial_sync",
+      "person": "owner_1",
+      "frame_bytes": 13,
+      "unix": 1795084701.9401317
+    },
+    {
+      "event": "rtc_initial_sync",
+      "person": "owner_2",
+      "frame_bytes": 56,
+      "unix": 1795084702.4561005
+    },
+    {
+      "event": "held_ready",
+      "unix": 1795084702.4561524,
+      "kernel_id": "0c1de5a2-db60-41cf-8c5b-b2768240ebe3",
+      "sockets": [
+        "kernel_owner",
+        "rtc_owner_1",
+        "rtc_owner_2"
+      ],
+      "actors": [
+        "neutral-workload-owner",
+        "neutral-workload-owner"
+      ]
+    },
+    {
+      "event": "connection_closed",
+      "socket": "rtc_owner_1",
+      "unix": 1795084705.2360072,
+      "close_code": null
+    },
+    {
+      "event": "connection_closed",
+      "socket": "rtc_owner_2",
+      "unix": 1795084705.236239,
+      "close_code": null
+    },
+    {
+      "event": "connection_closed",
+      "socket": "kernel_owner",
+      "unix": 1795084705.2368376,
+      "close_code": null
+    },
+    {
+      "event": "all_held_connections_closed",
+      "unix": 1795084705.2369404
+    }
+  ],
+  "threeConnectionsClosedBeforeManualSTOP": true,
+  "supervisorStopNotObserved": true,
+  "conservativeWatchStopUnix": 1795085764.3560343,
+  "critical500sReserveCheckedImmediatelyBeforeMemberRemove": true,
+  "SourceStopped": true,
+  "PodAbsent": true,
+  "leaseInactive": true,
+  "attemptNull": true
+}
