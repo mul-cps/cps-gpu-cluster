@@ -1,0 +1,36 @@
+{
+  "checkedAt": 1795095580.3613696,
+  "status": "PREPARATION_ONLY_STALE_BINDINGS_NEVER_EXECUTE",
+  "integrationManifestSHA256": "e621ea2f8175b4b338a8775ddf62937b3ff689c8e1e5610e3527d6d72deb5ff5",
+  "payloadHashesVerified": 50,
+  "independentReview": {
+    "critical": 0,
+    "issues": 0,
+    "topTests": 21,
+    "runTests": 11
+  },
+  "semanticCorrection": {
+    "beforeStop": "Actual service fences; no claim of HTTP silence",
+    "beforeData": "Positive old3 API and CRI exit, actual postStop host FD and writable-mmap inventory, bounded known-authority scope, no source RW mounts, clear custody, actual admissionDeny; fresh full collector before every data phase",
+    "original60SecondClockUnchanged": true
+  },
+  "helperGen6Retired": [
+    {
+      "role": "source",
+      "uid": "e098c5ef-48ef-4cd8-8ed6-6f54b3dbb424",
+      "positiveHostCRIExit": true,
+      "normalExactUIDRVDelete": true,
+      "absent": true
+    },
+    {
+      "role": "target",
+      "uid": "3b9b554e-47e2-41c6-8547-76ce3619aa61",
+      "positiveHostCRIExit": true,
+      "normalExactUIDRVDelete": true,
+      "absent": true
+    }
+  ],
+  "rootRelease": null,
+  "productionFenceStopCopyOrAuthoritySwitch": false,
+  "nextPriority": "Restore user-requested MuJoCo 1-20 GiB selector through qualified shared runtime; later rebind cutover to resulting current images and fresh helpers"
+}
