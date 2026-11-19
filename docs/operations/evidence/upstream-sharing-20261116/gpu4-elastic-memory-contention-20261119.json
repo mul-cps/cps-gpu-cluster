@@ -8,7 +8,7 @@
     "borrowerIdleFilledMiB": 19968,
     "borrowerExitStatus": 137,
     "borrowerExitedBeforeOwnedDelete": true,
-    "borrowerKillAttributionVerified": false,
+    "borrowerKillAttributionVerified": true,
     "protectedFilledMiB": [
       19968,
       9728
@@ -18,7 +18,11 @@
       "observations.private.json": "4aae0699ff90945c48e22093b83197e8b01bf98a992a84013daac2d4daed83f4",
       "borrower-cid.private.log": "34f1cb9f90ea2223b72482f1140f72af920e710a79360f6d0b550159ac330d82",
       "borrower-exit-window-kernel.private.log": "e33340d414c43bc5db6511b2b34517a50f8b8ee1f4357294bdc42e2b3c0da0dd"
-    }
+    },
+    "physicalGPUIndex": 0,
+    "borrowerNotificationGPUIndex": 0,
+    "evictionRequestGPUIndex": 0,
+    "mpsVictimMatchesBorrowerContainerExit": true
   },
   "otherCardReverseOrder": {
     "sameCard": true,
@@ -31,7 +35,14 @@
       "observations.private.json": "fd53395894692095025ba039eeab23cab4955aa45b1a5dbd615aa6b73c4164d9",
       "borrower-post-contention.private.json": "73e0f7e992f638788b07b06fda563c42c13e09bc5926250996473fa1b303c7b5",
       "protected20-post-contention.private.json": "d9f843834d06d0abc1057cb3070e962b513dd83bf2cb0cf264ad7eaf2ffa203b"
-    }
+    },
+    "physicalGPUIndex": 1,
+    "borrowerNotificationGPUIndex": 1,
+    "evictionRequestGPUIndices": [
+      0,
+      0
+    ],
+    "mpsVictims": 0
   },
   "cleanup": {
     "testPodsAbsent": true,
@@ -41,5 +52,11 @@
       1,
       1
     ]
+  },
+  "diagnosis": "MPS records a physical-device mismatch in the failing case. Both protected allocations and the borrower report the same physical UUID, but the protected pressure request uses index 0 while the borrower notification uses index 1. The code path producing the wrong index remains unverified.",
+  "mpsEvidenceSHA256": {
+    "gpu4-elastic-contention-V5xwsV/mps-window.private.log": "0b4485f5c604750e9aa990fbebc94eace3bb0036596a03e9ee767a0adf74af31",
+    "gpu4-elastic-reverse-WkgiKB/mps-window.private.log": "195bea58ee48345c583ce223f93d87ac233f9f56d9206d45cd67faea5c7a441d",
+    "gpu4-elastic-reverse-WkgiKB/physical-gpu-inventory.private.txt": "f38e730536ee6dd345220a033e6d7322d32899e91ded72475dbd488e6b61adda"
   }
 }
