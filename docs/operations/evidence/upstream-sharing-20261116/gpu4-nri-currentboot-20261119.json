@@ -1,0 +1,44 @@
+{
+  "status": "PASS",
+  "initial": {
+    "status": "PASS",
+    "started_at": 1795066623.6366332,
+    "expected_boot_id": "0085f8ba-9dd5-4d8d-a3be-438f8aeb0967",
+    "fractiond_pod": "gpu-fractioning-fractiond-4jd2l",
+    "fractiond_pod_uid": "fb9703c9-9591-46c4-9763-f099da6cd374",
+    "node": "k3s-wk-gpu4",
+    "node_uid": "f0e6c6ee-3984-423f-9cfb-734c558c35cb",
+    "node_ip": "10.21.0.41",
+    "ssh_target": "ubuntu@10.21.0.41",
+    "gpu_uuids": [
+      "GPU-4768a9e7-e285-16d7-371d-95ad77f46ff4",
+      "GPU-72940107-8c9d-bfcb-0630-f4e9e720b793"
+    ],
+    "release_reference": "root-gpu4-postboot0085-nri-20261119",
+    "hang": "PASS",
+    "recovery_cards": 2,
+    "final_boot_id": "0085f8ba-9dd5-4d8d-a3be-438f8aeb0967",
+    "finished_at": 1795066667.9618058
+  },
+  "missingPluginRecovery": {
+    "status": "PASS",
+    "missing_required_rejected_cpu_pass": true,
+    "recovery_cards": 2
+  },
+  "knownOwnedUIDsAbsent": [
+    "253b3e17-9695-422f-8653-27f1b025be95",
+    "4c72766f-9862-4b8d-9d89-d6df396ab8f8",
+    "52bf9ab7-3588-4d6e-9139-fd924092cf72",
+    "9a21357a-f31a-46eb-b95c-29035996a8c5",
+    "a667f725-13d5-4247-980e-2103346d2924",
+    "ae82e9ff-621c-4dc5-bc97-a27fa537a3ae",
+    "d988a069-80fa-4c4d-9dca-e20f91688df9"
+  ],
+  "finalPhysicalMemoryMiB": [
+    1,
+    1
+  ],
+  "scope": "Current boot hung/disconnected/missing required plugin rejects GPU execution, CPU independence, both-card quota/OOM/recovery, normal owned fixture cleanup. No runtime restart or further reboot performed.",
+  "at": "2026-11-19T05:39:03.869849+00:00",
+  "artifactDirectory": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-nri-postboot-20261119-boot0085"
+}
