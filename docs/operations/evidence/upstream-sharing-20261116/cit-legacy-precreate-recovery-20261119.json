@@ -1,0 +1,81 @@
+{
+  "at": "2026-11-19T09:53:34.661468+00:00",
+  "status": "PASS: exact legacy preCREATE attempt reconciled through supported SourceStop, capability and temporary observer scopes removed",
+  "attempt": "c8bd6a1f-7be7-4912-a26a-0dfb2c4def35",
+  "generation": "f8474996-f99c-4348-a994-f7a4244747a4",
+  "source": "cit",
+  "workspace": "upstream-registry-qualification-20261116-cit",
+  "recovery": {
+    "at": "2026-11-19T09:43:56.821592+00:00",
+    "GatewayGeneration": 448,
+    "originalFullSpecRestored": true,
+    "mounted": {
+      "recoveryOff": true,
+      "CITFiveProfilesPreserved": true
+    },
+    "credentialClosure": {
+      "source": "cit",
+      "result": {
+        "revoked": [
+          "a794"
+        ],
+        "authorityUnchanged": true,
+        "remainingNOTE": 0,
+        "authDenied": true
+      },
+      "errors": [],
+      "nativeTTLSeconds": 180,
+      "at": 1795081249.5282621
+    },
+    "sourceStop": {
+      "at": "2026-11-19T09:40:44.743997+00:00",
+      "rootRelease": "root-reviewed-cit-c8bd-current333-20261119T0934",
+      "attempt": "c8bd6a1f-7be7-4912-a26a-0dfb2c4def35",
+      "normalSourceStopHTTP200": true,
+      "sameOriginalAttemptReleased": true,
+      "localORMMetadataCleared": true,
+      "SourceStopped": true,
+      "sharesEmpty": true,
+      "otherReservationsAndAllGrantsRawExact": true,
+      "ownerAndRoleUnchanged": true,
+      "noDirectSQLMutation": true,
+      "noCredentialMintOrRevokeByThisScript": true,
+      "credentialClosureRequiredSeparately": true,
+      "retainedFileContentsNotInspected": true
+    }
+  },
+  "observerClosure": {
+    "at": "2026-11-19T09:50:18.971355+00:00",
+    "HubGeneration": 334,
+    "hubPod": {
+      "namespace": "cit-jhub",
+      "name": "hub-59b87f64f7-mhbr9",
+      "uid": "f2a1030c-ca01-42d2-80af-947881c8b03f",
+      "container": "hub",
+      "cid": "containerd://5e0e3e0200661380f538121c982718e955b72c2da4a29dea4d6653756a44baac",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:af7aac2e7c94ecd3bf3d4e6467e0b9a2263adcfa200d5498267b872153c24ef9",
+      "generation": 334
+    },
+    "role13OriginalFourScopesExact": true,
+    "roleAssignmentsExact": true,
+    "observerTokenStillOriginalInherit": true,
+    "nativeAPICreatedNotReadable": true,
+    "nativeAPIStateNotReadable": true,
+    "fullAdmittedSpecExact": true,
+    "CITFiveAndRinoPreserved": true,
+    "recoveryOff": true
+  },
+  "normalCITOwner": "eec74e08a10e5b0369f0c0195aeea2fc464f696e",
+  "reviewedPreparationManifest": "dc2405e9a75deff7f0f3f5acb65da4c1e1bcb51cc600b7ead051eacaa86dcec8",
+  "historicalReviewSHA256": "3d8b7bb95251f7933856c883d7a0f7d46e2e25dc2e7339dcecb526973a58f286",
+  "rootWrapperDurabilityTest": "Failed missing directory fsync; fixed parent/case and every issuer save directory fsync; local test passes",
+  "scope": [
+    "Genuine operator credential with original three scopes/native180TTL; independent watcher and actual revocation/authDenied",
+    "Exactly one official Source StopHTTP200; no direct reservation SQL mutation or fabricated custody/PodUID",
+    "Same original attempt released only with reviewed positive403-beforeCREATE evidence and retired original process",
+    "Owner/native row/role assignments unchanged; all58 grants and other reservations byte-logically exact",
+    "Gateway448 restores exact original8fdf/317b spec and mounted recoveryOFF; five CIT profiles retained",
+    "CIT334 normal role13original4 scopes and native API negative field checks; Rino/crypto/home/CPS401 retained",
+    "GPU4 remains unqualified/fenced pending final Source acceptance; overall goal not complete"
+  ]
+}
