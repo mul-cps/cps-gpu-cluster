@@ -1,0 +1,102 @@
+{
+  "at": "2026-11-19T08:25:51.617784+00:00",
+  "status": "PASS: original image pull and one-GPU CUDA smoke, normal owned cleanup",
+  "profileAccount": "m12113877",
+  "originalImageDigest": "sha256:1ed46addaed50f1874edec98001a122bd9da219d89e6cfecf1945c7338261c21",
+  "node": "k3s-wk-gpu1",
+  "coldPodCreatedToReadySeconds": 95.0,
+  "count": 1,
+  "globalStartupBurstsQualified": false,
+  "receipts": {
+    "complete.safe.json": {
+      "complete": true,
+      "ownedPodGone": true,
+      "physicalBothIdle": true,
+      "scope": "oneGPU/noPVCnativeimage smoke only; notdesktop/service acceptance"
+    },
+    "hardware.safe.json": {
+      "rawCUDA": {
+        "phase": "complete",
+        "cudaDeviceCount": 1,
+        "gpuUUID": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+        "uid": 1000,
+        "imports": {
+          "torch": {
+            "imported": true,
+            "version": "2.10.0+cu128"
+          },
+          "mujoco": {
+            "imported": true,
+            "version": "3.12.0"
+          }
+        },
+        "noHomePVC": true,
+        "desktopAcceptance": false
+      },
+      "physicalGPUCorrelatedThroughContainerCgroup": true,
+      "otherCardUnchangedIdle": true,
+      "image": "harbor.dshl.unileoben.ac.at/cps-users/cps-jupyter-notebook@sha256:1ed46addaed50f1874edec98001a122bd9da219d89e6cfecf1945c7338261c21",
+      "nativeImageID": "harbor.dshl.unileoben.ac.at/cps-users/cps-jupyter-notebook@sha256:1ed46addaed50f1874edec98001a122bd9da219d89e6cfecf1945c7338261c21",
+      "uid": "08ee59db-4e52-4a49-8868-32f1a3274294",
+      "containerID": "containerd://297c8ca6e51dca4648915a2c866d75ead1eddcbf812138baa6120d2addd004f3",
+      "noPVC": true,
+      "noNVIDIAEnvOverride": true,
+      "noUserWorkspaceActions": true
+    },
+    "host-before.safe.json": {
+      "processes": [],
+      "cards": [
+        {
+          "uuid": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+          "usedMiB": 1
+        },
+        {
+          "uuid": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+          "usedMiB": 1
+        }
+      ]
+    },
+    "host-after.safe.json": {
+      "processes": [],
+      "cards": [
+        {
+          "uuid": "GPU-8df28256-50a3-db30-3706-b69d52f4874f",
+          "usedMiB": 1
+        },
+        {
+          "uuid": "GPU-b1222487-3937-5349-7329-5cbebd15a5db",
+          "usedMiB": 1
+        }
+      ]
+    }
+  },
+  "receiptSHA256": {
+    "complete.safe.json": "bfe671e28cbd8c221d91a6b896cbc29d5ee7a495fb75779aac2420ecf8fe3593",
+    "hardware.safe.json": "3dad1c71f07f03eb5f2ff078df6e397e601276f5afe9b57654312fe6f5b6f802",
+    "host-before.safe.json": "947c35cee62120c22a3b2b70c7f7114ea165544f85701dc1ebdf481391267d44",
+    "host-after.safe.json": "947c35cee62120c22a3b2b70c7f7114ea165544f85701dc1ebdf481391267d44"
+  },
+  "registryCorrection": {
+    "originalImageWasAlreadyPresent": true,
+    "earlier404Cause": "Custom Accept header omitted application/vnd.oci.image.manifest.v1+json; native pull authority returns exact200 after adding it",
+    "diagnosisManifestSHA256": "dac304f9",
+    "registryCopySubmitted": false,
+    "tagsCreated": false,
+    "actualRestoreGuardResult": {
+      "exactDigestPresent": true,
+      "mutationSubmitted": false
+    },
+    "authAndProxyCleanup": {
+      "ephemeralAuthAbsent": true,
+      "proxyThreadStopped": true,
+      "proxySocketClosed": true
+    }
+  },
+  "runtimeNVIDIA_VISIBLE_DEVICES": "void, observed after upstream device injection; Pod supplied no override; actual CUDA device count was one",
+  "desktopEntry": "JupyterLab launcher -> Desktop (Xpra)",
+  "boundaries": [
+    "No Rino server Start/Stop or home volume mount",
+    "MuJoCo3.12 and Torch2.10 imports pass; interactive desktop/browser session not performed",
+    "New admin own-home MuJoCo profile is being implemented separately; existing Rino exception remains unchanged"
+  ]
+}
