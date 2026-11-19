@@ -1,0 +1,60 @@
+{
+  "sourceClaim": "compute-state-checkpoint10-20261119",
+  "scheduledConfigMap": "compute-state-backup-custody-649d66c37457",
+  "liveBackupCompleted": "2026-11-19T15:53:01Z",
+  "restoredDatabases": {
+    "control.sqlite": {
+      "sha256": "f1df328fdda7981e649c2b60c5b352faa06f050367f78e0b6b445911f9581d75",
+      "integrity": "ok",
+      "requiredTables": [
+        "grant_record"
+      ]
+    },
+    "reservations.sqlite": {
+      "sha256": "8baf0bea0935ed398743319b03121b8a92002d7e01f658cab2ffdc44542b71c6",
+      "integrity": "ok",
+      "requiredTables": [
+        "reservation",
+        "reservation_binding"
+      ]
+    },
+    "native-kai-private/custody.sqlite": {
+      "sha256": "7cbdeec65fb1e0069c2baaa1eff3d019dbacdf7e54cc219fd311c5af96862b6a",
+      "integrity": "ok",
+      "requiredTables": [
+        "native_pending_custody",
+        "native_pending_seed",
+        "native_reservation_delete"
+      ]
+    },
+    "native-kai-runtime-private/custody.sqlite": {
+      "sha256": "106501ccf43a48d1a1938eeec2a05f43fce020211bba6cfd1eee2edf918121a5",
+      "integrity": "ok",
+      "requiredTables": [
+        "native_pending_custody",
+        "native_pending_seed",
+        "native_reservation_delete"
+      ]
+    }
+  },
+  "boot": {
+    "normal_sigterm_lifespan_shutdown": true,
+    "uvicorn_factory_lifespan_http_ready": true,
+    "unauthenticated_me_http_status": 401,
+    "elapsed_seconds": 5.475177139975131,
+    "child_exit_code": -15,
+    "external_network": "none",
+    "external_mutations": "blocked at client boundary",
+    "existing_table_rows_unchanged": true,
+    "database_count": 4,
+    "factory_process_uid": 10001
+  },
+  "bootImage": "ghcr.io/mul-cps/cps-compute@sha256:1e6f74cf01a214137bc52b965c9ba5033f7ca69fc3a0de9ff7640839f225948c",
+  "externalReadFixturesUsed": true,
+  "productionServiceRestartClaim": false,
+  "evidenceSHA256": {
+    "restore-result.safe.json": "6c8dbeebf22860d71700523a2f85bc6aab669af0f83f9e6b1de001b0a4632554",
+    "isolated-gateway-restore-I2pCh2/result/result.json": "d4a1da012d97ae0e90bf9c51005a4e9cd59181de4106e1cbc7eaa7a4b3408f57",
+    "backup-state.candidate.py": "649d66c374578d5e9eace77df1f312c77f456e338be71c50c7097ddce9752b4e"
+  }
+}
