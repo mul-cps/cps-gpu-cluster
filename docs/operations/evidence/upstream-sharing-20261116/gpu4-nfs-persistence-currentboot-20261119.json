@@ -1,0 +1,39 @@
+{
+  "status": "PASS",
+  "boot": "0085f8ba-9dd5-4d8d-a3be-438f8aeb0967",
+  "claimUID": "b873a508-4fb0-40ff-9851-c77260109f5b",
+  "writer": {
+    "uid": 0,
+    "gid": 100,
+    "retainedWitnessSHA256": "9dd38bf64417265fc64ad0a6a34b45c9ef130b914aa1bb42bb8ca97d269f8cd2",
+    "newNonce": ".root-nfs-peer-nfs0085-88c413e045-gpu4",
+    "newNonceBytes": 73,
+    "newNonceSHA256": "fe24e10b5e805a648219126751a50220162317798ba12ec903502e0af4b49f9b",
+    "fileAndDirectoryFsync": true,
+    "existingEntryMetadataExact": true,
+    "existingEntryCount": 20,
+    "metadataFields": "inode/mode/uid/gid/size/mtime/ctime/nlink; atime excluded because reads may update it",
+    "nonceRetained": true
+  },
+  "separateReadOnlyReader": true,
+  "ownedWriterReaderAbsent": true,
+  "nonceRetainedForOwnedCleanup": false,
+  "at": "2026-11-19T05:39:28.532561+00:00",
+  "ownedNonceCleanup": {
+    "operation": "cleanup",
+    "retainedWitnessSHA256": "9dd38bf64417265fc64ad0a6a34b45c9ef130b914aa1bb42bb8ca97d269f8cd2",
+    "nonce": ".root-nfs-peer-nfs0085-88c413e045-gpu4",
+    "nonceInode": 15,
+    "nonceSHA256": "fe24e10b5e805a648219126751a50220162317798ba12ec903502e0af4b49f9b",
+    "nonceBytes": 73,
+    "uid": 0,
+    "gid": 100,
+    "ownedNonceUnlinked": true,
+    "directoryFsync": true,
+    "existingEntryMetadataExact": true
+  },
+  "allFourOwnedPodsAbsent": true,
+  "currentFenceRetained": true,
+  "artifactDirectory": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-nfs-currentboot-actual-20261119",
+  "completedAt": "2026-11-19T05:43:00.446834+00:00"
+}

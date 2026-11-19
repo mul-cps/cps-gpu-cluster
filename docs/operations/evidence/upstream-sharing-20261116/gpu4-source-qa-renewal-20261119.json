@@ -1,0 +1,41 @@
+{
+  "started": "2026-11-19T05:42:26.665084+00:00",
+  "finished": "2026-11-19T05:42:27.411947+00:00",
+  "all_count": 58,
+  "only_ids": [
+    "upstream-registry-qa-20261116-cps-a",
+    "upstream-registry-qa-20261116-cps-b",
+    "upstream-registry-qa-20261116-cps-c",
+    "upstream-registry-qa-20261116-cps-d",
+    "upstream-registry-qa-20261116-cit-a"
+  ],
+  "other_count": 53,
+  "other_rows_raw_exact": true,
+  "other53_raw_exact_before_after_each": true,
+  "server_injected_source_exact": true,
+  "per_call_snapshots_retained": true,
+  "expires": [
+    "2026-11-19T06:42:26.714359+00:00",
+    "2026-11-19T06:42:27.160337+00:00",
+    "2026-11-19T06:42:27.210384+00:00",
+    "2026-11-19T06:42:27.255928+00:00",
+    "2026-11-19T06:42:27.290074+00:00"
+  ],
+  "earliest_expires": "2026-11-19T06:42:26.714359+00:00",
+  "sources": [
+    "cps",
+    "cit"
+  ],
+  "eight_TLS200": true,
+  "CIT_effectives_requested": true,
+  "all_after_effective_reads_exact": true,
+  "CA_hostname_verified": true,
+  "proxy_disabled": true,
+  "no_SQL_writes": true,
+  "no_hook_credential_or_Source_workload_action": true,
+  "GatewayPodUID": "387d6de3-4e6b-4a76-b211-4f343f2cefc2",
+  "ALL_before_sha256": "07e7dc8bda4b06f3be4bf87b6c7b4b479a8c3b77ab33fd39d41cd6dff54d36cb",
+  "ALL_after_sha256": "5280ac1767e2e2c48cebe93ae3e12164955d15ab7556805e00632ea41121f511",
+  "scope": "Only the five existing reviewed QA grants reopened for60minutes through genuine service APIs. Other53 unchanged. Preparation for real Source acceptance, not service acceptance.",
+  "artifactDirectory": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-cit-source-cycle-preparation-20261119/renewal-actual"
+}
