@@ -1,0 +1,45 @@
+{
+  "worker": "k3s-wk-gpu4",
+  "driver": "620.70.06",
+  "testScope": "stock KAI time-slicing, unequal request and limit",
+  "qualified": false,
+  "firstCard": {
+    "sameCard": true,
+    "borrowerIdleFilledMiB": 19968,
+    "borrowerExitStatus": 137,
+    "borrowerExitedBeforeOwnedDelete": true,
+    "borrowerKillAttributionVerified": false,
+    "protectedFilledMiB": [
+      19968,
+      9728
+    ],
+    "protectedProgressVerified": true,
+    "sourceSHA256": {
+      "observations.private.json": "4aae0699ff90945c48e22093b83197e8b01bf98a992a84013daac2d4daed83f4",
+      "borrower-cid.private.log": "34f1cb9f90ea2223b72482f1140f72af920e710a79360f6d0b550159ac330d82",
+      "borrower-exit-window-kernel.private.log": "e33340d414c43bc5db6511b2b34517a50f8b8ee1f4357294bdc42e2b3c0da0dd"
+    }
+  },
+  "otherCardReverseOrder": {
+    "sameCard": true,
+    "borrowerHeldMiB": 19968,
+    "protected10HeldMiB": 9728,
+    "protected20RequestedMiB": 19968,
+    "protected20CUDAResult": 2,
+    "borrowerRunningAfterProtectedFailure": true,
+    "proofSHA256": {
+      "observations.private.json": "fd53395894692095025ba039eeab23cab4955aa45b1a5dbd615aa6b73c4164d9",
+      "borrower-post-contention.private.json": "73e0f7e992f638788b07b06fda563c42c13e09bc5926250996473fa1b303c7b5",
+      "protected20-post-contention.private.json": "d9f843834d06d0abc1057cb3070e962b513dd83bf2cb0cf264ad7eaf2ffa203b"
+    }
+  },
+  "cleanup": {
+    "testPodsAbsent": true,
+    "maintenanceTaintAbsent": true,
+    "workerSchedulable": true,
+    "idleMemoryMiB": [
+      1,
+      1
+    ]
+  }
+}
