@@ -1,0 +1,122 @@
+{
+  "status": "BLOCKED_NO_PROMOTION",
+  "at": "2026-11-19T06:06:18.790073+00:00",
+  "node": "k3s-wk-gpu4",
+  "bootID": "0085f8ba-9dd5-4d8d-a3be-438f8aeb0967",
+  "CITFirstProfileGiB": 5,
+  "SourceStartHTTP": 409,
+  "noGPUServiceAcceptanceClaim": true,
+  "immediateCause": "CIT Hub mounted serviceaccount was forbidden to GET selected node during QA modifyPodHook, before Pod creation. Both Hubs missing temporary QA node-read permission. Root corrected only selected-node GET, real mounted SA GET selected200, other node403 and LIST403; temporary RBAC later removed.",
+  "additionalQAWindowPrerequisite": "Reviewed QA hook requires temporary qualified label alongside maintenanceNoSchedule; initial unqualified window would also fail this guard. No subsequent start attempted.",
+  "retainedCustody": {
+    "source": "cit",
+    "workspace": "upstream-registry-qualification-20261116-cit",
+    "attempt": "c8bd6a1f-7be7-4912-a26a-0dfb2c4def35",
+    "generation": "f8474996-f99c-4348-a994-f7a4244747a4",
+    "podUID": null,
+    "PodAbsent": true,
+    "SourceState": "reconciling",
+    "GatewayLeaseActive": true,
+    "reservationReleased": false,
+    "reason": "Existing upstream binding has no observed custody; release guard safely refuses. Lack of custody alone is not proof of no Pod CREATE. Known causal preCREATE failure retained for bounded reviewed recovery; future dispatch-phase fix in preparation."
+  },
+  "normalRestore": {
+    "cps": {
+      "status": "PASS",
+      "at": "2026-11-19T06:03:36.504268+00:00",
+      "source": "cps",
+      "deploymentUID": "02fb8421-d323-4636-b006-2490cd6f5b63",
+      "generation": 400,
+      "wholeNormalSpecExact": true,
+      "normalSecretUIDDataExact": true,
+      "QAVolumeMountAbsent": true,
+      "PodUID": "ee93d112-f1fb-4e4b-bee1-c45c64a6946d",
+      "PodName": "hub-86c477c4d7-v668k",
+      "imageIDs": [
+        "ghcr.io/mul-cps/cps-compute@sha256:80ee9d8514d3033a7e8bda4959207e6ed8eb064ad569a03302f30364e869fac5"
+      ],
+      "noUnresolvedCustodyRelease": true
+    },
+    "cit": {
+      "status": "PASS",
+      "at": "2026-11-19T06:03:36.745128+00:00",
+      "source": "cit",
+      "deploymentUID": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e",
+      "generation": 330,
+      "wholeNormalSpecExact": true,
+      "normalSecretUIDDataExact": true,
+      "QAVolumeMountAbsent": true,
+      "PodUID": "0521111f-32ca-4298-9465-8a3a311e0d63",
+      "PodName": "hub-7cc64976b4-c7wmc",
+      "imageIDs": [
+        "ghcr.io/mul-cps/cps-compute@sha256:bf138c57e6a6243143b71ca6850487f5237ec25add5cee248d1ebabd221409a6"
+      ],
+      "noUnresolvedCustodyRelease": true
+    }
+  },
+  "ownedCredentials": {
+    "closed": true,
+    "closureErrors": [],
+    "rawTokensRemoved": true,
+    "watchInactive": true
+  },
+  "ownedOverlayAndRBACCleanup": {
+    "status": "PASS",
+    "objects": [
+      {
+        "kind": "ConfigMap",
+        "name": "cps-gpu4-source-qa-9c91d99ab428",
+        "UID": "4c84fae3-2724-4142-836b-565babf8de63",
+        "absent": true
+      },
+      {
+        "kind": "Secret",
+        "name": "cps-hub-gpu1-qa-74cb5b7bbcaf",
+        "UID": "22c89598-6940-4913-9225-d027da0c2769",
+        "absent": true
+      },
+      {
+        "kind": "ConfigMap",
+        "name": "cit-gpu4-source-qa-a08783ba42df",
+        "UID": "a6d1bf35-bbe3-486a-9232-711df4787d68",
+        "absent": true
+      },
+      {
+        "kind": "Secret",
+        "name": "cit-hub-gpu1-qa-87194c21356b",
+        "UID": "1723a07a-1b2c-4c54-a913-3853c1474e80",
+        "absent": true
+      },
+      {
+        "kind": "ClusterRoleBinding",
+        "name": "cps-gpu4-source-qa-dual-0085-20261119-cps",
+        "UID": "47b0c50c-4835-4c44-a65b-85733baea419",
+        "absent": true
+      },
+      {
+        "kind": "ClusterRoleBinding",
+        "name": "cps-gpu4-source-qa-dual-0085-20261119-cit",
+        "UID": "f020639d-5440-42be-a352-e1c4fd597e65",
+        "absent": true
+      },
+      {
+        "kind": "ClusterRole",
+        "name": "cps-gpu4-source-qa-dual-0085-20261119",
+        "UID": "0be81461-8e06-47ce-80ee-d5f438bdc5d1",
+        "absent": true
+      }
+    ],
+    "at": "2026-11-19T06:05:38.183575+00:00",
+    "activeCITReservationNotReleased": true
+  },
+  "selectedFence": {
+    "cordoned": true,
+    "qualifiedLabelAbsent": true,
+    "maintenanceNoSchedule": true,
+    "longhornScheduling": false
+  },
+  "artifactDirectory": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-cit-source-cycle-preparation-20261119",
+  "other53GrantsUnchangedByRenewal": true,
+  "existingFiveQAExpiry": "2026-11-19T06:42:26.714359+00:00",
+  "scope": "Causal test integration failure and guarded cleanup hold. No real-user Start/Stop, forced release or database edit."
+}
