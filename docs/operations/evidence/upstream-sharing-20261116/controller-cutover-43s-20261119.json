@@ -1,0 +1,45 @@
+{
+  "operation": "planned production controller handoff",
+  "date": "2026-11-19",
+  "sourceNode": "k3s-wk-gpu2",
+  "targetNode": "k3s-wk-gpu3",
+  "targetClaim": "compute-state-timed-gpu3-20261119",
+  "seconds": 43.71869779,
+  "thresholdSeconds": 60,
+  "thresholdPass": true,
+  "coldHAClaim": false,
+  "allFourDatabasesPreserved": true,
+  "protectedInputsVerified": 13,
+  "controlOperations": {
+    "cps": {
+      "controlWriteVerified": true,
+      "allGrantLogicalAndRawRowsPreserved": true,
+      "exactlyOneNewSuccessAudit": true
+    },
+    "cit": {
+      "controlWriteVerified": true,
+      "allGrantLogicalAndRawRowsPreserved": true,
+      "exactlyOneNewSuccessAudit": true
+    }
+  },
+  "authenticatedEndpoints": [
+    "cps-reservation",
+    "cps-workspace",
+    "cps-profiles",
+    "cps-isolation",
+    "cit-reservation",
+    "cit-workspace",
+    "cit-profiles",
+    "cit-isolation"
+  ],
+  "maxSampleStartGapSeconds": 0.62971789,
+  "case": "production-timed-qUO4FC",
+  "sha256": {
+    "observer/result.safe.json": "b7ed63e9b7c203a7f02032f16a8a9580c8ae8aa8b20a5d39efd686093a7e287e",
+    "finish.safe.json": "3c3b87bdcfe192755d2304b5b21432122d9247e0346d18c69961de5ab9df4b5b",
+    "target-preservation-verified/proof.safe.json": "170168e0eb18edd3ccefa1fb794f6feb02d20b4f883e0ef490de89d048db9c63",
+    "normalAPI/normal-api.safe.json": "f73dd0192f7f1a0141e5bee4ed297d35fdf44f0557147cc0108c841766b1730b",
+    "cps-control-audit.safe.json": "6176d71c9591ce5ec1467e650cd132146ff492e4776a0003918952e321de7b10",
+    "cit-control-audit.safe.json": "c83e96da47522fbcd7c8ddd4bd66fb42bb8aee21b67f4c06bd612431a31a9daf"
+  }
+}
