@@ -1,0 +1,104 @@
+{
+  "at": "2026-11-19T07:57:20.816953+00:00",
+  "status": "PASS: existing MuJoCo exception launch path restored; actual user workload launch not performed",
+  "account": "m12113877",
+  "profile": "mujoco-desktop-exclusive",
+  "displayName": "MuJoCo GPU desktop (exclusive)",
+  "sourceCommit": "91d2fa34102a2f2ae5fee7aa43fb8346e0936113",
+  "gitOpsOwnerCommit": "500293a79ac4053fc96c1487590f380e0ff3d5be",
+  "hubPodUID": "3a93991b-37bb-4edb-b6df-aa59f7c053bf",
+  "hubContainers": [
+    {
+      "name": "hub",
+      "imageID": "ghcr.io/mul-cps/cps-compute@sha256:e6a515b43f29280cd2ccc8f212bb1d63d9071cf77bbb3facc09d3076ba655cdc",
+      "containerID": "containerd://ec416a633ad0516675163a3ece5d162b168aea66b75a4a3ca7c41225ebc5938c",
+      "restartCount": 0
+    }
+  ],
+  "publishedImage": {
+    "at": "2026-11-19T07:51:30.432087+00:00",
+    "sourceCommit": "91d2fa34102a2f2ae5fee7aa43fb8346e0936113",
+    "tag": "ghcr.io/mul-cps/cps-compute:cit-retained-mujoco-91d2fa34102a-20261119",
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:e6a515b43f29280cd2ccc8f212bb1d63d9071cf77bbb3facc09d3076ba655cdc",
+    "imageID": "201d6b29a925322ba08ef33389118634453cd299684b578912918eb83a5d56c2",
+    "matchesQualifiedLocalImage": true,
+    "installedTests": 30,
+    "wholeFSOnlyModules": 2,
+    "OCIConfigIdentical": true,
+    "liveRollout": false
+  },
+  "qualification": {
+    "installedImageTestsPassed": 30,
+    "independentReview": "C0/I0",
+    "fullOwnerRenderResources": 25,
+    "entireFilesystemAndOCIConfigCompared": true,
+    "applicationModuleChanges": 2
+  },
+  "postroll": {
+    "postroll-preservation.safe.json": {
+      "checks": {
+        "moduleHashes": {
+          "cps_compute_hub.hub": "32cea2582f579d7e2cb09ef14ebcc959d7713a84ec1994138933432363a1dc99",
+          "cps_compute_hub.upstream_hub": "99a3ac54e83cc4170eeba2c8899115101f7f03a03b93a4591e9a8df20db64692"
+        },
+        "nativeAccountAndStoppedServerExact": true,
+        "trustedAdapterActualSettingsPositiveAndNegative": true,
+        "markerInstalled": true,
+        "noStartStopOrCredentialActions": true
+      },
+      "homePVCUIDExact": true,
+      "exceptionSecretUIDDataExact": true,
+      "exceptionGrantJSONSHA256": "e6ba43a507b6572d6dac61ecfd594a103ba693eb381731cc6d23117023f3608e",
+      "userWorkspaceNotStarted": true,
+      "contentsNotRead": true,
+      "currentHubUID": "3a93991b-37bb-4edb-b6df-aa59f7c053bf"
+    },
+    "whole-rollout-preservation.safe.json": {
+      "cit": {
+        "UID": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e",
+        "generation": 332,
+        "fullSpecExactExceptCITImage": true
+      },
+      "gateway": {
+        "UID": "f5f9b266-433d-4825-83de-d51e31c71648",
+        "generation": 445,
+        "fullSpecExactExceptCITImage": true
+      },
+      "cps": {
+        "UID": "02fb8421-d323-4636-b006-2490cd6f5b63",
+        "generation": 401,
+        "fullSpecExactExceptCITImage": true
+      },
+      "allFourGatewayDBSchemasAndRowsExact": true,
+      "GatewayDifferences": [],
+      "at": "2026-11-19T07:55:30.813332+00:00"
+    },
+    "owner-source-publication.safe.json": {
+      "local": "500293a79ac4053fc96c1487590f380e0ff3d5be",
+      "remote": "500293a79ac4053fc96c1487590f380e0ff3d5be",
+      "match": true
+    },
+    "verifier-path-correction.safe.json": {
+      "cause": "Read-only verifier omitted installed JupyterHub config Python search path, causing ModuleNotFoundError z2jh",
+      "productionChanged": false,
+      "oldSHA256": "fba3fc3f9053c9c165a8089a4b23c64abac3277b7cc189cc91937dd9cd7ac162",
+      "newSHA256": "f3933bec13ac4576e8f3f59ba20d623367138ff0cb6a6f959544a8d4d5245ce1",
+      "onlyChange": "sys.path.insert(0,'/usr/local/etc/jupyterhub') before importing z2jh; frozen original retained",
+      "localCopyLocationAdjusted": "Pin original artifact D because helper copy now lives in actual rollout evidence directory"
+    }
+  },
+  "receiptSHA256": {
+    "postroll-preservation.safe.json": "3beea94377ff89276237841c7daa5bf996591dda2846ee458223e3dba5f8a02e",
+    "whole-rollout-preservation.safe.json": "e4df82b4be422d9d037e55835b039d0dfc472e59eda67cc7a701d6d1051927e1",
+    "owner-source-publication.safe.json": "d55d4d38a2d4cfd03c622bd6b01f27e68fcc4078949e5c45bf23ffa2bd87b235",
+    "verifier-path-correction.safe.json": "a8dd74055be4edf033952182ae9871bbea61170ab66ecce9b5c2a9b4edf5df02"
+  },
+  "boundaries": [
+    "Existing exact-user/default-server administrative exception restored, no new roles/groups/grant or fabricated canonical mapping",
+    "Original MuJoCo image, one whole GPU, GPU1, runtime, lifetime and home-PVC restrictions retained",
+    "No user Start/Stop, file-content read, token mint or direct database write",
+    "Actual Rino browser Start/CUDA/desktop session remains unverified",
+    "Old c8bd recovery config process pins are invalid after this Hub replacement; allocation remains held, all Gateway rows unchanged",
+    "GPU4 remains cordoned/unqualified; broader rollout acceptance remains open"
+  ]
+}
