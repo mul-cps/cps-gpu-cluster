@@ -1,0 +1,86 @@
+{
+  "recordedAt": "2026-11-19T07:43:27.528830+00:00",
+  "scope": "Completed canonical CIT dedicated-profile and preCREATE cleanup image rollout. Not native GPU workload acceptance, Rino exception restoration, legacy held-case release or GPU4 promotion.",
+  "receipts": {
+    "gateway-postroll.safe.json": {
+      "status": "PASS",
+      "at": "2026-11-19T07:11:09.565717+00:00",
+      "generation": 445,
+      "PodName": "compute-gateway-674c5cdc85-7mrgm",
+      "PodUID": "86d79fff-5873-4ae9-917c-45651597b58f",
+      "gatewayContainerID": "containerd://8fc37c1ddee9e8d449037c76014d3ca155ec029ff8b46a1506a87eedf95a4d4a",
+      "imageID": "ghcr.io/mul-cps/cps-compute@sha256:8d9790da43cf3847da839267122b2808dde39f9da4d0a6339468bba338382ed2",
+      "oneReadyPodAllContainersZeroRestarts": true,
+      "allFourDBIntegrityAndSchemaExact": true,
+      "all58GrantRowsExact": true,
+      "allReservationAndBindingsRowsExact": true,
+      "otherTableDifferences": [],
+      "statePVCUnchanged": true,
+      "scope": "Gateway image/config rollout; not recovery or controller handoff."
+    },
+    "cps-postroll.safe.json": {
+      "status": "PASS",
+      "source": "cps",
+      "generation": 401,
+      "wholeDesiredSpecExact": true,
+      "PodUID": "b456ba56-e166-47b9-9a7e-79b8bc7926a0",
+      "PodName": "hub-7cb66bdf5-vkpjb",
+      "containers": [
+        {
+          "name": "hub",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:19f46dd0ff0fd410fae70416d04ff6ce84cad88af1e811a816700c9f4329f44e",
+          "containerID": "containerd://61e9252f83b0e9d20f41d4a61a89f28334f952ff8e03396619f43d3093990988",
+          "restartCount": 0
+        }
+      ],
+      "at": "2026-11-19T07:14:51.414116+00:00"
+    },
+    "cit-postroll.safe.json": {
+      "status": "PASS",
+      "source": "cit",
+      "generation": 331,
+      "wholeDesiredSpecExact": true,
+      "PodUID": "c0918bbb-6c8b-4bd5-92e7-6ba4a0ed06e0",
+      "PodName": "hub-9c7647bcb-fh6pc",
+      "containers": [
+        {
+          "name": "hub",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:d8cba0a044b0ff30ab4321ac44971de93bb7b9f050d27d10ddb420120d905631",
+          "containerID": "containerd://da24dbfec3a4b6d048148a46db724649a0d19863d45791ad3957daea0a328987",
+          "restartCount": 0
+        }
+      ],
+      "at": "2026-11-19T07:18:38.233462+00:00"
+    },
+    "cit-mounted-compatibility.safe.json": {
+      "source": "cit",
+      "enabled": true,
+      "profiles": [
+        "gpu-large-pytorch",
+        "gpu-large-tf",
+        "gpu-xlarge-pytorch",
+        "gpu-xlarge-tf"
+      ],
+      "configSHA256": "fa785e4e0b2970f2ee754fea71a2213c34081d29b78fec72a1e60aff06334bd6",
+      "upstreamHubSHA256": "759130a1850847cff65b08d9736950f5fbd72f291dfb66092de47f158362e393"
+    }
+  },
+  "receiptSHA256": {
+    "gateway-postroll.safe.json": "f34e70ee171e745634167bb8437490dea1b7e42a70c70bdbf7395bff447e713c",
+    "cps-postroll.safe.json": "beeba759da92fb069037d9d53f70988371b36746d5a4c783f44c236c9cd657bb",
+    "cit-postroll.safe.json": "9965db0f915998ffb795bf9866b42580b54f168ca025b1e9ce6c8e11bb5495bc",
+    "cit-mounted-compatibility.safe.json": "3000d179f216a203d3ab0b69ee971b51672c94193d62436a4c97cd174d3d5b4c"
+  },
+  "sourceCommit": "5de146a974218afd995dd16917fb6ce3b3e9c2d9",
+  "gitOpsOwners": {
+    "cps": "503758460dae6add0d1cf24b5369f3f81ed28f87",
+    "cit": "2a33af55a16e35d26acde383dfa9f38535c30397"
+  },
+  "open": [
+    "Rino original MuJoCo exception wrapper regression under repair; original home and grant retained",
+    "CIT c8bd preCREATE legacy attempt remains held; reviewed recovery not yet enabled",
+    "Native dedicated workload launches not yet qualified on these final images",
+    "GPU4 remains cordoned/unqualified; final CIT lifecycle and promotion open",
+    "Controller cutover <=60 seconds and startup burst gates remain open"
+  ]
+}
