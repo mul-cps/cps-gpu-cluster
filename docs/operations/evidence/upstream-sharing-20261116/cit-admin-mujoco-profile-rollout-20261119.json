@@ -1,0 +1,123 @@
+{
+  "at": "2026-11-19T09:03:00.727381+00:00",
+  "status": "PASS: deployment/configuration; native admin desktop acceptance pending",
+  "profile": "gpu-mujoco-admin",
+  "sourceCommit": "bbef6dad234504e43a04bfa5ac8abdd3e1c7465d",
+  "ownerCommit": "df5615a2c8b5274eef58f9edd5fe124a0b8121e7",
+  "postroll": {
+    "gateway": {
+      "generation": 446,
+      "PodUID": "3a148cd8-fbc0-4191-9e9e-e5a917e91205",
+      "containers": [
+        {
+          "name": "approval-capture",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5",
+          "containerID": "containerd://766b66ea21c258161f24cf06b48720050daa410cb5f07cfa817d88d1210010ed",
+          "restartCount": 0
+        },
+        {
+          "name": "gateway",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:8fdf4a30f1d3306c4c8e97b71f24b858c345531a6a29fa086846fe34ca09e8c7",
+          "containerID": "containerd://a911f1e7c47ac0f47bec78c9f8293fd147f43e8c4d9d808a4de480f8e0fa0bdf",
+          "restartCount": 0
+        }
+      ],
+      "fullDesiredSpecExact": true
+    },
+    "cit": {
+      "generation": 333,
+      "PodUID": "d7db5817-4144-40af-8e8e-35eb7b7d8d1c",
+      "containers": [
+        {
+          "name": "hub",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:af7aac2e7c94ecd3bf3d4e6467e0b9a2263adcfa200d5498267b872153c24ef9",
+          "containerID": "containerd://5dc411876fd4b67376c10d012eac59975450698d56f476b9bbc17d701f676d8b",
+          "restartCount": 0
+        }
+      ],
+      "fullDesiredSpecExact": true
+    },
+    "mountedCIT": {
+      "profiles": [
+        "gpu-large-pytorch",
+        "gpu-large-tf",
+        "gpu-mujoco-admin",
+        "gpu-xlarge-pytorch",
+        "gpu-xlarge-tf"
+      ],
+      "moduleHashes": {
+        "cps_compute_hub.hub": "32cea2582f579d7e2cb09ef14ebcc959d7713a84ec1994138933432363a1dc99",
+        "cps_compute.personal_gpu": "57086eb6e1c4bd65fe1e2edd486678f0b21dd90ed9596069eb1883682431664e",
+        "cps_compute_hub.personal_gpu": "5d9da558aba2b86ba3a4fc361de4fd4122ca0df3de2564478f967736618b0f80",
+        "cps_compute_hub.upstream_hub": "3cd972274add948d375f69851f3c4b3f49c23d88459a5bdd4eb4fe8c2bfb6f88"
+      }
+    },
+    "rino-exceptionPreserved": true,
+    "rino-homePreserved": true,
+    "CPSHubFullSpecUnchanged": true,
+    "GatewayAllFourDBSchemasRowsUnchangedBeforeCITHubRoll": true,
+    "at": "2026-11-19T08:55:35.376624+00:00"
+  },
+  "published": {
+    "at": "2026-11-19T08:45:23.693490+00:00",
+    "components": {
+      "gateway": {
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:8fdf4a30f1d3306c4c8e97b71f24b858c345531a6a29fa086846fe34ca09e8c7",
+        "imageID": "d0bb8b5a8c4f027b9dd810f1b2de1d23e7fe867d9cdb5a6965b429d6800ca6e2",
+        "matchesQualifiedLocalImage": true,
+        "sourceCommit": "bbef6dad234504e43a04bfa5ac8abdd3e1c7465d",
+        "installedTests": 107,
+        "wholeFSOnlyModules": 1,
+        "OCIConfigIdentical": true,
+        "tag": "ghcr.io/mul-cps/cps-compute:cit-admin-mujoco-gateway-bbef6dad2345-20261119"
+      },
+      "cit-hub": {
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:af7aac2e7c94ecd3bf3d4e6467e0b9a2263adcfa200d5498267b872153c24ef9",
+        "imageID": "a153318fa33cb8c8637c5392264ae9715a603bc0ecb69236cf015c8a181c2153",
+        "matchesQualifiedLocalImage": true,
+        "sourceCommit": "bbef6dad234504e43a04bfa5ac8abdd3e1c7465d",
+        "installedTests": 40,
+        "wholeFSOnlyModules": 3,
+        "OCIConfigIdentical": true,
+        "tag": "ghcr.io/mul-cps/cps-compute:cit-admin-mujoco-cit-hub-bbef6dad2345-20261119"
+      }
+    },
+    "noLiveRollout": true
+  },
+  "configuration": {
+    "status": "LOCAL PREP ONLY; source/image/review/Root release pending",
+    "newProfile": "gpu-mujoco-admin",
+    "image": "harbor.dshl.unileoben.ac.at/cps-users/cps-jupyter-notebook@sha256:1ed46addaed50f1874edec98001a122bd9da219d89e6cfecf1945c7338261c21",
+    "GPUCount": 1,
+    "oldCITCompatibilitySHA256": "fa785e4e0b2970f2ee754fea71a2213c34081d29b78fec72a1e60aff06334bd6",
+    "newCITCompatibilitySHA256": "3126268e39b058a421a6f4431f0d3421bab3019538e04bead52c56d94b57204d",
+    "CPSCompatibilitySHA256Before": "9037745ae5953952f5b65ba6732949b46230116203ec6f08fc15f9f671bf788d",
+    "CPSCompatibilitySHA256After": "9037745ae5953952f5b65ba6732949b46230116203ec6f08fc15f9f671bf788d",
+    "allOtherGatewayFieldsExact": true,
+    "allOtherCITValuesExact": true,
+    "otherSecretDataCryptoExact": true,
+    "originalRinoSettingsHomeGrantUnchanged": true,
+    "gatewayCandidate": "cps-cit-mujoco-admin-317b51a9d2a5091e",
+    "citCandidate": "cit-mujoco-admin-759631fef5104c23",
+    "liveObjectsCreated": false
+  },
+  "qualification": {
+    "independentReview": "C0/I0",
+    "GatewayInstalledTests": 107,
+    "HubInstalledTests": 40,
+    "wholeFilesystemAndOCICompared": true,
+    "ownerRenderResources": 25
+  },
+  "proofManifestSHA256": {
+    "images": "fefb30e9aa27e664e9df204cf16ed371591760ac6689a105320fe746db0d3c96",
+    "configuration": "6f083f1c1cb984384a1bf3cb974f9bd85472dec61facf37c712e2382b5175b84"
+  },
+  "scope": [
+    "Existing genuine jhub-admins-only profile with own normal home and same canonical reservation store",
+    "Rino private exception/home unchanged, no new people/groups/grants or role assignments",
+    "Config4-to5 mismatch refuses before any reservation; existing4 custody cleanup remains valid",
+    "Native named admin Start/Desktop/Stop and global full-plan gates remain open",
+    "Legacy c8bd remains held/recoveryOFF, different canonical person from akadmin; does not block operator allowance",
+    "GPU4 remains cordoned/unqualified"
+  ]
+}
