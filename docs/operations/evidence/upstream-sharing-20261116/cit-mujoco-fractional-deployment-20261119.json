@@ -1,0 +1,19 @@
+{
+  "gateway": {
+    "generation": 449,
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:75c4ae9c8aff8f7fb88ae820fe66a0224c525512d1c1741f240e44ae8de89945",
+    "secret": "gateway-mujoco-fraction-38cfb9b42466f427",
+    "secretUID": "64a66ca2-f7f4-4e6e-b0a9-3632ecfeb455",
+    "readyReplicas": 1
+  },
+  "hub": {
+    "generation": 337,
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:3154e5ae498254ae7d0515ccbb76ca409fb9b68e06fe6fc5fe20b63a07566114",
+    "secret": "cit-mujoco-fraction-ba7fd10c159d1780",
+    "secretUID": "887afc80-f5a1-4a63-84c0-5cdbb47690e3",
+    "readyReplicas": 1
+  },
+  "fleetRevision": "9f5b5fcb66475688eeb1571000ba2d84f734657f",
+  "sourceCommit": "dc11ff79b25e97e7d9a2e1a80d3d34278af58913",
+  "liveLaunchVerified": false
+}
