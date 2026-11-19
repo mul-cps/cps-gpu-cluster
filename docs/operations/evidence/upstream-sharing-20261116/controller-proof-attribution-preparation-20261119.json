@@ -1,0 +1,56 @@
+{
+  "checkedAt": 1795092786.5741222,
+  "status": "PREPARATION_PASS_LIVE_CUTOVER_OPEN",
+  "I3ManifestSHA256": "b3c194aed2939e49b27d6f132c0bc5a572c0723b24543156dcd825f4d3b383c3",
+  "allPayloadHashesVerified": 148,
+  "independentReview": {
+    "critical": 0,
+    "issues": 0,
+    "offlineTestsPassed": 78
+  },
+  "sourceAuthorityUnchanged": true,
+  "targetNode": "k3s-wk-gpu3",
+  "allFourRequiredImagesCached": true,
+  "requiredImages": [
+    "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5",
+    "ghcr.io/mul-cps/cps-compute@sha256:2701165c10ed941016ad110bf02195de41ef000cd58efc111cb569ac611889d9",
+    "ghcr.io/mul-cps/cps-compute@sha256:5f1dd4f55710f1cdf97d24a1165b265681c61c67578680b8f5ef8bd67a34fc3c",
+    "ghcr.io/mul-cps/cps-compute@sha256:8fdf4a30f1d3306c4c8e97b71f24b858c345531a6a29fa086846fe34ca09e8c7"
+  ],
+  "expiredHelperRetirement": {
+    "checkedAt": 1795092208.3409061,
+    "helpers": [
+      {
+        "name": "compute-checkpoint-source-20261118",
+        "absent": true,
+        "positiveCRIExitProofBeforeDelete": true
+      },
+      {
+        "name": "compute-checkpoint-target10-20261119",
+        "absent": true,
+        "positiveCRIExitProofBeforeDelete": true
+      }
+    ],
+    "productionControllersUntouched": true,
+    "noDataCopy": true
+  },
+  "observerCurrentBaseline": {
+    "onlyTwoWorkspaceBodyHashesRefreshed": true,
+    "independentSemanticAndExactPolicyChecksPassed": true,
+    "oldBodyDriftCause": "UNKNOWN",
+    "v2": {
+      "baselineReady": true,
+      "cadenceQualified": true,
+      "maxSampleStartGapSeconds": 0.812946749,
+      "noCutoverClaim": true,
+      "requiredAPIsEverySampleGood": false,
+      "status": "PREQUALIFICATION_ONLY",
+      "thresholdPass": false
+    },
+    "allGoodPrequalificationClaim": false,
+    "bodyMismatchCountV2": 0,
+    "boundedTimeoutAffectedSamplesV2": 5
+  },
+  "productionFenceStopCopyOrAuthoritySwitch": false,
+  "open": "fresh helper bindings and actual proof producers, followed by original <=60s complete cutover"
+}
