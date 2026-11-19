@@ -1,0 +1,139 @@
+{
+  "at": "2026-11-19T10:16:05.292403+00:00",
+  "state": "temporary-owned-QA-Hub-overlay-installed-not-worker-accepted",
+  "renewal": {
+    "started": "2026-11-19T10:03:20.194880+00:00",
+    "finished": "2026-11-19T10:03:21.025136+00:00",
+    "all_count": 58,
+    "only_ids": [
+      "upstream-registry-qa-20261116-cps-a",
+      "upstream-registry-qa-20261116-cps-b",
+      "upstream-registry-qa-20261116-cps-c",
+      "upstream-registry-qa-20261116-cps-d",
+      "upstream-registry-qa-20261116-cit-a"
+    ],
+    "other_count": 53,
+    "other_rows_raw_exact": true,
+    "other53_raw_exact_before_after_each": true,
+    "server_injected_source_exact": true,
+    "per_call_snapshots_retained": true,
+    "expires": [
+      "2026-11-19T11:03:20.370877+00:00",
+      "2026-11-19T11:03:20.436921+00:00",
+      "2026-11-19T11:03:20.833602+00:00",
+      "2026-11-19T11:03:20.888002+00:00",
+      "2026-11-19T11:03:20.926259+00:00"
+    ],
+    "earliest_expires": "2026-11-19T11:03:20.370877+00:00",
+    "sources": [
+      "cps",
+      "cit"
+    ],
+    "eight_TLS200": true,
+    "eight_TLS200_same_across_sources": true,
+    "CIT_effectives_requested": true,
+    "all_after_effective_reads_exact": true,
+    "CA_hostname_verified": true,
+    "proxy_disabled": true,
+    "no_SQL_writes": true,
+    "no_hook_credential_or_Source_workload_action": true,
+    "GatewayPodUID": "da7199bf-1408-4830-84b1-2358fdb98d85",
+    "ALL_before_sha256": "5280ac1767e2e2c48cebe93ae3e12164955d15ab7556805e00632ea41121f511",
+    "ALL_after_sha256": "427d07dd575b4859eafa1b8ac9913fdc4ee9438a7ec4ba3237b1135993f494a4"
+  },
+  "hubs": {
+    "cps": {
+      "source": "cps",
+      "time": "2026-11-19T10:12:48.657485+00:00",
+      "generation": 402,
+      "deploymentUID": "02fb8421-d323-4636-b006-2490cd6f5b63",
+      "PodName": "hub-57785cf7d6-gbk52",
+      "PodUID": "82ebfea7-0c33-4b4a-b48a-edc7cdc9ae07",
+      "entireSpecExact": true,
+      "mountedConfigAndSecretHashesExact": true,
+      "health200": true,
+      "ready": true,
+      "restartCount": 0,
+      "permit_sha256": "3ad707c1eefc9437b47b113bce607585cbb38c510a8fe4455d325ea920813fa3"
+    },
+    "cit": {
+      "source": "cit",
+      "time": "2026-11-19T10:13:26.883296+00:00",
+      "generation": 335,
+      "deploymentUID": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e",
+      "PodName": "hub-8646f9876f-54dx8",
+      "PodUID": "63634505-f7fb-47fb-afae-7a6a52cd3fd4",
+      "entireSpecExact": true,
+      "mountedConfigAndSecretHashesExact": true,
+      "health200": true,
+      "ready": true,
+      "restartCount": 0,
+      "permit_sha256": "4914f5d1298faf74fb1a5a3d8466e6016cbc0e853a9bd1bd4a88e8f3c76b7a8b"
+    }
+  },
+  "gitops": {
+    "cps": "971c311b65b93f8336d244495b12f84e03cbda2e",
+    "cit": "6f026380d8f2de1f9675df8fe7c607e180326281"
+  },
+  "actualNodeGET4Only": {
+    "cps": {
+      "/api/v1/nodes/k3s-wk-gpu4": {
+        "status": 200,
+        "uid": "f0e6c6ee-3984-423f-9cfb-734c558c35cb"
+      },
+      "/api/v1/nodes/k3s-wk-gpu2": {
+        "status": 403
+      },
+      "/api/v1/nodes": {
+        "status": 403
+      }
+    },
+    "cit": {
+      "/api/v1/nodes/k3s-wk-gpu4": {
+        "status": 200,
+        "uid": "f0e6c6ee-3984-423f-9cfb-734c558c35cb"
+      },
+      "/api/v1/nodes/k3s-wk-gpu2": {
+        "status": 403
+      },
+      "/api/v1/nodes": {
+        "status": 403
+      }
+    }
+  },
+  "GPU4StillCordoned": true,
+  "maintenanceNoSchedule": true,
+  "longhornScheduling": false,
+  "SourceWorkloadsNotStarted": true,
+  "normalRestore": {
+    "cps": 401,
+    "cit": 334
+  },
+  "recoveryCapability": "off",
+  "evidenceDirectory": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-current-final-active-20261119",
+  "workerWindowOpenedLater": {
+    "unschedulable": false,
+    "temporarySharingLabel": "qualified",
+    "maintenanceNoScheduleRetained": true,
+    "longhornScheduling": false,
+    "onlyExactQAReceivesToleration": true,
+    "opened": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-current-final-active-20261119/node-window-actual/opened.private.json",
+    "APIReconciliation": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-source-current-final-active-20261119/node-window-actual/reconciled.safe.json",
+    "promotionClaimed": false
+  },
+  "harnessFailuresPreserved": [
+    "missing empty cleanup-record directory (no Stop dispatched); existing generation reconciled",
+    "host observer literal boot pin retained historical9f770; current0085 correction only with reverse-byte-exact reviewC0/I0 and causal RED then2GREEN"
+  ],
+  "first5GiB": {
+    "SourceStartHTTP": 200,
+    "PodUID": "dc6dbbb2-0816-4194-839a-130f4e47e61f",
+    "actualNode": "k3s-wk-gpu4",
+    "probeAcceptance": false,
+    "normalStopHTTP": 200,
+    "reservationReturned": true,
+    "PodGone": true,
+    "confirmedReplayHTTP": 200
+  },
+  "nextRun": "fresh unique v2 one-shot cases in progress, no completed qualification claim"
+}
