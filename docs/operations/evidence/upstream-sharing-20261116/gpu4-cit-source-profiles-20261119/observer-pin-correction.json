@@ -1,0 +1,8 @@
+{
+  "oldsha": "be9df51082d780dc5b81d1d291067a3a71539087d173e548ec3f7cd93a00f123",
+  "newsha": "cbe9beefc01f3bed1e65bf7f0201d1b32cabc6db5d65b4f44502a5d42df886d4",
+  "onlyHostObserverChange": "literal boot pin updated from retained historical pre-reboot value to actual0085; caller digest updated",
+  "driverRuntimePolicyAndProbeThresholdsUnchanged": true,
+  "originalFailurePreserved": true,
+  "original5StoppedNormally": true
+}

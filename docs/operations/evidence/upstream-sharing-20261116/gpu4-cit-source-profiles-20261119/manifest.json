@@ -1,0 +1,14 @@
+{
+  "scope": "Actual CIT Source5/10/20 only onGPU4 current0085; notCPS/canonical/CPU/member/fault/fullworker acceptance",
+  "proofs": {
+    "5GiB-pod-evidence.json": "e37c81086445e16e405274303130c26ba6a1b7db242eb93eee9601547f61c67e",
+    "5GiB-jupyter-evidence.json": "1bd6ce4ea2c0a4a4997689efab91dfbc714095a69f66563540fb3b8e002ce1e4",
+    "10GiB-pod-evidence.json": "1bf2365b578baea48805c183417cf24433711e26808d580208d925ca1629ff69",
+    "10GiB-jupyter-evidence.json": "31787f4757a06edb13a379052340929b7edfc0855cc7bdaff74f3e886a0a0134",
+    "20GiB-pod-evidence.json": "136d3fdd51baa1756f758e42ca4dd665c9b2c650be9ba1e187628db7c39e6851",
+    "20GiB-jupyter-evidence.json": "98612e679d52aa2f0d99dcd0c4d1e7fc602b794b846c818c2ddc0d7e677240ba",
+    "terminal.json": "67cb108be2c0b0acbf742fcde4af7b33a2a2ee053cda2c4c604cbc90d845439d",
+    "credential-closure.json": "4e7319acc5b69502cc7e3987acf79a59e2c48dae935815bc91ec53e1ebe896f1",
+    "observer-pin-correction.json": "a88c1317c3182f9fcde76a375c652bdaeaa47605be16527c23395d7935a97552"
+  }
+}

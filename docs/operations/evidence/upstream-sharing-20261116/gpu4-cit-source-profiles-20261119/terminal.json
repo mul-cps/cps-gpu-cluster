@@ -1,0 +1,46 @@
+{
+  "passed": [
+    {
+      "source": "cit",
+      "gib": 5,
+      "letters": "a",
+      "tag": "gpu4-cit5-final-126-20261119-v2",
+      "completed": "2026-11-19T10:22:59.231990+00:00",
+      "normal_stop_confirmed": true,
+      "preleaf": {
+        "PodUID": "9ac49ab5-0fb4-4eba-82e2-02c0dc17cbfd",
+        "CID": "cee0b4038675e5b3da60f8ad2dd704bfef95632e7bbf8851aeb18c086349d653",
+        "GPU": "GPU-4768a9e7-e285-16d7-371d-95ad77f46ff4, 620.70.06, 1, 40960"
+      }
+    },
+    {
+      "source": "cit",
+      "gib": 10,
+      "letters": "cd",
+      "tag": "gpu4-cit10-final-126-20261119-v2",
+      "completed": "2026-11-19T10:24:38.027545+00:00",
+      "normal_stop_confirmed": true,
+      "preleaf": {
+        "PodUID": "f2d65813-53dc-4abe-bb51-6c6e59f70703",
+        "CID": "2a52138adc0d9b75c3e99879a2ddd1eb5a43f10dfe8cce2b48def5642fa42025",
+        "GPU": "GPU-4768a9e7-e285-16d7-371d-95ad77f46ff4, 620.70.06, 1, 40960"
+      }
+    },
+    {
+      "source": "cit",
+      "gib": 20,
+      "letters": "abcd",
+      "tag": "gpu4-cit20-final-126-20261119-v2",
+      "completed": "2026-11-19T10:26:14.172716+00:00",
+      "normal_stop_confirmed": true,
+      "preleaf": {
+        "PodUID": "eec02038-0a2e-4c76-b387-27b375896581",
+        "CID": "ce117b0be508da08f2f1dbaf1c967230e7cd4da7ae87f7d77be74ac48aafd5f1",
+        "GPU": "GPU-4768a9e7-e285-16d7-371d-95ad77f46ff4, 620.70.06, 1, 40960"
+      }
+    }
+  ],
+  "completeCITOnly": true,
+  "CPSNotRun": true,
+  "canonicalNotRun": true
+}
