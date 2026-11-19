@@ -1,0 +1,44 @@
+{
+  "case": "production-cutover-Zu84G3",
+  "controllerStorageCutoverLive": true,
+  "timedAcceptancePassed": false,
+  "timedFailureStage": "target-ready",
+  "timedFailureCause": "Native pod has the expected Kubernetes service-account projection with a generated volume name",
+  "secondsFromFirstFenceToVerifiedRecoveredBaseline": 118.852,
+  "timingMetricScope": "Observed time to the separate recovery baseline; no precise first-restored sample within the failed run",
+  "authoritativeClaim": {
+    "name": "compute-state-checkpoint10-20261119",
+    "uid": "c4062db0-108d-49ca-b87f-3822fecd9e6f"
+  },
+  "gatewayDeployments": [
+    {
+      "name": "compute-gateway",
+      "generation": 466,
+      "nodeSelector": {
+        "kubernetes.io/hostname": "k3s-wk-gpu3"
+      },
+      "claim": "compute-state-checkpoint10-20261119"
+    },
+    {
+      "name": "native-lifecycle147-gateway",
+      "generation": 50,
+      "nodeSelector": {
+        "kubernetes.io/hostname": "k3s-wk-gpu3"
+      },
+      "claim": "compute-state-checkpoint10-20261119"
+    }
+  ],
+  "backupScheduleResumed": true,
+  "oldWritableAdmissionFence": [
+    "Deny",
+    "Audit"
+  ],
+  "normalCutoverControlWriteAuditVerified": false,
+  "evidenceSHA256": {
+    "operation/timing-start.safe.json": "848d05a6558f96a2ad57ef38d0dcc27e7112f9e3f079fc08cfbe90c697a0d792",
+    "final-install-verified/proof.safe.json": "e1c3ba31da9920c05648a3eb3954a2e6ad7833c20474e565facc7b406a03d916",
+    "forward-recovery-observer/ready.safe.json": "824c9c494f4e420ff976dd4664561f6ac59d91503563ee72c15a0689d4e189a2",
+    "forward-recovery-observer/result.safe.json": "3cdad50f0591a96ff4da8f17eb238c83a9be5fb13a7073e3afa512cc11412eca",
+    "HOLD.safe.json": "52208ab855233b14c4db83e367100e48db026506cefcd295824340fb2e5275f5"
+  }
+}
