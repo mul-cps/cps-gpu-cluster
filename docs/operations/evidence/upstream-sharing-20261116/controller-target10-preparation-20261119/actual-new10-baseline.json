@@ -1,0 +1,50 @@
+{
+  "at": "2026-11-19T11:57:59.687509+00:00",
+  "status": "PASS_READONLY_NEW10_BASELINE",
+  "helperUID": "5a033dd9-aae1-416d-8d79-c9e6c8f5c0c8",
+  "helperCID": "containerd://005b5f04dcd924cf91d1676770897acde577e109c3f5b75e98c50148d58e78f2",
+  "node": "k3s-wk-gpu3",
+  "bootID": "1fcf5b3e-c7c6-4d47-9a28-88a9a36be95a",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:8fdf4a30f1d3306c4c8e97b71f24b858c345531a6a29fa086846fe34ca09e8c7",
+  "nonrootNoGPU_NoToken_RootRO": true,
+  "newTargetPVCUID": "c4062db0-108d-49ca-b87f-3822fecd9e6f",
+  "newTargetPVUID": "fa398c01-098a-4424-83bd-3241a78569c1",
+  "newTargetPVReclaim": "Retain",
+  "newTargetLHUID": "5e189e6a-73ab-4c86-9129-dbc9b2911936",
+  "blockBytes": 10737418240,
+  "filesystemTYPE": "ext4",
+  "filesystemUUID": "6c9540e0-6d98-4f62-8483-8addf78c8aa1",
+  "filesystemTotalBytes": 10464022528,
+  "sourceFilesystemTotalBytes": 10464022528,
+  "capacityParityActualFilesystem": true,
+  "emptyExceptEmptyLostFound": true,
+  "engineUID": "1aab70df-0c45-45ea-9dfa-c25edd5ddd6e",
+  "engineAll3RW": true,
+  "engineAndAllReplicas10Gi": true,
+  "replicas": [
+    {
+      "name": "pvc-c4062db0-108d-49ca-b87f-3822fecd9e6f-r-0722a743",
+      "uid": "42f4b235-e3e0-46fa-bd47-8e1f759bdd76",
+      "node": "k3s-wk-gpu4",
+      "diskID": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+      "bytes": "10737418240"
+    },
+    {
+      "name": "pvc-c4062db0-108d-49ca-b87f-3822fecd9e6f-r-2efbcf87",
+      "uid": "f23164b1-705b-4d3c-9e15-204e7e09cc05",
+      "node": "k3s-wk-gpu2",
+      "diskID": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+      "bytes": "10737418240"
+    },
+    {
+      "name": "pvc-c4062db0-108d-49ca-b87f-3822fecd9e6f-r-49176deb",
+      "uid": "e959ef4b-7def-4777-9d24-fff7a98daa2e",
+      "node": "k3s-wk-gpu3",
+      "diskID": "747b75a3-c24e-4b50-8af0-2d0bf06f71fb",
+      "bytes": "10737418240"
+    }
+  ],
+  "productionSpecUIDsAndSourcePVCPreserved": true,
+  "old1GiTargetPVCPVFullSpecsUIDsPreserved": true,
+  "noDataWritesConstructorsBackupAuthoritySwitch": true
+}

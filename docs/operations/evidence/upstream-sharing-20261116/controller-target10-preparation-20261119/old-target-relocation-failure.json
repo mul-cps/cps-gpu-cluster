@@ -1,0 +1,2592 @@
+[
+  {
+    "at": "2026-11-19T11:44:57.857772+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:00.289109+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:02.726975+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:05.186791+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:07.622958+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:10.053976+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:12.460538+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:14.967437+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:17.397908+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:19.829758+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:22.280621+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:24.725960+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:27.173712+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:29.619722+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:32.040386+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:34.500361+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:36.913392+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:39.331204+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:41.743680+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:44.208493+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:46.610750+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:49.077117+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:51.511269+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:53.954076+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:56.393399+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:45:58.816156+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:01.293972+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:03.737851+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:06.143279+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:08.574064+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:11.008405+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:13.426725+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:15.832762+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:18.275695+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:20.715822+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:23.174681+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:25.651822+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:28.091607+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:30.517440+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:32.946615+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:35.372564+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:37.819198+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:40.276832+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:42.710446+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:45.145906+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:47.585457+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:50.021330+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:52.462042+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:54.904398+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:57.343820+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:46:59.819823+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:02.274030+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:04.716498+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:07.197296+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:09.633481+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:12.064726+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:14.521874+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:16.970493+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:19.411520+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:21.835921+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:24.265493+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:26.705647+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:29.143027+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:31.581786+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:33.998322+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:36.418407+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:38.826639+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:41.268054+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:43.714581+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:46.166906+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:48.603618+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:51.042821+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:53.456897+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  },
+  {
+    "at": "2026-11-19T11:47:55.903505+00:00",
+    "robustness": "healthy",
+    "modes": {
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12": "RW",
+      "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8": "RW"
+    },
+    "replicas": [
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-28e143db",
+        "UID": "80eb9173-5300-420e-bf24-f731b41327fc",
+        "node": "k3s-wk-gpu4",
+        "disk": "cd6a9f83-ca0d-4a46-b659-f000dfac1785",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+        "UID": "9572df83-e7da-4921-87bc-505020aca1e2",
+        "node": "k3s-wk-gpu1",
+        "disk": "bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+        "state": "running",
+        "eviction": false
+      },
+      {
+        "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-fcb13aa8",
+        "UID": "ba195b20-65d0-41fa-b051-82b057b6fb33",
+        "node": "k3s-wk-gpu2",
+        "disk": "fea0c370-5d0c-4c8f-804f-463067bf01af",
+        "state": "running",
+        "eviction": false
+      }
+    ]
+  }
+]

@@ -1,0 +1,71 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "v1",
+            "count": 4,
+            "eventTime": null,
+            "firstTimestamp": "2026-11-18T18:25:30Z",
+            "involvedObject": {
+                "apiVersion": "longhorn.io/v1beta2",
+                "kind": "Replica",
+                "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+                "namespace": "longhorn-system",
+                "resourceVersion": "409949299",
+                "uid": "9572df83-e7da-4921-87bc-505020aca1e2"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-11-19T11:38:58Z",
+            "message": "Starts pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+            "metadata": {
+                "creationTimestamp": "2026-11-19T11:38:58Z",
+                "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12.18e936efd03abbc6",
+                "namespace": "longhorn-system",
+                "resourceVersion": "409949302",
+                "uid": "71f07093-0181-48e8-a834-1621aafcbf0f"
+            },
+            "reason": "Start",
+            "reportingComponent": "longhorn-replica-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "longhorn-replica-controller"
+            },
+            "type": "Normal"
+        },
+        {
+            "apiVersion": "v1",
+            "count": 1,
+            "eventTime": null,
+            "firstTimestamp": "2026-11-19T11:44:00Z",
+            "involvedObject": {
+                "apiVersion": "longhorn.io/v1beta2",
+                "kind": "Replica",
+                "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12",
+                "namespace": "longhorn-system",
+                "resourceVersion": "409953394",
+                "uid": "9572df83-e7da-4921-87bc-505020aca1e2"
+            },
+            "kind": "Event",
+            "lastTimestamp": "2026-11-19T11:44:00Z",
+            "message": "Cancelling replica pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12 eviction from node k3s-wk-gpu1 and disk bcc2177a-0a4d-4cf1-9232-2fc13c578510",
+            "metadata": {
+                "creationTimestamp": "2026-11-19T11:44:00Z",
+                "name": "pvc-bfe673db-6d32-4ddd-a8a7-94cf9b86890e-r-722bba12.18e96f9baecc1076",
+                "namespace": "longhorn-system",
+                "resourceVersion": "409953401",
+                "uid": "e25dbb6d-b6e5-4136-a220-b67849d77834"
+            },
+            "reason": "EvictionCanceled",
+            "reportingComponent": "longhorn-node-controller",
+            "reportingInstance": "",
+            "source": {
+                "component": "longhorn-node-controller"
+            },
+            "type": "Normal"
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

@@ -1,0 +1,10 @@
+{
+  "at": "2026-11-19T11:54:16.391440+00:00",
+  "RootRelease": "fresh-correct10Gi-empty-target-configuration-20261119",
+  "cause": "Longhorn1.9.2nodecontroller owns and resetsReplica.spec.evictionRequested; confirmedactualEvictionCanceled; previousdirectreplica-controlclaimwithdrawn",
+  "solution": "newempty10GiPVC/noDataSource/standardSC3replicas insteadofbroadnode/diskoperations",
+  "oldSourceAndTargetPreserved": true,
+  "sameG3CrossNodeDestination": true,
+  "originalFinalHandoff60sClockUnchanged": true,
+  "noAuthoritySwitchOrSourceCopy": true
+}
