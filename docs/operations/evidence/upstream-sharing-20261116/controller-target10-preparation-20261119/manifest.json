@@ -4,6 +4,7 @@
     "actual-new10-baseline.json": "c8809b08f9dd3c8681572cc3f09147a743ddaaf04997d7b3786e2e72bdb1de8d",
     "ruling.json": "bd0d7fd0bca7b882cd572358553bc21d492bbf7a04bdddf4052cd8218a1e3ce0",
     "old-target-relocation-failure.json": "34808d34ce15c394b5634282f3a5b35f7023c86349de966529f87ea1a1d7821d",
-    "old-target-eviction-cancelled-events.json": "b20053d0449b5c0e3d53b6184c85157c464b05a5a6d01733040064286d908f65"
+    "old-target-eviction-cancelled-events.json": "b20053d0449b5c0e3d53b6184c85157c464b05a5a6d01733040064286d908f65",
+    "preflight-lifecycle-status.json": "55c5695497c91f4f24790adff04309a9485e74b2f0f0512e4a1096df8779abd1"
   }
 }

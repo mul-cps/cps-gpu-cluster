@@ -1,0 +1,31 @@
+{
+  "sourceAuthority": "originalcompute-state/d791; productionmain448/native35 stillserving",
+  "sourceROHelper": {
+    "UID": "812ab829-996f-4d15-9d6d-9b7611cf8b5a",
+    "CID": "a80aa1d517b161f521466a1501698d203c47fe359f6106449e4b10d9e8f411aa",
+    "started": "2026-11-19T12:11:53Z",
+    "activeDeadlineSeconds": 1800,
+    "lastActualCheck": "2026-11-19T12:25Z",
+    "actualReadonlyNonrootNoGPUOrSAToken": true
+  },
+  "target10Helper": {
+    "UID": "5a033dd9-aae1-416d-8d79-c9e6c8f5c0c8",
+    "CID": "005b5f04dcd924cf91d1676770897acde577e109c3f5b75e98c50148d58e78f2",
+    "phase": "Failed",
+    "reason": "DeadlineExceeded",
+    "containerExitCode": 0,
+    "finishedAt": "2026-11-19T12:24:30Z",
+    "noDeadlineExtension": true,
+    "historicalBaselineNotCurrentReadyClaim": true
+  },
+  "handoff": {
+    "sourceWritersStopped": false,
+    "snapshotOrCopyPerformed": false,
+    "authoritySwitched": false,
+    "gen5Ancestor": "219ee8899e2cbb113742f442bf7ce2e5886a00a77cb80a297bef5f1c7ca33935",
+    "ancestorExecutionReady": false,
+    "remainingBlocker": "genuineDenyadmissionproofrequiredBEFOREdata; gen5I2underconstruction/review",
+    "currentParserAndScopeOfflineTestsPassed": 58,
+    "beforeAnyExecution": "ReconcileexpiredtargethelperwithpositiveCRIexit; freshownedrelease/UID/CID/emptyUUID/protectedinputs; neverreuseexpiredhelperoroldbfe/444/91pins"
+  }
+}
