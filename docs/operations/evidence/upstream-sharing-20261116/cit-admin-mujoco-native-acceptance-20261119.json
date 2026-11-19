@@ -1,0 +1,122 @@
+{
+  "at": "2026-11-19T09:30:53.558693+00:00",
+  "status": "PASS: genuine existing admin default-server Start, CUDA, public desktop HTTP, normal Stop and returned allowance",
+  "sourceCommit": "bbef6dad234504e43a04bfa5ac8abdd3e1c7465d",
+  "deployedOwner": "df5615a2c8b5274eef58f9edd5fe124a0b8121e7",
+  "profile": "gpu-mujoco-admin",
+  "operator": "akadmin",
+  "defaultServerRowRetained": true,
+  "nativeStart": 202,
+  "nativeStop": 204,
+  "receipts": {
+    "complete.safe.json": {
+      "complete": true,
+      "nativeStopped": true,
+      "podGone": true,
+      "canonicalInactive": true,
+      "noRoleGrantMapChanges": true
+    },
+    "hardware.safe.json": {
+      "profile": "gpu-mujoco-admin",
+      "podUID": "52e97014-2c0c-4e48-8467-48d4756e8174",
+      "node": "k3s-wk-gpu1",
+      "probe": {
+        "uid": 1000,
+        "cudaDeviceCount": 1,
+        "allocationMiBEach": 64,
+        "readWriteRoundtrip": true,
+        "retainedWitnessSHA256": "9dd38bf64417265fc64ad0a6a34b45c9ef130b914aa1bb42bb8ca97d269f8cd2",
+        "cpuIsolation": false
+      },
+      "publicStatus": 200,
+      "defaultOnly": true,
+      "ownedHomePVC": {
+        "name": "claim-akadmin",
+        "uid": "149b68d5-17d6-4a7f-b571-ccb9e1efd940",
+        "spec": {
+          "accessModes": [
+            "ReadWriteOnce"
+          ],
+          "resources": {
+            "requests": {
+              "storage": "10Gi"
+            }
+          },
+          "storageClassName": "longhorn",
+          "volumeMode": "Filesystem",
+          "volumeName": "pvc-149b68d5-17d6-4a7f-b571-ccb9e1efd940"
+        }
+      },
+      "independentFileReadback": {
+        "independentFileReadback": true,
+        "witnessSHA256": "9dd38bf64417265fc64ad0a6a34b45c9ef130b914aa1bb42bb8ca97d269f8cd2"
+      },
+      "crossProfilePersistenceClaim": false,
+      "crossRestartPersistenceClaim": false,
+      "desktop": {
+        "status": 200,
+        "existingServerProxyRoute": "xpra",
+        "launcherTitle": "Desktop (Xpra)",
+        "bodySHA256": "af5832bfccd02af817b2264cb8cfb6ec87f3c1c0c96dcba670bc7d6a53231769",
+        "bytes": 57116,
+        "noRawHTMLSaved": true,
+        "beforeIndependentWatchStopDeadline": true
+      },
+      "tinyEGL": null
+    },
+    "desktop-route.safe.json": {
+      "status": 200,
+      "existingServerProxyRoute": "xpra",
+      "launcherTitle": "Desktop (Xpra)",
+      "bodySHA256": "af5832bfccd02af817b2264cb8cfb6ec87f3c1c0c96dcba670bc7d6a53231769",
+      "bytes": 57116,
+      "noRawHTMLSaved": true,
+      "beforeIndependentWatchStopDeadline": true
+    },
+    "nonce-cleanup.safe.json": {
+      "absent": true,
+      "onlyOwnedNonceUnlinked": true,
+      "identity": {
+        "inode": 49,
+        "device": 2096,
+        "uid": 1000,
+        "size": 46,
+        "sha256": "9dd38bf64417265fc64ad0a6a34b45c9ef130b914aa1bb42bb8ca97d269f8cd2"
+      }
+    }
+  },
+  "credentialClosure": {
+    "sources": {
+      "cit": {
+        "revoked": [
+          "a792"
+        ],
+        "authorityUnchanged": true,
+        "remainingNOTE": 0,
+        "authDenied": true
+      }
+    },
+    "errors": [],
+    "elapsedSeconds": 5.8609899210277945,
+    "deadlineSeconds": 60
+  },
+  "receiptSHA256": {
+    "complete.safe.json": "ffefd1820594b69793705f13635129a98494b98c016a0b12f6b4f12e8aada8df",
+    "hardware.safe.json": "aa2887139ce12429eacb028d7fc63d7810290e86f30de804757e8ef8909d9131",
+    "desktop-route.safe.json": "0150d4be66463a43c5935556aa979c11d25ccdc24ca5cb73c5c10b0d0e11c795",
+    "nonce-cleanup.safe.json": "78f32985aa32f72731de09d1d2f14536b7f762d5230f9202154f8f777df5ef4b"
+  },
+  "testPreparationManifestSHA256": "838b965459f8ab23026a318acdf95b8f3b218921521655cb99a234bb630676d6",
+  "retainedCausalFailures": [
+    "Initial named test refused before Start: CIT named servers are disabled; no feature was enabled to fit the test",
+    "First default run reached GPU/nonce checks but public GET raced native Hub/proxy readiness and returned expected pending302; owned nonce cleaned, normal Stop204 and credential closed",
+    "Final check waits native ready/pending/url and GET-only proxy readiness within unchanged original Start150s; all bounds preserved"
+  ],
+  "limits": [
+    "Desktop endpoint/Xpra HTML200 qualified; interactive browser/WebSocket/rendered-frame session not performed",
+    "No tiny EGL rendering claim",
+    "Existing home retained; own nonce read back and removed before Stop, no cross-restart file persistence claim",
+    "Rino private profile/grant/PVC unchanged; Sourcec8bd remains held for independent recovery, different canonical person",
+    "GPU4/all-eight promotion, full burst timing/controller handoff and remaining overall plan gates remain open"
+  ]
+}
