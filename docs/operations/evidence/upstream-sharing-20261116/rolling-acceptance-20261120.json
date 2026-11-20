@@ -1,0 +1,341 @@
+{
+  "date": "2026-11-20",
+  "status": "partial acceptance",
+  "ledgerBase": "f4a2ad1d7e0526d42d6db95fdd1a215dab90f68c",
+  "gitopsRevisions": [
+    {
+      "name": "cluster-maintenance",
+      "revision": "ef2611b804b3371f1207e9b3cd212d469a9c3ed5"
+    },
+    {
+      "name": "cit-teaching-platform",
+      "revision": "b68a5cfa5a5f029140f1888e408144b86a996167"
+    },
+    {
+      "name": "upstream-gpu4-os-pilot",
+      "revision": "31a23782ef0d8282847070a549378237c204b515"
+    }
+  ],
+  "observedImages": {
+    "controllerDeployments": [
+      {
+        "name": "compute-gateway",
+        "uid": "f5f9b266-433d-4825-83de-d51e31c71648",
+        "generation": 472,
+        "claim": "compute-state-timed-gpu3-20261119",
+        "node": "k3s-wk-gpu3",
+        "images": [
+          "ghcr.io/mul-cps/cps-compute@sha256:1e6f74cf01a214137bc52b965c9ba5033f7ca69fc3a0de9ff7640839f225948c",
+          "ghcr.io/mul-cps/cps-compute@sha256:09c535b59fa9188e1942b0285632a6f3a1b1ced48211028cf8b1f2036157a6d5"
+        ]
+      },
+      {
+        "name": "native-lifecycle147-gateway",
+        "uid": "b0cb0842-5bce-4a0d-a63a-6c8d682ea454",
+        "generation": 56,
+        "claim": "compute-state-timed-gpu3-20261119",
+        "node": "k3s-wk-gpu3",
+        "images": [
+          "ghcr.io/mul-cps/cps-compute@sha256:2701165c10ed941016ad110bf02195de41ef000cd58efc111cb569ac611889d9"
+        ]
+      }
+    ],
+    "cpsHub": {
+      "generation": 403,
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:19f46dd0ff0fd410fae70416d04ff6ce84cad88af1e811a816700c9f4329f44e"
+    },
+    "citHub": {
+      "generation": 338,
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:81ab987781d231c9201e82c3ef413e74f11bad707ad7850cda067e782533094b"
+    },
+    "gpu4Driver": {
+      "name": "nvidia-driver-ctr",
+      "imageID": "ghcr.io/mul-cps/cps-nvidia-driver@sha256:c3b71557aa17df43faad5a2661d81f1025ba355ac3adf784096de12cd2ef3e73"
+    },
+    "gpu4Fractioning": [
+      {
+        "name": "fractiond",
+        "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/fractiond@sha256:29c5fca25c1b35f22cf9f1e6c53acaa79d0b9f722ed6e8417caf438c06cd3739"
+      },
+      {
+        "name": "metricsd",
+        "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/metricsd@sha256:7a619c92651d0744bcd80745be264f3b6c213ad4f3a12fef19a339df422af2bf"
+      },
+      {
+        "name": "mpsd",
+        "imageID": "ghcr.io/kai-scheduler/gpu-fractioning/mpsd@sha256:f161d6c653c668e49e384ae15794421777464248c5e533660ac26b006787b102"
+      }
+    ],
+    "rawProbe": "ghcr.io/mul-cps/cps-ubuntu-release-upgrade@sha256:5030556ecf8cd38fc9acc4676316bd0a3217d1ab10930b75b9dba7106e8f4004",
+    "privateMpsProbe": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4a03fe381c6f32f8e056ac05aad27abc64defa2f63128c53511a24d37fb5c194"
+  },
+  "rollback": {
+    "productionSource": {
+      "claimUID": "ed43b82a-1206-4ffa-9ecf-c182032db274",
+      "pvUID": "da2864b8-96d1-4eeb-aeba-68112d53b00d",
+      "reclaimPolicy": "Retain"
+    },
+    "restoredTarget": {
+      "claim": "compute-state-rollout-restore-1120085500",
+      "claimUID": "0f003cdd-d352-4d16-909d-ce524a35d479",
+      "pvUID": "112ccdb5-6971-4577-9214-18ee0b9b5f54",
+      "reclaimPolicy": "Retain"
+    },
+    "previousHandoff": "dd3deaf3",
+    "authorityChanged": false
+  },
+  "workers": [
+    {
+      "name": "k3s-wk-gpu1",
+      "ready": true,
+      "unschedulable": false
+    },
+    {
+      "name": "k3s-wk-gpu2",
+      "ready": true,
+      "unschedulable": false
+    },
+    {
+      "name": "k3s-wk-gpu3",
+      "ready": true,
+      "unschedulable": false
+    },
+    {
+      "name": "k3s-wk-gpu4",
+      "ready": true,
+      "unschedulable": false
+    }
+  ],
+  "gates": {
+    "fixedShares": {
+      "verdict": "pass on GPU4",
+      "rawDriverCases": 8,
+      "managedAndAccountingCases": 4,
+      "receipt": {
+        "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-fixed-canary-keBDGv/matrix.log",
+        "sha256": "9a65386a224abf73b30ac1075958b12d0f763336d607ee4894ad49cb41731bb0"
+      },
+      "managedReceipt": {
+        "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-fixed-uvm-canary-efmDj8/matrix.log",
+        "sha256": "375c3a4c4c3a9fb97bb943167be2d0455b1b9ec8292fe85dd9929c84459a1bee"
+      }
+    },
+    "privateMps": {
+      "verdict": "pass",
+      "receipt": {
+        "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-private-mps-zmS9WL/job.log",
+        "sha256": "87429f86db13c252b090e1c4a17ffc61b29f221205571d73366a1361b7029c68"
+      },
+      "aggregateReceipt": {
+        "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-same-pod-mps-ewiug5/verified.json",
+        "sha256": "fb5972788f16bd59a9a2f03931661822c2413091edfa143cda4c21d344e898d5"
+      }
+    },
+    "elastic": {
+      "verdict": "failed GPU4 card 1",
+      "baseline": {
+        "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-elastic-uuid-boundary-KPQMF2/baseline/mps.log",
+        "sha256": "aa2764bc14e195805892c808fc4c3bc50262c256047b41f2082ed0597bebc4ab"
+      },
+      "explicitUuid": {
+        "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-elastic-uuid-retry-8T1PcV/mps.log",
+        "sha256": "d96cc1f939824e3ab95c11d04a225663446eca152810690aba7f4dd4b18cc87a"
+      },
+      "earliestObservedMismatch": "MPS eviction request uses device 0 while borrower accounting and CUDA UUID identify physical card 1",
+      "faultCallSiteConfirmed": false
+    },
+    "startupBurst": {
+      "verdict": "unarmed",
+      "rounds": 0,
+      "liveRoster": {
+        "sources": {
+          "cps": {
+            "distinctMappedPeople": 9,
+            "eligibleUpperBoundsByProfile": {
+              "interactive-shared-5": 1,
+              "interactive-shared-10": 0,
+              "interactive-shared-20": 0
+            }
+          },
+          "cit": {
+            "distinctMappedPeople": 5,
+            "eligibleUpperBoundsByProfile": {
+              "interactive-shared-5": 0,
+              "interactive-shared-10": 0,
+              "interactive-shared-20": 0
+            }
+          }
+        },
+        "configuredTestSlots": 0,
+        "requiredSlotsPerSource": 8,
+        "policyHash": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
+        "observedAt": "2026-11-20T08:55:16.929371+00:00"
+      }
+    },
+    "citDedicated": {
+      "verdict": "blocked by expired Dex session before Start",
+      "offlineTests": 14,
+      "credentialClosure": {
+        "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/cit-dedicated-rollout-QyEwWX/cit-personal-qa-32a613c49cf0-credentials/closure.safe.json",
+        "sha256": "6e777158e058b97a81ad9371af56af26bcf45e3e2e09bc6ea95b08e983ab5256"
+      }
+    },
+    "tenantNccl": {
+      "verdict": "open",
+      "gatewayGpuBatchProfilesEnabled": 0
+    },
+    "teachingAndBrowserSso": {
+      "verdict": "open"
+    },
+    "monitoring": {
+      "verdict": "internal delivery and resolution passed, external receipt and burst open",
+      "fixedShareAttributedNonzero": 5,
+      "alert": {
+        "run": "96677f20e6f4",
+        "prometheusFiring": true,
+        "alertmanagerReceived": true,
+        "resolved": true,
+        "receiver": "null",
+        "externalDeliveryVerified": false
+      },
+      "ruleCleanup": {
+        "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/monitor-route-e2e-kZI7MO/rule-cleanup.txt",
+        "sha256": "2acc854bfd5c9198d4d598cde0c0e33850fa97f5208e9403094cd5a46e6c9e93"
+      }
+    },
+    "restore": {
+      "verdict": "four-database restore and isolated reservation test passed, live handoff open",
+      "backup": {
+        "isolatedRestore": true,
+        "backup": "20261120T085512.497886Z",
+        "databases": {
+          "control.sqlite": {
+            "sha256": "b67ed0c6dc9d4ae1e43e49c9db46fb39e41ab56f45328c5b5a7203745a6443f1",
+            "integrity": "ok",
+            "requiredTables": [
+              "grant_record"
+            ],
+            "rowCounts": {
+              "grant_record": 58
+            },
+            "schemaSha256": "117209e08648798e0366d4407c38d7e490fc477ce5e350e76391926996dad412"
+          },
+          "reservations.sqlite": {
+            "sha256": "8baf0bea0935ed398743319b03121b8a92002d7e01f658cab2ffdc44542b71c6",
+            "integrity": "ok",
+            "requiredTables": [
+              "reservation",
+              "reservation_binding"
+            ],
+            "rowCounts": {
+              "reservation": 0,
+              "reservation_binding": 0
+            },
+            "schemaSha256": "0de338b8ba6bce77e4c99005027a15b0e2afaab20cb2803e8077b9e8da39dcb9"
+          },
+          "native-kai-private/custody.sqlite": {
+            "sha256": "7cbdeec65fb1e0069c2baaa1eff3d019dbacdf7e54cc219fd311c5af96862b6a",
+            "integrity": "ok",
+            "requiredTables": [
+              "native_pending_custody",
+              "native_pending_seed",
+              "native_reservation_delete"
+            ],
+            "rowCounts": {
+              "native_pending_custody": 63,
+              "native_pending_seed": 71,
+              "native_reservation_delete": 0
+            },
+            "schemaSha256": "a0f7451cc7b7913b9805642f2ceab1dadb83525521ee57a3ac1751f39752057b"
+          },
+          "native-kai-runtime-private/custody.sqlite": {
+            "sha256": "106501ccf43a48d1a1938eeec2a05f43fce020211bba6cfd1eee2edf918121a5",
+            "integrity": "ok",
+            "requiredTables": [
+              "native_pending_custody",
+              "native_pending_seed",
+              "native_reservation_delete"
+            ],
+            "rowCounts": {
+              "native_pending_custody": 53,
+              "native_pending_seed": 54,
+              "native_reservation_delete": 1
+            },
+            "schemaSha256": "a0f7451cc7b7913b9805642f2ceab1dadb83525521ee57a3ac1751f39752057b"
+          }
+        }
+      },
+      "allowance": {
+        "sourceOrderCases": [
+          {
+            "firstSource": "cps",
+            "blockedSource": "cit",
+            "reacquiredAfterRelease": true
+          },
+          {
+            "firstSource": "cit",
+            "blockedSource": "cps",
+            "reacquiredAfterRelease": true
+          }
+        ],
+        "restoredFilesUnchanged": true,
+        "custody": {
+          "native-kai-private/custody.sqlite": {
+            "total": 63,
+            "clean": 63,
+            "deleteRows": 0
+          },
+          "native-kai-runtime-private/custody.sqlite": {
+            "total": 53,
+            "clean": 53,
+            "deleteRows": 1
+          }
+        },
+        "originalReservations": 0,
+        "scope": "Installed Reservations implementation on an isolated copy using synthetic canonical identity"
+      },
+      "rollingPreflight": {
+        "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/rolling-recovery-preflight-9cyZbQ/preflight.safe.json",
+        "sha256": "3d6054f7e5c174d6be4d4ec653bd7c21ecf142ff223168efb22a6ca8b504a575"
+      },
+      "candidateFenceDryRun": {
+        "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/rolling-recovery-preflight-9cyZbQ/source-fence.admitted.json",
+        "sha256": "055e4cc9627314fdd09cd2199b1d53b9c62370aa99ef08ed5fc32253c42f750a"
+      }
+    },
+    "advanced": {
+      "cgroupRouting": {
+        "verdict": "private both-card restart pass",
+        "proof": {
+          "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-cgroup-routing-canary-YHh2ZR/job.log",
+          "sha256": "8bff162946be9bf2dc4385d85d526596919633d7c83eb309eb432cfdfae919b0"
+        }
+      },
+      "staticSm": {
+        "verdict": "private both-card restart pass",
+        "proof": {
+          "path": "/home/bjoern/artifacts/cps-upstream-sharing-20261116/gpu4-static-sm-canary-RDhgqp/job.log",
+          "sha256": "6a3cf6ccec28f0174cce1f2f363d61847f3672aa35ff6457ee7760ba4b6a580f"
+        }
+      },
+      "productionSmSharing": {
+        "verdict": "open",
+        "enabled": false
+      },
+      "dmem": {
+        "verdict": "open",
+        "kernelControllerPresent": true,
+        "activeNvidiaBackend": "misc"
+      },
+      "memoryBurst": {
+        "verdict": "open following failed elastic protection"
+      }
+    },
+    "rinoWorkspace": {
+      "verdict": "user launch confirmation open"
+    },
+    "retirement": {
+      "verdict": "open"
+    }
+  }
+}
