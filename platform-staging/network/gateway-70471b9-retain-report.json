@@ -1,0 +1,23 @@
+{
+  "name": "cps-retain-fixture-e19336d6",
+  "productionPromotion": false,
+  "fixture": {
+    "scope": "packaged gateway HTTPS owner retention on an operator-controlled suspended workflow, real fixed namespace/Kubernetes CAS/S3; synthetic identity; no execution or real Hub login",
+    "passed": true,
+    "workflow": {
+      "name": "cps-6b90a741c4805eb0c04d5361fb91a64a44e4df1ae90fc15c",
+      "uid": "0162e645-b5ac-40d7-a419-90ea322fa859"
+    },
+    "tlsVerified": true,
+    "otherOwnerDenied": true,
+    "idempotentAudit": true,
+    "realUidCasVerified": true,
+    "snapshotRetainedTag": true,
+    "executionPodsCreated": 0
+  },
+  "workflowDeleteAccepted": true,
+  "gatewayRemoved": true,
+  "ingressRemoved": true,
+  "workflowRemoved": true,
+  "retainedS3EvidencePreserved": true
+}

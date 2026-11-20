@@ -1,0 +1,36 @@
+{
+  "execution_environment": "local rootless Podman; cluster execution not yet qualified",
+  "failure": {
+    "executed_notebook_retained": true,
+    "executed_sha256": "2019aa794d601771e579fe2912dc2726660aa7d9220840591e6fd6c3f4f12255",
+    "exit_code": 1,
+    "input_archive_sha256": "cb3fb05678a31ff34dfa42dd85bfced58d53168672f059f2341af70099b2d433",
+    "parameters": {
+      "count": 3,
+      "fail": true
+    },
+    "selected_local_import_passed": false
+  },
+  "fresh_kernel": true,
+  "gid": 100,
+  "gpu_calls": false,
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f",
+  "input_immutable": true,
+  "network": "none",
+  "observed_at": "2026-10-12T18:55:16.938207+00:00",
+  "outputs_stripped": true,
+  "schema": "cps-cpu-runner-local-qualification-v1",
+  "success": {
+    "executed_notebook_retained": true,
+    "executed_sha256": "7379c5751a618a7487d8c693f6474cbec177fa2f345b74a0a8d6a1cb1768a0dd",
+    "exit_code": 0,
+    "input_archive_sha256": "abff4ecac92a676dc76f909784f858911f21ab8c63979a5b356172185d5fcb21",
+    "parameters": {
+      "count": 3,
+      "fail": false
+    },
+    "selected_local_import_passed": true
+  },
+  "uid": 10001,
+  "working_directory": "/tmp"
+}

@@ -1,0 +1,44 @@
+[
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "{\n    \"apiVersion\": \"cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1\",\n    \"approvedImages\": [\n        \"ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf\",\n        \"quay.io/argoproj/argoexec:v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9\"\n    ],\n    \"createCreators\": [\n        \"system:serviceaccount:cps-admission-runner-20261008:probe\"\n    ],\n    \"data\": {\n        \"artifact-ca-secret\": \"cps-artifacts-ca\",\n        \"artifact-secret\": \"cps-artifacts\",\n        \"executor-image\": \"quay.io/argoproj/argoexec:v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9\"\n    },\n    \"kind\": \"DynamicGpuAdmissionPolicy\",\n    \"metadata\": {\n        \"creationTimestamp\": \"2026-10-08T08:38:28Z\",\n        \"generation\": 11,\n        \"name\": \"reviewed-runtime\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361806091\",\n        \"uid\": \"fa70be14-e23e-44ec-adf0-0e8975f012d5\"\n    },\n    \"owners\": [\n        {\n            \"name\": \"offline-argo-5\",\n            \"uid\": \"4e1dac1f-2e7e-5abc-9020-3340ed89d836\"\n        },\n        {\n            \"name\": \"offline-argo-10\",\n            \"uid\": \"1f2cc1f0-9175-546c-8c57-af1e52006570\"\n        },\n        {\n            \"name\": \"offline-argo-20\",\n            \"uid\": \"5fd02d4d-6eb2-5bd1-9a54-0ff68cc5b2ca\"\n        }\n    ],\n    \"reviewedPods\": [\n        {\n            \"capabilitiesName\": \"offline-argo-5-bcdfgh2-shared-gpu-0\",\n            \"capabilitiesVolume\": \"offline-argo-5-bcdfgh2-shared-gpu-0-vol\",\n            \"configMapPrefix\": \"offline-argo-5-bcdfgh2-shared-gpu\",\n            \"evarName\": \"offline-argo-5-bcdfgh2-shared-gpu-0-evar\",\n            \"gpuMemory\": \"5120\",\n            \"mainIndex\": 0,\n            \"name\": \"offline-argo-5-declared-i0\",\n            \"ownerUid\": \"4e1dac1f-2e7e-5abc-9020-3340ed89d836\"\n        },\n        {\n            \"capabilitiesName\": \"offline-argo-10-bcdfgh2-shared-gpu-0\",\n            \"capabilitiesVolume\": \"offline-argo-10-bcdfgh2-shared-gpu-0-vol\",\n            \"configMapPrefix\": \"offline-argo-10-bcdfgh2-shared-gpu\",\n            \"evarName\": \"offline-argo-10-bcdfgh2-shared-gpu-0-evar\",\n            \"gpuMemory\": \"10240\",\n            \"mainIndex\": 0,\n            \"name\": \"offline-argo-10-declared-i0\",\n            \"ownerUid\": \"1f2cc1f0-9175-546c-8c57-af1e52006570\"\n        },\n        {\n            \"capabilitiesName\": \"offline-argo-20-bcdfgh2-shared-gpu-0\",\n            \"capabilitiesVolume\": \"offline-argo-20-bcdfgh2-shared-gpu-0-vol\",\n            \"configMapPrefix\": \"offline-argo-20-bcdfgh2-shared-gpu\",\n            \"evarName\": \"offline-argo-20-bcdfgh2-shared-gpu-0-evar\",\n            \"gpuMemory\": \"20480\",\n            \"mainIndex\": 0,\n            \"name\": \"offline-argo-20-declared-i0\",\n            \"ownerUid\": \"5fd02d4d-6eb2-5bd1-9a54-0ff68cc5b2ca\"\n        },\n        {\n            \"capabilitiesName\": \"offline-argo-5-bcdfgh4-shared-gpu-1\",\n            \"capabilitiesVolume\": \"offline-argo-5-bcdfgh4-shared-gpu-1-vol\",\n            \"configMapPrefix\": \"offline-argo-5-bcdfgh4-shared-gpu\",\n            \"evarName\": \"offline-argo-5-bcdfgh4-shared-gpu-1-evar\",\n            \"gpuMemory\": \"5120\",\n            \"mainIndex\": 1,\n            \"name\": \"offline-argo-5-declared-i1\",\n            \"ownerUid\": \"4e1dac1f-2e7e-5abc-9020-3340ed89d836\"\n        },\n        {\n            \"capabilitiesName\": \"offline-argo-10-bcdfgh4-shared-gpu-1\",\n            \"capabilitiesVolume\": \"offline-argo-10-bcdfgh4-shared-gpu-1-vol\",\n            \"configMapPrefix\": \"offline-argo-10-bcdfgh4-shared-gpu\",\n            \"evarName\": \"offline-argo-10-bcdfgh4-shared-gpu-1-evar\",\n            \"gpuMemory\": \"10240\",\n            \"mainIndex\": 1,\n            \"name\": \"offline-argo-10-declared-i1\",\n            \"ownerUid\": \"1f2cc1f0-9175-546c-8c57-af1e52006570\"\n        },\n        {\n            \"capabilitiesName\": \"offline-argo-20-bcdfgh4-shared-gpu-1\",\n            \"capabilitiesVolume\": \"offline-argo-20-bcdfgh4-shared-gpu-1-vol\",\n            \"configMapPrefix\": \"offline-argo-20-bcdfgh4-shared-gpu\",\n            \"evarName\": \"offline-argo-20-bcdfgh4-shared-gpu-1-evar\",\n            \"gpuMemory\": \"20480\",\n            \"mainIndex\": 1,\n            \"name\": \"offline-argo-20-declared-i1\",\n            \"ownerUid\": \"5fd02d4d-6eb2-5bd1-9a54-0ff68cc5b2ca\"\n        }\n    ],\n    \"updateCreators\": [\n        \"system:serviceaccount:cps-admission-runner-20261008:probe\"\n    ]\n}\n"
+  },
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "{\n    \"apiVersion\": \"cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1\",\n    \"kind\": \"DynamicGpuQuotaPolicy\",\n    \"metadata\": {\n        \"annotations\": {\n            \"compute.cps.unileoben.ac.at/kai-source\": \"bdf434e5e9201cccf4e05fad04d814363653f692\",\n            \"compute.cps.unileoben.ac.at/qualification-state\": \"disabled-offline-candidate\",\n            \"compute.cps.unileoben.ac.at/source-files-sha256\": \"2067e6238c1eb33988ca232780dc7f04e92f71e0468edec6f73e44fef3292431\"\n        },\n        \"creationTimestamp\": \"2026-10-08T08:38:31Z\",\n        \"generation\": 2,\n        \"name\": \"reviewed-quota-maps\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361806093\",\n        \"uid\": \"c13a9c61-10f4-49e4-841c-0ad497812e4e\"\n    },\n    \"records\": [\n        {\n            \"cudaDeviceMemoryLimit\": \"5324m\",\n            \"gpuPortion\": \"0.13\",\n            \"gpuUuid\": \"GPU-22222222-2222-2222-2222-222222222222\",\n            \"name\": \"offline-argo-5-bcdfgh4-shared-gpu-1\",\n            \"namespace\": \"cps-dynamic-admission-live-20261008\",\n            \"physicalGpuMemoryMiB\": \"40960\",\n            \"podName\": \"offline-argo-5-declared-i1\",\n            \"podUid\": \"11111111-1111-1111-1111-111111111111\",\n            \"runaiNumOfGpus\": \"0.13\",\n            \"type\": \"capabilities\",\n            \"visibleDevices\": \"k8s.device-plugin.nvidia.com/gpu=1\"\n        },\n        {\n            \"cudaDeviceMemoryLimit\": \"5324m\",\n            \"gpuPortion\": \"0.13\",\n            \"gpuUuid\": \"GPU-22222222-2222-2222-2222-222222222222\",\n            \"name\": \"offline-argo-5-bcdfgh4-shared-gpu-1-evar\",\n            \"namespace\": \"cps-dynamic-admission-live-20261008\",\n            \"physicalGpuMemoryMiB\": \"40960\",\n            \"podName\": \"offline-argo-5-declared-i1\",\n            \"podUid\": \"11111111-1111-1111-1111-111111111111\",\n            \"runaiNumOfGpus\": \"0.13\",\n            \"type\": \"evar\",\n            \"visibleDevices\": \"k8s.device-plugin.nvidia.com/gpu=1\"\n        }\n    ],\n    \"writers\": [\n        \"system:serviceaccount:cps-admission-runner-20261008:probe\"\n    ]\n}\n"
+  },
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 0,
+    "stderr": "",
+    "stdout": "{\n    \"apiVersion\": \"cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1\",\n    \"kind\": \"DynamicGpuBindingPolicy\",\n    \"metadata\": {\n        \"annotations\": {\n            \"compute.cps.unileoben.ac.at/kai-source\": \"bdf434e5e9201cccf4e05fad04d814363653f692\",\n            \"compute.cps.unileoben.ac.at/qualification-state\": \"disabled-offline-candidate\",\n            \"compute.cps.unileoben.ac.at/source-files-sha256\": \"5af246cd2a7ecab58f9b9d778d8ec4605be6b08ad00d9f955d5a87ca01d936e1\"\n        },\n        \"creationTimestamp\": \"2026-10-08T08:38:31Z\",\n        \"generation\": 1,\n        \"name\": \"reviewed-bindings\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361796769\",\n        \"uid\": \"08e0d8f9-e844-4b47-b357-55f0a6a0bed3\"\n    },\n    \"records\": [],\n    \"writers\": []\n}\n"
+  }
+]

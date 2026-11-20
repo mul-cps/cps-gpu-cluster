@@ -1,0 +1,104 @@
+{
+  "CIT_normal_attempt": {
+    "activity_http_200": true,
+    "normal_stop_and_exact_restoration_passed": true,
+    "raw_result_sha256": "0d69473ad3639952409f48d902b69440ccd014101e1ce65d98fa27173b901a3a",
+    "ready": true,
+    "sdk_environment_configured": true,
+    "sdk_failure_type": "ConnectError"
+  },
+  "CPU_normal_attempt": {
+    "failure_stage": "NFS marker exec returned nonzero; stderr was discarded by the test helper",
+    "marker_persistence_qualified": false,
+    "normal_stop_and_exact_restoration_passed": true,
+    "readonly_cleanup_passed": true,
+    "readonly_cleanup_raw_sha256": "4fd86b9b822d659d57225f31f0f6af70b5766bb92dbb72da94e3963022ad0393",
+    "sdk_reached": false
+  },
+  "gateway_url": "https://compute-gateway.cps-compute.svc.cluster.local:8000",
+  "kind": "ordinary-sdk-connection-diagnosis",
+  "live_certificates_changed": false,
+  "local_renewal": {
+    "default_CERT_REQUIRED": true,
+    "default_STRICT_preserved": true,
+    "default_hostname_verification": true,
+    "live_changes": false,
+    "renewed_ca_raw_sha256": "533f3e497eb8cf1adecfff77fea58173a06451503d17f1261e2ce4f5e501c811",
+    "renewed_leaf_raw_sha256": "28c360192b45e3d36a9372a732307d46b77044488bfb1dcb35689fecbb188ffc",
+    "same_CA_key_subject_SKI": true,
+    "same_leaf_key_hostname": true,
+    "untrusted": {
+      "passed": false,
+      "verify_code": 20,
+      "verify_message": "unable to get local issuer certificate"
+    },
+    "valid": {
+      "passed": true
+    },
+    "version": 1,
+    "wrong_hostname": {
+      "passed": false,
+      "verify_code": 62,
+      "verify_message": "Hostname mismatch, certificate is not valid for 'invalid.example.test'."
+    }
+  },
+  "new_CA_transport_deployed": false,
+  "next_gate": "Deploy reviewed CA renewal and packaged SDK trust support, then repeat actual native and registered CPU SDK requests without injected client configuration",
+  "ordinary_sdk_accepted": false,
+  "persistent_failures": [
+    "Notebook SDK does not receive the private gateway CA",
+    "Current gateway leaf lacks Authority Key Identifier",
+    "Current CA lacks the Key Usage extension required by strict verification"
+  ],
+  "probes": {
+    "cit-jhub": {
+      "credential_sent": false,
+      "default_client_certificate_verify_code": 20,
+      "execution": {
+        "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:86c4fd58afe7a4e18b850da9f007d3c9e8cc8c058d85c0b8fee667ed72779d59",
+        "node": "k3s-wk-gpu4",
+        "phase": "Succeeded",
+        "podIP": "10.42.5.246",
+        "pod_uid": "64dcde33-4d28-4619-8ebf-0406df2dbf91"
+      },
+      "existing_CA_certificate_verify_code": 85,
+      "initial_tcp_refusal_cleared_within_seconds": 5,
+      "pods_removed": true,
+      "raw_log_sha256": "13d584ae026d504d99f6008672cc6713abc59d9ca8725f6054c6213014ae2d5f",
+      "steady_tcp_attempts_passed": 6
+    },
+    "jupyterhub": {
+      "credential_sent": false,
+      "default_client_certificate_verify_code": 20,
+      "execution": {
+        "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:86c4fd58afe7a4e18b850da9f007d3c9e8cc8c058d85c0b8fee667ed72779d59",
+        "node": "k3s-wk-gpu4",
+        "phase": "Succeeded",
+        "podIP": "10.42.5.245",
+        "pod_uid": "b6cdefbf-bfbf-47b9-b1f4-3575cb55bc11"
+      },
+      "existing_CA_certificate_verify_code": 85,
+      "initial_tcp_refusal_cleared_within_seconds": 5,
+      "pods_removed": true,
+      "raw_log_sha256": "38f891cbe43a77126f15e2a2b852ac5fbfef3d76d2c5d92e7919cdb9bd588990",
+      "steady_tcp_attempts_passed": 6
+    }
+  },
+  "production_qualified": false,
+  "temporary_operator_tokens_revoked": [
+    {
+      "http_status": 204,
+      "only_own_token": true,
+      "revoked": true,
+      "token_id": 665
+    },
+    {
+      "http_status": 204,
+      "only_own_token": true,
+      "revoked": true,
+      "token_id": 445
+    }
+  ],
+  "unauthenticated_probe_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:86c4fd58afe7a4e18b850da9f007d3c9e8cc8c058d85c0b8fee667ed72779d59",
+  "version": 1
+}

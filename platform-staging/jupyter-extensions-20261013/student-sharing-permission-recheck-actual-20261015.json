@@ -1,0 +1,47 @@
+{
+  "expectation": "present",
+  "status": "passed",
+  "checked_at": "2026-10-15T17:04:03.691979+00:00",
+  "results": [
+    {
+      "user": "mikasa",
+      "normal_student_oauth": true,
+      "http_status": 200,
+      "authorized_workspace_found": true,
+      "workspace_records": [
+        {
+          "id": "shared-gpu-lab",
+          "name": "shared-gpu-lab",
+          "source": "cps",
+          "profile": "interactive-shared-5",
+          "status": "running",
+          "url": "/user/cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc/"
+        }
+      ],
+      "compute_identity_verified": "15164372-7ae5-4cfd-8b5d-fd402aa891bd",
+      "panel_link_present": true,
+      "admin_console_denied": 403,
+      "personal_share_identity_verified": true
+    },
+    {
+      "user": "armin",
+      "normal_student_oauth": true,
+      "http_status": 200,
+      "authorized_workspace_found": true,
+      "workspace_records": [
+        {
+          "id": "shared-gpu-lab",
+          "name": "shared-gpu-lab",
+          "source": "cps",
+          "profile": "interactive-shared-5",
+          "status": "running",
+          "url": "/user/cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc/"
+        }
+      ],
+      "compute_identity_verified": "85de720c-94b0-4bc7-807e-c04512133494",
+      "panel_link_present": true,
+      "admin_console_denied": 403,
+      "personal_share_identity_verified": true
+    }
+  ]
+}

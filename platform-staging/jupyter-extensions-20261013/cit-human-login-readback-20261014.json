@@ -1,0 +1,68 @@
+{
+  "access_policy_changed": false,
+  "canonical_person_linkage_confirmed": false,
+  "credentials_published": false,
+  "hub_user_readback": {
+    "admin": true,
+    "name": "akadmin"
+  },
+  "human_login_evidence": "User confirmed current CIT console screenshot 2026-10-14 08:41 local",
+  "human_oauth_automated": false,
+  "live_approval_availability": [
+    {
+      "elapsed": 0.173,
+      "result": {
+        "approvedProfiles": [
+          "interactive-shared-10"
+        ],
+        "approvedWorkspaceCount": 1,
+        "checkedAt": "2026-10-14T06:48:26Z",
+        "policyHash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+        "revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+        "state": "ready"
+      }
+    },
+    {
+      "elapsed": 0.169,
+      "result": {
+        "approvedProfiles": [
+          "interactive-shared-10"
+        ],
+        "approvedWorkspaceCount": 1,
+        "checkedAt": "2026-10-14T06:48:26Z",
+        "policyHash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+        "revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+        "state": "ready"
+      }
+    }
+  ],
+  "normal_user_http_acceptance": false,
+  "operator_report_update": {
+    "access_policy_changed": false,
+    "both_mounted_readbacks": {
+      "cit-admin": {
+        "sha256": "0c2038883b07c8f3d91d05a30ffa239325134e547414886d5dab7cdd68eea2be",
+        "state": "limited-pilot"
+      },
+      "cps-admin": {
+        "sha256": "0c2038883b07c8f3d91d05a30ffa239325134e547414886d5dab7cdd68eea2be",
+        "state": "limited-pilot"
+      }
+    },
+    "current_assessment_at": "2026-10-14T06:57:19Z",
+    "email_verification_required_changed": false,
+    "production_qualified": false,
+    "source_deployments_unchanged": true,
+    "state": "limited-pilot",
+    "status_map_uid": "ac854c63-0c46-40b5-84a3-e3b3fbb69c74",
+    "status_only_cas": true,
+    "status_sha256": "0c2038883b07c8f3d91d05a30ffa239325134e547414886d5dab7cdd68eea2be",
+    "version": 1
+  },
+  "production_qualified": false,
+  "source": "cit",
+  "source_console_reviewed_alias_present": false,
+  "source_console_verified_email_binding_present": false,
+  "username": "akadmin",
+  "version": 1
+}

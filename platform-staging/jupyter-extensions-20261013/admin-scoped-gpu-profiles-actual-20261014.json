@@ -1,0 +1,91 @@
+{
+  "browser_render_qualified": false,
+  "delivery_seed_sha256": "sha256:6b69b858f3d91fa6fa8201ea144ac8165e145a6589525af5723227089f786456",
+  "evidence": {
+    "cit-approvals.private.json": {
+      "artifact": "admin-profile-api-actual-20261014/cit-approvals.private.json",
+      "raw_sha256": "e1385e01c3659666c0b57c1f6208b4d547e9bf3bf1c96447291b5045debf148e"
+    },
+    "cit-base.private.json": {
+      "artifact": "admin-profile-api-actual-20261014/cit-base.private.json",
+      "raw_sha256": "18458cedbb022160d4b18e3b83b8d60196c09ab97a28e3ec96f66d81ad300c49"
+    },
+    "cit-owned-token-revoked.private.json": {
+      "artifact": "admin-profile-api-actual-20261014/cit-owned-token-revoked.private.json",
+      "raw_sha256": "92e3d06475a724a53e3894e3286cb616da5afb711adfb947bfd0e81a19e4e85d"
+    },
+    "cit-scoped.private.json": {
+      "artifact": "admin-profile-api-actual-20261014/cit-scoped.private.json",
+      "raw_sha256": "7d0f0aba5199d91f2dff83e7afb9298a683aabdcc672593af5bbc19bd7426431"
+    },
+    "cit-status.private.json": {
+      "artifact": "admin-profile-api-actual-20261014/cit-status.private.json",
+      "raw_sha256": "1d5e62389119510c4b19d558414a3af9ff73eca302767c523511528b1d9820bf"
+    },
+    "cps-approvals.private.json": {
+      "artifact": "admin-profile-api-actual-20261014/cps-approvals.private.json",
+      "raw_sha256": "b6322f6bf7a24900d5612273f1af453aa8032f0402a062f2216ba5c4a40dd707"
+    },
+    "cps-base.private.json": {
+      "artifact": "admin-profile-api-actual-20261014/cps-base.private.json",
+      "raw_sha256": "18458cedbb022160d4b18e3b83b8d60196c09ab97a28e3ec96f66d81ad300c49"
+    },
+    "cps-owned-token-revoked.private.json": {
+      "artifact": "admin-profile-api-actual-20261014/cps-owned-token-revoked.private.json",
+      "raw_sha256": "e7ea13058c3ba4e9205422529d516d69f8021330e048235f2d771afc04a3dbd4"
+    },
+    "cps-scoped.private.json": {
+      "artifact": "admin-profile-api-actual-20261014/cps-scoped.private.json",
+      "raw_sha256": "2340e7284afb95c0509c0027a16087393b69135f158c1e782ca7c03ef1e0bff6"
+    },
+    "cps-status.private.json": {
+      "artifact": "admin-profile-api-actual-20261014/cps-status.private.json",
+      "raw_sha256": "afff77244de0b580b400f171b20ecf48104dba7fe07170d0366ad450c01ac324"
+    }
+  },
+  "global_gpu_qualification_enabled": false,
+  "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:d920a278df8c920f8e4c143e42b082e7ff8ed8755e08a1d3944b8bbcc0559beb",
+  "human_oauth": false,
+  "installed_gateway_internal_module_sha256": "62227b972806df43e5a5c613bb03bbe1da81c227a29e205e9cba65d9a8d6c6dd",
+  "kind": "actual-paired-admin-scoped-gpu-profile-api",
+  "matched_source_module_revision": "5b595994fe68fa2ab71563f6752b56a1a718ecc9",
+  "production_qualified": false,
+  "scope": "Authenticated read-only API data behind both admin consoles; no browser-render or human-OAuth qualification.",
+  "source_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:b36c54a57f526e6cb4595bf9e552d80d217a72ba6a7ee30767d8b3bc3d3ec5c7",
+  "sources": {
+    "cit": {
+      "all_four_api_reads_200": true,
+      "approved_gpu_profile": "interactive-shared-10",
+      "baseline_profile_ids": [
+        "batch-cpu",
+        "interactive-cpu"
+      ],
+      "native_group_ready": true,
+      "owned_actor_token_revoked_http_204": true,
+      "scoped_profile_ids": [
+        "batch-cpu",
+        "interactive-cpu",
+        "interactive-shared-10"
+      ],
+      "workspace": "native-group-a"
+    },
+    "cps": {
+      "all_four_api_reads_200": true,
+      "approved_gpu_profile": "interactive-shared-5",
+      "baseline_profile_ids": [
+        "batch-cpu",
+        "interactive-cpu"
+      ],
+      "native_group_ready": true,
+      "owned_actor_token_revoked_http_204": true,
+      "scoped_profile_ids": [
+        "batch-cpu",
+        "interactive-cpu",
+        "interactive-shared-5"
+      ],
+      "workspace": "native-group-a"
+    }
+  },
+  "status": "passed",
+  "version": 1
+}

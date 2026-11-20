@@ -1,0 +1,136 @@
+{
+  "actual_executor_exit_code": 0,
+  "cit_reviewed_alias": {
+    "canonical_person_id": "d98fbadd-d9a0-4981-8d20-1ab58bb75745",
+    "flat_hub_map_matches": true,
+    "gateway_map_matches": true,
+    "immutable_configmap": {
+      "name": "cps-native-hub-consumer-cit-d379105a6b7638c75fbf",
+      "namespace": "cit-jhub",
+      "uid": "7058a722-4793-4d19-9aa2-ce6eda82c854"
+    },
+    "username": "akadmin"
+  },
+  "completed_at": "2026-10-14T14:07:12.914233+00:00",
+  "completed_seed_sha256": "sha256:7b040075d4c4dd5b8fe9f2dcb25ba24b20bb05256687faa8d14eba541cc5c810",
+  "configuration_hashes": {
+    "cit": "4f8779e8bc8ac6ae01a090f1cad8dfe297f7ea58337a822a1a4d152bf0934109",
+    "cps": "a56a88ec04ed29a2f47760e19db09baaa1d3bfcb5eb0937339e3eaa4e1abebf2"
+  },
+  "current_process_images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:08f7720eb59874c117ad0920fc87609152e87023a013699ed30e92e6620c1d4b",
+    "hub:cit": "ghcr.io/mul-cps/cps-compute@sha256:29b7b3e9a9af380ebeff8de06c2ab187f370acca7e52828a1c2b2f4001259973",
+    "hub:cps": "ghcr.io/mul-cps/cps-compute@sha256:29b7b3e9a9af380ebeff8de06c2ab187f370acca7e52828a1c2b2f4001259973",
+    "node": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b"
+  },
+  "effective_plan_sha256": "sha256:d05dddabc35a5e67d72a230c26bb7b78b22da4032b80c514ba5ac300ec065f87",
+  "evidence_sha256": {
+    "actual_execution_receipt.json": "a0642e7a661fe8b3f770adca5720a65b676e03fb083a60164295079dac1d5d92",
+    "configuration-before-delivery-activation.json": "64307bcd209e5dc1ccf5bc48df8cbd85b709088e0e75b9fa84d8bac80599d739",
+    "configuration-before-final-ack.json": "f12b5826e27183366f4b0c649434630254f83200123404f9188854620537802c",
+    "configuration-readback.json": "9b755472752f7f3e8e99743beef55e7899f9e798e43e39e27e8cd84af43f32c0",
+    "created-cit-native-config-readback.json": "ae236c089874564b78d78de490493eadc68e118c574e4ca507f2e8e2cff6502b",
+    "delivery-activation-intent.json": "ee83b991ca5238c47b94311d08ad8cfa4234613e25713e7f3baa028ee020fe60",
+    "final.json": "5b7c5ccb7ec8ffe46dc31babd00c09a951c1f7d0c1f495612c65c192602a9bda",
+    "gateway-loaded-runtime-proof.json": "d515c619ce298579e7a8f8f0fdc7339fed3fbb23168041c04470a868a7b417d6",
+    "module_only_resume.json": "17dd526130e4e6645f8fc43d208bd4281eed875c58377ad2890423e948fd0470",
+    "native-zero-final-readback.json": "82064358dff368d688c3744ce8daf7e260f88928ce674f024526fa1e5ef48e75",
+    "new-delivery-activation-readback.json": "13c620163163fefde51f7336a40f3baa392aff20396e7fdbcf04f85d4d4aeb6c",
+    "old-journal-byte-receipt.json": "ad7437574e6232805851019da3891369df61b0c6d16d374a26e1fa6f08f00f65",
+    "old-journal-exact.json": "cbadbb1b1b56bb5eb685e30624c357c12e330c8a0a639f91650e257f4268d974",
+    "process-access.json": "933df3681ea654d18259e96155bd77349c084c5e382b0145d0e188ee6874f535",
+    "transport-software-companion.json": "e37fd7e933bbf9dc00f56fb5b01cd26f63648d95b5e32d1db3a42f116db44355"
+  },
+  "fresh_four_acknowledgments": {
+    "gateway": {
+      "observed_at": "2026-10-14T14:06:13.203018+00:00",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "process": {
+        "container": "gateway",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:08f7720eb59874c117ad0920fc87609152e87023a013699ed30e92e6620c1d4b",
+        "name": "compute-gateway-645f485f6b-lgxqz",
+        "namespace": "cps-compute",
+        "service_account": "cps-compute-controller",
+        "uid": "506f1fe2-d8db-4ac4-90c2-7918153f09ed"
+      },
+      "revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca"
+    },
+    "hub:cit": {
+      "observed_at": "2026-10-14T14:06:15.012729+00:00",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "process": {
+        "container": "hub",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:29b7b3e9a9af380ebeff8de06c2ab187f370acca7e52828a1c2b2f4001259973",
+        "name": "hub-7bcd8f66f5-sbm4j",
+        "namespace": "cit-jhub",
+        "service_account": "hub",
+        "uid": "a7d3a865-3545-4583-aaa9-f191dfe4bb27"
+      },
+      "revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca"
+    },
+    "hub:cps": {
+      "observed_at": "2026-10-14T14:06:15.118034+00:00",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "process": {
+        "container": "hub",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:29b7b3e9a9af380ebeff8de06c2ab187f370acca7e52828a1c2b2f4001259973",
+        "name": "hub-5bbbbbb667-g9blx",
+        "namespace": "jupyterhub",
+        "service_account": "hub",
+        "uid": "f48df8a2-3791-4b79-a161-52bf9c9664db"
+      },
+      "revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca"
+    },
+    "node": {
+      "observed_at": "2026-10-14T14:06:13.816373+00:00",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "process": {
+        "container": "node-agent",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+        "name": "cps-native-node-agent-696f698f4c-9t829",
+        "namespace": "cps-native-system",
+        "service_account": "cps-native-node-agent",
+        "uid": "33b919f3-11e6-4c24-9c38-51edbc965484"
+      },
+      "revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca"
+    }
+  },
+  "kind": "actual-consumer-configuration-handover",
+  "limits": [
+    "CIT personal profile hooks retain their prior independent image selection",
+    "No new distributed launcher or KAI activation",
+    "This receipt concerns configuration adoption; runtime acceptance is separate"
+  ],
+  "native_zero": {
+    "active_caps": 0,
+    "used_bytes": 0
+  },
+  "new_journal": {
+    "input_secret": {
+      "name": "cps-native-delivery-input-consumer-86c4fd58",
+      "namespace": "cps-compute",
+      "uid": "dbbd5c50-18fb-4bdd-9422-dcabc09ae4d9"
+    },
+    "previous_journal_bytes_sha256": "cbadbb1b1b56bb5eb685e30624c357c12e330c8a0a639f91650e257f4268d974",
+    "previous_journal_retained": true,
+    "pvc": {
+      "name": "cps-native-delivery-journal-consumer-86c4fd58",
+      "namespace": "cps-compute",
+      "uid": "025b659b-8eab-4829-8ac5-592c0fa3dfed"
+    },
+    "raw_sha256": "58fd83f890e282b5044f89b5585c0b1671fe38987b4756555af04b59534e049d",
+    "ready": true
+  },
+  "phase": "98107ae5",
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "process_images_changed": false,
+  "production_qualified": false,
+  "publication_ready": true,
+  "registered_cpu_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:86c4fd58afe7a4e18b850da9f007d3c9e8cc8c058d85c0b8fee667ed72779d59",
+  "schemaVersion": 1,
+  "unrelated_scope": {
+    "gpu_profile_image_pool_driver_preserved": true,
+    "roles_custody_and_storage_preserved": true,
+    "source_images_and_tables_preserved": true
+  }
+}

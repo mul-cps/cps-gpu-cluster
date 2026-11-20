@@ -1,0 +1,62 @@
+{
+  "cases": [
+    {
+      "actual_status": 409,
+      "case": "pod-uid",
+      "pod_unchanged": true
+    },
+    {
+      "actual_status": 409,
+      "case": "pod-resourceVersion",
+      "pod_unchanged": true
+    },
+    {
+      "actual_pod_uid_unchanged": true,
+      "actual_target_name": "k3s-cp1",
+      "binding_accepted": true,
+      "case": "correct-pod-preconditions-actual-node-uid",
+      "node_uid_is_apiserver_precondition": null
+    },
+    {
+      "actual_status": 409,
+      "case": "pod-uid",
+      "pod_unchanged": true
+    },
+    {
+      "actual_status": 409,
+      "case": "pod-resourceVersion",
+      "pod_unchanged": true
+    },
+    {
+      "actual_pod_uid_unchanged": true,
+      "actual_target_name": "k3s-cp1",
+      "binding_accepted": true,
+      "case": "correct-pod-preconditions-mismatched-node-uid",
+      "node_uid_is_apiserver_precondition": false
+    }
+  ],
+  "cleanup": [
+    {
+      "actual_absence": true,
+      "pod": "qa-binding-cas-10ccab3aa01a4f47bc32",
+      "uid": "d83887b7-88c4-4765-821e-00b3dc14753b",
+      "uid_precondition_delete": true
+    },
+    {
+      "actual_absence": true,
+      "pod": "qa-binding-cas-6764cf94d7ce46849476",
+      "uid": "d650db2c-d7ae-416b-a665-27a41706caf6",
+      "uid_precondition_delete": true
+    }
+  ],
+  "gpu_requested": false,
+  "native_placement_qualified": false,
+  "operator_runner_sha256": "cbb755957435bc127ca2e7bdf72149068094ba577c587e52f98dbab1b0b701f5",
+  "private_receipt_sha256": "cb42aba2be05b9d23619f55a7a91da694932a96aae0c6a9f17d19a23b1511e0e",
+  "production_qualified": false,
+  "server_version": "v1.34.9+k3s1",
+  "service_account_token_mounted": false,
+  "state": "actual-k3s-cpu-only-binding-preconditions-measured",
+  "version": 1,
+  "volumes_or_secrets_mounted": false
+}

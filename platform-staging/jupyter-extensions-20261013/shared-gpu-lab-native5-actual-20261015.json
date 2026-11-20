@@ -1,0 +1,123 @@
+{
+  "version": 1,
+  "kind": "ordinary-student-managed-native5-workspace-acceptance",
+  "recorded_at": "2026-10-15T15:58:34.038613+00:00",
+  "workspace": "shared-gpu-lab",
+  "source": "cps",
+  "profile": "interactive-shared-5",
+  "storage_version": 2,
+  "workspace_url": "https://jupyterhub.dshl.unileoben.ac.at/user/cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc/lab/tree/shared-gpu-demo-20261015.ipynb",
+  "normal_source_start_http": 200,
+  "source_state": "running",
+  "ready": true,
+  "ready_seconds_reported_by_root": 26,
+  "pod_uid": "53990dec-5376-4951-b4d5-71ec6d445c22",
+  "node": "k3s-wk-gpu2",
+  "notebook_image_digest": "sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0",
+  "native_cap": {
+    "soft_bytes": 5368709120,
+    "hard_bytes": 5368709120,
+    "cap_gib": 5,
+    "current_boot_and_cgroup_match": true,
+    "active_driver_row": true,
+    "mig_used": false
+  },
+  "access": {
+    "hub_group": "mikasa-armin",
+    "members": [
+      "mikasa",
+      "armin",
+      "bjoern"
+    ],
+    "member_count": 3,
+    "grant_count_verified_by_root": 3,
+    "grant_duration_days": 7,
+    "neutral_admin": false,
+    "neutral_default_user_role_present": false,
+    "group_share_scopes": [
+      "access:servers!server=cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc"
+    ]
+  },
+  "browser_rtc": {
+    "file": "shared-gpu-demo-20261015.ipynb",
+    "visitors": {
+      "mikasa": {
+        "http": 200,
+        "actual_identity": "mikasa"
+      },
+      "armin": {
+        "http": 200,
+        "actual_identity": "armin"
+      }
+    },
+    "same_demo_kernel_verified": true,
+    "edits_synced_both_directions": true,
+    "gpu_cell_executed": true,
+    "peer_saw_live_gpu_output": true,
+    "demo_kernel_cleanup_confirmed": true,
+    "only_own_demo_sessions_deleted": 1
+  },
+  "root_reported_diagnostics": {
+    "ordinary_sdk_success": false,
+    "explicit_trusted_ca_and_both_sdk_headers_me_http": 200,
+    "diagnostic_sdk_principal_kind": "workspace",
+    "separate_cuda_allocation_mib": 64,
+    "cuda_sum_passed": true,
+    "cuda_reported_memory_gib": 5,
+    "diagnostic_workaround_is_not_ordinary_sdk_compatibility": true
+  },
+  "ordinary_gpu_notebook_package": {
+    "compute_page_config_url": null,
+    "compute_panel": "TypeError: Failed to fetch",
+    "ordinary_unmodified_sdk": "TLS CA trust failure",
+    "ui_and_sdk_fixed": false,
+    "replacement_candidate_status": "531 packaged and published later; not adopted; current GPU916 gaps remain"
+  },
+  "shared_workspace_discovery": {
+    "personal_c7_v1_workspaces_result": [],
+    "group_server_access_verified": true,
+    "gateway_discovery_wiring_fixed": false,
+    "stage": "historical-before-d974",
+    "later_verified_by_receipt": "student-discovery-adoption-actual-20261015.json"
+  },
+  "global_reservation_readback": {
+    "status": "verified",
+    "method": "Root-reviewed read-only Gateway observer",
+    "registered_member_count": 3,
+    "active_global_member_reservations": 3,
+    "active_member_rows_count_verified": true,
+    "one_attempt": true,
+    "bound_workspace": "cps:shared-gpu-lab",
+    "active": true,
+    "reservation_state_api_exposes_member_count": false
+  },
+  "historical_start_stage_capture": {
+    "checked_at": "2026-10-15T15:38:46.389760+00:00",
+    "human_rtc_tested": false,
+    "gpu_allocation_tested": false,
+    "scope": "Start/Hub readiness capture preceded the later successful cap and browser GPU/RTC proofs"
+  },
+  "private_evidence_raw_sha256": {
+    "native5-start-hub-receipt.json": "7792910b5ccdf488d5680fe8d4718e1e3af0bc97cda3cd3f7467fe4449e0ac2d",
+    "native5-cap-receipt.json": "3e242da99433cbc2d9a77042edd7ded5d6fbf15fe622bb5b04f84175857deb24",
+    "native5-browser-rtc-receipt.json": "70fca93427da59061ee904b435b489fcf083f641b1078a1f112a01d20ff009ea",
+    "native5-reservations-receipt.json": "c2068b7ec2213c14a753f03e66ff453257d712f92bfd7765c8cf88624d217c9e"
+  },
+  "limitations": [
+    "This is one bounded native 5 GiB workspace acceptance without MIG; wider packing and full production qualification remain open.",
+    "The GPU916 Compute panel and ordinary SDK remain broken as recorded; trusted-CA/header diagnostics do not close those package gates.",
+    "Membership-removal connection revocation, remaining CIT runtime/workflow coverage and broader lifecycle/production gates remain separate."
+  ],
+  "production_qualified": false,
+  "credential_values_included": false,
+  "concurrent_cpu_batch_submission": {
+    "normal_gui_http": 200,
+    "while_gpu_workspace_running": true,
+    "gpu_pod_uid_unchanged": true,
+    "completion": "Succeeded",
+    "duration_seconds": 22,
+    "acceptance_receipt": "cpu-batch-during-shared-gpu-actual-20261015.json"
+  },
+  "record_status": "historical-first-acceptance-before-gateway-discovery-rollout",
+  "current_status_receipt": "student-discovery-adoption-actual-20261015.json"
+}

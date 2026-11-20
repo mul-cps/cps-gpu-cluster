@@ -1,0 +1,67 @@
+{
+  "status": "partial; archive blocked",
+  "workspace": {
+    "workspace": "qual-be4480a106f44d64",
+    "owner": "qualification-neutral-owner",
+    "server": "",
+    "members": [
+      "qualification-person"
+    ],
+    "principal": "workspace:cps:qual-be4480a106f44d64",
+    "profiles": [
+      "interactive-cpu"
+    ],
+    "ceiling": {
+      "cpu": "2",
+      "memory": "8Gi"
+    },
+    "namespace": "jupyterhub",
+    "pod": "qualification-absent-705b19dce08e",
+    "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+    "group_id": "qualification-api-storage-9a2baf09472a47b28d3741a6eca188e5"
+  },
+  "storage": {
+    "pvc": "cps-workspace-c4d6748f8645946eb36c89ef016f0aaece3aa9ac",
+    "pv": "cps-workspace-c4d6748f8645946eb36c89ef016f0aaece3aa9ac",
+    "namespace": "jupyterhub",
+    "server": "193.170.30.58",
+    "path": "/mnt/persistent1/cps_persistent1_shared/compute/cps/c4d6748f8645946eb36c89ef016f0aaece3aa9ac995d5ef8a588c9de6acce85f",
+    "group_hash": "c4d6748f8645946eb36c89ef016f0aaece3aa9ac995d5ef8a588c9de6acce85f",
+    "state": "active",
+    "readonly_mounts": [],
+    "evidence": {
+      "dataset": "persistent1/cps_persistent1_shared/compute/cps/c4d6748f8645946eb36c89ef016f0aaece3aa9ac995d5ef8a588c9de6acce85f",
+      "readonly": false,
+      "mechanism": "zfs-readonly",
+      "permissions_verified": true,
+      "acltype": "POSIX1E",
+      "aclmode": "DISCARD",
+      "uid": 1000,
+      "gid": 1000,
+      "mode": "0770",
+      "default_acl": false
+    }
+  },
+  "passed": [
+    "Real fixture Hub neutral role check",
+    "Workspace registration through authenticated isolated ASGI API",
+    "Cross-source provision rejection",
+    "Actual restricted NAS SSH provisioning with POSIX permission evidence",
+    "Actual Kubernetes PV/PVC creation and Bound PVC"
+  ],
+  "blockers": [
+    "Live notebook mounts writable NFS parent of compute tree; writer barrier correctly identifies overlapping access",
+    "Fixture shutdown observer returned false; exact fixture cause remains unqualified"
+  ],
+  "limitations": [
+    "Operator Kubernetes credentials, not production gateway RBAC",
+    "No production alias linkage",
+    "No mounted archive acceptance; no human session stopped"
+  ],
+  "cleanup": {
+    "pvcDeleted": true,
+    "pvPhase": "Released",
+    "reclaimPolicy": "Retain",
+    "fixtureHubStopRequested": true
+  }
+}

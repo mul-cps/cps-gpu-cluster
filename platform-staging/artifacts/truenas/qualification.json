@@ -1,0 +1,22 @@
+{
+  "management_endpoint": "https://10.71.1.55:8333",
+  "cluster_endpoint": "https://193.170.30.58:8333",
+  "tls_verified": true,
+  "bucket": "cps-compute",
+  "fixture": "qualification/2026-10-05/persistence-fixture.txt",
+  "body_sha256": "6936a7227636cc6d1399fe18f9ab0373985dfa06bffa933f8520ac7645c3c9e3",
+  "operator_put_get_list": true,
+  "gateway_bucket_scoped_put_get_delete": true,
+  "gateway_other_bucket_denied": true,
+  "gateway_global_list_filtered": true,
+  "anonymous_get_list_put_denied": true,
+  "lifecycle_api": "accepted-and-readable",
+  "lifecycle_expiration_execution_qualified": false,
+  "restart_verified": true,
+  "cluster_connectivity_verified": false,
+  "lifecycle_preservation_filter": [
+    "retention eligible",
+    "active=false",
+    "retained=false"
+  ]
+}

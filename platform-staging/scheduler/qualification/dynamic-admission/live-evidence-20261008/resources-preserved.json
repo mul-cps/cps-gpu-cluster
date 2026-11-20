@@ -1,0 +1,1982 @@
+{
+  "cps-dynamic-admission-live-20261008": {
+    "exitCode": 0,
+    "resources": {
+      "apiVersion": "v1",
+      "items": [
+        {
+          "apiVersion": "v1",
+          "kind": "ServiceAccount",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:40:41Z",
+            "name": "cps-workflow",
+            "namespace": "cps-dynamic-admission-live-20261008",
+            "resourceVersion": "361798687",
+            "uid": "b8044403-dca7-4325-bbb1-5d7da2b1f6e3"
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "kind": "ServiceAccount",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:33:35Z",
+            "name": "default",
+            "namespace": "cps-dynamic-admission-live-20261008",
+            "resourceVersion": "361792558",
+            "uid": "7471ea54-96fe-4bc5-b30e-c17d2e2f7b4d"
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "automountServiceAccountToken": false,
+          "kind": "ServiceAccount",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:44:34Z",
+            "name": "fixture-binder",
+            "namespace": "cps-dynamic-admission-live-20261008",
+            "resourceVersion": "361802081",
+            "uid": "ed4a498e-1545-4510-ae16-cdcc467b6300"
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "automountServiceAccountToken": false,
+          "kind": "ServiceAccount",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:44:34Z",
+            "name": "fixture-controller",
+            "namespace": "cps-dynamic-admission-live-20261008",
+            "resourceVersion": "361802078",
+            "uid": "c9f8ae1f-2fb0-45db-8f16-026c73a270f5"
+          }
+        },
+        {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "kind": "Role",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:44:34Z",
+            "name": "fixture-binder-dry-run-qualification",
+            "namespace": "cps-dynamic-admission-live-20261008",
+            "resourceVersion": "361802082",
+            "uid": "e021d51a-588c-484d-b863-876a9893442c"
+          },
+          "rules": [
+            {
+              "apiGroups": [
+                ""
+              ],
+              "resources": [
+                "configmaps",
+                "pods/binding"
+              ],
+              "verbs": [
+                "create"
+              ]
+            }
+          ]
+        },
+        {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "kind": "Role",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:44:34Z",
+            "name": "fixture-controller-dry-run-qualification",
+            "namespace": "cps-dynamic-admission-live-20261008",
+            "resourceVersion": "361802079",
+            "uid": "0b135fb4-0be5-4150-9baf-ea6a9a467db4"
+          },
+          "rules": [
+            {
+              "apiGroups": [
+                ""
+              ],
+              "resources": [
+                "pods"
+              ],
+              "verbs": [
+                "create"
+              ]
+            }
+          ]
+        },
+        {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "kind": "Role",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:47:02Z",
+            "name": "incluster-probe-dry-run-qualification",
+            "namespace": "cps-dynamic-admission-live-20261008",
+            "resourceVersion": "361804122",
+            "uid": "82b103b9-bc3f-4107-b999-4c9f0e77c924"
+          },
+          "rules": [
+            {
+              "apiGroups": [
+                ""
+              ],
+              "resources": [
+                "pods",
+                "configmaps",
+                "pods/binding"
+              ],
+              "verbs": [
+                "create"
+              ]
+            }
+          ]
+        },
+        {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "kind": "RoleBinding",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:44:34Z",
+            "name": "fixture-binder-dry-run-qualification",
+            "namespace": "cps-dynamic-admission-live-20261008",
+            "resourceVersion": "361802085",
+            "uid": "88686f4f-d773-4426-9481-1af364f6c776"
+          },
+          "roleRef": {
+            "apiGroup": "rbac.authorization.k8s.io",
+            "kind": "Role",
+            "name": "fixture-binder-dry-run-qualification"
+          },
+          "subjects": [
+            {
+              "kind": "ServiceAccount",
+              "name": "fixture-binder",
+              "namespace": "cps-dynamic-admission-live-20261008"
+            }
+          ]
+        },
+        {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "kind": "RoleBinding",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:44:34Z",
+            "name": "fixture-controller-dry-run-qualification",
+            "namespace": "cps-dynamic-admission-live-20261008",
+            "resourceVersion": "361802080",
+            "uid": "b68a3a2e-9cae-49a0-a194-207cc96a2b79"
+          },
+          "roleRef": {
+            "apiGroup": "rbac.authorization.k8s.io",
+            "kind": "Role",
+            "name": "fixture-controller-dry-run-qualification"
+          },
+          "subjects": [
+            {
+              "kind": "ServiceAccount",
+              "name": "fixture-controller",
+              "namespace": "cps-dynamic-admission-live-20261008"
+            }
+          ]
+        },
+        {
+          "apiVersion": "rbac.authorization.k8s.io/v1",
+          "kind": "RoleBinding",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:47:02Z",
+            "name": "incluster-probe-dry-run-qualification",
+            "namespace": "cps-dynamic-admission-live-20261008",
+            "resourceVersion": "361804123",
+            "uid": "7c85a7fa-de09-4774-b70f-da939e347bb9"
+          },
+          "roleRef": {
+            "apiGroup": "rbac.authorization.k8s.io",
+            "kind": "Role",
+            "name": "incluster-probe-dry-run-qualification"
+          },
+          "subjects": [
+            {
+              "kind": "ServiceAccount",
+              "name": "probe",
+              "namespace": "cps-admission-runner-20261008"
+            }
+          ]
+        },
+        {
+          "apiVersion": "v1",
+          "data": {
+            "ca.crt": "-----BEGIN CERTIFICATE-----\nMIIBdzCCAR2gAwIBAgIBADAKBggqhkjOPQQDAjAjMSEwHwYDVQQDDBhrM3Mtc2Vy\ndmVyLWNhQDE3NjI1MTM4OTcwHhcNMjUxMTA3MTExMTM3WhcNMzUxMTA1MTExMTM3\nWjAjMSEwHwYDVQQDDBhrM3Mtc2VydmVyLWNhQDE3NjI1MTM4OTcwWTATBgcqhkjO\nPQIBBggqhkjOPQMBBwNCAATMUnUHpjrjYl/zzkZWYm1J8URD8VCIsKLxTuB/z6Pv\nD7PrA4jAcSjJqXXFs98SkXRGcA9ET15M6Ru6xYL91NVfo0IwQDAOBgNVHQ8BAf8E\nBAMCAqQwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU+7smS6vaQr/vnrH9ghfR\nuHOApCIwCgYIKoZIzj0EAwIDSAAwRQIgW4tvkwg9H+5a20gIDJ5v98n2oSF2qTR4\neVNEG06uS2UCIQCO4ClPjDqreCdfVxvsztCjXtSq8BgRc3QGBudKWF0zEA==\n-----END CERTIFICATE-----\n"
+          },
+          "kind": "ConfigMap",
+          "metadata": {
+            "annotations": {
+              "kubernetes.io/description": "Contains a CA bundle that can be used to verify the kube-apiserver when using internal endpoints such as the internal service IP or kubernetes.default.svc. No other usage is guaranteed across distributions of Kubernetes clusters."
+            },
+            "creationTimestamp": "2026-10-08T08:33:35Z",
+            "name": "kube-root-ca.crt",
+            "namespace": "cps-dynamic-admission-live-20261008",
+            "resourceVersion": "361792560",
+            "uid": "606db7b1-b47b-45c2-86b7-1621d08b7ffb"
+          }
+        }
+      ],
+      "kind": "List",
+      "metadata": {
+        "resourceVersion": ""
+      }
+    },
+    "stderr": ""
+  },
+  "cps-admission-runner-20261008": {
+    "exitCode": 0,
+    "resources": {
+      "apiVersion": "v1",
+      "items": [
+        {
+          "apiVersion": "v1",
+          "kind": "Pod",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:55:35Z",
+            "generateName": "admission-probe-binding-",
+            "generation": 1,
+            "labels": {
+              "batch.kubernetes.io/controller-uid": "4ba1497f-803b-4fe9-9908-a01d9f2b4261",
+              "batch.kubernetes.io/job-name": "admission-probe-binding",
+              "controller-uid": "4ba1497f-803b-4fe9-9908-a01d9f2b4261",
+              "job-name": "admission-probe-binding"
+            },
+            "name": "admission-probe-binding-475cw",
+            "namespace": "cps-admission-runner-20261008",
+            "ownerReferences": [
+              {
+                "apiVersion": "batch/v1",
+                "blockOwnerDeletion": true,
+                "controller": true,
+                "kind": "Job",
+                "name": "admission-probe-binding",
+                "uid": "4ba1497f-803b-4fe9-9908-a01d9f2b4261"
+              }
+            ],
+            "resourceVersion": "361811404",
+            "uid": "e1854e81-7621-448a-9df6-44075fe1ff09"
+          },
+          "spec": {
+            "containers": [
+              {
+                "command": [
+                  "python",
+                  "-B",
+                  "/qualification/incluster_probe.py"
+                ],
+                "image": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "probe",
+                "resources": {
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "512Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "128Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                  {
+                    "mountPath": "/qualification",
+                    "name": "script",
+                    "readOnly": true
+                  },
+                  {
+                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                    "name": "kube-api-access-vcdgs",
+                    "readOnly": true
+                  }
+                ]
+              }
+            ],
+            "dnsPolicy": "ClusterFirst",
+            "enableServiceLinks": true,
+            "nodeName": "k3s-wk-gpu2",
+            "preemptionPolicy": "PreemptLowerPriority",
+            "priority": 0,
+            "restartPolicy": "Never",
+            "schedulerName": "default-scheduler",
+            "securityContext": {
+              "runAsGroup": 100,
+              "runAsNonRoot": true,
+              "runAsUser": 1000,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "serviceAccount": "probe",
+            "serviceAccountName": "probe",
+            "terminationGracePeriodSeconds": 30,
+            "tolerations": [
+              {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/not-ready",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+              },
+              {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/unreachable",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+              }
+            ],
+            "volumes": [
+              {
+                "configMap": {
+                  "defaultMode": 420,
+                  "name": "qualification-script"
+                },
+                "name": "script"
+              },
+              {
+                "name": "kube-api-access-vcdgs",
+                "projected": {
+                  "defaultMode": 420,
+                  "sources": [
+                    {
+                      "serviceAccountToken": {
+                        "expirationSeconds": 3607,
+                        "path": "token"
+                      }
+                    },
+                    {
+                      "configMap": {
+                        "items": [
+                          {
+                            "key": "ca.crt",
+                            "path": "ca.crt"
+                          }
+                        ],
+                        "name": "kube-root-ca.crt"
+                      }
+                    },
+                    {
+                      "downwardAPI": {
+                        "items": [
+                          {
+                            "fieldRef": {
+                              "apiVersion": "v1",
+                              "fieldPath": "metadata.namespace"
+                            },
+                            "path": "namespace"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "status": {
+            "conditions": [
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:55:38Z",
+                "observedGeneration": 1,
+                "status": "False",
+                "type": "PodReadyToStartContainers"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:55:35Z",
+                "observedGeneration": 1,
+                "reason": "PodCompleted",
+                "status": "True",
+                "type": "Initialized"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:55:35Z",
+                "observedGeneration": 1,
+                "reason": "PodCompleted",
+                "status": "False",
+                "type": "Ready"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:55:35Z",
+                "observedGeneration": 1,
+                "reason": "PodCompleted",
+                "status": "False",
+                "type": "ContainersReady"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:55:35Z",
+                "observedGeneration": 1,
+                "status": "True",
+                "type": "PodScheduled"
+              }
+            ],
+            "containerStatuses": [
+              {
+                "allocatedResources": {
+                  "cpu": "100m",
+                  "memory": "128Mi"
+                },
+                "containerID": "containerd://5e7a244e23e16cb26d65a210b01dd38f63673e70258b1965c6dda029002aa03a",
+                "image": "sha256:1fa6dbb9b2a7df741ae8dfc26045248910874bc2ecae7a75e1330011ac74d4b5",
+                "imageID": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+                "lastState": {},
+                "name": "probe",
+                "ready": false,
+                "resources": {
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "512Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "128Mi"
+                  }
+                },
+                "restartCount": 0,
+                "started": false,
+                "state": {
+                  "terminated": {
+                    "containerID": "containerd://5e7a244e23e16cb26d65a210b01dd38f63673e70258b1965c6dda029002aa03a",
+                    "exitCode": 0,
+                    "finishedAt": "2026-10-08T08:55:37Z",
+                    "reason": "Completed",
+                    "startedAt": "2026-10-08T08:55:36Z"
+                  }
+                },
+                "user": {
+                  "linux": {
+                    "gid": 100,
+                    "supplementalGroups": [
+                      100
+                    ],
+                    "uid": 1000
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "mountPath": "/qualification",
+                    "name": "script",
+                    "readOnly": true,
+                    "recursiveReadOnly": "Disabled"
+                  },
+                  {
+                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                    "name": "kube-api-access-vcdgs",
+                    "readOnly": true,
+                    "recursiveReadOnly": "Disabled"
+                  }
+                ]
+              }
+            ],
+            "hostIP": "10.21.0.43",
+            "hostIPs": [
+              {
+                "ip": "10.21.0.43"
+              }
+            ],
+            "observedGeneration": 1,
+            "phase": "Succeeded",
+            "podIP": "10.42.7.222",
+            "podIPs": [
+              {
+                "ip": "10.42.7.222"
+              }
+            ],
+            "qosClass": "Burstable",
+            "startTime": "2026-10-08T08:55:35Z"
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "kind": "Pod",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:50:35Z",
+            "generateName": "admission-probe-defaulting-",
+            "generation": 1,
+            "labels": {
+              "batch.kubernetes.io/controller-uid": "66e39762-851a-456f-92e5-f0233428b903",
+              "batch.kubernetes.io/job-name": "admission-probe-defaulting",
+              "controller-uid": "66e39762-851a-456f-92e5-f0233428b903",
+              "job-name": "admission-probe-defaulting"
+            },
+            "name": "admission-probe-defaulting-7hgzx",
+            "namespace": "cps-admission-runner-20261008",
+            "ownerReferences": [
+              {
+                "apiVersion": "batch/v1",
+                "blockOwnerDeletion": true,
+                "controller": true,
+                "kind": "Job",
+                "name": "admission-probe-defaulting",
+                "uid": "66e39762-851a-456f-92e5-f0233428b903"
+              }
+            ],
+            "resourceVersion": "361807180",
+            "uid": "8069ea1b-60d5-4815-869d-01fb01b021fe"
+          },
+          "spec": {
+            "containers": [
+              {
+                "command": [
+                  "python",
+                  "-B",
+                  "/qualification/incluster_probe.py"
+                ],
+                "image": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "probe",
+                "resources": {
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "512Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "128Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                  {
+                    "mountPath": "/qualification",
+                    "name": "script",
+                    "readOnly": true
+                  },
+                  {
+                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                    "name": "kube-api-access-2j968",
+                    "readOnly": true
+                  }
+                ]
+              }
+            ],
+            "dnsPolicy": "ClusterFirst",
+            "enableServiceLinks": true,
+            "nodeName": "k3s-wk-gpu2",
+            "preemptionPolicy": "PreemptLowerPriority",
+            "priority": 0,
+            "restartPolicy": "Never",
+            "schedulerName": "default-scheduler",
+            "securityContext": {
+              "runAsGroup": 100,
+              "runAsNonRoot": true,
+              "runAsUser": 1000,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "serviceAccount": "probe",
+            "serviceAccountName": "probe",
+            "terminationGracePeriodSeconds": 30,
+            "tolerations": [
+              {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/not-ready",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+              },
+              {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/unreachable",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+              }
+            ],
+            "volumes": [
+              {
+                "configMap": {
+                  "defaultMode": 420,
+                  "name": "qualification-script"
+                },
+                "name": "script"
+              },
+              {
+                "name": "kube-api-access-2j968",
+                "projected": {
+                  "defaultMode": 420,
+                  "sources": [
+                    {
+                      "serviceAccountToken": {
+                        "expirationSeconds": 3607,
+                        "path": "token"
+                      }
+                    },
+                    {
+                      "configMap": {
+                        "items": [
+                          {
+                            "key": "ca.crt",
+                            "path": "ca.crt"
+                          }
+                        ],
+                        "name": "kube-root-ca.crt"
+                      }
+                    },
+                    {
+                      "downwardAPI": {
+                        "items": [
+                          {
+                            "fieldRef": {
+                              "apiVersion": "v1",
+                              "fieldPath": "metadata.namespace"
+                            },
+                            "path": "namespace"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "status": {
+            "conditions": [
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:50:38Z",
+                "observedGeneration": 1,
+                "status": "False",
+                "type": "PodReadyToStartContainers"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:50:35Z",
+                "observedGeneration": 1,
+                "reason": "PodCompleted",
+                "status": "True",
+                "type": "Initialized"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:50:37Z",
+                "observedGeneration": 1,
+                "reason": "PodCompleted",
+                "status": "False",
+                "type": "Ready"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:50:37Z",
+                "observedGeneration": 1,
+                "reason": "PodCompleted",
+                "status": "False",
+                "type": "ContainersReady"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:50:35Z",
+                "observedGeneration": 1,
+                "status": "True",
+                "type": "PodScheduled"
+              }
+            ],
+            "containerStatuses": [
+              {
+                "allocatedResources": {
+                  "cpu": "100m",
+                  "memory": "128Mi"
+                },
+                "containerID": "containerd://4c363280add02b2f7a593d7dab22db9d42175a612e941ffeb11046c7af247400",
+                "image": "sha256:1fa6dbb9b2a7df741ae8dfc26045248910874bc2ecae7a75e1330011ac74d4b5",
+                "imageID": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+                "lastState": {},
+                "name": "probe",
+                "ready": false,
+                "resources": {
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "512Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "128Mi"
+                  }
+                },
+                "restartCount": 0,
+                "started": false,
+                "state": {
+                  "terminated": {
+                    "containerID": "containerd://4c363280add02b2f7a593d7dab22db9d42175a612e941ffeb11046c7af247400",
+                    "exitCode": 0,
+                    "finishedAt": "2026-10-08T08:50:36Z",
+                    "reason": "Completed",
+                    "startedAt": "2026-10-08T08:50:36Z"
+                  }
+                },
+                "user": {
+                  "linux": {
+                    "gid": 100,
+                    "supplementalGroups": [
+                      100
+                    ],
+                    "uid": 1000
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "mountPath": "/qualification",
+                    "name": "script",
+                    "readOnly": true,
+                    "recursiveReadOnly": "Disabled"
+                  },
+                  {
+                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                    "name": "kube-api-access-2j968",
+                    "readOnly": true,
+                    "recursiveReadOnly": "Disabled"
+                  }
+                ]
+              }
+            ],
+            "hostIP": "10.21.0.43",
+            "hostIPs": [
+              {
+                "ip": "10.21.0.43"
+              }
+            ],
+            "observedGeneration": 1,
+            "phase": "Succeeded",
+            "podIP": "10.42.7.221",
+            "podIPs": [
+              {
+                "ip": "10.42.7.221"
+              }
+            ],
+            "qosClass": "Burstable",
+            "startTime": "2026-10-08T08:50:35Z"
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "kind": "Pod",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:51:53Z",
+            "generateName": "admission-probe-final-",
+            "generation": 1,
+            "labels": {
+              "batch.kubernetes.io/controller-uid": "e63be5a8-cb17-4a8e-8c0a-29a912e0518e",
+              "batch.kubernetes.io/job-name": "admission-probe-final",
+              "controller-uid": "e63be5a8-cb17-4a8e-8c0a-29a912e0518e",
+              "job-name": "admission-probe-final"
+            },
+            "name": "admission-probe-final-6524p",
+            "namespace": "cps-admission-runner-20261008",
+            "ownerReferences": [
+              {
+                "apiVersion": "batch/v1",
+                "blockOwnerDeletion": true,
+                "controller": true,
+                "kind": "Job",
+                "name": "admission-probe-final",
+                "uid": "e63be5a8-cb17-4a8e-8c0a-29a912e0518e"
+              }
+            ],
+            "resourceVersion": "361808318",
+            "uid": "27073e39-677e-47a0-a3c4-6b40a176e9b1"
+          },
+          "spec": {
+            "containers": [
+              {
+                "command": [
+                  "python",
+                  "-B",
+                  "/qualification/incluster_probe.py"
+                ],
+                "image": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "probe",
+                "resources": {
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "512Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "128Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                  {
+                    "mountPath": "/qualification",
+                    "name": "script",
+                    "readOnly": true
+                  },
+                  {
+                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                    "name": "kube-api-access-g69sb",
+                    "readOnly": true
+                  }
+                ]
+              }
+            ],
+            "dnsPolicy": "ClusterFirst",
+            "enableServiceLinks": true,
+            "nodeName": "k3s-wk-gpu3",
+            "preemptionPolicy": "PreemptLowerPriority",
+            "priority": 0,
+            "restartPolicy": "Never",
+            "schedulerName": "default-scheduler",
+            "securityContext": {
+              "runAsGroup": 100,
+              "runAsNonRoot": true,
+              "runAsUser": 1000,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "serviceAccount": "probe",
+            "serviceAccountName": "probe",
+            "terminationGracePeriodSeconds": 30,
+            "tolerations": [
+              {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/not-ready",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+              },
+              {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/unreachable",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+              }
+            ],
+            "volumes": [
+              {
+                "configMap": {
+                  "defaultMode": 420,
+                  "name": "qualification-script"
+                },
+                "name": "script"
+              },
+              {
+                "name": "kube-api-access-g69sb",
+                "projected": {
+                  "defaultMode": 420,
+                  "sources": [
+                    {
+                      "serviceAccountToken": {
+                        "expirationSeconds": 3607,
+                        "path": "token"
+                      }
+                    },
+                    {
+                      "configMap": {
+                        "items": [
+                          {
+                            "key": "ca.crt",
+                            "path": "ca.crt"
+                          }
+                        ],
+                        "name": "kube-root-ca.crt"
+                      }
+                    },
+                    {
+                      "downwardAPI": {
+                        "items": [
+                          {
+                            "fieldRef": {
+                              "apiVersion": "v1",
+                              "fieldPath": "metadata.namespace"
+                            },
+                            "path": "namespace"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "status": {
+            "conditions": [
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:51:57Z",
+                "observedGeneration": 1,
+                "status": "False",
+                "type": "PodReadyToStartContainers"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:51:53Z",
+                "observedGeneration": 1,
+                "reason": "PodCompleted",
+                "status": "True",
+                "type": "Initialized"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:51:56Z",
+                "observedGeneration": 1,
+                "reason": "PodCompleted",
+                "status": "False",
+                "type": "Ready"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:51:56Z",
+                "observedGeneration": 1,
+                "reason": "PodCompleted",
+                "status": "False",
+                "type": "ContainersReady"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:51:53Z",
+                "observedGeneration": 1,
+                "status": "True",
+                "type": "PodScheduled"
+              }
+            ],
+            "containerStatuses": [
+              {
+                "allocatedResources": {
+                  "cpu": "100m",
+                  "memory": "128Mi"
+                },
+                "containerID": "containerd://ba77800f4b554f6b0e428f49f94e7d1fe7f5c937e1991f96b097e9526a309489",
+                "image": "sha256:1fa6dbb9b2a7df741ae8dfc26045248910874bc2ecae7a75e1330011ac74d4b5",
+                "imageID": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+                "lastState": {},
+                "name": "probe",
+                "ready": false,
+                "resources": {
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "512Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "128Mi"
+                  }
+                },
+                "restartCount": 0,
+                "started": false,
+                "state": {
+                  "terminated": {
+                    "containerID": "containerd://ba77800f4b554f6b0e428f49f94e7d1fe7f5c937e1991f96b097e9526a309489",
+                    "exitCode": 0,
+                    "finishedAt": "2026-10-08T08:51:55Z",
+                    "reason": "Completed",
+                    "startedAt": "2026-10-08T08:51:54Z"
+                  }
+                },
+                "user": {
+                  "linux": {
+                    "gid": 100,
+                    "supplementalGroups": [
+                      100
+                    ],
+                    "uid": 1000
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "mountPath": "/qualification",
+                    "name": "script",
+                    "readOnly": true,
+                    "recursiveReadOnly": "Disabled"
+                  },
+                  {
+                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                    "name": "kube-api-access-g69sb",
+                    "readOnly": true,
+                    "recursiveReadOnly": "Disabled"
+                  }
+                ]
+              }
+            ],
+            "hostIP": "10.21.0.40",
+            "hostIPs": [
+              {
+                "ip": "10.21.0.40"
+              }
+            ],
+            "observedGeneration": 1,
+            "phase": "Succeeded",
+            "podIP": "10.42.3.245",
+            "podIPs": [
+              {
+                "ip": "10.42.3.245"
+              }
+            ],
+            "qosClass": "Burstable",
+            "startTime": "2026-10-08T08:51:53Z"
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "kind": "Pod",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:47:02Z",
+            "generateName": "admission-probe-",
+            "generation": 1,
+            "labels": {
+              "batch.kubernetes.io/controller-uid": "f4fce014-1a1b-4d72-a458-66f0e3e3bcdf",
+              "batch.kubernetes.io/job-name": "admission-probe",
+              "compute.cps.unileoben.ac.at/purpose": "admission-qualification-runner",
+              "controller-uid": "f4fce014-1a1b-4d72-a458-66f0e3e3bcdf",
+              "job-name": "admission-probe"
+            },
+            "name": "admission-probe-ttlzd",
+            "namespace": "cps-admission-runner-20261008",
+            "ownerReferences": [
+              {
+                "apiVersion": "batch/v1",
+                "blockOwnerDeletion": true,
+                "controller": true,
+                "kind": "Job",
+                "name": "admission-probe",
+                "uid": "f4fce014-1a1b-4d72-a458-66f0e3e3bcdf"
+              }
+            ],
+            "resourceVersion": "361807390",
+            "uid": "9edb70e6-d6f3-48bf-9cb2-ae0031478c00"
+          },
+          "spec": {
+            "containers": [
+              {
+                "command": [
+                  "python",
+                  "-B",
+                  "/qualification/incluster_probe.py"
+                ],
+                "image": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+                "imagePullPolicy": "IfNotPresent",
+                "name": "probe",
+                "resources": {
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "512Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "128Mi"
+                  }
+                },
+                "securityContext": {
+                  "allowPrivilegeEscalation": false,
+                  "capabilities": {
+                    "drop": [
+                      "ALL"
+                    ]
+                  }
+                },
+                "terminationMessagePath": "/dev/termination-log",
+                "terminationMessagePolicy": "File",
+                "volumeMounts": [
+                  {
+                    "mountPath": "/qualification",
+                    "name": "script",
+                    "readOnly": true
+                  },
+                  {
+                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                    "name": "kube-api-access-468k2",
+                    "readOnly": true
+                  }
+                ]
+              }
+            ],
+            "dnsPolicy": "ClusterFirst",
+            "enableServiceLinks": true,
+            "nodeName": "k3s-wk-gpu2",
+            "preemptionPolicy": "PreemptLowerPriority",
+            "priority": 0,
+            "restartPolicy": "Never",
+            "schedulerName": "default-scheduler",
+            "securityContext": {
+              "runAsGroup": 100,
+              "runAsNonRoot": true,
+              "runAsUser": 1000,
+              "seccompProfile": {
+                "type": "RuntimeDefault"
+              }
+            },
+            "serviceAccount": "probe",
+            "serviceAccountName": "probe",
+            "terminationGracePeriodSeconds": 30,
+            "tolerations": [
+              {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/not-ready",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+              },
+              {
+                "effect": "NoExecute",
+                "key": "node.kubernetes.io/unreachable",
+                "operator": "Exists",
+                "tolerationSeconds": 300
+              }
+            ],
+            "volumes": [
+              {
+                "configMap": {
+                  "defaultMode": 420,
+                  "name": "qualification-script"
+                },
+                "name": "script"
+              },
+              {
+                "name": "kube-api-access-468k2",
+                "projected": {
+                  "defaultMode": 420,
+                  "sources": [
+                    {
+                      "serviceAccountToken": {
+                        "expirationSeconds": 3607,
+                        "path": "token"
+                      }
+                    },
+                    {
+                      "configMap": {
+                        "items": [
+                          {
+                            "key": "ca.crt",
+                            "path": "ca.crt"
+                          }
+                        ],
+                        "name": "kube-root-ca.crt"
+                      }
+                    },
+                    {
+                      "downwardAPI": {
+                        "items": [
+                          {
+                            "fieldRef": {
+                              "apiVersion": "v1",
+                              "fieldPath": "metadata.namespace"
+                            },
+                            "path": "namespace"
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ]
+          },
+          "status": {
+            "conditions": [
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:50:54Z",
+                "observedGeneration": 1,
+                "status": "False",
+                "type": "PodReadyToStartContainers"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:47:02Z",
+                "observedGeneration": 1,
+                "reason": "PodCompleted",
+                "status": "True",
+                "type": "Initialized"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:50:52Z",
+                "observedGeneration": 1,
+                "reason": "PodCompleted",
+                "status": "False",
+                "type": "Ready"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:50:52Z",
+                "observedGeneration": 1,
+                "reason": "PodCompleted",
+                "status": "False",
+                "type": "ContainersReady"
+              },
+              {
+                "lastProbeTime": null,
+                "lastTransitionTime": "2026-10-08T08:47:02Z",
+                "observedGeneration": 1,
+                "status": "True",
+                "type": "PodScheduled"
+              }
+            ],
+            "containerStatuses": [
+              {
+                "allocatedResources": {
+                  "cpu": "100m",
+                  "memory": "128Mi"
+                },
+                "containerID": "containerd://736f43352c6b946e2e8f43829dcde9c766f1c852d13553a72cb9590b82cf95a6",
+                "image": "sha256:1fa6dbb9b2a7df741ae8dfc26045248910874bc2ecae7a75e1330011ac74d4b5",
+                "imageID": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+                "lastState": {},
+                "name": "probe",
+                "ready": false,
+                "resources": {
+                  "limits": {
+                    "cpu": "1",
+                    "memory": "512Mi"
+                  },
+                  "requests": {
+                    "cpu": "100m",
+                    "memory": "128Mi"
+                  }
+                },
+                "restartCount": 0,
+                "started": false,
+                "state": {
+                  "terminated": {
+                    "containerID": "containerd://736f43352c6b946e2e8f43829dcde9c766f1c852d13553a72cb9590b82cf95a6",
+                    "exitCode": 0,
+                    "finishedAt": "2026-10-08T08:50:52Z",
+                    "reason": "Completed",
+                    "startedAt": "2026-10-08T08:47:03Z"
+                  }
+                },
+                "user": {
+                  "linux": {
+                    "gid": 100,
+                    "supplementalGroups": [
+                      100
+                    ],
+                    "uid": 1000
+                  }
+                },
+                "volumeMounts": [
+                  {
+                    "mountPath": "/qualification",
+                    "name": "script",
+                    "readOnly": true,
+                    "recursiveReadOnly": "Disabled"
+                  },
+                  {
+                    "mountPath": "/var/run/secrets/kubernetes.io/serviceaccount",
+                    "name": "kube-api-access-468k2",
+                    "readOnly": true,
+                    "recursiveReadOnly": "Disabled"
+                  }
+                ]
+              }
+            ],
+            "hostIP": "10.21.0.43",
+            "hostIPs": [
+              {
+                "ip": "10.21.0.43"
+              }
+            ],
+            "observedGeneration": 1,
+            "phase": "Succeeded",
+            "podIP": "10.42.7.220",
+            "podIPs": [
+              {
+                "ip": "10.42.7.220"
+              }
+            ],
+            "qosClass": "Burstable",
+            "startTime": "2026-10-08T08:47:02Z"
+          }
+        },
+        {
+          "apiVersion": "batch/v1",
+          "kind": "Job",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:47:02Z",
+            "generation": 1,
+            "labels": {
+              "batch.kubernetes.io/controller-uid": "f4fce014-1a1b-4d72-a458-66f0e3e3bcdf",
+              "batch.kubernetes.io/job-name": "admission-probe",
+              "compute.cps.unileoben.ac.at/purpose": "admission-qualification-runner",
+              "controller-uid": "f4fce014-1a1b-4d72-a458-66f0e3e3bcdf",
+              "job-name": "admission-probe"
+            },
+            "name": "admission-probe",
+            "namespace": "cps-admission-runner-20261008",
+            "resourceVersion": "361807391",
+            "uid": "f4fce014-1a1b-4d72-a458-66f0e3e3bcdf"
+          },
+          "spec": {
+            "activeDeadlineSeconds": 300,
+            "backoffLimit": 0,
+            "completionMode": "NonIndexed",
+            "completions": 1,
+            "manualSelector": false,
+            "parallelism": 1,
+            "podReplacementPolicy": "TerminatingOrFailed",
+            "selector": {
+              "matchLabels": {
+                "batch.kubernetes.io/controller-uid": "f4fce014-1a1b-4d72-a458-66f0e3e3bcdf"
+              }
+            },
+            "suspend": false,
+            "template": {
+              "metadata": {
+                "labels": {
+                  "batch.kubernetes.io/controller-uid": "f4fce014-1a1b-4d72-a458-66f0e3e3bcdf",
+                  "batch.kubernetes.io/job-name": "admission-probe",
+                  "compute.cps.unileoben.ac.at/purpose": "admission-qualification-runner",
+                  "controller-uid": "f4fce014-1a1b-4d72-a458-66f0e3e3bcdf",
+                  "job-name": "admission-probe"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "command": [
+                      "python",
+                      "-B",
+                      "/qualification/incluster_probe.py"
+                    ],
+                    "image": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+                    "imagePullPolicy": "IfNotPresent",
+                    "name": "probe",
+                    "resources": {
+                      "limits": {
+                        "cpu": "1",
+                        "memory": "512Mi"
+                      },
+                      "requests": {
+                        "cpu": "100m",
+                        "memory": "128Mi"
+                      }
+                    },
+                    "securityContext": {
+                      "allowPrivilegeEscalation": false,
+                      "capabilities": {
+                        "drop": [
+                          "ALL"
+                        ]
+                      }
+                    },
+                    "terminationMessagePath": "/dev/termination-log",
+                    "terminationMessagePolicy": "File",
+                    "volumeMounts": [
+                      {
+                        "mountPath": "/qualification",
+                        "name": "script",
+                        "readOnly": true
+                      }
+                    ]
+                  }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "restartPolicy": "Never",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                  "runAsGroup": 100,
+                  "runAsNonRoot": true,
+                  "runAsUser": 1000,
+                  "seccompProfile": {
+                    "type": "RuntimeDefault"
+                  }
+                },
+                "serviceAccount": "probe",
+                "serviceAccountName": "probe",
+                "terminationGracePeriodSeconds": 30,
+                "volumes": [
+                  {
+                    "configMap": {
+                      "defaultMode": 420,
+                      "name": "qualification-script"
+                    },
+                    "name": "script"
+                  }
+                ]
+              }
+            }
+          },
+          "status": {
+            "completionTime": "2026-10-08T08:50:54Z",
+            "conditions": [
+              {
+                "lastProbeTime": "2026-10-08T08:50:54Z",
+                "lastTransitionTime": "2026-10-08T08:50:54Z",
+                "message": "Reached expected number of succeeded pods",
+                "reason": "CompletionsReached",
+                "status": "True",
+                "type": "SuccessCriteriaMet"
+              },
+              {
+                "lastProbeTime": "2026-10-08T08:50:54Z",
+                "lastTransitionTime": "2026-10-08T08:50:54Z",
+                "message": "Reached expected number of succeeded pods",
+                "reason": "CompletionsReached",
+                "status": "True",
+                "type": "Complete"
+              }
+            ],
+            "ready": 0,
+            "startTime": "2026-10-08T08:47:02Z",
+            "succeeded": 1,
+            "terminating": 0,
+            "uncountedTerminatedPods": {}
+          }
+        },
+        {
+          "apiVersion": "batch/v1",
+          "kind": "Job",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:55:35Z",
+            "generation": 1,
+            "labels": {
+              "batch.kubernetes.io/controller-uid": "4ba1497f-803b-4fe9-9908-a01d9f2b4261",
+              "batch.kubernetes.io/job-name": "admission-probe-binding",
+              "controller-uid": "4ba1497f-803b-4fe9-9908-a01d9f2b4261",
+              "job-name": "admission-probe-binding"
+            },
+            "name": "admission-probe-binding",
+            "namespace": "cps-admission-runner-20261008",
+            "resourceVersion": "361811405",
+            "uid": "4ba1497f-803b-4fe9-9908-a01d9f2b4261"
+          },
+          "spec": {
+            "activeDeadlineSeconds": 300,
+            "backoffLimit": 0,
+            "completionMode": "NonIndexed",
+            "completions": 1,
+            "manualSelector": false,
+            "parallelism": 1,
+            "podReplacementPolicy": "TerminatingOrFailed",
+            "selector": {
+              "matchLabels": {
+                "batch.kubernetes.io/controller-uid": "4ba1497f-803b-4fe9-9908-a01d9f2b4261"
+              }
+            },
+            "suspend": false,
+            "template": {
+              "metadata": {
+                "labels": {
+                  "batch.kubernetes.io/controller-uid": "4ba1497f-803b-4fe9-9908-a01d9f2b4261",
+                  "batch.kubernetes.io/job-name": "admission-probe-binding",
+                  "controller-uid": "4ba1497f-803b-4fe9-9908-a01d9f2b4261",
+                  "job-name": "admission-probe-binding"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "command": [
+                      "python",
+                      "-B",
+                      "/qualification/incluster_probe.py"
+                    ],
+                    "image": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+                    "imagePullPolicy": "IfNotPresent",
+                    "name": "probe",
+                    "resources": {
+                      "limits": {
+                        "cpu": "1",
+                        "memory": "512Mi"
+                      },
+                      "requests": {
+                        "cpu": "100m",
+                        "memory": "128Mi"
+                      }
+                    },
+                    "securityContext": {
+                      "allowPrivilegeEscalation": false,
+                      "capabilities": {
+                        "drop": [
+                          "ALL"
+                        ]
+                      }
+                    },
+                    "terminationMessagePath": "/dev/termination-log",
+                    "terminationMessagePolicy": "File",
+                    "volumeMounts": [
+                      {
+                        "mountPath": "/qualification",
+                        "name": "script",
+                        "readOnly": true
+                      }
+                    ]
+                  }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "restartPolicy": "Never",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                  "runAsGroup": 100,
+                  "runAsNonRoot": true,
+                  "runAsUser": 1000,
+                  "seccompProfile": {
+                    "type": "RuntimeDefault"
+                  }
+                },
+                "serviceAccount": "probe",
+                "serviceAccountName": "probe",
+                "terminationGracePeriodSeconds": 30,
+                "volumes": [
+                  {
+                    "configMap": {
+                      "defaultMode": 420,
+                      "name": "qualification-script"
+                    },
+                    "name": "script"
+                  }
+                ]
+              }
+            }
+          },
+          "status": {
+            "completionTime": "2026-10-08T08:55:39Z",
+            "conditions": [
+              {
+                "lastProbeTime": "2026-10-08T08:55:39Z",
+                "lastTransitionTime": "2026-10-08T08:55:39Z",
+                "message": "Reached expected number of succeeded pods",
+                "reason": "CompletionsReached",
+                "status": "True",
+                "type": "SuccessCriteriaMet"
+              },
+              {
+                "lastProbeTime": "2026-10-08T08:55:39Z",
+                "lastTransitionTime": "2026-10-08T08:55:39Z",
+                "message": "Reached expected number of succeeded pods",
+                "reason": "CompletionsReached",
+                "status": "True",
+                "type": "Complete"
+              }
+            ],
+            "ready": 0,
+            "startTime": "2026-10-08T08:55:35Z",
+            "succeeded": 1,
+            "terminating": 0,
+            "uncountedTerminatedPods": {}
+          }
+        },
+        {
+          "apiVersion": "batch/v1",
+          "kind": "Job",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:50:35Z",
+            "generation": 1,
+            "labels": {
+              "batch.kubernetes.io/controller-uid": "66e39762-851a-456f-92e5-f0233428b903",
+              "batch.kubernetes.io/job-name": "admission-probe-defaulting",
+              "controller-uid": "66e39762-851a-456f-92e5-f0233428b903",
+              "job-name": "admission-probe-defaulting"
+            },
+            "name": "admission-probe-defaulting",
+            "namespace": "cps-admission-runner-20261008",
+            "resourceVersion": "361807181",
+            "uid": "66e39762-851a-456f-92e5-f0233428b903"
+          },
+          "spec": {
+            "activeDeadlineSeconds": 300,
+            "backoffLimit": 0,
+            "completionMode": "NonIndexed",
+            "completions": 1,
+            "manualSelector": false,
+            "parallelism": 1,
+            "podReplacementPolicy": "TerminatingOrFailed",
+            "selector": {
+              "matchLabels": {
+                "batch.kubernetes.io/controller-uid": "66e39762-851a-456f-92e5-f0233428b903"
+              }
+            },
+            "suspend": false,
+            "template": {
+              "metadata": {
+                "labels": {
+                  "batch.kubernetes.io/controller-uid": "66e39762-851a-456f-92e5-f0233428b903",
+                  "batch.kubernetes.io/job-name": "admission-probe-defaulting",
+                  "controller-uid": "66e39762-851a-456f-92e5-f0233428b903",
+                  "job-name": "admission-probe-defaulting"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "command": [
+                      "python",
+                      "-B",
+                      "/qualification/incluster_probe.py"
+                    ],
+                    "image": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+                    "imagePullPolicy": "IfNotPresent",
+                    "name": "probe",
+                    "resources": {
+                      "limits": {
+                        "cpu": "1",
+                        "memory": "512Mi"
+                      },
+                      "requests": {
+                        "cpu": "100m",
+                        "memory": "128Mi"
+                      }
+                    },
+                    "securityContext": {
+                      "allowPrivilegeEscalation": false,
+                      "capabilities": {
+                        "drop": [
+                          "ALL"
+                        ]
+                      }
+                    },
+                    "terminationMessagePath": "/dev/termination-log",
+                    "terminationMessagePolicy": "File",
+                    "volumeMounts": [
+                      {
+                        "mountPath": "/qualification",
+                        "name": "script",
+                        "readOnly": true
+                      }
+                    ]
+                  }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "restartPolicy": "Never",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                  "runAsGroup": 100,
+                  "runAsNonRoot": true,
+                  "runAsUser": 1000,
+                  "seccompProfile": {
+                    "type": "RuntimeDefault"
+                  }
+                },
+                "serviceAccount": "probe",
+                "serviceAccountName": "probe",
+                "terminationGracePeriodSeconds": 30,
+                "volumes": [
+                  {
+                    "configMap": {
+                      "defaultMode": 420,
+                      "name": "qualification-script"
+                    },
+                    "name": "script"
+                  }
+                ]
+              }
+            }
+          },
+          "status": {
+            "completionTime": "2026-10-08T08:50:39Z",
+            "conditions": [
+              {
+                "lastProbeTime": "2026-10-08T08:50:39Z",
+                "lastTransitionTime": "2026-10-08T08:50:39Z",
+                "message": "Reached expected number of succeeded pods",
+                "reason": "CompletionsReached",
+                "status": "True",
+                "type": "SuccessCriteriaMet"
+              },
+              {
+                "lastProbeTime": "2026-10-08T08:50:39Z",
+                "lastTransitionTime": "2026-10-08T08:50:39Z",
+                "message": "Reached expected number of succeeded pods",
+                "reason": "CompletionsReached",
+                "status": "True",
+                "type": "Complete"
+              }
+            ],
+            "ready": 0,
+            "startTime": "2026-10-08T08:50:35Z",
+            "succeeded": 1,
+            "terminating": 0,
+            "uncountedTerminatedPods": {}
+          }
+        },
+        {
+          "apiVersion": "batch/v1",
+          "kind": "Job",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:51:53Z",
+            "generation": 1,
+            "labels": {
+              "batch.kubernetes.io/controller-uid": "e63be5a8-cb17-4a8e-8c0a-29a912e0518e",
+              "batch.kubernetes.io/job-name": "admission-probe-final",
+              "controller-uid": "e63be5a8-cb17-4a8e-8c0a-29a912e0518e",
+              "job-name": "admission-probe-final"
+            },
+            "name": "admission-probe-final",
+            "namespace": "cps-admission-runner-20261008",
+            "resourceVersion": "361808320",
+            "uid": "e63be5a8-cb17-4a8e-8c0a-29a912e0518e"
+          },
+          "spec": {
+            "activeDeadlineSeconds": 300,
+            "backoffLimit": 0,
+            "completionMode": "NonIndexed",
+            "completions": 1,
+            "manualSelector": false,
+            "parallelism": 1,
+            "podReplacementPolicy": "TerminatingOrFailed",
+            "selector": {
+              "matchLabels": {
+                "batch.kubernetes.io/controller-uid": "e63be5a8-cb17-4a8e-8c0a-29a912e0518e"
+              }
+            },
+            "suspend": false,
+            "template": {
+              "metadata": {
+                "labels": {
+                  "batch.kubernetes.io/controller-uid": "e63be5a8-cb17-4a8e-8c0a-29a912e0518e",
+                  "batch.kubernetes.io/job-name": "admission-probe-final",
+                  "controller-uid": "e63be5a8-cb17-4a8e-8c0a-29a912e0518e",
+                  "job-name": "admission-probe-final"
+                }
+              },
+              "spec": {
+                "containers": [
+                  {
+                    "command": [
+                      "python",
+                      "-B",
+                      "/qualification/incluster_probe.py"
+                    ],
+                    "image": "ghcr.io/mul-cps/cps-compute@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096",
+                    "imagePullPolicy": "IfNotPresent",
+                    "name": "probe",
+                    "resources": {
+                      "limits": {
+                        "cpu": "1",
+                        "memory": "512Mi"
+                      },
+                      "requests": {
+                        "cpu": "100m",
+                        "memory": "128Mi"
+                      }
+                    },
+                    "securityContext": {
+                      "allowPrivilegeEscalation": false,
+                      "capabilities": {
+                        "drop": [
+                          "ALL"
+                        ]
+                      }
+                    },
+                    "terminationMessagePath": "/dev/termination-log",
+                    "terminationMessagePolicy": "File",
+                    "volumeMounts": [
+                      {
+                        "mountPath": "/qualification",
+                        "name": "script",
+                        "readOnly": true
+                      }
+                    ]
+                  }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "restartPolicy": "Never",
+                "schedulerName": "default-scheduler",
+                "securityContext": {
+                  "runAsGroup": 100,
+                  "runAsNonRoot": true,
+                  "runAsUser": 1000,
+                  "seccompProfile": {
+                    "type": "RuntimeDefault"
+                  }
+                },
+                "serviceAccount": "probe",
+                "serviceAccountName": "probe",
+                "terminationGracePeriodSeconds": 30,
+                "volumes": [
+                  {
+                    "configMap": {
+                      "defaultMode": 420,
+                      "name": "qualification-script"
+                    },
+                    "name": "script"
+                  }
+                ]
+              }
+            }
+          },
+          "status": {
+            "completionTime": "2026-10-08T08:51:58Z",
+            "conditions": [
+              {
+                "lastProbeTime": "2026-10-08T08:51:58Z",
+                "lastTransitionTime": "2026-10-08T08:51:58Z",
+                "message": "Reached expected number of succeeded pods",
+                "reason": "CompletionsReached",
+                "status": "True",
+                "type": "SuccessCriteriaMet"
+              },
+              {
+                "lastProbeTime": "2026-10-08T08:51:58Z",
+                "lastTransitionTime": "2026-10-08T08:51:58Z",
+                "message": "Reached expected number of succeeded pods",
+                "reason": "CompletionsReached",
+                "status": "True",
+                "type": "Complete"
+              }
+            ],
+            "ready": 0,
+            "startTime": "2026-10-08T08:51:53Z",
+            "succeeded": 1,
+            "terminating": 0,
+            "uncountedTerminatedPods": {}
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "kind": "ServiceAccount",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:47:01Z",
+            "name": "default",
+            "namespace": "cps-admission-runner-20261008",
+            "resourceVersion": "361804116",
+            "uid": "1852a2f9-4fc0-4d7c-8fef-db4fb3bd2e22"
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "kind": "ServiceAccount",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:47:02Z",
+            "name": "probe",
+            "namespace": "cps-admission-runner-20261008",
+            "resourceVersion": "361804121",
+            "uid": "0a26e96f-abfe-4a81-bc13-d566f98f411b"
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "data": {
+            "ca.crt": "-----BEGIN CERTIFICATE-----\nMIIBdzCCAR2gAwIBAgIBADAKBggqhkjOPQQDAjAjMSEwHwYDVQQDDBhrM3Mtc2Vy\ndmVyLWNhQDE3NjI1MTM4OTcwHhcNMjUxMTA3MTExMTM3WhcNMzUxMTA1MTExMTM3\nWjAjMSEwHwYDVQQDDBhrM3Mtc2VydmVyLWNhQDE3NjI1MTM4OTcwWTATBgcqhkjO\nPQIBBggqhkjOPQMBBwNCAATMUnUHpjrjYl/zzkZWYm1J8URD8VCIsKLxTuB/z6Pv\nD7PrA4jAcSjJqXXFs98SkXRGcA9ET15M6Ru6xYL91NVfo0IwQDAOBgNVHQ8BAf8E\nBAMCAqQwDwYDVR0TAQH/BAUwAwEB/zAdBgNVHQ4EFgQU+7smS6vaQr/vnrH9ghfR\nuHOApCIwCgYIKoZIzj0EAwIDSAAwRQIgW4tvkwg9H+5a20gIDJ5v98n2oSF2qTR4\neVNEG06uS2UCIQCO4ClPjDqreCdfVxvsztCjXtSq8BgRc3QGBudKWF0zEA==\n-----END CERTIFICATE-----\n"
+          },
+          "kind": "ConfigMap",
+          "metadata": {
+            "annotations": {
+              "kubernetes.io/description": "Contains a CA bundle that can be used to verify the kube-apiserver when using internal endpoints such as the internal service IP or kubernetes.default.svc. No other usage is guaranteed across distributions of Kubernetes clusters."
+            },
+            "creationTimestamp": "2026-10-08T08:47:01Z",
+            "name": "kube-root-ca.crt",
+            "namespace": "cps-admission-runner-20261008",
+            "resourceVersion": "361804118",
+            "uid": "17bf896d-4c26-421b-8cdc-81faa6b9d5b9"
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "data": {
+            "incluster_probe.py": "#!/usr/bin/env python3\n\"\"\"CPU qualification runner: authenticated admission requests always use dryRun.\"\"\"\nimport json\nfrom pathlib import Path\nimport time\n\nfrom kubernetes import client, config\nfrom kubernetes.client.rest import ApiException\n\nNAMESPACE = 'cps-dynamic-admission-live-20261008'\n\n\ndef request_path(obj):\n    if obj.get('metadata', {}).get('namespace') != NAMESPACE:\n        raise ValueError('Every fixture must target the single qualification namespace')\n    kind = obj.get('kind')\n    if kind == 'Pod':\n        return '/api/v1/namespaces/' + NAMESPACE + '/pods'\n    if kind == 'ConfigMap':\n        return '/api/v1/namespaces/' + NAMESPACE + '/configmaps'\n    if kind == 'Binding':\n        name = obj['metadata']['name']\n        if not name or '/' in name or name in ('.', '..'):\n            raise ValueError('Exact fixture Pod name required')\n        return '/api/v1/namespaces/' + NAMESPACE + '/pods/' + name + '/binding'\n    raise ValueError('Only Pod, ConfigMap and Binding dry-run fixtures are supported')\n\n\ndef main():\n    config.load_incluster_config()\n    api = client.ApiClient()\n    identity = client.AuthenticationV1Api(api).create_self_subject_review(\n        client.V1SelfSubjectReview(api_version='authentication.k8s.io/v1', kind='SelfSubjectReview'))\n    print(json.dumps({'event': 'identity', 'username': identity.status.user_info.username,\n        'groups': identity.status.user_info.groups}), flush=True)\n    completed = set()\n    deadline = time.monotonic() + 270\n    while time.monotonic() < deadline:\n        phase = json.loads(Path('/qualification/phase.json').read_text())\n        name = phase['name']\n        if name not in completed and name != 'waiting':\n            for case in phase['cases']:\n                obj = case['object']\n                result = {'event': 'result', 'phase': name, 'name': case['name'],\n                    'expectedAllow': case['allow'], 'username': identity.status.user_info.username}\n                try:\n                    value = api.call_api(request_path(obj), 'POST', body=obj,\n                        query_params=[('dryRun', 'All')], response_type='object',\n                        auth_settings=['BearerToken'], _return_http_data_only=True,\n                        _request_timeout=15)\n                    result.update(status=201, admitted=True, response=value)\n                except ApiException as error:\n                    result.update(status=error.status, admitted=False,\n                        response=json.loads(error.body) if error.body else {'message': error.reason})\n                message = str(result['response'].get('message', ''))\n                result['matchedExpectation'] = (result['admitted'] if case['allow'] else\n                    not result['admitted'] and 'cps-dynamic-admission-live-20261008-' in message)\n                print(json.dumps(result), flush=True)\n            completed.add(name)\n            print(json.dumps({'event': 'phase-complete', 'phase': name}), flush=True)\n        if phase.get('finish'):\n            break\n        time.sleep(2)\n    print(json.dumps({'event': 'runner-finished', 'phases': sorted(completed)}), flush=True)\n\n\nif __name__ == '__main__':\n    main()\n",
+            "phase.json": "{\"name\": \"binding-storage-boundary\", \"cases\": [{\"name\": \"binding-reviewed-storage-unavailable\", \"object\": {\"apiVersion\": \"v1\", \"kind\": \"Binding\", \"metadata\": {\"namespace\": \"cps-dynamic-admission-live-20261008\", \"name\": \"offline-argo-5-declared-i1\", \"uid\": \"11111111-1111-1111-1111-111111111111\"}, \"target\": {\"kind\": \"Node\", \"name\": \"offline-node\"}}, \"allow\": true}, {\"name\": \"binding-wrong-node-deny\", \"object\": {\"apiVersion\": \"v1\", \"kind\": \"Binding\", \"metadata\": {\"namespace\": \"cps-dynamic-admission-live-20261008\", \"name\": \"offline-argo-5-declared-i1\", \"uid\": \"11111111-1111-1111-1111-111111111111\"}, \"target\": {\"kind\": \"Node\", \"name\": \"unreviewed-node\"}}, \"allow\": false}, {\"name\": \"binding-wrong-pod-uid-deny\", \"object\": {\"apiVersion\": \"v1\", \"kind\": \"Binding\", \"metadata\": {\"namespace\": \"cps-dynamic-admission-live-20261008\", \"name\": \"offline-argo-5-declared-i1\", \"uid\": \"aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa\"}, \"target\": {\"kind\": \"Node\", \"name\": \"offline-node\"}}, \"allow\": false}], \"finish\": true}"
+          },
+          "kind": "ConfigMap",
+          "metadata": {
+            "creationTimestamp": "2026-10-08T08:47:02Z",
+            "name": "qualification-script",
+            "namespace": "cps-admission-runner-20261008",
+            "resourceVersion": "361811348",
+            "uid": "a530d8ff-38eb-4b3b-8a53-cacc00f86343"
+          }
+        }
+      ],
+      "kind": "List",
+      "metadata": {
+        "resourceVersion": ""
+      }
+    },
+    "stderr": ""
+  },
+  "orphanBinding": {
+    "exitCode": 0,
+    "resource": {
+      "apiVersion": "admissionregistration.k8s.io/v1",
+      "kind": "ValidatingAdmissionPolicyBinding",
+      "metadata": {
+        "creationTimestamp": "2026-10-08T08:38:32Z",
+        "generation": 1,
+        "name": "cps-mps-shm",
+        "resourceVersion": "361796804",
+        "uid": "2f3bd4ad-6ce1-47cd-a9ed-d1ebdf1f76e7"
+      },
+      "spec": {
+        "matchResources": {
+          "matchPolicy": "Equivalent",
+          "namespaceSelector": {
+            "matchLabels": {
+              "kubernetes.io/metadata.name": "cps-dynamic-admission-live-20261008"
+            }
+          },
+          "objectSelector": {}
+        },
+        "paramRef": {
+          "name": "reviewed-runtime",
+          "namespace": "cps-dynamic-admission-live-20261008",
+          "parameterNotFoundAction": "Deny"
+        },
+        "policyName": "cps-mps-shm",
+        "validationActions": [
+          "Deny"
+        ]
+      }
+    },
+    "stderr": ""
+  },
+  "policyStatus": [
+    {
+      "name": "cps-dynamic-admission-live-20261008-boundary",
+      "generation": 4,
+      "status": {
+        "observedGeneration": 4,
+        "typeChecking": {}
+      }
+    },
+    {
+      "name": "cps-dynamic-admission-live-20261008-quota",
+      "generation": 1,
+      "status": {
+        "observedGeneration": 1,
+        "typeChecking": {}
+      }
+    },
+    {
+      "name": "cps-dynamic-admission-live-20261008-binding",
+      "generation": 1,
+      "status": {
+        "observedGeneration": 1,
+        "typeChecking": {}
+      }
+    }
+  ],
+  "serverVersion": {
+    "major": "1",
+    "minor": "34",
+    "emulationMajor": "1",
+    "emulationMinor": "34",
+    "minCompatibilityMajor": "1",
+    "minCompatibilityMinor": "33",
+    "gitVersion": "v1.34.9+k3s1",
+    "gitCommit": "5f72184f2d188f75171bbd21953b1c16268e425f",
+    "gitTreeState": "clean",
+    "buildDate": "2026-06-24T22:51:16Z",
+    "goVersion": "go1.25.11",
+    "compiler": "gc",
+    "platform": "linux/amd64"
+  },
+  "executorImage": "quay.io/argoproj/argoexec:v3.7.18@sha256:8651f0d1a1050be46ef28a7362cbb7387b5f5c29ce691ebddd5d99a0bb7281a9",
+  "executorProvenance": "Live deployment cps-argo/cps-argo-argo-workflows-workflow-controller args --executor-image"
+}

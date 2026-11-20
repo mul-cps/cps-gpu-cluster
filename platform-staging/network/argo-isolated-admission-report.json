@@ -1,0 +1,37 @@
+{
+  "namespace": "cps-argo-qualification-2e1d522a",
+  "productionChanged": false,
+  "runtimeQualified": false,
+  "cases": [
+    {
+      "name": "candidate-runner",
+      "accepted": true
+    },
+    {
+      "name": "mutable-image",
+      "accepted": false
+    },
+    {
+      "name": "host-network",
+      "accepted": false
+    },
+    {
+      "name": "automatic-token",
+      "accepted": false
+    },
+    {
+      "name": "secret-env",
+      "accepted": false
+    }
+  ],
+  "enforcementReadinessProbeDenied": true,
+  "productionRunnerRemainsDenied": true,
+  "policyValidationHash": "0fddb8eee9d3be9aa8bd0dcb054464de9e69fe09f75af39c96027897855dad70",
+  "passed": true,
+  "cleanupVerified": true,
+  "scope": "Namespace-isolated copy of live workload admission validations, candidate CPU runner, server dry-run only; no Workflow or execution Pod created",
+  "initialFailuresPreserved": [
+    "Missing isolated service account",
+    "Binding propagation allowed an early host-network dry-run; enforcement readiness now requires negative denial"
+  ]
+}

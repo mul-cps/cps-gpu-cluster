@@ -1,0 +1,22 @@
+{
+  "scope": "Real offline same-version multi-ABI wheel selection only; not a full notebook overlay build",
+  "install_network": "none",
+  "interpreters": [
+    {
+      "python": "3.12.13",
+      "pyyaml": "6.0.3",
+      "native_extension": "_yaml.cpython-312-x86_64-linux-gnu.so",
+      "libyaml": true
+    },
+    {
+      "python": "3.13.12",
+      "pyyaml": "6.0.3",
+      "native_extension": "_yaml.cpython-313-x86_64-linux-gnu.so",
+      "libyaml": true
+    }
+  ],
+  "sdk_wheel_sha256": "31c1b5307236a3a56feb0945f31e268ac71e750fee66441d9a1a2644c6e97369",
+  "release_tests_passed": 12,
+  "full_matrix_qualified": false,
+  "notebook_revision": "feeb290c6b620a38624d5422ec4e2815b00b10ae"
+}

@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "capturedAt": "2026-10-15T18:42:34.186101+00:00",
+  "unifiedApplicationSource": {
+    "repository": "https://github.com/mul-cps/cps-compute",
+    "commit": "64fa3d704763e3eb88c29dbfe54902991e321b52",
+    "branch": "integrate/compatible-release-20261015",
+    "remoteExact": true,
+    "manifestRawSha256": "48d9c58bb58fa988304c525cdf19018fffe5b79873174fff1d2e8fcf7815137a",
+    "rootVerifiedCoreModuleCount": 49,
+    "rootVerifiedHubModuleCount": 16,
+    "rootVerifiedExactC7Subtree": true,
+    "verificationRawSha256": "a69741282e409d54e958cd13fae33b1edf33815d99b3eb530dfb212948b629ba",
+    "verification": {
+      "composedHubTests": 107,
+      "labNodeTests": 57,
+      "typeScriptCheck": true,
+      "labPackageHookTests": 5,
+      "labPackageHookSubtests": 19,
+      "existingWheelTests": 2
+    },
+    "newImagesBuiltOrDeployed": false
+  },
+  "operatorPairLeaves": {
+    "originalCommit": "a7b91f904636001f588b934b2298b0662441c0aa",
+    "completionCommit": "82683c8",
+    "rootTestsPassed": 123,
+    "captureDependentSkips": 2,
+    "subtestsPassed": 39,
+    "actualOperatorTargetsCreated": false
+  },
+  "nodeHistoricalSuccessor": {
+    "originalCommit": "2481b548ab08963c3a6c2748d2c0ad6106e57e52",
+    "completionCommit": "c8f01ea",
+    "rootTestsPassed": 25,
+    "onlyChangedDefinition": "validate_historical_configuration",
+    "actualRootContractSupplied": false,
+    "newImagesBuiltOrDeployed": false,
+    "protectedPairRunnable": false
+  },
+  "remainingProtectedPairPrerequisites": [
+    "Distinct independently reviewed operator identities, source registrations, entitlements and snapshots",
+    "Bounded Node epoch-publisher helper and matching coordinator observer update; actual current helpers only accept qualification10",
+    "Fresh Root contract and complete retained authority, qualified Node image and exact consumer rollout",
+    "Trusted actual 5/20 GiB cap, peer OOM/recovery, import, restart and MPS hardware gates"
+  ],
+  "productionQualified": false
+}

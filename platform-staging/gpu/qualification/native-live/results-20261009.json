@@ -1,0 +1,271 @@
+{
+  "cases": {
+    "automatic_caps_and_controller_restart": {
+      "controller_reconcile_rows": 4,
+      "driver_generation": "1dbc47ec-b5e1-4966-9813-5da25fff5ae8",
+      "pods": [
+        {
+          "cap_bytes": 5368709120,
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+          "pod_uid": "21797bcb-b1a5-4205-8f2a-4f8f4e6f4dae",
+          "policy_hash": "sha256:6561913b58a660bf1e1a2cb0abd3e9fc41c83a9f021aeb0264e0d5d10b7dcc6f",
+          "role": "main",
+          "spec_sha256": "76cdbae0aa18bd477eed9bc0afc36709744f4656ef52173d5e8365ce9b1700ea"
+        },
+        {
+          "cap_bytes": 5368709120,
+          "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+          "pod_uid": "3f0f32b3-58f7-4c8e-b418-4cdb60ba63a6",
+          "policy_hash": "sha256:6561913b58a660bf1e1a2cb0abd3e9fc41c83a9f021aeb0264e0d5d10b7dcc6f",
+          "role": "peer",
+          "spec_sha256": "4c2652231dd3820dcbee02743b8fb70c87e2f63d5adb377d48423915d94cfd76"
+        }
+      ],
+      "scope": "raw sealed restart observations; complete private journal identity not re-derived",
+      "status": "passed"
+    },
+    "cross_vmm": {
+      "cross_import_ownership_qualified": false,
+      "exporter_references_released": true,
+      "functional_import_cuda_result": 0,
+      "manual_socket_mode_workaround": {
+        "applied": true,
+        "mode": "0600",
+        "production_workaround": false,
+        "scope": [
+          "same-ipc",
+          "cross-vmm"
+        ]
+      },
+      "retained_seconds": 9.000540834,
+      "retention_accounting": {
+        "observer_ended_before_retention": true,
+        "samples_in_window": 0,
+        "samples_total": 45,
+        "status": "unmeasured"
+      },
+      "status": "partial"
+    },
+    "fresh_managed_denial": {
+      "cap_bytes": 5368709120,
+      "cuda_result": 801,
+      "recovery": null,
+      "status": "passed"
+    },
+    "mps": {
+      "clients": [
+        {
+          "cap_bytes": 5368709120,
+          "host_pid": 3876162,
+          "native_used_bytes": 434192064,
+          "pod_uid": "3f0f32b3-58f7-4c8e-b418-4cdb60ba63a6"
+        },
+        {
+          "cap_bytes": 5368709120,
+          "host_pid": 3876246,
+          "native_used_bytes": 434192064,
+          "pod_uid": "21797bcb-b1a5-4205-8f2a-4f8f4e6f4dae"
+        }
+      ],
+      "independent_peer": {
+        "duration_seconds": 120.096994622,
+        "phase_brackets": [
+          {
+            "phase": "context-held-before-alloc",
+            "tick_after_ns": 1791530672505684298,
+            "tick_before_ns": 1791530672305218552
+          },
+          {
+            "phase": "ordinary64-held",
+            "tick_after_ns": 1791530692552275073,
+            "tick_before_ns": 1791530692351723925
+          },
+          {
+            "phase": "overcap",
+            "tick_after_ns": 1791530712597324798,
+            "tick_before_ns": 1791530712396875559
+          },
+          {
+            "phase": "managed-denial",
+            "tick_after_ns": 1791530712597324798,
+            "tick_before_ns": 1791530712396875559
+          },
+          {
+            "phase": "bounded-sequence-passed",
+            "tick_after_ns": 1791530732654659796,
+            "tick_before_ns": 1791530732453899735
+          }
+        ],
+        "status": "passed",
+        "successful_ticks": 599
+      },
+      "managed_cuda_result": 801,
+      "ordinary_cuda_result": 0,
+      "over_cap_cuda_result": 2,
+      "recovery": {
+        "executed_source_sha256": "80d43e3f9950f39a7b88f4b69505af118ff7d3ca40b71cbeb871d07d596c3b1b",
+        "raw_phase_recorded": false,
+        "status": "source-asserted-before-completion"
+      },
+      "server_host_pid": 3871010,
+      "status": "passed-bounded-pilot"
+    },
+    "ordinary_oom": {
+      "cap_bytes": 5368709120,
+      "cuda_result": 2,
+      "recovery": "completion recorded; no separate raw recovery result",
+      "status": "passed"
+    },
+    "ordinary_oom_concurrent": {
+      "cap_bytes": 5368709120,
+      "cuda_result": 2,
+      "recovery": "completion recorded; no separate raw recovery result",
+      "status": "passed"
+    },
+    "same_ipc": {
+      "cuda_import_result": 0,
+      "initial_attempt": "inconclusive",
+      "manual_socket_mode_workaround": {
+        "applied": true,
+        "mode": "0600",
+        "production_workaround": false,
+        "scope": [
+          "same-ipc",
+          "cross-vmm"
+        ]
+      },
+      "source_socket_fix_live_qualified": false,
+      "status": "passed-with-operator-workaround"
+    },
+    "vmm_direct": {
+      "over_cap_cuda_result": 2,
+      "recovery": "raw CUDA allocation/touch/readback after OOM",
+      "status": "passed"
+    }
+  },
+  "errors": [],
+  "group_sharing_enabled": false,
+  "limitations": [
+    "Cross-import retention accounting is not qualified.",
+    "IPC functional runs required an explicit operator socket-mode workaround.",
+    "MPS recovery is asserted by pinned executed source, not a separate raw phase.",
+    "CPU collector tests do not establish GPU isolation.",
+    "Input authenticity, complete journal binding and source guard remain separate gates."
+  ],
+  "production_qualified": false,
+  "provenance": [
+    {
+      "bytes": 472,
+      "file": "controller-restarted.jsonl",
+      "sha256": "19a185dd4bcde4fdbbff020ef9f696fa7c363f04df83c6de8d3dd0cd6695292e"
+    },
+    {
+      "bytes": 37480,
+      "file": "cross-vmm-accounting.jsonl",
+      "sha256": "1523a9c0fcd9846e12171f845ac3d2c598d315c11e6fe0ccea09edb7e0355e8a"
+    },
+    {
+      "bytes": 3285,
+      "file": "cross-vmm-export.jsonl",
+      "sha256": "2ebb6a20f5e87c1044be89f16ba6d6e00211f0e5fc60cc09387058b2d557136e"
+    },
+    {
+      "bytes": 3607,
+      "file": "cross-vmm-import.jsonl",
+      "sha256": "6311a080f351ca2bc464866a2516228d251d543d008e0996babc53db671d918d"
+    },
+    {
+      "bytes": 2786,
+      "file": "guard-load-receipt.json",
+      "sha256": "737c648cec93a86d70d5c4606d5e3c6ebb7ae599c2ed9b363d9b4a335dabd882"
+    },
+    {
+      "bytes": 578,
+      "file": "managed-denial.jsonl",
+      "sha256": "7f5e15d7569ba5c2ac70ebf7ef3d3c36047882eb31b3ffc7424b5797fd11bb8e"
+    },
+    {
+      "bytes": 327,
+      "file": "manual-socket-mode-workaround.json",
+      "sha256": "08b75612cc335fc6469491a2d0b43d2801062aa93b2b25f1087e0e422c4ff995"
+    },
+    {
+      "bytes": 836,
+      "file": "mps-main-held.jsonl",
+      "sha256": "8b9b76ff60d59b3ed872ba8d7f4dd6ac60fd6e16a051e8c3083bde879f9d7a02"
+    },
+    {
+      "bytes": 1330,
+      "file": "mps-main-held.py",
+      "sha256": "80d43e3f9950f39a7b88f4b69505af118ff7d3ca40b71cbeb871d07d596c3b1b"
+    },
+    {
+      "bytes": 122529,
+      "file": "mps-peer-120.jsonl",
+      "sha256": "c25371aabb2d376304eb43520ea32b62c0c31d3335905aefa77f7c7a279c9902"
+    },
+    {
+      "bytes": 1563,
+      "file": "mps-two-client-charge.json",
+      "sha256": "b098471050364994071a205a41441a3a261081695f767c5db4118cf5a1c6f32e"
+    },
+    {
+      "bytes": 16,
+      "file": "mps-two-clients.txt",
+      "sha256": "fecd734c3fbbc17ab693f3de24fd7be5369863be4a17ad9fa61048ac55996ef2"
+    },
+    {
+      "bytes": 9109,
+      "file": "native-cap-main-actual.json",
+      "sha256": "37d4143f64e3002f0d45b1c5b211f0b0cb424b5f5e74746752d547357b1f565a"
+    },
+    {
+      "bytes": 459,
+      "file": "native-cap-main-intent.json",
+      "sha256": "5797debe0882a79bbd7350c4ee85a29cd4bcfedb630477c7e083d8c9bacafcf1"
+    },
+    {
+      "bytes": 9110,
+      "file": "native-cap-peer-actual.json",
+      "sha256": "846c71f2c40ff251eb5cfa89edf63886eb7bfc35b4caccbecb49f9fe73d3f030"
+    },
+    {
+      "bytes": 459,
+      "file": "native-cap-peer-intent.json",
+      "sha256": "3bbffec3aaf7f1b73f6b626aa55f38b5faf405b692d844a8eba1459dc8a42fbf"
+    },
+    {
+      "bytes": 406,
+      "file": "ordinary-oom-concurrent.jsonl",
+      "sha256": "423b5e0e875f4c8d954a5fa37bb62ecda2cca168811dfc1d93f9014cd78b21fd"
+    },
+    {
+      "bytes": 405,
+      "file": "ordinary-oom.jsonl",
+      "sha256": "70e8d98fd92f06c8253b9473df7c2b8a190e914598c3231f56fc99b5a267a56d"
+    },
+    {
+      "bytes": 2403,
+      "file": "same-ipc-export.jsonl",
+      "sha256": "828ebac4ca0db9169f6b73d29555a68932e074ed5dec26abeff203fd2156d9c1"
+    },
+    {
+      "bytes": 2419,
+      "file": "same-ipc-import-corrected.jsonl",
+      "sha256": "a9366fd141b167ee053d97426e0572c60fb57a8682b03e3c9e6ceb5ff46fc07b"
+    },
+    {
+      "bytes": 1689,
+      "file": "same-ipc-import.jsonl",
+      "sha256": "2a9813cf0a9f072594fc4712aa1c6d6e6c9a7ce6531f42edc0ac606ad3f1af16"
+    },
+    {
+      "bytes": 4636,
+      "file": "vmm-direct.jsonl",
+      "sha256": "caf7025c5d52b63a2faa46c4c8ac273e83c955107b9762df2a440d15c2ca7d8f"
+    }
+  ],
+  "schema": "cps-native-live-evidence/v1",
+  "source_import_guard_qualified": false,
+  "status": "partial-live-evidence"
+}

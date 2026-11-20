@@ -1,0 +1,39 @@
+{
+  "sourceRevision": "b95c700a12229ff1435d986e4722b80e39290a0f",
+  "sourceTag": "v0.1.0",
+  "tagScope": "private local clone only; not published",
+  "computeRevision": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "expectedVariants": 12,
+  "verifiedVariants": [
+    {
+      "variant": "standard-cpu",
+      "imageConfigDigest": "sha256:8fbbcf1e22d09f1fa145c8f5c06ebfcdda5bcc2ac556d8b2872107f7e67e482b",
+      "imageManifestDigest": "sha256:17c7cba213561782a2795e1c9fda9f8c8dea11e64cbd0ffc904a970d77ad87b2",
+      "packages": 4086,
+      "nativeSbomSha256": "a5985fbf67903733c1d65059860a38d667e1658f73fff7cc42710d60bb1924ea",
+      "spdxSbomSha256": "58a03a238ca7f7168bf4a9aacc78a726758ec5e8cc4ac8ce655f14b6135bfdc5"
+    },
+    {
+      "variant": "base-cpu",
+      "imageConfigDigest": "sha256:2f7db594c130c241003f70173c52516b82f09a60d9d55d8d9359e26fbfabfd57",
+      "imageManifestDigest": "sha256:4503204c64bb764d65561bba9fa1b616e0fb269050e97255bdcba6665c9e1bfb",
+      "packages": 4086,
+      "nativeSbomSha256": "252870367dd9538a8a73e569b66a39bde2c1e7bb8bba17e3e23e6a0d98c62372",
+      "spdxSbomSha256": "4f8fb945f2147f6e3f7983615288b38e187b9f32dd2a9a6640537f5dfbdd4d65"
+    },
+    {
+      "variant": "base-gpu",
+      "imageConfigDigest": "sha256:6eaccd1f7e827d251a8088f888f33186d9e0ffcc837d5d5ef3f55de89e853094",
+      "imageManifestDigest": "sha256:e8e1620482574e9157b697243e660e4d739859d7aea69f91a713a5501bbe9f0e",
+      "packages": 3915,
+      "nativeSbomSha256": "934f0acb27e58da01650d9a3d103a148ba7d615ebca41f0a5700376e62b6e1f5",
+      "spdxSbomSha256": "58ace62772b1a9bc9d1bade3af949217a4e363e38e5b001898f64478b6b78900"
+    }
+  ],
+  "matrixComplete": false,
+  "productionQualified": false,
+  "releasePublished": false,
+  "limitations": [
+    "Build and SBOM binding only; runtime, GPU isolation and production acceptance gates remain open."
+  ]
+}

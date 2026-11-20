@@ -1,0 +1,42 @@
+{
+  "actual_failure_reason": "Shared compute policy rejected request",
+  "actual_start_http_status": 409,
+  "api_cpu_lifecycle_qualified": false,
+  "captured_at": "2026-10-14T08:43:52.099654+00:00",
+  "cleanup": {
+    "all_other_grants_byte_equal": true,
+    "authenticated_user_groups_exact": true,
+    "current_custody_roles_services_registry_group_unchanged": true,
+    "exact_owned_windows_restored": true,
+    "exact_pod_not_found": true,
+    "hub_servers_empty": true,
+    "hub_shares_empty": true,
+    "no_direct_sql_writes": true,
+    "normal_source_stop_confirmed": true,
+    "only_own_tokens_revoked": true,
+    "qa_tokens_and_oauth_codes_zero": true,
+    "source_group_record_exact": true,
+    "source_stopped_account_ready": true
+  },
+  "diagnosis": "Existing identical workspace registration is rejected before storage provisioning can resume; the provisioning fence remains held.",
+  "error_stage": "central workspace registration/policy denied before new storage provision operation",
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:440711b2bb00151f8625e9df54c97e7ed4d137ca246453aae9ad7524d6681c3d",
+  "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:a7155bebb5dff1b70ff79edbf57a1012bb37feed082bac8212c885b46e1cb950",
+  "human_oauth_qualified": false,
+  "kind": "bounded-normal-source-cpu-v8-attempt-receipt",
+  "nfs_saved_marker_executed": false,
+  "normal_start_attempts": 1,
+  "ownTemporaryTokensRevoked": true,
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "privateEvidenceReceiptSHA256": "65c89559b266d64cae0847684a028ccafaa2dfae473cd6433855382a2631f788",
+  "production_qualified": false,
+  "retainedStorageLifecycle": {
+    "generation": 4,
+    "state": "provisioning"
+  },
+  "runtime_pod_observed": false,
+  "source_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:87a1c0b99331259199ff56d52b83c5bc5fcff1c05d0965a9f097138208ea1e61",
+  "storage_fence_forcibly_reset": false,
+  "token_issuance": "existing JupyterHub User1; approved scoped APIToken.new library DB write; not normal HTTP issuance",
+  "version": 1
+}

@@ -1,0 +1,61 @@
+{
+  "application_source": "3a6a8f88a75aaa72fca0c824a3cdbad8d47f5bc8",
+  "capture_and_delivery_export_credentials_rotated_together": true,
+  "companion_packet_tests_passed": 21,
+  "deployed": true,
+  "four_process_acknowledgments": {
+    "gateway": {
+      "container": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:bb6113b7b222d002393c55e3efe56a90a58899abd93f0f6128ffd85f52fd13c0",
+      "name": "compute-gateway-7dc4bbbf78-l7bx7",
+      "namespace": "cps-compute",
+      "service_account": "cps-compute-controller",
+      "uid": "37b3c698-0fe9-495f-a47d-13c2c3a0abb6"
+    },
+    "hub:cit": {
+      "container": "hub",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:8a51a7beca628b18a13d8f0d1982e981e0a80b049ccf0efee96532a36b5b2718",
+      "name": "hub-77bfcf889b-psjlv",
+      "namespace": "cit-jhub",
+      "service_account": "hub",
+      "uid": "75a695f0-5b7a-4ca6-b42d-f54df835ca8b"
+    },
+    "hub:cps": {
+      "container": "hub",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:8a51a7beca628b18a13d8f0d1982e981e0a80b049ccf0efee96532a36b5b2718",
+      "name": "hub-6b585c7ff9-dtzkj",
+      "namespace": "jupyterhub",
+      "service_account": "hub",
+      "uid": "d5ce93db-dd1f-45e8-bec4-d4933ce4eb60"
+    },
+    "node": {
+      "container": "node-agent",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+      "name": "cps-native-node-agent-696f698f4c-9t829",
+      "namespace": "cps-native-system",
+      "service_account": "cps-native-node-agent",
+      "uid": "33b919f3-11e6-4c24-9c38-51edbc965484"
+    }
+  },
+  "fresh_completed_delivery_journal": true,
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:bb6113b7b222d002393c55e3efe56a90a58899abd93f0f6128ffd85f52fd13c0",
+  "human_oauth_accepted": false,
+  "installed_gateway_tests_passed": 235,
+  "kernel_batch_submission_accepted": false,
+  "native_zero": true,
+  "old_journal_retained": true,
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "private_evidence_sha256": {
+    "delivery-activation-intent.json": "2b6a4d8d60be577a4330bb9c091a9a6fd703960d7958ab518b747d4d0d07cfaf",
+    "final.json": "ac6d1323e0f89293f374e1d6fbf2316a9f16b4e4a7318cce466d75e85bcc7e30",
+    "new-delivery-activation-readback.json": "4bf7dc49f202f502350621d428ecd4839509aca9cd0952a331597e7afe2f6b7c",
+    "new-delivery-seed.json": "56994bc829f7f8327be8e48d373ffb1632eca72f0e979b3b33e8c26136bcc32a"
+  },
+  "production_qualified": false,
+  "recorded_at": "2026-10-15T08:19:04.932779+00:00",
+  "same_ca_key_subject_and_ski": true,
+  "scope": "Same-policy Gateway artifact byte API and coordinated TLS/capture trust adoption",
+  "seed_sha256": "sha256:c25c62f019cddee40740b6ab1498b67d1a1eb26550c39d478c05ff31fb35d1d8",
+  "tls_leaf_aki_and_ca_key_usage_repaired": true,
+  "version": 1
+}

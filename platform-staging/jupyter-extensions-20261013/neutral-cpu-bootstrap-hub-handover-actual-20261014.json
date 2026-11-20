@@ -1,0 +1,47 @@
+{
+  "all_four_current_process_acknowledgments": true,
+  "changed_hub_spec_paths": {
+    "hub:cit": [
+      "/template/spec/containers/0/image",
+      "/template/spec/volumes/6/configMap/name"
+    ],
+    "hub:cps": [
+      "/template/spec/containers/0/image",
+      "/template/spec/volumes/8/configMap/name"
+    ]
+  },
+  "changed_runtime_json_paths": [
+    "/nativeGroupApprovals/processes/hub:cit/image",
+    "/nativeGroupApprovals/processes/hub:cps/image"
+  ],
+  "evidence_base": "private operator state cps-full-project-20261013",
+  "evidence_sha256": {
+    "hub-cpu-writable-handover-e9e421c2/phase-e9e421c2/final.json": "43857a63b418a67685f275f75ea073fc271a5785ad3de500a144664307b8b2b3",
+    "hub-cpu-writable-handover-e9e421c2/phase-e9e421c2/gateway-runtime-applied.json": "d8deef169e450ff87cba13f37c5b40448a77ae68d79f3d5c14e2129cdf3eed1a",
+    "hub-cpu-writable-handover-e9e421c2/phase-e9e421c2/hub-cit-deployment-applied.json": "ccc24025320ba2f00f7f14d5cb82ac67c0676118176811211c7b6896fde29470",
+    "hub-cpu-writable-handover-e9e421c2/phase-e9e421c2/hub-cps-deployment-applied.json": "af79d1121348f3af9dbad8af033a25634db0a21b3602cb285fe081950b7e785e",
+    "hub-cpu-writable-handover-e9e421c2/phase-e9e421c2/native-zero-before-apply.json": "2d0704d39a8f9249868fe21c13b9960d53e73aa4f64832d1c3a74b958041b069",
+    "hub-cpu-writable-handover-e9e421c2/phase-e9e421c2/native-zero-before-delivery-activation.json": "dc87d30ca4eab0f8ee42183b437a7f345ce14002fb64c5bb5ed18caaf8cadf76",
+    "hub-cpu-writable-handover-e9e421c2/phase-e9e421c2/native-zero-final-readback.json": "82064358dff368d688c3744ce8daf7e260f88928ce674f024526fa1e5ef48e75",
+    "hub-cpu-writable-handover-e9e421c2/phase-e9e421c2/new-delivery-activation-readback.json": "b7844d9bcc3669b86944803636ef44d7b4c7fb41ba6abd9eaec0f598edf87e26",
+    "hub-cpu-writable-handover-e9e421c2/phase-e9e421c2/operator-code.json": "c3ac70d73245420171e2735ad00bf91c7e8be4e7e172418e4fc78873291e8ef3",
+    "hub-cpu-writable-handover-e9e421c2/plan.json": "0cbfc2e1458028705691dd898a9956deeaf2df131b7a430ad6eef9f56a2566a3",
+    "hub-cpu-writable-handover-e9e421c2/root-actual-execution/execution-receipt.json": "96f6e559a0fa467ba2d270a61c2fe5c4ed633b20a2b0ea2579eb5919854ccf7f"
+  },
+  "execution_exit_code": 0,
+  "executor_sha256": "6935a421770c5fe9fa5ec79ffd415ea70de918535941dee05a7f659050c8e771",
+  "gateway_node_source_notebook_and_identity_maps_unchanged": true,
+  "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:29b7b3e9a9af380ebeff8de06c2ab187f370acca7e52828a1c2b2f4001259973",
+  "kind": "actual-paired-hub-cpu-writable-bootstrap-image-handover",
+  "limits": [
+    "Hub rollout passed; normal CPU Ready, NFS write and Stop acceptance is separate.",
+    "Notebook package adoption, CIT runtime alias propagation and broader GPU/production qualification remain open."
+  ],
+  "new_delivery_journal_completed": true,
+  "new_delivery_seed_sha256": "sha256:1e37dd333469265231721b6c861acba5fcb9ac9c7204cac2074cf12ca83f53c0",
+  "normal_cpu_lifecycle_passed": false,
+  "observed_at": "2026-10-14T12:16:52.456872+00:00",
+  "old_journal_bytes_sha256": "0e1bc84cf0c95269a43a796692b96339840771b7ec075b16d316ef4b0c75b7bf",
+  "production_qualified": false,
+  "reviewed_plan_sha256": "sha256:082e35834b412ba574a000e1b7505d42f872477a027f4fb2765e7e88f3eed466"
+}

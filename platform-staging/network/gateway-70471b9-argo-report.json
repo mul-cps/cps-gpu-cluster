@@ -1,0 +1,94 @@
+{
+  "status": "passed",
+  "scope": "operator fixture over authenticated loopback HTTP, installed 70471b9 gateway, real Argo/admission/S3; synthetic identity and isolated namespace; not human OAuth, production HTTPS or retain endpoint qualification",
+  "runs": [
+    {
+      "name": "cps-52c624d75a1fcb0adf925425e43de21a86e76001e4864c1d",
+      "uid": "94223900-9996-485c-822d-a22dd877133b",
+      "expectedFailure": false,
+      "initialPhase": null,
+      "otherOwnerDenied": {
+        "inspect": 403,
+        "/logs": 403,
+        "/artifacts": 403,
+        "terminate": 403,
+        "retain": 403
+      },
+      "phase": "Succeeded",
+      "message": null,
+      "immutableSnapshot": true,
+      "outputsStripped": true,
+      "supportingImport": true,
+      "typedParameters": true,
+      "idempotentUid": true,
+      "executedAvailable": true,
+      "metadataBoundToUid": true,
+      "snapshotHash": "6c0cf38db09fd1f3a82b3cd3a9da27eccbe39672d42919a96ecf1870499100a1",
+      "executedHash": "412ad5d6fe63bdea417c7c4ca5e2165dc266518f2965a0f02cb130190d16aea0"
+    },
+    {
+      "name": "cps-0727ccf73f8515584c6017794f07c5511d75b459e4e089f0",
+      "uid": "a914e53c-fd58-4bbe-960e-a33814b562b8",
+      "expectedFailure": true,
+      "initialPhase": null,
+      "otherOwnerDenied": {
+        "inspect": 403,
+        "/logs": 403,
+        "/artifacts": 403,
+        "terminate": 403,
+        "retain": 403
+      },
+      "phase": "Failed",
+      "message": "main: Error (exit code 1)",
+      "immutableSnapshot": true,
+      "outputsStripped": true,
+      "supportingImport": true,
+      "typedParameters": true,
+      "idempotentUid": true,
+      "executedAvailable": true,
+      "metadataBoundToUid": true,
+      "snapshotHash": "52a30ff2456488f0e77ec50faf3c83c8896f62e2520c385f22da0db7c161f270",
+      "executedHash": "d73eddbafd6ae4ae890326a47bf7f8d5800c297210dd8a5595fac5bc43c69e1a"
+    }
+  ],
+  "deploymentPolicyHash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+  "candidatePolicyHash": "sha256:2e02a6604274d13515f7a890aed20dd49de3836774628a6902849ddaf93106cf",
+  "cleanup": [
+    {
+      "kind": "namespace",
+      "namespace": null,
+      "absent": true
+    },
+    {
+      "kind": "pod",
+      "namespace": "cps-compute",
+      "absent": true
+    },
+    {
+      "kind": "networkpolicy",
+      "namespace": "cps-argo",
+      "absent": true
+    },
+    {
+      "kind": "networkpolicy",
+      "namespace": "cps-artifacts-relay",
+      "absent": true
+    },
+    {
+      "kind": "validatingadmissionpolicy",
+      "namespace": null,
+      "absent": true
+    },
+    {
+      "kind": "validatingadmissionpolicybinding",
+      "namespace": null,
+      "absent": true
+    }
+  ],
+  "gatewayImage": "ghcr.io/mul-cps/cps-compute@sha256:41f36901e11a9793bbb9aec6088b31fb6bd7cff778b16a5e6743a71a2b5d48e4",
+  "runnerImage": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:2eebb5496efc59badc74dda10d9149dc59c6e1794cfb9c171d5edf81ca7bdfee",
+  "productionQualified": false,
+  "retentionEndpointQualified": false,
+  "productionHttpsQualified": false,
+  "artifactsPreserved": "Synthetic S3 inputs, provenance records and outputs remain; no broad artifact deletion was performed"
+}

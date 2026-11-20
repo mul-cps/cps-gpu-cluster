@@ -1,0 +1,80 @@
+{
+  "artifact_kind": "source-only-post-publication-verification",
+  "cross_pod_import_isolation_qualified": false,
+  "full_fleet_qualified": false,
+  "general_group_access_qualified": false,
+  "hardware_workspaces": [
+    "cps:native-group-b",
+    "cit:native-group-a"
+  ],
+  "measured_hardware_receipt": "measured-receipt.json",
+  "original_publication_commit": "c812218bdb00fcfe8997080f5817561c9f43aeb4",
+  "production_qualified": false,
+  "root_accepted_admin_verification": {
+    "backend_unchanged_check_passed": true,
+    "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:0b48372b05346adfe3e2c018bcfb75c4914b111f44ac59be36f1bcd14f6cdd5f",
+    "independently_rerun_here": false,
+    "public_assets": {
+      "cit": {
+        "bytes": 432275,
+        "grantWorkspaceSelector": true,
+        "sha256": "85e11daa5467d9dd21823adf99582fccdc80fe22a8295b323944be60f1ecc093",
+        "status": 200
+      },
+      "cps": {
+        "bytes": 432275,
+        "grantWorkspaceSelector": true,
+        "sha256": "85e11daa5467d9dd21823adf99582fccdc80fe22a8295b323944be60f1ecc093",
+        "status": 200
+      }
+    },
+    "scope": "Approved owning-workspace profile discovery; no global GPU access",
+    "source_commit": "e36805560e5f4d07626fd616e9a3b73d64901627",
+    "typescript_and_vite_build_passed": true,
+    "ui_tests_passed": 44
+  },
+  "root_accepted_temporary_permission_restoration": {
+    "grants_restored": 4,
+    "independently_rerun_here": false,
+    "memberships_restored": 4,
+    "physical_shutdown_already_confirmed": true,
+    "shared_profile_migration_preserved": true
+  },
+  "sanitized_admin_evidence": [
+    {
+      "bytes": 349,
+      "path": "grant-ui-public-acceptance.json",
+      "sha256": "b72f3347dfad2f0a3d28f94c5f40c9112f921bb19705d3a6ad525de58fba6443"
+    },
+    {
+      "bytes": 1467,
+      "path": "temporary-permissions-restored.json",
+      "sha256": "4f7ab2096bef8e5411adfab375c2b0622305e80d3b5f2f6623745f39df25b3bb"
+    }
+  ],
+  "scope": "LIMITED",
+  "source_fix": {
+    "gpu_runtime_unchanged": true,
+    "gpu_work_rerun": false,
+    "node_agent_source_unchanged": true,
+    "root_fence_pipe_close_preserves_abort_error": true,
+    "stale_service_loop_fixture_corrected": true
+  },
+  "source_fix_commit": "ddaa3f592272dbd6ff68f0fefba3f218ae6f70b0",
+  "source_verification": {
+    "cluster_suite": {
+      "errors": 0,
+      "failures": 0,
+      "subtests_passed": 139,
+      "tests_passed": 161
+    },
+    "historical_failed_publication_run_preserved": true,
+    "native_suite": {
+      "errors": 0,
+      "failures": 0,
+      "tests_passed": 280
+    },
+    "owner": "native_teardown_fix"
+  },
+  "version": 1
+}

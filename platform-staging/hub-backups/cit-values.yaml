@@ -1,0 +1,13 @@
+enabled: true
+suspend: false
+owner: cit
+namespace: cit-jhub
+image: docker.io/bitnami/postgresql@sha256:256bf40a7343862b9a66d1d27cd34599e80dad99284fc5450b24cb02e26ff34e
+host: jupyterhub-postgresql.cit-jhub.svc.cluster.local
+user: jupyterhub
+secretRef: jupyterhub-postgres-credentials
+passwordKey: password
+databasePodLabels:
+  app.kubernetes.io/component: primary
+  app.kubernetes.io/instance: jupyterhub-postgresql
+  app.kubernetes.io/name: postgresql

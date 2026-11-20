@@ -1,0 +1,3 @@
+# Display overlay; application image pins come from the approved base release values.
+consoleStatus:
+  configMapRef: cps-platform-status

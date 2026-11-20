@@ -1,0 +1,106 @@
+{
+  "activation_boundaries": {
+    "cpu_catalog_edit_required": false,
+    "gpu_workload_transition_separate": true,
+    "human_oauth_qualified": false,
+    "paired_hub_kernel_acceptance_completed": false,
+    "production_qualified": false,
+    "trusted_tls_rollover_completed": false
+  },
+  "api": {
+    "etag_and_metadata_fenced": true,
+    "max_download_bytes": 104857600,
+    "method": "GET",
+    "no_storage_url_or_credential_substitute": true,
+    "path": "/v1/workflows/{key}/artifacts",
+    "permanent_first_uid_binding": true,
+    "principal_kinds": [
+      "person",
+      "workspace"
+    ],
+    "query_download": [
+      "snapshot",
+      "executed-notebook"
+    ],
+    "reauthenticate_before_return": true
+  },
+  "gateway": {
+    "all_other_installed_distribution_bytes_preserved": true,
+    "base_image": "ghcr.io/mul-cps/cps-compute@sha256:08f7720eb59874c117ad0920fc87609152e87023a013699ed30e92e6620c1d4b",
+    "base_layers_and_runtime_preserved": true,
+    "changed_paths": [
+      "usr/local/lib/python3.12/site-packages/cps_compute-0.1.0.dist-info/RECORD",
+      "usr/local/lib/python3.12/site-packages/cps_compute/artifacts.py",
+      "usr/local/lib/python3.12/site-packages/cps_compute/gateway.py",
+      "usr/local/lib/python3.12/site-packages/cps_compute/submissions.py"
+    ],
+    "core_modules": 48,
+    "deployed": false,
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:bb6113b7b222d002393c55e3efe56a90a58899abd93f0f6128ffd85f52fd13c0",
+    "installed_tests_passed": 235,
+    "live_qualified": false,
+    "pip_check": true,
+    "publication_receipt_sha256": "de949d9a44023da8fc28f910b5f742ee97556a3b08e9cf1c1e2b031516165fd3",
+    "published": true,
+    "remote_manifest_bytes_equal": true,
+    "source_commit": "3a6a8f88a75aaa72fca0c824a3cdbad8d47f5bc8",
+    "verified_distribution_files": 102
+  },
+  "kernel_harness": {
+    "cases": [
+      "success-notebook",
+      "failure-notebook",
+      "hera-cpu-workflow",
+      "typed-parameters",
+      "selected-import",
+      "immutable-inputs",
+      "logs",
+      "authenticated-result-downloads"
+    ],
+    "frozen_receipt_sha256": "4e03e4d7ea7ea396a5fafc47da60fad125ac7c21669a3d25c54264d12a0c8859",
+    "live_executed": false,
+    "offline_tests_passed": 32,
+    "uses_inherited_sdk_settings": true
+  },
+  "live_policy_read_only": {
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "profiles": {
+      "batch-cpu": {
+        "enabled": true,
+        "images": [
+          "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:1fab06639346f69e96cda6c8f551d761cc51c47de85cdc0ec42ef31bf2ef2c7f"
+        ]
+      },
+      "batch-exclusive-1": {
+        "enabled": false,
+        "images": []
+      },
+      "batch-exclusive-2": {
+        "enabled": false,
+        "images": []
+      },
+      "batch-exclusive-4": {
+        "enabled": false,
+        "images": []
+      },
+      "batch-exclusive-8": {
+        "enabled": false,
+        "images": []
+      },
+      "batch-shared-10": {
+        "enabled": false,
+        "images": []
+      },
+      "batch-shared-20": {
+        "enabled": false,
+        "images": []
+      },
+      "batch-shared-5": {
+        "enabled": false,
+        "images": []
+      }
+    }
+  },
+  "scope": "Notebook-to-batch API preparation and published artifact-reader qualification; not live end-to-end acceptance",
+  "version": 1
+}

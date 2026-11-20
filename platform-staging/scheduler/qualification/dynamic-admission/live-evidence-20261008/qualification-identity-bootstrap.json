@@ -1,0 +1,58 @@
+[
+  {
+    "kind": "ServiceAccount",
+    "name": "fixture-controller",
+    "exitCode": 0,
+    "stdout": "{\n    \"apiVersion\": \"v1\",\n    \"automountServiceAccountToken\": false,\n    \"kind\": \"ServiceAccount\",\n    \"metadata\": {\n        \"creationTimestamp\": \"2026-10-08T08:44:34Z\",\n        \"name\": \"fixture-controller\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361802078\",\n        \"uid\": \"c9f8ae1f-2fb0-45db-8f16-026c73a270f5\"\n    }\n}\n",
+    "stderr": ""
+  },
+  {
+    "kind": "Role",
+    "name": "fixture-controller-dry-run-qualification",
+    "exitCode": 0,
+    "stdout": "{\n    \"apiVersion\": \"rbac.authorization.k8s.io/v1\",\n    \"kind\": \"Role\",\n    \"metadata\": {\n        \"creationTimestamp\": \"2026-10-08T08:44:34Z\",\n        \"name\": \"fixture-controller-dry-run-qualification\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361802079\",\n        \"uid\": \"0b135fb4-0be5-4150-9baf-ea6a9a467db4\"\n    },\n    \"rules\": [\n        {\n            \"apiGroups\": [\n                \"\"\n            ],\n            \"resources\": [\n                \"pods\"\n            ],\n            \"verbs\": [\n                \"create\"\n            ]\n        }\n    ]\n}\n",
+    "stderr": ""
+  },
+  {
+    "kind": "RoleBinding",
+    "name": "fixture-controller-dry-run-qualification",
+    "exitCode": 0,
+    "stdout": "{\n    \"apiVersion\": \"rbac.authorization.k8s.io/v1\",\n    \"kind\": \"RoleBinding\",\n    \"metadata\": {\n        \"creationTimestamp\": \"2026-10-08T08:44:34Z\",\n        \"name\": \"fixture-controller-dry-run-qualification\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361802080\",\n        \"uid\": \"b68a3a2e-9cae-49a0-a194-207cc96a2b79\"\n    },\n    \"roleRef\": {\n        \"apiGroup\": \"rbac.authorization.k8s.io\",\n        \"kind\": \"Role\",\n        \"name\": \"fixture-controller-dry-run-qualification\"\n    },\n    \"subjects\": [\n        {\n            \"kind\": \"ServiceAccount\",\n            \"name\": \"fixture-controller\",\n            \"namespace\": \"cps-dynamic-admission-live-20261008\"\n        }\n    ]\n}\n",
+    "stderr": ""
+  },
+  {
+    "phase": "direct-whoami",
+    "serviceAccount": "fixture-controller",
+    "exitCode": 1,
+    "stdout": "",
+    "stderr": "Unable to connect to the server: read tcp 10.71.1.174:56226->10.21.0.35:6443: read: connection reset by peer\n"
+  },
+  {
+    "kind": "ServiceAccount",
+    "name": "fixture-binder",
+    "exitCode": 0,
+    "stdout": "{\n    \"apiVersion\": \"v1\",\n    \"automountServiceAccountToken\": false,\n    \"kind\": \"ServiceAccount\",\n    \"metadata\": {\n        \"creationTimestamp\": \"2026-10-08T08:44:34Z\",\n        \"name\": \"fixture-binder\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361802081\",\n        \"uid\": \"ed4a498e-1545-4510-ae16-cdcc467b6300\"\n    }\n}\n",
+    "stderr": ""
+  },
+  {
+    "kind": "Role",
+    "name": "fixture-binder-dry-run-qualification",
+    "exitCode": 0,
+    "stdout": "{\n    \"apiVersion\": \"rbac.authorization.k8s.io/v1\",\n    \"kind\": \"Role\",\n    \"metadata\": {\n        \"creationTimestamp\": \"2026-10-08T08:44:34Z\",\n        \"name\": \"fixture-binder-dry-run-qualification\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361802082\",\n        \"uid\": \"e021d51a-588c-484d-b863-876a9893442c\"\n    },\n    \"rules\": [\n        {\n            \"apiGroups\": [\n                \"\"\n            ],\n            \"resources\": [\n                \"configmaps\",\n                \"pods/binding\"\n            ],\n            \"verbs\": [\n                \"create\"\n            ]\n        }\n    ]\n}\n",
+    "stderr": ""
+  },
+  {
+    "kind": "RoleBinding",
+    "name": "fixture-binder-dry-run-qualification",
+    "exitCode": 0,
+    "stdout": "{\n    \"apiVersion\": \"rbac.authorization.k8s.io/v1\",\n    \"kind\": \"RoleBinding\",\n    \"metadata\": {\n        \"creationTimestamp\": \"2026-10-08T08:44:34Z\",\n        \"name\": \"fixture-binder-dry-run-qualification\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361802085\",\n        \"uid\": \"88686f4f-d773-4426-9481-1af364f6c776\"\n    },\n    \"roleRef\": {\n        \"apiGroup\": \"rbac.authorization.k8s.io\",\n        \"kind\": \"Role\",\n        \"name\": \"fixture-binder-dry-run-qualification\"\n    },\n    \"subjects\": [\n        {\n            \"kind\": \"ServiceAccount\",\n            \"name\": \"fixture-binder\",\n            \"namespace\": \"cps-dynamic-admission-live-20261008\"\n        }\n    ]\n}\n",
+    "stderr": ""
+  },
+  {
+    "phase": "direct-whoami",
+    "serviceAccount": "fixture-binder",
+    "exitCode": 1,
+    "stdout": "",
+    "stderr": "Unable to connect to the server: read tcp 10.71.1.174:56242->10.21.0.35:6443: read: connection reset by peer\n"
+  }
+]

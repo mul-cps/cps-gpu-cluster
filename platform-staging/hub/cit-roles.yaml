@@ -1,0 +1,31 @@
+hub:
+  loadRoles:
+    cit-compute-observer-api:
+      description: Read-only source-owned compute observer
+      scopes:
+      - read:users:name
+      - read:users:groups
+      - read:roles:users
+      - read:servers
+      services:
+      - cit-compute-observer
+    cit-admin-api:
+      description: Read-only console bootstrap; reviewed group/workspace scopes added
+        separately
+      scopes:
+      - read:users:name
+      - read:users:groups
+      - read:roles:users
+      - read:servers
+      - list:users
+      services:
+      - cit-admin
+    cps-workspace-kernel:
+      description: Operator-controlled neutral workspace principal marker
+      scopes: []
+    cit-compute-metrics-api:
+      description: Source-owned metrics scrape only
+      scopes:
+      - read:metrics
+      services:
+      - cit-compute-metrics

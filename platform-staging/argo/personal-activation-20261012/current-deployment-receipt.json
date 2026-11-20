@@ -1,0 +1,24 @@
+{
+  "time": "2026-10-12T19:25:05.226893+00:00",
+  "sources": [
+    "918b5a1df996bdc57cf0af2bb95fb4ed20892971",
+    "0e4f433d19c4b6ca1f0e26ab5293ab34a064eb40"
+  ],
+  "deployments": [
+    {
+      "deployment": "compute-gateway",
+      "old": "ghcr.io/mul-cps/cps-compute@sha256:72a4bed952fb399f936803d69cf93eda859f28c5f4b5faec3393d9bfb2382834",
+      "new": "ghcr.io/mul-cps/cps-compute@sha256:d3f744bd6b0982587be1dbaf0bae3dccd507be6b05ca9d5e7ebbbf8d8695622e"
+    },
+    {
+      "deployment": "cps-argo-ui",
+      "old": "ghcr.io/mul-cps/e2x-course-hub@sha256:44c52253f0e486522f59417e1ee28c90e442741fe07ba37abc80cc5b57a3701d",
+      "new": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e1509969062bc3b0855671c12f181548494cb6095669b949e0426a5e74c2b2e"
+    },
+    {
+      "deployment": "cit-argo-ui",
+      "old": "ghcr.io/mul-cps/e2x-course-hub@sha256:44c52253f0e486522f59417e1ee28c90e442741fe07ba37abc80cc5b57a3701d",
+      "new": "ghcr.io/mul-cps/e2x-course-hub@sha256:7e1509969062bc3b0855671c12f181548494cb6095669b949e0426a5e74c2b2e"
+    }
+  ]
+}

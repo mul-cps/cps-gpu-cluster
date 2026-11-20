@@ -1,0 +1,99 @@
+# CPU runner policy 0.1.2
+
+This source recipe adds the locally tested immutable CPU notebook runner to
+`batch-cpu`. The target policy is
+`sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0`.
+The baseline is the reviewed limited CPS 5 GiB / CIT 10 GiB group deployment
+under `sha256:4f1dff1a92aba5cd7376dfb897612b7e6f2e6f15a09515dbdf29efa4c522359d`.
+
+The only catalog changes are version 0.1.2, one approved CPU image, its
+`batch-cpu.images` binding, and the policy-version metadata on the existing
+two GPU profile approvals. CPU remains 2 cores / 8 GiB. GPU resource limits,
+driver/gate/workload images, pool, group membership, mounts and profiles remain
+unchanged. Shared 20 GiB, batch GPU and exclusive GPU access remain disabled.
+The general release and full Fleet remain unqualified.
+
+`cpu-local-qualification.json` is the actual local rootless Podman receipt:
+UID 10001, GID 100, working directory `/tmp`, no network/GPU, fresh kernels,
+selected local imports, typed parameters, immutable snapshots with outputs
+stripped, and executed notebooks retained after success and intentional failure.
+Cluster execution, artifact delivery and normal-user authorization require
+their own live acceptance; this receipt does not claim them.
+
+The seven compatibility attestations reference the original reviewed report
+checksums. They explicitly state `hardware_test_performed: false`; they carry
+forward the unchanged limited GPU contract, and do not fabricate new GPU tests.
+Independent operator review of that semantic equivalence remains required.
+Original frozen inputs and measured reports are never modified.
+
+## Offline preparation
+
+The renderer has no network or deployment transport. Without `--render` it is
+inert. Use a new private output directory:
+
+```bash
+python scripts/compute-platform/prepare_cpu_runner_policy.py --render \
+  --ready /home/bjoern/.local/state/cps-platform-completion-20261012/group-activation/ready-v2 \
+  --current-node-config /tmp/cps-current-native-node-config-20261012.json \
+  --cpu-receipt /tmp/cps-cpu-runner-uid10001-qualification-20261012.json \
+  --admission-data /tmp/cps-current-admission-data-20261012.json \
+  --output /path/to/new/private/revision
+```
+
+The record pins every original input and the actual sanitized current node
+ConfigMap data wrapper. The derived node file preserves all current 28 terminal
+history entries and changes only its top-level policy hash. The independent
+35-entry released ledger/journal is neither read nor written by this tool.
+Gateway overlay updates only `policy_hash` and `nativeGpuGroups`; merge those
+fields into the current runtime while retaining Argo and all other settings.
+Hub settings preserve all source-owned fields except the nested group policy
+binding. Audited registration bodies change only `policy_hash`.
+
+`admission-data.json` adds only the CPU runner to the captured custom
+`ComputeAdmissionPolicy` allowlist. It retains the pinned executor and artifact
+secret references. The existing image CEL does not test policy hashes; preserve
+its policy/binding and deny-on-missing-parameter behavior.
+
+Before live update, compare fresh authority to the recorded preconditions,
+confirm all allocations are closed, preserve released ledger/journal custody,
+and server-dry-run the admission parameter delta. Root owns live application.
+Keep the two workspaces stopped while rebinding policy, gateway, Hub/node
+configuration and audited registrations. Recheck old-policy rejection and the
+new exact registrations before allowing a fresh CPU submission idempotency key.
+Previous workflow metadata and historical policy hashes remain unchanged.
+
+The current node history must also cover every later **enrolled** released
+lifetime before rebinding the policy. The 28-entry frozen history predates four
+normal group lifetimes under the baseline policy. Released never-enrolled claims
+do not create history. `terminal_history_extension.py` prepares additive pins
+for those actual CPS5/CIT10 lifetimes from captured immutable enrollment and
+cleanup ConfigMaps, the released ledger, original protected mirrors/intents/full
+terminal journals, original Pod absence and offline pinned zero-use physical
+caps. It retains every existing history entry and all original policy hashes;
+it changes no node validator, SDK, ledger or journal.
+
+```bash
+python platform-staging/gpu/native-group-pilot/terminal_history_extension.py \
+  --prepare --capture /path/to/actual-custody-capture.json \
+  --capture-sha256 RAW_SHA256 --output /path/to/new/private/history-revision
+python -m unittest discover -s platform-staging/gpu/native-group-pilot \
+  -p test_terminal_history_extension.py -q
+```
+
+Use the resulting node configuration only after Root reviews fresh custody and
+its policy binding. The unchanged historical validator still checks original
+protected cleanup tombstones, mirrors and journals and re-GETs immutable API
+authority, released allocations and Pod absence twice. Historical acceptance
+never enrolls, reconciles or allocates a current-policy workload. Missing or
+changed custody continues to block authority.
+
+Verify generated bytes with the unchanged compiler:
+
+```bash
+python scripts/compile_compute_policy.py \
+  --catalog /path/to/revision/catalog.json \
+  --output /path/to/revision/compiled \
+  --native-group-evidence /path/to/revision/native-group-evidence.json \
+  --native-group-artifacts /path/to/revision/native-group-artifacts.json --check
+python -m unittest discover -s tests/compute_policy -p 'test_*.py' -q
+```

@@ -1,0 +1,93 @@
+{
+  "version": 1,
+  "captured_at": "2026-10-14T04:16:53.433488+00:00",
+  "automatic_jobs_succeeded": [
+    "cps-hub-postgresql-backup",
+    "cit-hub-postgresql-backup",
+    "cps-admin-backup",
+    "cit-admin-backup",
+    "compute-state-backup"
+  ],
+  "corrected_cronjob_provenance": true,
+  "current_policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "owned_verification_jobs_and_pods_absent": true,
+  "backups_preserved": true,
+  "results": [
+    {
+      "cronjob": "cps-admin-backup",
+      "cronjob_uid": "c708081a-dac4-4396-a1fb-3af6363e2e8d",
+      "job": "qual-backup-cps-admin-bce3b098",
+      "job_uid": "c3949418-ffc9-47b1-9dbd-2a220f5970f2",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:8d86a5bc0859c2dfb6b65b4e9106531fe231e667b605f2621785a245327f69b8",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "script": "/scripts/backup-console.py",
+      "pod_uid": "a1cbb6b1-bd6b-4d99-ab0f-6f8fe44a29dd",
+      "completion_time": "2026-10-14T04:15:06+00:00",
+      "proof": {
+        "backup_path": "20261014T041503.420354Z-44079cb1ceae45c0b2e916c6828bb2f8",
+        "manifest_sha256": "8cdff667f9df2ea70b456095669e49d9663111929afcd78c346b53d536c084c2",
+        "application_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:8d86a5bc0859c2dfb6b65b4e9106531fe231e667b605f2621785a245327f69b8",
+        "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+        "file_sha256": {
+          "console.sqlite": "a19122763927473f5a7c606725e2885d5d9e8d3ff9f9d56c11b753365e23d56e"
+        },
+        "script_sha256": "3238c37f373ea84667221f3c964c0fd4634bbe4d472518faea69222a50ad5838",
+        "restored_integrity_check": true,
+        "production_qualified": false
+      }
+    },
+    {
+      "cronjob": "cit-admin-backup",
+      "cronjob_uid": "9e8ea225-9bec-409e-b046-b9254856f640",
+      "job": "qual-backup-cit-admin-bbe212cb",
+      "job_uid": "55a5798f-fe95-4d2d-85bc-adee45e52d9e",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:8d86a5bc0859c2dfb6b65b4e9106531fe231e667b605f2621785a245327f69b8",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "script": "/scripts/backup-console.py",
+      "pod_uid": "b9ff20b8-48dd-4fee-9854-55aa931acae4",
+      "completion_time": "2026-10-14T04:15:06+00:00",
+      "proof": {
+        "backup_path": "20261014T041503.513397Z-2e74b116fe2a42daa71c23f1f5f74898",
+        "manifest_sha256": "78106fede796911ae1275e2c36255b45c03da94653eccbf09fda5e5a4502edbb",
+        "application_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:8d86a5bc0859c2dfb6b65b4e9106531fe231e667b605f2621785a245327f69b8",
+        "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+        "file_sha256": {
+          "console.sqlite": "20632df56288cfbeb80f3b3c98dfae5f7de42f1319f78934c0ec71c9636af237"
+        },
+        "script_sha256": "3238c37f373ea84667221f3c964c0fd4634bbe4d472518faea69222a50ad5838",
+        "restored_integrity_check": true,
+        "production_qualified": false
+      }
+    },
+    {
+      "cronjob": "compute-state-backup",
+      "cronjob_uid": "8924e2ab-df98-466f-924c-3100bae8b5b3",
+      "job": "qual-backup-compute-state-41a3b827",
+      "job_uid": "961d9e84-1cbf-4c18-83cd-72b1e74cd3a9",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:440711b2bb00151f8625e9df54c97e7ed4d137ca246453aae9ad7524d6681c3d",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "script": "/scripts/backup-state.py",
+      "pod_uid": "5de5c49f-e42c-4f6a-af82-ffa9bb434613",
+      "completion_time": "2026-10-14T04:15:06+00:00",
+      "proof": {
+        "backup_path": "20261014T041504.126995Z",
+        "manifest_sha256": "719f0e0bce0dd811b5284da12cfc6e686fb6349a745403d7ea125bd4e86a0ac6",
+        "application_image": "ghcr.io/mul-cps/cps-compute@sha256:440711b2bb00151f8625e9df54c97e7ed4d137ca246453aae9ad7524d6681c3d",
+        "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+        "file_sha256": {
+          "control.sqlite": "794298001bb6bd42a14d55f79cb81d4f8ed2c597c846608232d3cf7005dbcefa",
+          "reservations.sqlite": "fb670c998e06eb2b0c685e0c1a13cfa3d46adf778d7b18d93b272906b4630693"
+        },
+        "script_sha256": "826457d6d45a1498b44a5c4094e9f0e66c081fd1e8900024c5375cbaa8759cd8",
+        "restored_integrity_check": true,
+        "production_qualified": false
+      }
+    }
+  ],
+  "production_qualified": false,
+  "limitations": [
+    "Owned corrected backup run, not the next automatic schedule after this correction",
+    "SQLite integrity and checksums only; connected application recovery remains open",
+    "No coordinated Hub/gateway/console/NFS capture or encrypted off-host durability"
+  ]
+}

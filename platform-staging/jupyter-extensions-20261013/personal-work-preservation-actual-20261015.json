@@ -1,0 +1,41 @@
+{
+  "all_copied_file_bytes_hash_verified": true,
+  "backups": [
+    {
+      "copied_bytes": 123407,
+      "copied_files": 11,
+      "excluded_mounts": 0,
+      "kernel_restarts": 0,
+      "manifest_sha256": "ceaf2f98c7750630fd6c017d064336eb0d01b20af49483298f265e6c90a1046e",
+      "persistent_backup": "/home/jovyan/.cps-work-backups/20261015-110540-71d629c1",
+      "pod": "jupyter-bjoern",
+      "pod_uid": "915b3fac-53fa-469c-8c3f-0180fb285504",
+      "preserved_symlinks": 0,
+      "receipt_sha256": "a7d9f1cdba9e0e6675857f3add4360e3c0f92de1f335e0647cb62c802189e730",
+      "source_unchanged": true
+    },
+    {
+      "copied_bytes": 25427,
+      "copied_files": 4,
+      "excluded_mounts": 0,
+      "kernel_restarts": 0,
+      "manifest_sha256": "ddc842640fa4cc00c5acaa589e2348f9274a542f59a3b47f44accfc810091e0a",
+      "persistent_backup": "/home/jovyan/.cps-work-backups/20261015-110541-5f0fe31c",
+      "pod": "jupyter-cpsadmin",
+      "pod_uid": "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+      "preserved_symlinks": 0,
+      "receipt_sha256": "94ad9deac4e182243a02d3d3ea8ba2af5e6253bc2ba58d3827c8051a592e0ad5",
+      "source_unchanged": true
+    }
+  ],
+  "finding": "Personal image CWD is /home/jovyan/work; deployment mounts emptyDir there and persistent home PVC at /home/jovyan",
+  "persistent_demo": "/home/jovyan/compute-demo-20261015-5df04787",
+  "persistent_demo_file_count": 7,
+  "personal_persistent_root_fix_pending": true,
+  "point_in_time_backups": true,
+  "production_qualified": false,
+  "recorded_at": "2026-10-15T11:10:05.579087+00:00",
+  "restart_not_performed": true,
+  "source_files_and_running_kernels_preserved": true,
+  "version": 1
+}

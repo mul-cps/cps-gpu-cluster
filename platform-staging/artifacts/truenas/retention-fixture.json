@@ -1,0 +1,15 @@
+{
+  "examined": 4,
+  "eligible": 1,
+  "deleted": 1,
+  "skipped": 3,
+  "errors": 0,
+  "objects": [
+    {
+      "key": "notebook-inputs/qualification-2026-10-05/expired",
+      "workflow_uid": "fixture-uid",
+      "time": "2026-10-20T15:28:17.300112+00:00"
+    }
+  ],
+  "qualification_scope": "real S3 conditional delete with simulated clock and fixture terminal proof; deployed Argo proof not yet qualified"
+}

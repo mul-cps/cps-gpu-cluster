@@ -1,0 +1,93 @@
+{
+  "ack_ttl_seconds": 30,
+  "all_four_fresh_process_acknowledgments": true,
+  "downloads": {
+    "all_code_cells_completed": true,
+    "checks": [
+      {
+        "attachment_header_present": false,
+        "bytes": 6856,
+        "content_type": "application/json",
+        "name": "existing-workflow",
+        "sha256": "1fa34664fe773a82bfb2a6f9ae9bc1616bdbc32710b31cbaf9e7426d94f8aec6",
+        "status": 200
+      },
+      {
+        "attachment_header_present": false,
+        "bytes": 1089,
+        "content_type": "application/json",
+        "name": "artifact-listing",
+        "sha256": "760e81d5f5ef05f4df5eb3cb4b7d87d3d363ab03aa3ffe41e1833aacefeb3cf0",
+        "status": 200
+      },
+      {
+        "attachment_header_present": false,
+        "bytes": 20480,
+        "content_type": "application/octet-stream",
+        "name": "snapshot",
+        "sha256": "a9ed207928bd0e9200662543d3c0c456578bdf4e07379c0a8b14e0bbd16b18ce",
+        "status": 200
+      },
+      {
+        "attachment_header_present": false,
+        "bytes": 4315,
+        "content_type": "application/octet-stream",
+        "name": "executed-notebook",
+        "sha256": "c4f3e75b6f5232588ce7409587ef8130ea817668bbf2a8503085000b3cfc59e0",
+        "status": 200
+      }
+    ],
+    "executed_success_notebook": true,
+    "human_oauth": false,
+    "initial_probe_validation_corrected": "Papermill2.7 reports exception=null on success; retained bytes validated without re-download",
+    "new_submission": false,
+    "notebook_papermill_version": "2.7.0",
+    "passed": true,
+    "person": "d98fbadd-d9a0-4981-8d20-1ab58bb75745",
+    "recorded_at": "2026-10-15T10:51:43.647127+00:00",
+    "snapshot_outputs_stripped": true,
+    "snapshot_selected_helper_exact": true,
+    "source_attachment_header_forwarding_pending": true,
+    "typed_parameters_exact": true,
+    "uid": "7d924832-8a6a-4e74-af92-612a80a2ce71",
+    "workflow": "cps-3d0ee6ec7090b84ee51fdf46b3c32979a110c9dca8079ad7"
+  },
+  "evidence_sha256": {
+    "delivery-activation-intent.json": "0f86d039e539f69f493fee1b3ed9441924a067b1101a4a706e063ed2ff5c489b",
+    "final.json": "8e180b95534ba4ca2643026064ec0481cf71868d79dd349cbeab62be9ad61aae",
+    "native-zero-final-readback.json": "e772b4e576943180aaa62e3be6d8ee11b81b7033e7eca49155b00288d7e6c9e3",
+    "new-delivery-activation-readback.json": "82dfd4bd484ab1b5b8b42946f0621111c57e1fa828d45331da82e425f988456e",
+    "new-delivery-seed.json": "689304b2d4d0d1a41f6a54a42f8622e3d1e8cda576588730404fdc3c9f062629"
+  },
+  "hub_and_node_images_preserved": true,
+  "hub_secrets_and_selected_cpu_d75_preserved": true,
+  "native_zero": true,
+  "new_completed_delivery_journal": true,
+  "original_mutations_replayed": false,
+  "own_actor_revoke_status": 204,
+  "phase": "artifact-eof-handover-16b8fb70/phase-16b8fb70",
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "preimage_failure_receipts_retained": true,
+  "process_images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:6d8aa34e6d0f2d7381cf7e9266bcbc9dda185af7d36e2a728230d4991cd732dc",
+    "hub:cit": "ghcr.io/mul-cps/cps-compute@sha256:1e8bdc639ecc6f07a0f101f9157a724637bcc4468138fe1e19ff7dfe4bc73da4",
+    "hub:cps": "ghcr.io/mul-cps/cps-compute@sha256:1e8bdc639ecc6f07a0f101f9157a724637bcc4468138fe1e19ff7dfe4bc73da4",
+    "node": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b"
+  },
+  "production_qualified": false,
+  "ready": true,
+  "recorded_at": "2026-10-15T10:52:46.415151+00:00",
+  "root_continuation_sha256": "f94528765f5fc25d991244e2e9960e5ceb5066780d414adf2dded410d1509d90",
+  "running_personal_servers_preserved": true,
+  "seed_sha256": "sha256:0e99ef04a8d9b6f28a1a77d0969d90c1a9e74c3358fa742e1240147b0ce53f93",
+  "source_attachment_header_forwarding_pending": true,
+  "source_b36_preserved": true,
+  "source_commit": "846c02cf9b3124706245a88caa6a8fd1b9519c59",
+  "tests": {
+    "actual_owned_pod_and_capture_contract": 3,
+    "fresh_ack_retry": 3,
+    "frozen_constructor_and_initial_race": 14
+  },
+  "tls_and_capture_credentials_preserved": true,
+  "version": 1
+}

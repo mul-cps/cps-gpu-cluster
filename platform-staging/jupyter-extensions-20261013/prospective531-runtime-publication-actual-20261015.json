@@ -1,0 +1,50 @@
+{
+  "version": 1,
+  "kind": "prospective-native531-runtime-publication",
+  "recorded_at": "2026-10-15T16:44:17.132135+00:00",
+  "source_commit": "efa3c8ab9c9e7cfffa223a7ae3577e3fe368901c",
+  "scope": "Published prospective operator-only531 candidate admission; production916 unchanged",
+  "components": {
+    "gateway": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:511e42cb71a120b5a7d399ad40fde4a6befdf472ed29ae0bf9fc7f004d85bdea",
+      "base_image": "ghcr.io/mul-cps/cps-compute@sha256:d974acab8ee692fd68419875f8e0519f5bca482b83b33d36f990abc526959c38",
+      "tag": "qualification-prospective531-gateway-efa3c8ab-20261015",
+      "source_commit": "efa3c8ab9c9e7cfffa223a7ae3577e3fe368901c",
+      "published": true,
+      "deployed": false,
+      "hardware_qualified": false,
+      "production_qualified": false,
+      "remote_manifest_exact": true,
+      "remote_raw_manifest_matches": true,
+      "remote_manifest_matches_qualified_bytes": true,
+      "qualification_receipt_sha256": "a06101c2bea7cf6e67c1ad04b833b7f30349e72d25f6b58e43eb98862ba179f5",
+      "recorded_at": "2026-10-15T16:43:53.331491+00:00",
+      "publication_receipt_raw_sha256": "cb3dfcc40184902e7d83c85a3366555d3775379c08ec2940cae7ba1e5078dd83"
+    },
+    "hub": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:1f8f39bae4e16144205b0071356b2ded7d4d3230c8b4f59af5c9653c0bfedfc9",
+      "base_image": "ghcr.io/mul-cps/cps-compute@sha256:604c94e62da8c3594579dcec21b3b5810479fadece94abfc0e90aec542165b62",
+      "tag": "qualification-prospective531-hub-efa3c8ab-20261015",
+      "source_commit": "efa3c8ab9c9e7cfffa223a7ae3577e3fe368901c",
+      "published": true,
+      "deployed": false,
+      "hardware_qualified": false,
+      "production_qualified": false,
+      "remote_manifest_exact": true,
+      "remote_raw_manifest_matches": true,
+      "remote_manifest_matches_qualified_bytes": true,
+      "qualification_receipt_sha256": "fb9bbada02bd3e28e2c857c5c259b6e3a0df9778d32e4f081dd2c064cd9992df",
+      "recorded_at": "2026-10-15T16:44:17.132135+00:00",
+      "publication_receipt_raw_sha256": "ff536f63984a36bfce8a9af8b25c71c788efdcdeeab1939f2a4914f71c77aefc"
+    }
+  },
+  "config_or_registry_changed": false,
+  "node_changed": false,
+  "fresh_six_category_hardware_gates_run": false,
+  "gpu531_adopted": false,
+  "production_workload_image_unchanged": "sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0",
+  "publication_is_not_deployment_or_hardware_qualification": true,
+  "historical_qualification_receipts_remain_unchanged": true,
+  "production_qualified": false,
+  "credential_values_included": false
+}

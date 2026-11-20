@@ -1,0 +1,62 @@
+{
+  "created_kernels": false,
+  "default_kernel_counts": {
+    "bjoern": 3,
+    "cpsadmin": 1
+  },
+  "existing_default_pod_uid_spec_restarts_and_kernel_ids_preserved": true,
+  "hashes_before_and_after_identical": true,
+  "home": {
+    "claim_uid": "3d0143d2-4476-4eaf-90b3-2c2890de9408",
+    "pv_name": "pvc-3d0143d2-4476-4eaf-90b3-2c2890de9408",
+    "pv_uid": "2c5002be-0d64-4de6-9dec-6769d795fc11"
+  },
+  "home_claim_and_pv_preserved": true,
+  "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:8e5854cb46870a3a09d8108f592ba507d494f3df028ec7f844cd9e96ae6e7e33",
+  "human_oauth": false,
+  "normal_contents_api": true,
+  "normal_cpu_profile": "cpu-default",
+  "normal_stops": [
+    {
+      "pod_absent": true,
+      "remove": false,
+      "status": 204
+    },
+    {
+      "pod_absent": true,
+      "remove": false,
+      "status": 204
+    }
+  ],
+  "own_actor_id": "a692",
+  "own_actor_revocation_status": 204,
+  "owned_files_and_directory_cleaned": true,
+  "passed": true,
+  "persistent_home_root_and_working_directory": "/home/jovyan",
+  "production_qualified": false,
+  "receipt_sha256": "98d6fc8ded65d9f769b444ef56c8f6531701060bcfd0428bd98c5cb4761432fb",
+  "recorded_at": "2026-10-15T11:45:39.011576+00:00",
+  "saved_file_types": [
+    "text",
+    "notebook"
+  ],
+  "saved_under_ephemeral_work": false,
+  "starts": [
+    {
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f",
+      "index": 1,
+      "pod_uid": "aaf2f3f2-02e4-4a5b-96de-7e61f07a25b7",
+      "root_dir": "/home/jovyan",
+      "working_dir": "/home/jovyan"
+    },
+    {
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f",
+      "index": 2,
+      "pod_uid": "8e112c07-3edb-4a71-9dad-7595b70768d8",
+      "root_dir": "/home/jovyan",
+      "working_dir": "/home/jovyan"
+    }
+  ],
+  "test_server_stopped": true,
+  "version": "cps-personal-home-persistence-runtime-acceptance/v1"
+}

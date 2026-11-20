@@ -1,0 +1,167 @@
+{{- if and .Values.enabled .Values.computeVisitor.enabled }}
+{{- if ne .Values.namespace "cps-compute" }}{{ fail "Compute visitor must use the existing cps-compute namespace" }}{{ end }}
+{{- $visitor := .Values.computeVisitor }}
+{{- if not (kindIs "bool" $visitor.enabled) }}{{ fail "Compute visitor enabled must be an explicit boolean" }}{{ end }}
+{{- $image := required "Compute visitor released image digest required" $visitor.image }}
+{{- if not (regexMatch "^[^@[:space:]]+@sha256:[a-f0-9]{64}$" $image) }}{{ fail "Compute visitor image must use an immutable digest reference" }}{{ end }}
+{{- $port := int $visitor.port }}
+{{- if ne $port 8080 }}{{ fail "Compute visitor listener must use port 8080, outside the broader admin/Gateway ingress grants" }}{{ end }}
+{{- if ne (int .Values.gateway.port) 8000 }}{{ fail "Compute visitor requires the existing Gateway port 8000; other ports need separate network qualification" }}{{ end }}
+{{- $gateway := printf "https://compute-gateway.cps-compute.svc.cluster.local:%d" (int .Values.gateway.port) }}
+{{- if ne .Values.gateway.url $gateway }}{{ fail "Compute visitor requires the fixed existing Gateway HTTPS service URL" }}{{ end }}
+{{- $gatewayCA := required "Compute visitor existing Gateway CA ConfigMap reference required" $visitor.gatewayCaConfigMapRef }}
+{{- if ne $gatewayCA .Values.gateway.caConfigMapRef }}{{ fail "Compute visitor Gateway CA must match the existing trusted Gateway CA ConfigMap" }}{{ end }}
+{{- $secrets := dict }}
+{{- $reserved := list .Values.consoles.cps.secretRef .Values.consoles.cit.secretRef .Values.gateway.secretRef .Values.gateway.configSecretRef .Values.gateway.artifactSecretRef .Values.gateway.artifactCaSecretRef .Values.gateway.storageBridgeSecretRef .Values.gateway.argoUi.readerSecretRef .Values.personalArgo.sources.cps.secretRef .Values.personalArgo.sources.cit.secretRef }}
+{{- range $source, $settings := $visitor.sources }}
+{{- if not (has $source (list "cps" "cit")) }}{{ fail "Compute visitor sources must be CPS/CIT only" }}{{ end }}
+{{- if not (kindIs "bool" $settings.enabled) }}{{ fail "Compute visitor source enabled must be an explicit boolean" }}{{ end }}
+{{- if $settings.enabled }}
+{{- $origin := required "Compute visitor source public HTTPS origin required" $settings.publicOrigin }}
+{{- if not (regexMatch "^https://[A-Za-z0-9.-]+$" $origin) }}{{ fail "Compute visitor public origin must be a fixed HTTPS hostname without a path or port" }}{{ end }}
+{{- $hub := required "Compute visitor source public HTTPS Hub API URL required" $settings.hubApiUrl }}
+{{- if ne $hub (printf "%s/hub/api" $origin) }}{{ fail "Compute visitor Hub API must use its exact source public HTTPS origin and /hub/api path" }}{{ end }}
+{{- $secret := required "Compute visitor dedicated existing OAuth Secret reference required" $settings.secretRef }}
+{{- if or (has $secret $reserved) (hasKey $secrets $secret) }}{{ fail "Compute visitor requires distinct dedicated OAuth/cookie Secrets, never console or control credentials" }}{{ end }}
+{{- $_ := set $secrets $secret true }}
+{{- $hubCA := required "Compute visitor existing public Hub CA ConfigMap reference required" $settings.hubCaConfigMapRef }}
+{{- $cidrs := required "Compute visitor reviewed public Hub HTTPS host CIDRs required" $settings.hubHttpsCidrs }}
+{{- if not (kindIs "slice" $cidrs) }}{{ fail "Compute visitor public Hub HTTPS host CIDRs must be a list" }}{{ end }}
+{{- if eq (len $cidrs) 0 }}{{ fail "Compute visitor reviewed public Hub HTTPS host CIDRs must not be empty" }}{{ end }}
+{{- range $cidr := $cidrs }}
+{{- if not (and (kindIs "string" $cidr) (regexMatch "^(([0-9]{1,3}\\.){3}[0-9]{1,3}/32|[a-fA-F0-9:]+/128)$" $cidr)) }}{{ fail "Compute visitor public Hub HTTPS egress requires individual /32 or /128 hosts" }}{{ end }}
+{{- end }}
+{{- $hubNamespace := index (dict "cps" "jupyterhub" "cit" "cit-jhub") $source }}
+{{- $name := printf "%s-compute-ui" $source }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}
+  namespace: cps-compute
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: {{ $name }}}
+  template:
+    metadata:
+      labels: {app: {{ $name }}}
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 100
+      imagePullSecrets: [{name: {{ $.Values.gateway.imagePullSecretRef }}}]
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: compute-visitor
+          image: {{ $image | quote }}
+          command: [cps-compute-visitor]
+          args: ["--bind", "0.0.0.0", "--port", {{ $port | quote }}]
+          ports: [{name: http, containerPort: {{ $port }}}]
+          env:
+            - {name: COMPUTE_VISITOR_SOURCE, value: {{ $source | quote }}}
+            - {name: COMPUTE_VISITOR_OAUTH_CLIENT_ID, value: {{ printf "service-%s" $name | quote }}}
+            - name: COMPUTE_VISITOR_OAUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef: {name: {{ $secret | quote }}, key: oauth-client-secret}
+            - name: COMPUTE_VISITOR_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef: {name: {{ $secret | quote }}, key: cookie-secret}
+            - {name: COMPUTE_VISITOR_PUBLIC_ORIGIN, value: {{ $origin | quote }}}
+            - {name: COMPUTE_VISITOR_HUB_API_URL, value: {{ $hub | quote }}}
+            - {name: COMPUTE_VISITOR_HUB_AUTHORIZATION_URL, value: {{ printf "%s/oauth2/authorize" $hub | quote }}}
+            - {name: COMPUTE_VISITOR_COMPUTE_URL, value: {{ $gateway | quote }}}
+            - {name: COMPUTE_VISITOR_HUB_CA_FILE, value: /trust/hub/ca.crt}
+            - {name: COMPUTE_VISITOR_COMPUTE_CA_FILE, value: /trust/gateway/ca.crt}
+            - {name: PYTHONDONTWRITEBYTECODE, value: "1"}
+            - {name: PYTHONUNBUFFERED, value: "1"}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          # Fixed to the released in-memory bounds: 8 x (72MiB + 100MiB),
+          # plus duplicate buffers, Python/TLS overhead and response assembly.
+          resources:
+            requests: {cpu: 250m, memory: 2Gi}
+            limits: {cpu: "2", memory: 4Gi}
+          readinessProbe:
+            tcpSocket: {port: http}
+          volumeMounts:
+            - {name: hub-ca, mountPath: /trust/hub, readOnly: true}
+            - {name: gateway-ca, mountPath: /trust/gateway, readOnly: true}
+            - {name: temporary, mountPath: /tmp}
+      volumes:
+        - name: hub-ca
+          configMap:
+            name: {{ $hubCA | quote }}
+            items: [{key: ca.crt, path: ca.crt}]
+        - name: gateway-ca
+          configMap:
+            name: {{ $gatewayCA | quote }}
+            items: [{key: ca.crt, path: ca.crt}]
+        - {name: temporary, emptyDir: {sizeLimit: 64Mi}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}
+  namespace: cps-compute
+spec:
+  selector: {app: {{ $name }}}
+  ports: [{name: http, port: {{ $port }}, targetPort: http}]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ $name }}
+  namespace: cps-compute
+spec:
+  podSelector:
+    matchLabels: {app: {{ $name }}}
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: {{ $hubNamespace }}}
+          podSelector:
+            matchLabels: {app: jupyterhub, component: proxy}
+      ports: [{protocol: TCP, port: {{ $port }}}]
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: kube-system}
+          podSelector:
+            matchLabels: {k8s-app: kube-dns}
+      ports: [{protocol: UDP, port: 53}, {protocol: TCP, port: 53}]
+    - to:
+        - podSelector:
+            matchLabels: {app: compute-gateway}
+      ports: [{protocol: TCP, port: {{ $.Values.gateway.port }}}]
+    - to:
+        {{- range $cidr := $cidrs }}
+        - ipBlock: {cidr: {{ $cidr | quote }}}
+        {{- end }}
+      ports: [{protocol: TCP, port: 443}]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ $name }}-gateway
+  namespace: cps-compute
+spec:
+  podSelector:
+    matchLabels: {app: compute-gateway}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels: {app: {{ $name }}}
+      ports: [{protocol: TCP, port: {{ $.Values.gateway.port }}}]
+{{- end }}
+{{- end }}
+{{- end }}

@@ -1,0 +1,87 @@
+{
+  "observedAt": "2026-10-08T15:34:01.631730+00:00",
+  "scope": "Completed bounded trusted UVM-guard experiment rollback, GPU2 only",
+  "original615UvmRestoredFirst": true,
+  "originalR580DriverDaemonSetUID": "7347875f-1243-4b54-9fe7-8aed76a75a05",
+  "originalR580DriverDaemonSetSpecSHA256": "20ca4ceadc4adcc59b87e4dcedde724af0383b57ca38415d212ccba96460ab8e",
+  "originalR580ImageID": "nvcr.io/nvidia/driver@sha256:41515698692bd5e192186e620b65717af960a66d22dbb5a06e3656575a5d9148",
+  "bothA100sDriver58095AndMigCurrentPendingDisabled": true,
+  "customUvmGuardNotLoaded": true,
+  "r615CanaryRemoved": true,
+  "ownedCdiAndStrayRemoved": true,
+  "normalGpu2OperandsReady": true,
+  "consumerLabelsRestored": true,
+  "nodeReadyAndUncordoned": true,
+  "gpu2CpuPvcUIDsMatched": true,
+  "gpu2CpuPvcReady": true,
+  "otherGpuDriverUIDsImagesReadyRestartsMatched": true,
+  "gpu2CpuPvcContainerRestartDifferences": [
+    {
+      "namespace": "spegel",
+      "name": "spegel-9vzlm",
+      "uid": "7880f1cb-0996-44b3-9c40-163407622128",
+      "before": [
+        {
+          "name": "registry",
+          "restartCount": 0
+        }
+      ],
+      "after": [
+        {
+          "name": "registry",
+          "restartCount": 2
+        }
+      ]
+    }
+  ],
+  "absentPriorGpu1Notebook": {
+    "namespace": "cit-jhub",
+    "name": "jupyter-m12113877",
+    "cause": "not determined; operator did not mutate GPU1"
+  },
+  "runtimeRestartDuringToolkitRecovery": {
+    "beforeAgentPidStartTicks": "1457864/810395303",
+    "beforeContainerdPidStartTicks": "1457904/810395495",
+    "afterAgentPidStartTicks": "1833399/811083578",
+    "afterContainerdPidStartTicks": "1833446/811083765"
+  },
+  "temporaryRecoveryDeviation": {
+    "firmwareSearchPath": "/run/nvidia/firmware-r615-canary",
+    "originalFirmwareDirectoryEmpty": true,
+    "mustRetainUntilPersistentFirmwareRepair": true,
+    "firmwareGspTu10xSHA256": "2eb1c5015cec34a7b43e0c390139d2ad2f8fc2ad8ce7813ed4c38f6c626e5aea",
+    "firmwareGspGa10xSHA256": "aca0afdf6587afa641639f555fbe148b2fe1b1138445731d5dfce05a87acb021"
+  },
+  "tenantIsolationQualified": false,
+  "rootRollbackEvidenceSHA256": {
+    "pods-before.json": "c45092e359c922fc7dec248f8782b94e1b57cb604c327abfc97adf2cb3427fd3",
+    "node-before.json": "eeee49e1d8184b54c9374b2e86b0a464a8cc6b492dc750ec6cc4165be62f75a9",
+    "driver-ds-before.json": "acf93e191ddf8ecc51c33fbcdb38d7b7a25c9d2e82b1420082dce986c1086dd2",
+    "fixture-terminal.json": "e4f66868ba763b0222fca3527a0a14a865009e04925c8427f49cb23b4ad577d3",
+    "original-uvm-restore.json": "7ef3fb64688d9e3d5c6f2eb4fe2e24a9489f9e8048194d7eb7b9cd942bcd9452",
+    "owned-file-cleanup.json": "03aba33b8deaa5ffb5f71d4dbab3881001b8b58d2bfeba5c45eb9cf20535a430",
+    "canary-ds-deleted.json": "0f42079483d1f136739d49090013f69a4e99aefa68f2eeb72174f2ba7b8c9227",
+    "driver-recovery.patch.json": "3695edb31e172c15b807deaaaf2676d9d633790deea1a64c4b43f9250f2c9038",
+    "consumer-restore.patch.json": "86db301dd1f17d8bdee5c3073be953efdc75d4acaf527246b14199cf0cd0055d",
+    "stale-toolkit-before-recreate.json": "f8d7e4e411feecd8665699a92bb3693e6e04f88c425505b43bbb80f51278261c",
+    "uncordon-last.patch.json": "dc14aaf68822fbbbd140b89e8cf31b66f9e20ed3115a2a5b2bd3a465a6bcb46d",
+    "operands-ready-before-uncordon.json": "adbd427ba32c198f48926b27c5bf5f24a782917108a8a5dabe15eab16d13ac60",
+    "gpu2-r580-firmware-preload-cleanup.json": "d8bc81959f6725244ace7c2468914d12c7160543cfefbdd8cce9b64691d5ebf7",
+    "gpu2-r580-firmware-preload-v2-cleanup.json": "0774f63dfb88eb6c3c31cb50a3a8d8d7d89f8869aedd5e6790a7291cc6e85764"
+  },
+  "artifactSHA256": {
+    "rollback-before.json": "2806b5bbc7c3a71f34cf60a5414195f9d74ea214f6cd31cb4790af32273f6ddb",
+    "uvm-review-original-restored.json": "488f40f1e50690102db717d6472762d7c5f6df2c27c528593d7377325aff0923",
+    "uvm-original-restore-summary.json": "bb43cd85a5d93801352a71d03f9b6f9370e628a78b67a02b8b2061679350e353",
+    "r580-restored.json": "7501f789a4e487161372cd36edc8db2ec14ef154ce5144f49ba313f366e9c5d8",
+    "r580-restored-driver.log": "4456852b0008ead41b52ca64354e5bea6c7759c203cea4f22769548d99471734",
+    "r580-consumers-initial.json": "32692a55056bfeb74f5e98a61d836b9d02849f0307a5d6b97c9f1db40ba3b74f",
+    "r580-operands-restored.json": "607ebd8cc9f659a8b93b6cb6ae7b31f4fc40e235ba9081d216e6128e5ade8b75",
+    "protected-current-receipt.json": "516aa47ba9321060cbba6f67306c8f6d3274be1284c73c70cf3ec65b7df33bc3",
+    "rollback-cleanup-verification.json": "d24a320ed0884bf4367fbbcb820c39234e80587e18f7754ee12c0db8374d78af",
+    "r580-toolkit-recovery.log": "5209886ad30c97f80326dc457de1204dcee072772a5e1a9203b81dd11c0af2e5"
+  },
+  "ownedFirmwareJobsAndPodsAbsent": true,
+  "ownedR615CanaryDaemonSetAndPodAbsent": true,
+  "uvmQaNamespaceHasNoPods": true
+}

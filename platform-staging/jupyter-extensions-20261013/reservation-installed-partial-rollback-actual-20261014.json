@@ -1,0 +1,14 @@
+{
+  "boundary": "Installed current Gateway code, fresh isolated temporary SQLite database; no live reservation database opened",
+  "first_free_member_insert_rolled_back": true,
+  "kind": "installed-gateway-atomic-reservation-partial-rollback",
+  "live_api_partial_conflict_qualified": false,
+  "loser_binding_absent": true,
+  "module_sha256": "492804a580a89235a7b30a3b2a06656f4fd9e75c4ef5fb6d29e3d1cefca88f57",
+  "passed": true,
+  "production_qualified": false,
+  "retry_after_confirmed_release": true,
+  "scratch_cleanup_zero": true,
+  "unconfirmed_release_denied": true,
+  "version": 1
+}

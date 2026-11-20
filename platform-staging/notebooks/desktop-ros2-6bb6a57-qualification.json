@@ -1,0 +1,81 @@
+{
+  "qualified": false,
+  "scope": "ROS desktop image compatibility only; GPU isolation and full release matrix incomplete",
+  "digest": "sha256:205251ead14700c9bd3e680b216320dfb3ea4aabe81bb189302d1f0d2b04c400",
+  "linuxManifest": "sha256:bf3aa8852af59db589063e327b1fde1fbf62183ef5f6d52932bd0e6b9804fbcb",
+  "user": "1000",
+  "predicateTypes": [
+    "https://slsa.dev/provenance/v1"
+  ],
+  "offlinePackageInstallation": true,
+  "pipCheckPassed": true,
+  "releaseRunnerTestsPassed": 14,
+  "sbomMode": "standalone required",
+  "fullImageSbomVerified": true,
+  "variant": "desktop-ros2",
+  "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+  "wheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.14",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "ROS desktop image runtime only; no GPU isolation or Hub browser qualification",
+    "freshKernelSourceHashesVerified": true,
+    "pytorchCpuVerified": true,
+    "pytorchVersion": "2.11.0+cu129",
+    "ros2SystemPythonLoopbackVerified": true,
+    "ros2Interpreter": "/usr/bin/python3",
+    "ros2Distro": "jazzy"
+  },
+  "published": true,
+  "deployed": false,
+  "gpuExecution": false,
+  "standaloneSbom": {
+    "format": "standalone SPDX JSON",
+    "file": "image.tar.sbom.spdx.json",
+    "sourceImageId": "sha256:eaf34c86b9037624ec7cdf71817db818e4025b4ef267260b52a9e7021b7f6801",
+    "packages": 5444,
+    "sha256": "14a51895c5acd14aff469502b705757c32573393d57b90714d71a4f80973218c",
+    "nativeFile": "image.tar.sbom.syft.json",
+    "nativeSha256": "35bc1bb11860da644c2a6ed8ba40ead81edb6ca679dd0077cc76549e24780305",
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill",
+      "ros-jazzy-desktop",
+      "ros-jazzy-rclpy",
+      "torch",
+      "torchvision",
+      "turbovnc",
+      "virtualgl",
+      "xfce4"
+    ],
+    "fileInventoryEntries": 161546
+  },
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-desktop-ros2@sha256:205251ead14700c9bd3e680b216320dfb3ea4aabe81bb189302d1f0d2b04c400",
+  "remoteIndexAndChildrenVerified": true,
+  "standaloneSbomRemoteVerified": true,
+  "sbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4c27821c2cad1acffbf887b49c6dc55a09a01e234058feaf1b79300a1371469f",
+  "parent": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:e8c0e956fd441c97e75523c5fac142e11be0f01c4cf80298238f47d53329bf8b",
+  "parentScope": "Previously published ROS desktop qualification parent; not a common-tag production parent",
+  "credentialCleanup": {
+    "temporaryHostConfigRemoved": true,
+    "temporaryContainerConfigRemoved": true,
+    "credentialInBuildContext": false
+  }
+}

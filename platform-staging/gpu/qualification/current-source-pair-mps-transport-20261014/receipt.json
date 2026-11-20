@@ -1,0 +1,39 @@
+{
+  "console_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:8d86a5bc0859c2dfb6b65b4e9106531fe231e667b605f2621785a245327f69b8",
+  "date": "2026-10-14",
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:440711b2bb00151f8625e9df54c97e7ed4d137ca246453aae9ad7524d6681c3d",
+  "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:145bfde0bc7848ed3a2dde77de7909638a7069d08168aa2fd90f730d3360eb7e",
+  "mig_enabled": false,
+  "mps": {
+    "actual_cap_baseline_unchanged": true,
+    "actual_charged_bytes_after_attempt": 0,
+    "caller_sha256": "e4d5a1138aeb832919dfc151ec7a544c9c0d383c307516349c032d4e6c201c31",
+    "daemon_or_probe_launched": false,
+    "failure": "HTTP414 oversized observer exec command",
+    "mapper_sha256": "3fb96634a933a368df4d97799cf0b20232320d23894a4865f7cd1cd5573c9975",
+    "private_receipt_sha256": "34fd924f2397bfeeab313c4947982f47ad87b4922690a8a98952fba2bcd4f76c",
+    "probe_sha256": "a235f486239056bedf2afd6e48536c5024da5efa62340a6e7d3545dd0a1b4a8e",
+    "state": "inconclusive"
+  },
+  "pair": {
+    "actual_readback_sha256": "a8671cd4f1fbc05bd860054cf6605b29439e3ecd7f6b739dde319e996c16a6b8",
+    "both_ready": true,
+    "confirmed_shutdown": true,
+    "hardware_isolation_qualified_by_lifecycle": false,
+    "private_event_sha256": "73ccacc9bcf8771746e130562eef5df2fe8384f4657e4be4138dc172574c0995",
+    "profile_cap_bytes_each": 5368709120,
+    "reservation_released": true,
+    "restored_hub_groups": true,
+    "restored_windows": true
+  },
+  "production_qualified": false,
+  "qualification": "normal-source-pair-lifecycle-and-prelaunch-MPS-transport-failure",
+  "schema_version": 1,
+  "unqualified": [
+    "MPS aggregate cap isolation",
+    "KAI placement",
+    "cross-Hub pooling",
+    "broader packing",
+    "production"
+  ]
+}

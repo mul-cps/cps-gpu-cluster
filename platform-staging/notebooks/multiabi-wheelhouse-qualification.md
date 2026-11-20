@@ -1,0 +1,9 @@
+# Shared notebook wheelhouse ABI qualification
+
+Status: release-runner fix and bounded native-wheel tests passed; the complete 12-variant notebook release remains unqualified.
+
+The runtime matrix includes Python 3.12 and 3.13 bases. The previous validator rejected separate binary wheels for a single package, preventing one common hashed wheelhouse from covering both ABIs. The notebook qualification branch now groups canonical package names at one exact version and emits one requirement containing every reviewed SHA256. Different versions still fail. Every file is checksum-checked before emitting requirements; offline pip chooses a compatible ABI wheel. Source-tag, clean-checkout, all-variant inventory, immutable base digest and RTC/addon gates are retained.
+
+The regression failed before the fix and passed afterward. All 12 release-runner tests passed. Real PyYAML 6.0.3 wheels for CPython 3.12 and 3.13 were validated together, alongside the exact new compute wheel and a pinned RTC wheel. Two isolated target installations used the same generated requirement with both hashes and no index/network access. Each interpreter imported its matching compiled extension and parsed typed YAML successfully. Exact interpreter versions, extension names, SDK checksum and source revision are in the adjacent JSON report.
+
+This test's structural base digests were fixtures, not reviewed runtime bases. It does not establish a full SDK/RTC dependency closure, build any notebook image or qualify model/GPU/RTC execution. Do not use its minimal fixture lock as release inputs. Next, assemble the complete reviewed common-version wheelhouse and immutable base matrix, build all variants from the same qualified notebook source, and exercise each actual installed runtime with the paired compute/admin artifacts. Release tags and production promotion still await the full acceptance gates.

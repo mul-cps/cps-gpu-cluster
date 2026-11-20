@@ -1,0 +1,77 @@
+{
+  "companion_packet_subtests_passed": 24,
+  "companion_packet_tests_passed": 23,
+  "configured_uid": 1000,
+  "cpu_kernel_sdk_accepted": false,
+  "cpu_notebook_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ad693e5d49ef208449d0bc5d3de86288da7aac1799c1f7f9a1d84c2f893c00c1",
+  "deployed": true,
+  "four_process_acknowledgments": {
+    "gateway": {
+      "container": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:bb6113b7b222d002393c55e3efe56a90a58899abd93f0f6128ffd85f52fd13c0",
+      "name": "compute-gateway-7dc4bbbf78-cnf9k",
+      "namespace": "cps-compute",
+      "service_account": "cps-compute-controller",
+      "uid": "e7c2ca3d-4fdb-4d44-9ac9-4d565cbbef7b"
+    },
+    "hub:cit": {
+      "container": "hub",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:4e8603e1e3480b37e5b395c74712e0f70f84aedd467c98fdc3e79aeb97a7ea30",
+      "name": "hub-6c54cff7c9-g4ww5",
+      "namespace": "cit-jhub",
+      "service_account": "hub",
+      "uid": "74837b15-0712-4e03-8bc0-f9474addb688"
+    },
+    "hub:cps": {
+      "container": "hub",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:4e8603e1e3480b37e5b395c74712e0f70f84aedd467c98fdc3e79aeb97a7ea30",
+      "name": "hub-5dd6965577-qgw6l",
+      "namespace": "jupyterhub",
+      "service_account": "hub",
+      "uid": "566042bd-d61a-4c90-be3d-ece30c0b426b"
+    },
+    "node": {
+      "container": "node-agent",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+      "name": "cps-native-node-agent-696f698f4c-9t829",
+      "namespace": "cps-native-system",
+      "service_account": "cps-native-node-agent",
+      "uid": "33b919f3-11e6-4c24-9c38-51edbc965484"
+    }
+  },
+  "fresh_completed_delivery_journal": true,
+  "gpu_notebook_image_updated": false,
+  "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:4e8603e1e3480b37e5b395c74712e0f70f84aedd467c98fdc3e79aeb97a7ea30",
+  "hub_source": "31ff2e72a1d87c08fe395e96ff139518b3e01a26",
+  "human_oauth_accepted": false,
+  "installed_hub_tests": {
+    "passed": 509,
+    "skipped": 5
+  },
+  "installed_sdk_tests": {
+    "passed": 13,
+    "skipped": 1
+  },
+  "kernel_batch_submission_accepted": false,
+  "native_zero": true,
+  "old_journal_retained": true,
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "private_evidence_sha256": {
+    "delivery-activation-intent.json": "57aac99d42cea0ff6711162c7bad10718f301b65f70b52496a7b1e56fce267df",
+    "final.json": "678432decb3be859069fa22b624d58e24484830b822a63ccbff8bd1e8749d060",
+    "new-delivery-activation-readback.json": "97a9a47ff6a781261e60372569da52ee3da9bffb39158d1d10d5c129f03a34d8",
+    "new-delivery-seed.json": "77d982a31396e7016843215b4bc476e26fa3c3ac76d0ac2ddda4486511a13aa8",
+    "root-readonly-finalize-continuation.json": "7e3eb5984d5766dcb59ce50653a3661c85a2f0e719a7fab6c4cd6ddf01c6b7c2"
+  },
+  "production_qualified": false,
+  "recorded_at": "2026-10-15T08:38:41.491393+00:00",
+  "scope": "Paired Hub CA, enrolled legacy CPU adapter and CPU notebook image adoption",
+  "seed_sha256": "sha256:73b35ee4bd464a64b96e4b6f2f01346c1aa8245f30636ab9a794eebda5ce4a77",
+  "stale_ack_recovery": {
+    "ack_ttl_seconds": 30,
+    "normal_activation_completed": true,
+    "only_readonly_finalization_retried": true,
+    "prior_mutations_replayed": false
+  },
+  "version": 1
+}

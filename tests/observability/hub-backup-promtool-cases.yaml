@@ -1,0 +1,117 @@
+rule_files:
+- rules.yaml
+evaluation_interval: 1m
+tests:
+- interval: 1m
+  input_series:
+  - &id001
+    series: kube_cronjob_info{namespace="jupyterhub",cronjob="cps-hub-postgresql-backup"}
+    values: 1x1800
+  - &id002
+    series: kube_cronjob_info{namespace="cit-jhub",cronjob="cit-hub-postgresql-backup"}
+    values: 1x1800
+  - &id003
+    series: kube_cronjob_status_last_successful_time{namespace="cit-jhub",cronjob="cit-hub-postgresql-backup"}
+    values: 0+60x1800
+  - series: kube_cronjob_status_last_successful_time{namespace="jupyterhub",cronjob="cps-hub-postgresql-backup"}
+    values: 0+60x1800
+  alert_rule_test:
+  - alertname: HubDatabaseBackupStale
+    eval_time: 28h
+    exp_alerts: []
+- interval: 1m
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - series: kube_cronjob_status_last_successful_time{namespace="jupyterhub",cronjob="cps-hub-postgresql-backup"}
+    values: '0x1800'
+  alert_rule_test:
+  - alertname: HubDatabaseBackupStale
+    eval_time: 28h
+    exp_alerts:
+    - exp_labels:
+        namespace: jupyterhub
+        cronjob: cps-hub-postgresql-backup
+        severity: critical
+      exp_annotations:
+        summary: Hub database backup has not succeeded for over 26 hours
+        description: Check the backup Job, database connectivity, credentials and
+          backup volume capacity. A previous successful capture does not prove a recent
+          recoverable backup.
+- interval: 1m
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - series: kube_cronjob_spec_suspend{namespace="jupyterhub",cronjob="cps-hub-postgresql-backup"}
+    values: 1x1800
+  alert_rule_test:
+  - alertname: HubDatabaseBackupSuspended
+    eval_time: 28h
+    exp_alerts:
+    - exp_labels:
+        namespace: jupyterhub
+        cronjob: cps-hub-postgresql-backup
+        severity: warning
+      exp_annotations:
+        summary: Daily Hub database backup is suspended
+        description: Check whether suspension is an intentional maintenance operation
+          and resume qualified backups afterward.
+- interval: 1m
+  input_series:
+  - *id002
+  - *id003
+  alert_rule_test:
+  - alertname: HubDatabaseBackupMissing
+    eval_time: 28h
+    exp_alerts:
+    - exp_labels:
+        namespace: jupyterhub
+        cronjob: cps-hub-postgresql-backup
+        severity: critical
+      exp_annotations:
+        summary: Expected Hub database backup CronJob metrics are absent
+        description: Check whether the CronJob exists and kube-state-metrics is healthy.
+          Missing telemetry is unknown, not a successful backup.
+- interval: 1m
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - series: kube_cronjob_created{namespace="jupyterhub",cronjob="cps-hub-postgresql-backup"}
+    values: '0x1800'
+  alert_rule_test:
+  - alertname: HubDatabaseBackupNeverSucceeded
+    eval_time: 28h
+    exp_alerts:
+    - exp_labels:
+        namespace: jupyterhub
+        cronjob: cps-hub-postgresql-backup
+        severity: warning
+      exp_annotations:
+        summary: Hub database backup has no successful-run telemetry
+        description: Qualify a one-shot backup and restore after installation; investigate
+          missing last-success metrics.
+- interval: 1m
+  input_series:
+  - *id001
+  - *id002
+  - *id003
+  - series: kube_job_status_failed{namespace="jupyterhub",job_name="cps-backup-fixture"}
+    values: 1x1800
+  - series: kube_job_owner{namespace="jupyterhub",job_name="cps-backup-fixture",owner_kind="CronJob",owner_name="cps-hub-postgresql-backup"}
+    values: 1x1800
+  alert_rule_test:
+  - alertname: HubDatabaseBackupJobFailed
+    eval_time: 28h
+    exp_alerts:
+    - exp_labels:
+        namespace: jupyterhub
+        job_name: cps-backup-fixture
+        owner_name: cps-hub-postgresql-backup
+        severity: warning
+      exp_annotations:
+        summary: A Hub database backup Job failed
+        description: Inspect the failed Job and volume capacity. Completed older backups
+          are retained; this failure requires investigation even if a later run succeeds.

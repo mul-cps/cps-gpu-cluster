@@ -1,0 +1,40 @@
+{
+  "before": {
+    "username": "system:serviceaccount:cps-dask-boundary-qualification:dask-sa",
+    "CREATE": {
+      "status": 201,
+      "guard_message": false
+    },
+    "UPDATE": {
+      "status": 200,
+      "guard_message": false
+    },
+    "DELETE": {
+      "status": 200,
+      "guard_message": false
+    }
+  },
+  "after": {
+    "username": "system:serviceaccount:cps-dask-boundary-qualification:dask-sa",
+    "CREATE": {
+      "status": 422,
+      "guard_message": true
+    },
+    "UPDATE": {
+      "status": 422,
+      "guard_message": true
+    },
+    "DELETE": {
+      "status": 422,
+      "guard_message": true
+    }
+  },
+  "typeChecking": {},
+  "production_changed": false,
+  "persisted_execution_workloads": 0,
+  "idle_resource_spec_preserved": true,
+  "operator_dry_run": {
+    "UPDATE": "allowed",
+    "DELETE": "allowed"
+  }
+}

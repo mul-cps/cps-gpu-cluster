@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "stage": "proposal-only-no-production-mutation",
+  "computeImage": "ghcr.io/mul-cps/cps-compute@sha256:74cfb93dcf0078c116b88662b19b6ef14611f616e34ae3141f1fd24ceb3e12ce",
+  "frontendImage": "ghcr.io/mul-cps/e2x-course-hub:qualification-native-assets-373dc09@sha256:c4df863a35a46d598cb319508b7d4e45caae3d1f9b71e24b2f1692c65e5f07bc",
+  "frontendSourceRevision": "373dc09c34e0add10cad1a3f52ae6cb593955d01",
+  "frontendSdkIncluded": false,
+  "gatewaySdkRevision": "40b9525",
+  "gateway": {
+    "resourceVersion": "359613521",
+    "images": {
+      "gateway": "ghcr.io/mul-cps/cps-compute:qualification-5771df5@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096"
+    },
+    "configSecretRefs": {
+      "config": "cps-compute-runtime",
+      "tls": "cps-compute-gateway-tls",
+      "storage-bridge": "cps-workspace-control-bridge"
+    }
+  },
+  "hubs": {
+    "cps": {
+      "resourceVersion": "358842807",
+      "images": {
+        "hub": "quay.io/jupyterhub/k8s-hub:4.4.2"
+      },
+      "configSecretRefs": {
+        "secret": "hub"
+      }
+    },
+    "cit": {
+      "resourceVersion": "358842621",
+      "images": {
+        "hub": "quay.io/jupyterhub/k8s-hub:4.4.2"
+      },
+      "configSecretRefs": {
+        "secret": "hub",
+        "existing-secret": "jupyterhub-secrets"
+      }
+    }
+  },
+  "sources": {
+    "cps": {
+      "namespace": "jupyterhub",
+      "origin": "https://jupyterhub.dshl.unileoben.ac.at",
+      "callback": "https://jupyterhub.dshl.unileoben.ac.at/argo/oauth_callback",
+      "clientId": "service-cps-argo-ui",
+      "scope": "access:services!service=cps-argo-ui"
+    },
+    "cit": {
+      "namespace": "cit-jhub",
+      "origin": "https://jhub.dshl.unileoben.ac.at",
+      "callback": "https://jhub.dshl.unileoben.ac.at/argo/oauth_callback",
+      "clientId": "service-cit-argo-ui",
+      "scope": "access:services!service=cit-argo-ui"
+    }
+  },
+  "runtimeChange": {
+    "originalSecretPreserved": "cps-compute-runtime",
+    "newSecret": "cps-compute-runtime-personal-argo",
+    "onlyAddedKey": {
+      "argoUi": {
+        "enabled": true,
+        "readerTokenFile": "/argo-reader/token",
+        "temporaryDirectory": "/tmp"
+      }
+    }
+  },
+  "resources": [
+    {
+      "kind": "ServiceAccount",
+      "namespace": "cps-compute",
+      "name": "argo-ui-token-rotator"
+    },
+    {
+      "kind": "Role",
+      "namespace": "cps-argo",
+      "name": "cps-argo-ui-token-request"
+    },
+    {
+      "kind": "Role",
+      "namespace": "cps-compute",
+      "name": "cps-argo-ui-token-publish"
+    },
+    {
+      "kind": "RoleBinding",
+      "namespace": "cps-argo",
+      "name": "cps-argo-ui-token-request"
+    },
+    {
+      "kind": "RoleBinding",
+      "namespace": "cps-compute",
+      "name": "cps-argo-ui-token-publish"
+    },
+    {
+      "kind": "CronJob",
+      "namespace": "cps-compute",
+      "name": "argo-ui-token-rotator"
+    },
+    {
+      "kind": "NetworkPolicy",
+      "namespace": "cps-compute",
+      "name": "cit-argo-ui-ingress"
+    },
+    {
+      "kind": "NetworkPolicy",
+      "namespace": "cps-compute",
+      "name": "cps-argo-ui-ingress"
+    },
+    {
+      "kind": "Service",
+      "namespace": "cps-compute",
+      "name": "cit-argo-ui"
+    },
+    {
+      "kind": "Service",
+      "namespace": "cps-compute",
+      "name": "cps-argo-ui"
+    },
+    {
+      "kind": "Deployment",
+      "namespace": "cps-compute",
+      "name": "cit-argo-ui"
+    },
+    {
+      "kind": "Deployment",
+      "namespace": "cps-compute",
+      "name": "cps-argo-ui"
+    },
+    {
+      "kind": "NetworkPolicy",
+      "namespace": "cps-compute",
+      "name": "personal-argo-to-gateway"
+    },
+    {
+      "kind": "NetworkPolicy",
+      "namespace": "cps-argo",
+      "name": "personal-argo-native-assets"
+    },
+    {
+      "kind": "ConfigMap",
+      "namespace": "jupyterhub",
+      "name": "personal-argo-registration"
+    },
+    {
+      "kind": "ConfigMap",
+      "namespace": "cit-jhub",
+      "name": "personal-argo-registration"
+    }
+  ],
+  "activationBlockedBy": [
+    "normal gateway canonical identity maps currently empty; grants also empty",
+    "real normal-user browser/ownership/callback/download/SSE qualification pending",
+    "reviewed canonical and optional alias identity inventory pending",
+    "reviewed removal/replacement of BOTH CPS legacy /argo regex ingresses pending",
+    "Fleet reconciliation persistence for Hub mounts and legacy route removal pending"
+  ],
+  "scopeExclusions": [
+    "no identity or grant edits",
+    "no GPU flags",
+    "no ingress publication",
+    "no full chart apply",
+    "no Fleet edits"
+  ],
+  "reviewSha256": "4d6fa642433921d4aba7464908455ce1d2c803e37086d75dd903e477d4d6d680"
+}

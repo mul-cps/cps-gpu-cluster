@@ -1,0 +1,127 @@
+{
+  "observedAt": "2026-10-07T06:04:23.815701+00:00",
+  "scope": "Actual offline forced wheel installation and pip check in disposable local containers; default Python only; no network or GPU",
+  "productionQualified": false,
+  "variants": [
+    {
+      "variant": "standard-cpu",
+      "exitCode": 0,
+      "offlineInstallAndPipCheckPassed": true,
+      "logSha256": "04c6eead8a70415b8f12addd6179ae114ac07fa73dbe818dc48398cbfb4720b9",
+      "pipCheckPassed": true,
+      "computeRtcImportsPassed": true,
+      "prebuiltAddonPresent": true
+    },
+    {
+      "variant": "base-cpu",
+      "exitCode": 0,
+      "offlineInstallAndPipCheckPassed": true,
+      "logSha256": "04c6eead8a70415b8f12addd6179ae114ac07fa73dbe818dc48398cbfb4720b9",
+      "pipCheckPassed": true,
+      "computeRtcImportsPassed": true,
+      "prebuiltAddonPresent": true
+    },
+    {
+      "variant": "base-gpu",
+      "exitCode": 0,
+      "offlineInstallAndPipCheckPassed": true,
+      "logSha256": "04c6eead8a70415b8f12addd6179ae114ac07fa73dbe818dc48398cbfb4720b9",
+      "pipCheckPassed": true,
+      "computeRtcImportsPassed": true,
+      "prebuiltAddonPresent": true
+    },
+    {
+      "variant": "mujoco-base-gpu",
+      "exitCode": 0,
+      "offlineInstallAndPipCheckPassed": true,
+      "logSha256": "04c6eead8a70415b8f12addd6179ae114ac07fa73dbe818dc48398cbfb4720b9",
+      "pipCheckPassed": true,
+      "computeRtcImportsPassed": true,
+      "prebuiltAddonPresent": true
+    },
+    {
+      "variant": "pytorch-runtime-base",
+      "exitCode": 0,
+      "offlineInstallAndPipCheckPassed": true,
+      "logSha256": "04c6eead8a70415b8f12addd6179ae114ac07fa73dbe818dc48398cbfb4720b9",
+      "pipCheckPassed": true,
+      "computeRtcImportsPassed": true,
+      "prebuiltAddonPresent": true
+    },
+    {
+      "variant": "pytorch-code",
+      "exitCode": 0,
+      "offlineInstallAndPipCheckPassed": true,
+      "logSha256": "04c6eead8a70415b8f12addd6179ae114ac07fa73dbe818dc48398cbfb4720b9",
+      "pipCheckPassed": true,
+      "computeRtcImportsPassed": true,
+      "prebuiltAddonPresent": true
+    },
+    {
+      "variant": "tf-code",
+      "exitCode": 0,
+      "offlineInstallAndPipCheckPassed": true,
+      "logSha256": "04c6eead8a70415b8f12addd6179ae114ac07fa73dbe818dc48398cbfb4720b9",
+      "pipCheckPassed": true,
+      "computeRtcImportsPassed": true,
+      "prebuiltAddonPresent": true
+    },
+    {
+      "variant": "desktop-xpra-base",
+      "exitCode": 0,
+      "offlineInstallAndPipCheckPassed": true,
+      "logSha256": "04c6eead8a70415b8f12addd6179ae114ac07fa73dbe818dc48398cbfb4720b9",
+      "pipCheckPassed": true,
+      "computeRtcImportsPassed": true,
+      "prebuiltAddonPresent": true
+    },
+    {
+      "variant": "desktop-ros2",
+      "exitCode": 0,
+      "offlineInstallAndPipCheckPassed": true,
+      "logSha256": "04c6eead8a70415b8f12addd6179ae114ac07fa73dbe818dc48398cbfb4720b9",
+      "pipCheckPassed": true,
+      "computeRtcImportsPassed": true,
+      "prebuiltAddonPresent": true
+    },
+    {
+      "variant": "desktop-ros2-xpra",
+      "exitCode": 0,
+      "offlineInstallAndPipCheckPassed": true,
+      "logSha256": "04c6eead8a70415b8f12addd6179ae114ac07fa73dbe818dc48398cbfb4720b9",
+      "pipCheckPassed": true,
+      "computeRtcImportsPassed": true,
+      "prebuiltAddonPresent": true
+    },
+    {
+      "variant": "mujoco-xpra",
+      "exitCode": 0,
+      "offlineInstallAndPipCheckPassed": true,
+      "logSha256": "04c6eead8a70415b8f12addd6179ae114ac07fa73dbe818dc48398cbfb4720b9",
+      "pipCheckPassed": true,
+      "computeRtcImportsPassed": true,
+      "prebuiltAddonPresent": true
+    },
+    {
+      "variant": "comfyui",
+      "exitCode": 0,
+      "offlineInstallAndPipCheckPassed": true,
+      "logSha256": "04c6eead8a70415b8f12addd6179ae114ac07fa73dbe818dc48398cbfb4720b9",
+      "pipCheckPassed": true,
+      "computeRtcImportsPassed": true,
+      "prebuiltAddonPresent": true
+    }
+  ],
+  "complete": true,
+  "allVariantsPassed": true,
+  "lockSha256": "b6aec8e295406eb6c1a060de170f825c26c169af12c88430a8b560f3cf309c91",
+  "packagesLocked": 133,
+  "wheelsChecksummed": 146,
+  "sourceTagBuildPassed": false,
+  "releasePublished": false,
+  "limitations": [
+    "Only the default Python interpreter was installed and checked; secondary kernels remain separate.",
+    "Disposable container filesystems were modified and removed; published images and production were unchanged.",
+    "No tagged-source build, hardware/GPU runtime, vulnerability clearance or release qualification is asserted."
+  ]
+}

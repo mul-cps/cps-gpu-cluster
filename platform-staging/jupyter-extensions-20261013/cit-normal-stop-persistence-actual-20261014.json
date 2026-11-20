@@ -1,0 +1,84 @@
+{
+  "binding": {
+    "completed_delivery_seed_sha256": "sha256:83e8b6bab32cc1b3e6b6cd50182c9a6b6edee955dd49a905b37e981f8119184e",
+    "hub_source_commit": "406a7a40342fd9fc021a3eb09a191ac987c135a7",
+    "phase_final_raw_sha256": "9ff3def00e933c78e73858713fa35dbbc3cdfd5f23937296776913a08e54f30f",
+    "process_declarations": {
+      "hub:cit": {
+        "deployment_uid": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e",
+        "generation": 71,
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:d920a278df8c920f8e4c143e42b082e7ff8ed8755e08a1d3944b8bbcc0559beb"
+      },
+      "hub:cps": {
+        "deployment_uid": "02fb8421-d323-4636-b006-2490cd6f5b63",
+        "generation": 116,
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:d920a278df8c920f8e4c143e42b082e7ff8ed8755e08a1d3944b8bbcc0559beb"
+      },
+      "source:cit": {
+        "deployment_uid": "54466777-ece9-4d63-bcd8-8156caba55af",
+        "generation": 59,
+        "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:b36c54a57f526e6cb4595bf9e552d80d217a72ba6a7ee30767d8b3bc3d3ec5c7"
+      },
+      "source:cps": {
+        "deployment_uid": "cea488be-b5c5-481f-b41d-169d22f56f33",
+        "generation": 59,
+        "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:b36c54a57f526e6cb4595bf9e552d80d217a72ba6a7ee30767d8b3bc3d3ec5c7"
+      }
+    },
+    "source_console_commit": "e905ed734e903fcf37e522720978286fda693e01"
+  },
+  "claims": {
+    "automatic_saved_native_state_clear": true,
+    "direct_sql_writes": false,
+    "exact_owned_windows_grants_and_groups_restored": true,
+    "hardware_cap_qualified": false,
+    "human_oauth": false,
+    "legacy_runtime_enrollment": false,
+    "normal_source_start_and_stop": true,
+    "production_qualified": false
+  },
+  "evidence": {
+    "actual_result": {
+      "artifact": "actual-run-v2/result.json",
+      "raw_sha256": "f098d5d876a04b9a6bc614767d179156888c3cad6664d1974b5050d82ffa9eab"
+    },
+    "first_stage_hub_adoption": {
+      "artifact": "hub-stop-persistence-adoption-actual-20261014.json",
+      "raw_sha256": "d600a9851a4b48eca82ef5e51acd2b8cff759e85cdce46b82005af487ffd4d33"
+    },
+    "reviewed_plan": {
+      "artifact": "actual-run-v2/plan.json",
+      "raw_sha256": "8d71b7c6faa0d80edcb58299176fdae3736b5253d2a46138d99100457c964f15"
+    }
+  },
+  "kind": "actual-normal-cit-stop-persistence-acceptance",
+  "normal_source_lifecycle": {
+    "automatic_saved_native_state_clear": true,
+    "hub_api_servers_absent": true,
+    "notebook_tokens_absent": true,
+    "oauth_codes_absent": true,
+    "orm_server_absent": true,
+    "pvc_uid_preserved": true,
+    "readonly_stopped_snapshot_sha256": "b68b085992f35e14933550dac298b517421c3909aa7193e4afe3477feaa6eb13",
+    "ready": true,
+    "retained_pvc_uid": "28f66788-df70-4f6a-a902-4ce2270544e5",
+    "stop_confirmed": true
+  },
+  "open_gates": [
+    "Same-image legacy runtime enrollment and its subsequent bounded handover remain open.",
+    "Owned notebook activity, actual kernel SDK/me and browser proof require separate evidence.",
+    "Human OAuth, hardware-cap qualification for this acceptance, and production qualification remain open."
+  ],
+  "phase": "47456a47",
+  "restoration": {
+    "actor_groups_restored": true,
+    "all_grants_byte_equal": true,
+    "confirmed_stopped": true,
+    "exact_windows_restored": true,
+    "group_members_restored": true,
+    "no_direct_sql_writes": true
+  },
+  "scope": "Normal Source CIT Start/Stop prerequisite and automatic persisted runtime clearance with exact restoration; no actor, scope, config, secret, token or protected DB payloads are published.",
+  "status": "passed",
+  "version": 1
+}

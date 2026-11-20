@@ -1,0 +1,84 @@
+{
+  "checks": [
+    {
+      "artifact": "snapshot",
+      "bytes": 20480,
+      "headers": {
+        "cache-control": "no-store",
+        "content-disposition": "attachment; filename=\"snapshot.tar\"",
+        "content-security-policy": "sandbox",
+        "content-type": "application/octet-stream",
+        "x-content-type-options": "nosniff"
+      },
+      "matches_original_sdk_download": true,
+      "phase": "Succeeded",
+      "sha256": "3bbb73aa3bacd1d5d88ce6fa48285cbcb473bbe085313a98449fdd0cb1081ea9",
+      "status": 200,
+      "workflow": "cps-98aa00cf34d6894b52873ea0740cc8bcb75d03c1f8722c7a",
+      "workflow_uid": "0f742113-1eed-4eb4-94d4-37a7ed5994a1"
+    },
+    {
+      "artifact": "executed-notebook",
+      "bytes": 4725,
+      "headers": {
+        "cache-control": "no-store",
+        "content-disposition": "attachment; filename=\"executed.ipynb\"",
+        "content-security-policy": "sandbox",
+        "content-type": "application/octet-stream",
+        "x-content-type-options": "nosniff"
+      },
+      "matches_original_sdk_download": true,
+      "phase": "Succeeded",
+      "sha256": "c0dfe31096da8645d8c453af67dc9fd5de1dbc5eea8f988df4526914587608b3",
+      "status": 200,
+      "workflow": "cps-98aa00cf34d6894b52873ea0740cc8bcb75d03c1f8722c7a",
+      "workflow_uid": "0f742113-1eed-4eb4-94d4-37a7ed5994a1"
+    },
+    {
+      "artifact": "snapshot",
+      "bytes": 20480,
+      "headers": {
+        "cache-control": "no-store",
+        "content-disposition": "attachment; filename=\"snapshot.tar\"",
+        "content-security-policy": "sandbox",
+        "content-type": "application/octet-stream",
+        "x-content-type-options": "nosniff"
+      },
+      "matches_original_sdk_download": true,
+      "phase": "Failed",
+      "sha256": "4781baffff624f79fa3d1de1bb72a8b1482d3bd0e56f8c6e60df67423ef4aaef",
+      "status": 200,
+      "workflow": "cps-b6f81f5e640eb40cdecfb66072cbffb7f9ae2707f71566a0",
+      "workflow_uid": "3dab2503-c22e-43aa-9e48-3c88da3c9ffc"
+    },
+    {
+      "artifact": "executed-notebook",
+      "bytes": 6751,
+      "headers": {
+        "cache-control": "no-store",
+        "content-disposition": "attachment; filename=\"executed.ipynb\"",
+        "content-security-policy": "sandbox",
+        "content-type": "application/octet-stream",
+        "x-content-type-options": "nosniff"
+      },
+      "matches_original_sdk_download": true,
+      "phase": "Failed",
+      "sha256": "3a914c5eed5b326704b0dbab3c2d3ffb9c4999c4262cc5543f5ca33416f28cb7",
+      "status": 200,
+      "workflow": "cps-b6f81f5e640eb40cdecfb66072cbffb7f9ae2707f71566a0",
+      "workflow_uid": "3dab2503-c22e-43aa-9e48-3c88da3c9ffc"
+    }
+  ],
+  "gateway_image": "ghcr.io/mul-cps/cps-compute@sha256:6d8aa34e6d0f2d7381cf7e9266bcbc9dda185af7d36e2a728230d4991cd732dc",
+  "human_oauth": false,
+  "new_submissions": false,
+  "not_cit_or_human_browser_acceptance": true,
+  "own_actor_id": "a695",
+  "own_actor_revoke_status": 204,
+  "passed": true,
+  "raw_receipt_sha256": "d664d01bb1a8af7754e64c07d7abee1b68ea8351a7ad78c70c28cbc23ee55873",
+  "recorded_at": "2026-10-15T12:15:33.779319+00:00",
+  "source": "cps",
+  "source_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+  "version": "cps-authenticated-source-artifact-downloads/v1"
+}

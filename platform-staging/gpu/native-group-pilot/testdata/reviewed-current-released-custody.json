@@ -1,0 +1,233 @@
+{
+  "authority": {
+    "authority_maps": {
+      "apiVersion": "v1",
+      "items": [
+        {
+          "apiVersion": "v1",
+          "data": {
+            "receipt.json": "{\"attempt\":\"33a04134-cac4-421d-a6ab-4870440f5d12\",\"binding_id\":\"f5891d000c083800190f657717d830dd10342fe31b2060d823ac5fa59a02\",\"cleanup_confirmed\":true,\"intent\":{\"cap_mib\":5120,\"gpu_uuid\":\"GPU-16128952-b438-556a-00bb-93039ee24e56\",\"name\":\"jupyter-cpsnativegroupb--rtc\",\"namespace\":\"jupyterhub\",\"node\":\"k3s-wk-gpu2\",\"node_uid\":\"3336cdd5-d245-436e-b57c-2f66c6dcaa41\",\"pod_uid\":\"52a7728d-ce5e-4613-b97a-7539916fd5ae\",\"policy_hash\":\"sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0\",\"spec_sha256\":\"c924594eaf0c0190394eb010975ca95f5ec0e1c17e796f02782f8c3d57d4ebae\"},\"retirement\":{\"enrollment_sha256\":\"sha256:d5e4d7a555c77233798ad32bb07d9ed32a624c90b228c25e3f4f2dfee5452410\",\"enrollment_uid\":\"c923abd3-dde4-4ee9-b5c9-b882f13667cf\",\"journal_sha256\":\"sha256:7118bdd34df41367b910c66ed9a27d4a93e3cfec1bbc113478d9c203f6110b8f\",\"proof\":{\"entry\":{\"cgroup_id\":1413109,\"default_hierarchy\":true,\"hard\":5368709120,\"inode\":1413109,\"kernfs_id\":1413109,\"offline\":true,\"pinned\":true,\"soft\":5368709120,\"used\":0},\"epoch\":{\"boot_id\":\"209f8bc9-a478-48e4-925a-6e07ffa56f7a\",\"driver_generation\":\"b10498fc-9153-4394-875a-ea7cfb498625\",\"gpu_uuid\":\"GPU-16128952-b438-556a-00bb-93039ee24e56\",\"node_uid\":\"3336cdd5-d245-436e-b57c-2f66c6dcaa41\"},\"gpu_id\":1552,\"identity\":{\"boot_id\":\"209f8bc9-a478-48e4-925a-6e07ffa56f7a\",\"cgroup_device\":29,\"cgroup_inode\":1413109,\"cgroup_path\":\"/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod52a7728d_ce5e_4613_b97a_7539916fd5ae.slice\",\"cgroup_relative\":\"/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod52a7728d_ce5e_4613_b97a_7539916fd5ae.slice\",\"container_id\":\"cd16b34736cbd16f80af0344ce38d09eff9b72e79ea606bb63f4fe5869812ec8\",\"driver_generation\":\"b10498fc-9153-4394-875a-ea7cfb498625\",\"gpu_uuid\":\"GPU-16128952-b438-556a-00bb-93039ee24e56\",\"host_pid\":1644394,\"node_uid\":\"3336cdd5-d245-436e-b57c-2f66c6dcaa41\",\"pid_start_ticks\":847107930,\"pod_uid\":\"52a7728d-ce5e-4613-b97a-7539916fd5ae\",\"spec_sha256\":\"c924594eaf0c0190394eb010975ca95f5ec0e1c17e796f02782f8c3d57d4ebae\"},\"inventory_sha256\":\"sha256:03edb25ee04a77b4eb128ae4aadb95ea4d40dc50b2429859943612292474e64a\",\"protocol\":\"cps-native-retired-inert-cap/v1\",\"state\":\"retired-inert-cap\"}},\"version\":1}"
+          },
+          "immutable": true,
+          "kind": "ConfigMap",
+          "metadata": {
+            "creationTimestamp": "2026-10-12T20:12:18Z",
+            "labels": {
+              "cps.compute/native-binding": "f5891d000c083800190f657717d830dd10342fe31b2060d823ac5fa59a02"
+            },
+            "name": "cps-native-cleanup-f5891d000c083800190f657717d830dd10342fe3",
+            "namespace": "cps-native-system",
+            "resourceVersion": "367081436",
+            "uid": "a442ee0a-db5a-4b0c-8c1d-cf5c95552296"
+          }
+        },
+        {
+          "apiVersion": "v1",
+          "data": {
+            "enrollment.json": "{\"actor\":\"cps\",\"attempt\":\"33a04134-cac4-421d-a6ab-4870440f5d12\",\"binding_id\":\"f5891d000c083800190f657717d830dd10342fe31b2060d823ac5fa59a02\",\"cap_mib\":5120,\"gpu_uuid\":\"GPU-16128952-b438-556a-00bb-93039ee24e56\",\"intent\":{\"cap_mib\":5120,\"gpu_uuid\":\"GPU-16128952-b438-556a-00bb-93039ee24e56\",\"name\":\"jupyter-cpsnativegroupb--rtc\",\"namespace\":\"jupyterhub\",\"node\":\"k3s-wk-gpu2\",\"node_uid\":\"3336cdd5-d245-436e-b57c-2f66c6dcaa41\",\"pod_uid\":\"52a7728d-ce5e-4613-b97a-7539916fd5ae\",\"policy_hash\":\"sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0\",\"spec_sha256\":\"c924594eaf0c0190394eb010975ca95f5ec0e1c17e796f02782f8c3d57d4ebae\"},\"members\":[\"3237c91b-cef3-4f6f-960e-875b9e93c4be\",\"8edde4a2-257c-42d7-9732-13f1e8742a33\"],\"name\":\"jupyter-cpsnativegroupb--rtc\",\"namespace\":\"jupyterhub\",\"node\":\"k3s-wk-gpu2\",\"node_uid\":\"3336cdd5-d245-436e-b57c-2f66c6dcaa41\",\"policy_hash\":\"sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0\",\"principal\":\"workspace:cps:native-group-b\",\"profile\":\"interactive-shared-5\",\"source\":\"cps\",\"version\":1,\"workspace\":\"native-group-b\"}"
+          },
+          "immutable": true,
+          "kind": "ConfigMap",
+          "metadata": {
+            "creationTimestamp": "2026-10-12T19:35:12Z",
+            "labels": {
+              "cps.compute/native-binding": "f5891d000c083800190f657717d830dd10342fe31b2060d823ac5fa59a02"
+            },
+            "name": "cps-native-enrollment-f5891d000c083800190f657717d830dd10342fe3",
+            "namespace": "cps-native-system",
+            "resourceVersion": "367051680",
+            "uid": "c923abd3-dde4-4ee9-b5c9-b882f13667cf"
+          }
+        }
+      ],
+      "kind": "List",
+      "metadata": {
+        "resourceVersion": ""
+      }
+    },
+    "host_snapshot": {
+      "bootId": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+      "directories": {
+        "enrollments": {
+          "mode": 448,
+          "ownerUid": 0,
+          "records": {
+            "52a7728d-ce5e-4613-b97a-7539916fd5ae.json": {
+              "mode": 384,
+              "nlink": 1,
+              "rawSha256": "sha256:b5f060f483ff978b519ae19cf915bb35bec671f4e7a7cea2e3d6526784a83079",
+              "uid": 0,
+              "value": {
+                "authority_namespace": "cps-native-system",
+                "configmap_name": "cps-native-enrollment-f5891d000c083800190f657717d830dd10342fe3",
+                "configmap_uid": "c923abd3-dde4-4ee9-b5c9-b882f13667cf",
+                "enrollment": {
+                  "actor": "cps",
+                  "attempt": "33a04134-cac4-421d-a6ab-4870440f5d12",
+                  "binding_id": "f5891d000c083800190f657717d830dd10342fe31b2060d823ac5fa59a02",
+                  "cap_mib": 5120,
+                  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+                  "intent": {
+                    "cap_mib": 5120,
+                    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+                    "name": "jupyter-cpsnativegroupb--rtc",
+                    "namespace": "jupyterhub",
+                    "node": "k3s-wk-gpu2",
+                    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+                    "pod_uid": "52a7728d-ce5e-4613-b97a-7539916fd5ae",
+                    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+                    "spec_sha256": "c924594eaf0c0190394eb010975ca95f5ec0e1c17e796f02782f8c3d57d4ebae"
+                  },
+                  "members": [
+                    "3237c91b-cef3-4f6f-960e-875b9e93c4be",
+                    "8edde4a2-257c-42d7-9732-13f1e8742a33"
+                  ],
+                  "name": "jupyter-cpsnativegroupb--rtc",
+                  "namespace": "jupyterhub",
+                  "node": "k3s-wk-gpu2",
+                  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+                  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+                  "principal": "workspace:cps:native-group-b",
+                  "profile": "interactive-shared-5",
+                  "source": "cps",
+                  "version": 1,
+                  "workspace": "native-group-b"
+                }
+              }
+            }
+          }
+        },
+        "intents": {
+          "mode": 448,
+          "ownerUid": 0,
+          "records": {
+            "52a7728d-ce5e-4613-b97a-7539916fd5ae.json": {
+              "mode": 384,
+              "nlink": 1,
+              "rawSha256": "sha256:a565ec92b05c2b9486866cba10ef9ebdf1969268a8162951855d1cf46dea8f71",
+              "uid": 0,
+              "value": {
+                "cap_mib": 5120,
+                "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+                "name": "jupyter-cpsnativegroupb--rtc",
+                "namespace": "jupyterhub",
+                "node": "k3s-wk-gpu2",
+                "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+                "pod_uid": "52a7728d-ce5e-4613-b97a-7539916fd5ae",
+                "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+                "spec_sha256": "c924594eaf0c0190394eb010975ca95f5ec0e1c17e796f02782f8c3d57d4ebae"
+              }
+            }
+          }
+        },
+        "journal": {
+          "mode": 448,
+          "ownerUid": 0,
+          "records": {
+            "52a7728d-ce5e-4613-b97a-7539916fd5ae.json": {
+              "mode": 384,
+              "nlink": 1,
+              "rawSha256": "sha256:6512a9c71a9a18e7eb8f7244c7705a598044858515217f0890001b32985a6ad8",
+              "uid": 0,
+              "value": {
+                "identity": {
+                  "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+                  "cgroup_device": 29,
+                  "cgroup_inode": 1413109,
+                  "cgroup_path": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod52a7728d_ce5e_4613_b97a_7539916fd5ae.slice",
+                  "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod52a7728d_ce5e_4613_b97a_7539916fd5ae.slice",
+                  "container_id": "cd16b34736cbd16f80af0344ce38d09eff9b72e79ea606bb63f4fe5869812ec8",
+                  "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+                  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+                  "host_pid": 1644394,
+                  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+                  "pid_start_ticks": 847107930,
+                  "pod_uid": "52a7728d-ce5e-4613-b97a-7539916fd5ae",
+                  "spec_sha256": "c924594eaf0c0190394eb010975ca95f5ec0e1c17e796f02782f8c3d57d4ebae"
+                },
+                "intent": {
+                  "cap_mib": 5120,
+                  "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+                  "name": "jupyter-cpsnativegroupb--rtc",
+                  "namespace": "jupyterhub",
+                  "node": "k3s-wk-gpu2",
+                  "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+                  "pod_uid": "52a7728d-ce5e-4613-b97a-7539916fd5ae",
+                  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+                  "spec_sha256": "c924594eaf0c0190394eb010975ca95f5ec0e1c17e796f02782f8c3d57d4ebae"
+                },
+                "protocol": "cps-native-gpu/v1",
+                "readback": {
+                  "hard": 5368709120,
+                  "soft": 5368709120
+                },
+                "retirement": {
+                  "entry": {
+                    "cgroup_id": 1413109,
+                    "default_hierarchy": true,
+                    "hard": 5368709120,
+                    "inode": 1413109,
+                    "kernfs_id": 1413109,
+                    "offline": true,
+                    "pinned": true,
+                    "soft": 5368709120,
+                    "used": 0
+                  },
+                  "epoch": {
+                    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+                    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+                    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+                    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+                  },
+                  "gpu_id": 1552,
+                  "identity": {
+                    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+                    "cgroup_device": 29,
+                    "cgroup_inode": 1413109,
+                    "cgroup_path": "/sys/fs/cgroup/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod52a7728d_ce5e_4613_b97a_7539916fd5ae.slice",
+                    "cgroup_relative": "/kubepods.slice/kubepods-burstable.slice/kubepods-burstable-pod52a7728d_ce5e_4613_b97a_7539916fd5ae.slice",
+                    "container_id": "cd16b34736cbd16f80af0344ce38d09eff9b72e79ea606bb63f4fe5869812ec8",
+                    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+                    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+                    "host_pid": 1644394,
+                    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+                    "pid_start_ticks": 847107930,
+                    "pod_uid": "52a7728d-ce5e-4613-b97a-7539916fd5ae",
+                    "spec_sha256": "c924594eaf0c0190394eb010975ca95f5ec0e1c17e796f02782f8c3d57d4ebae"
+                  },
+                  "inventory_sha256": "sha256:03edb25ee04a77b4eb128ae4aadb95ea4d40dc50b2429859943612292474e64a",
+                  "protocol": "cps-native-retired-inert-cap/v1",
+                  "state": "retired-inert-cap"
+                },
+                "schema": 1,
+                "seal_id": "a6515ad6-8a34-44af-a334-23030e683ab8",
+                "state": "retired-inert-cap"
+              }
+            }
+          }
+        }
+      },
+      "driverGeneration": "b10498fc-9153-4394-875a-ea7cfb498625",
+      "healthSourceSha256": "52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67",
+      "node": "k3s-wk-gpu2",
+      "nodeUid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+      "observedAt": "2026-10-12T20:20:28.666481+00:00",
+      "observerPodUid": "8a3a0296-2a41-49e0-ba20-28f503ec5887",
+      "version": 1
+    }
+  },
+  "ledger": {
+    "apiVersion": "v1",
+    "data": {
+      "state.json": "{\"allocations\":{\"f5891d000c083800190f657717d830dd10342fe31b2060d823ac5fa59a02\":{\"actor\":\"cps\",\"attempt\":\"33a04134-cac4-421d-a6ab-4870440f5d12\",\"binding_id\":\"f5891d000c083800190f657717d830dd10342fe31b2060d823ac5fa59a02\",\"cap_mib\":5120,\"ceiling\":{\"cpu\":\"4\",\"gpuMemoryGiB\":5,\"memory\":\"16Gi\"},\"gpu_uuid\":\"GPU-16128952-b438-556a-00bb-93039ee24e56\",\"group_id\":\"native-pilot-group-b\",\"intent\":{\"cap_mib\":5120,\"gpu_uuid\":\"GPU-16128952-b438-556a-00bb-93039ee24e56\",\"name\":\"jupyter-cpsnativegroupb--rtc\",\"namespace\":\"jupyterhub\",\"node\":\"k3s-wk-gpu2\",\"node_uid\":\"3336cdd5-d245-436e-b57c-2f66c6dcaa41\",\"pod_uid\":\"52a7728d-ce5e-4613-b97a-7539916fd5ae\",\"policy_hash\":\"sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0\",\"spec_sha256\":\"c924594eaf0c0190394eb010975ca95f5ec0e1c17e796f02782f8c3d57d4ebae\"},\"members\":[\"3237c91b-cef3-4f6f-960e-875b9e93c4be\",\"8edde4a2-257c-42d7-9732-13f1e8742a33\"],\"name\":\"jupyter-cpsnativegroupb--rtc\",\"namespace\":\"jupyterhub\",\"node\":\"k3s-wk-gpu2\",\"node_uid\":\"3336cdd5-d245-436e-b57c-2f66c6dcaa41\",\"policy_hash\":\"sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0\",\"principal\":\"workspace:cps:native-group-b\",\"profile\":\"interactive-shared-5\",\"source\":\"cps\",\"state\":\"released\",\"version\":1,\"workspace\":\"native-group-b\"}},\"version\":1}"
+    },
+    "kind": "ConfigMap",
+    "metadata": {
+      "creationTimestamp": "2026-10-09T11:58:58Z",
+      "name": "cps-native-gpu-allocations",
+      "namespace": "cps-native-system",
+      "resourceVersion": "367081541",
+      "uid": "33ab24b0-8e9a-4bee-b308-12a19c076924"
+    }
+  }
+}

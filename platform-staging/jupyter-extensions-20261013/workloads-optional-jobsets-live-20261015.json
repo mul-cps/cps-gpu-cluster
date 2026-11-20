@@ -1,0 +1,76 @@
+{
+  "behavior": "Only the exact optional JobSet not-configured response becomes an availability notice; workflow, authentication, network and other service errors remain visible",
+  "current_servers": {
+    "bjoern": {
+      "api_route_unchanged": true,
+      "assets": {
+        "static/997.1c2892129984db0985bb.js": "1c2892129984db0985bb0e481ba1926646f9b766cf3c92325d6d9b2b1aa0deaf",
+        "static/remoteEntry.0566a3ec5e707f554d85.js": "0566a3ec5e707f554d85e58e8cd702c8b6d37f88f2dc8444147b0fe88cbc4d5e",
+        "static/style.js": "f8242dd194cf6824efad188b7339f17e501b7ef20a94e5738cea2cfa6b9a5d0f"
+      },
+      "backup": "/home/jovyan/.cps-extension-backups/workloads-20261015T124112",
+      "container_status_preserved": true,
+      "entry": "static/remoteEntry.0566a3ec5e707f554d85.js",
+      "human_browser_reload_verified": false,
+      "kernel_count": 3,
+      "kernel_ids_preserved": true,
+      "kernel_restart": false,
+      "old_entry": "static/remoteEntry.a86b8ef07ff4bf434c95.js",
+      "passed": true,
+      "pod_spec_preserved": true,
+      "pod_uid": "915b3fac-53fa-469c-8c3f-0180fb285504",
+      "python_hook_unchanged": true,
+      "receipt_sha256": "fcf719fdb88adb261517971da8cefe235f6680231d388d3bcd88c3fc40f477f6",
+      "recorded_at": "2026-10-15T12:41:13.356997+00:00",
+      "server_restart": false,
+      "user": "bjoern",
+      "wheel_sha256": "082277299e238d2c648ffde0130715e72fed980d4a8c8c904833780a5109a20c"
+    },
+    "cpsadmin": {
+      "api_route_unchanged": true,
+      "assets": {
+        "static/997.1c2892129984db0985bb.js": "1c2892129984db0985bb0e481ba1926646f9b766cf3c92325d6d9b2b1aa0deaf",
+        "static/remoteEntry.0566a3ec5e707f554d85.js": "0566a3ec5e707f554d85e58e8cd702c8b6d37f88f2dc8444147b0fe88cbc4d5e",
+        "static/style.js": "f8242dd194cf6824efad188b7339f17e501b7ef20a94e5738cea2cfa6b9a5d0f"
+      },
+      "backup": "/home/jovyan/.cps-extension-backups/workloads-20261015T124141",
+      "container_status_preserved": true,
+      "entry": "static/remoteEntry.0566a3ec5e707f554d85.js",
+      "human_browser_reload_verified": false,
+      "kernel_count": 1,
+      "kernel_ids_preserved": true,
+      "kernel_restart": false,
+      "old_entry": "static/remoteEntry.a86b8ef07ff4bf434c95.js",
+      "passed": true,
+      "pod_spec_preserved": true,
+      "pod_uid": "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+      "python_hook_unchanged": true,
+      "receipt_sha256": "c18843df23a9cf56862022e08c062bd81b4c8dee1f65245bbd7d762ea77fef19",
+      "recorded_at": "2026-10-15T12:41:42.906939+00:00",
+      "server_restart": false,
+      "user": "cpsadmin",
+      "wheel_sha256": "082277299e238d2c648ffde0130715e72fed980d4a8c8c904833780a5109a20c"
+    }
+  },
+  "gpu_access_changed": false,
+  "human_browser_reload_verified": false,
+  "kind": "compute-workloads-optional-jobsets-live-update",
+  "new_server_default_changed": false,
+  "notebook_image_changed": false,
+  "recorded_at": "2026-10-15T12:44:11.714494+00:00",
+  "service_response": {
+    "jobsets_detail": "Distributed launcher is not configured",
+    "jobsets_http_status": 503,
+    "workflows_http_status": 200
+  },
+  "source_branch": "fix/lab-optional-jobsets-20261015",
+  "source_commit": "db49a5581a81e2d49838aeb6c51c3db6f43595ed",
+  "source_origin": "https://github.com/mul-cps/cps-compute.git",
+  "validation": {
+    "actual_rendered_panel_browser": true,
+    "node_tests": 45,
+    "packaging_and_server_hook_tests": 10,
+    "packaging_subtests": 12
+  },
+  "wheel_sha256": "082277299e238d2c648ffde0130715e72fed980d4a8c8c904833780a5109a20c"
+}

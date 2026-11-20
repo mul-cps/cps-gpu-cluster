@@ -1,0 +1,23 @@
+{
+  "actual_active_caps": 0,
+  "actual_chart_cases_passed": 24,
+  "actual_final_receipt_sha256": "b548fb12168ac14ef6eabcfb7abbd432b0bbbb899aae7a6f81cacc2bda612a4d",
+  "actual_used_bytes": 0,
+  "both_hubs_ready": true,
+  "completed_new_delivery_readback_sha256": "a9a3500847fa7cf9de42e29250b4c8e2d8e3e5c8e27a1e9756c55a9974e4051f",
+  "human_oauth_qualified": false,
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:a7155bebb5dff1b70ff79edbf57a1012bb37feed082bac8212c885b46e1cb950",
+  "installed_tests_passed": 158,
+  "native_zero_readback_sha256": "6ba923b22412872182092dd3227bff825f9a6384c795c632fc1493759f1fe3e0",
+  "new_seed_sha256": "sha256:4070b4a650f4338cbce4462c96faf832771a76be93c1b7d8166f48bd78cf41d5",
+  "normal_cpu_http_lifecycle_qualified": false,
+  "production_qualified": false,
+  "qualification_receipt_sha256": "b9d1603a716295dc875f367d46298be78b5c9822760e58d2629486b1358dacde",
+  "root_reviewed_plan_sha256": "0a8ad34567a8f90ba2f1dec68acf8fc372973ed3fb996d78e0baf9fe9cb950b2",
+  "scope": "Reuse fixed neutral template for validated registered CPU owner; normalize real chart V1Container init config before strict serialized runtime validation. Exact paired image/publisher handover and native driver/policy unchanged.",
+  "source_fixture_skips": 3,
+  "source_revision": "7d04c0c46fb9fd8ca69bdd0359258d78fc6abd2c",
+  "source_tests_passed": 1838,
+  "version": 1,
+  "wheel_sha256": "abcd84c042463da19a43a215a9b1ed62ef39dcb53291e2bd68939e2dba5a3128"
+}

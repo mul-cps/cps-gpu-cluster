@@ -1,0 +1,39 @@
+{
+  "all_exact_jobs_and_pods_absent": true,
+  "captured_at": "2026-10-14T02:45:15.888855+00:00",
+  "resources": [
+    {
+      "deletion_requested_with_uid_rv": true,
+      "job_absent": true,
+      "job_uid": "38586897-b983-4d31-b760-b4334beed148",
+      "name": "cps-custody-cit-migrate-41363fd6",
+      "namespace": "cit-jhub",
+      "phase": "cit-migrate",
+      "pod_absent": true,
+      "pod_name": "cps-custody-cit-migrate-41363fd6-b8544",
+      "pod_uid": "069b4569-015e-43eb-912e-6e5927fe2e30"
+    },
+    {
+      "deletion_requested_with_uid_rv": true,
+      "job_absent": true,
+      "job_uid": "b355ebfd-8e16-4b17-84a5-c9e51f5df95f",
+      "name": "cps-custody-cps-migrate-41363fd6",
+      "namespace": "jupyterhub",
+      "phase": "cps-migrate",
+      "pod_absent": true,
+      "pod_name": "cps-custody-cps-migrate-41363fd6-nncz7",
+      "pod_uid": "4f085cf1-bb6c-440d-9519-2e3fd6364720"
+    },
+    {
+      "deletion_requested_with_uid_rv": true,
+      "job_absent": true,
+      "job_uid": "af54cac1-f557-401f-a010-d4d48ea4e26e",
+      "name": "cps-custody-cps-repair-41363fd6",
+      "namespace": "jupyterhub",
+      "phase": "cps-repair",
+      "pod_absent": true,
+      "pod_name": "cps-custody-cps-repair-41363fd6-nqz4t",
+      "pod_uid": "57be3665-aef4-4129-ad7e-b9faeff86962"
+    }
+  ]
+}

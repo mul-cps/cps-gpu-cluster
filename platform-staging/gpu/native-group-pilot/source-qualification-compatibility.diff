@@ -1,0 +1,215 @@
+--- frozen10001/handover.py
++++ source_qualification_handover.py
+@@ -1,4 +1,4 @@
+-"""Private Root operator application migration. Default execution is inert.
+-
+-This uses released services, not SQLite writes. Its instance locks only guard
+-this instance; an independently verified Root writer freeze is mandatory.
++"""Bounded operator qualification Source handover; default inert.
++
++Derivative of frozen10001 handover00a91, preserving every old stop/freeze guard.
++CPS5 and CIT10 only; no passed proof, grants, Start, or automatic freeze release.
+@@ -22,2 +22,3 @@
+-PROFILE = 'interactive-shared-5'
+-OLD_PROFILE = 'interactive-native-pilot-5'
++PROFILE = 'interactive-native-qualification-5'
++PROFILES = {'cps': PROFILE, 'cit': 'interactive-native-qualification-10'}
++OLD_PROFILE = 'interactive-shared-5'
+@@ -29 +30 @@
+-    'original_registration','members','policy_hash','qualified_config_sha256','freeze_id','stopped'}
++    'original_registration','members','policy_hash','qualification_config_sha256','freeze_id','stopped','original_course','target_ceiling'}
+@@ -81 +82 @@
+-            and info.st_uid == 10001 and 0 < info.st_size <= MAX_BYTES,
++            and info.st_uid == 10001 and info.st_nlink == 1 and 0 < info.st_size <= MAX_BYTES,
+@@ -98 +99 @@
+-    require(review['new_profile'] == PROFILE and identifier(review['freeze_id']), 'Exact profile and freeze ID required')
++    require(review['new_profile'] == PROFILES[review['source']] and identifier(review['freeze_id']), 'Exact profile and freeze ID required')
+@@ -100 +101 @@
+-    require(sha(review['policy_hash']) and sha(review['qualified_config_sha256']), 'Qualified configuration pins required')
++    require(sha(review['policy_hash']) and sha(review['qualification_config_sha256']), 'Qualified configuration pins required')
+@@ -113,0 +115,9 @@
++    course = review['original_course']
++    require(type(course) is dict and course.get('id') == old['course_id']
++        and course.get('source') == 'local' and course.get('external_id') is None
++        and course.get('resource_ceiling') == old.get('course_ceiling')
++        and not course.get('reconciliation_pending') and not course.get('membership_removal_pending'),
++        'Exact source-owned original course and ceiling required')
++    expected = {'cpu':'4','memory':'16Gi','gpuMemoryGiB':5 if review['source']=='cps' else 10}
++    require(review['target_ceiling'] == expected and type(review['target_ceiling'].get('gpuMemoryGiB')) is int,
++        'Exact operator qualification course ceiling required')
+@@ -128 +138 @@
+-    closed(context, {'service','policy','qualified_groups','authority_backend','verify_external_freeze','read_registration'},
++    closed(context, {'service','policy','operator_qualification','authority_backend','verify_external_freeze','read_registration'},
+@@ -134 +144 @@
+-    from cps_compute.native_groups import NativeGroupDeployment
++    from cps_compute.native_qualification import NativeGroupQualification
+@@ -140 +150 @@
+-    require(type(context['policy']) is Policy and type(context['qualified_groups']) is NativeGroupDeployment
++    require(type(context['policy']) is Policy and type(context['operator_qualification']) is NativeGroupQualification
+@@ -228 +238,2 @@
+-    service = context['service']; groups = context['qualified_groups']; policy = context['policy']
++    service = context['service']; groups = context['operator_qualification']; policy = context['policy']
++    PROFILE = review['new_profile']
+@@ -231 +242 @@
+-        and digest(json.loads(groups.document)) == review['qualified_config_sha256'], 'Current reviewed group configuration mismatch')
++        and digest(json.loads(groups.document)) == review['qualification_config_sha256'], 'Current reviewed group configuration mismatch')
+@@ -234 +245,3 @@
+-    candidate = {**original, 'profile':PROFILE}
++    candidate = {**original, 'profile':PROFILE, 'course_ceiling':review['target_ceiling']}
++    original_course = review['original_course']
++    target_course = {**original_course, 'resource_ceiling':review['target_ceiling']}
+@@ -258 +271 @@
+-                    require(course is not None and not course.get('reconciliation_pending')
++                    require(course in (original_course,target_course) and not course.get('reconciliation_pending')
+@@ -262 +275 @@
+-                    require(len(bindings) == 1 and course.get('resource_ceiling') == original['course_ceiling']
++                    require(len(bindings) == 1 and course.get('resource_ceiling') in (original['course_ceiling'],review['target_ceiling'])
+@@ -265,0 +279,6 @@
++                    if review['target_ceiling'] != original['course_ceiling']:
++                        course_groups=await service.provider.groups(original['course_id'])
++                        require(len(course_groups)==1 and course_groups[0].get('id')==original['group_id']
++                            and len(course.get('workspace_bindings',[])) == 1
++                            and len(siblings) == 1 and siblings[0]['id'] == review['workspace'],
++                            'A raised qualification ceiling requires the exact dedicated single-workspace course')
+@@ -293 +312 @@
+-                validation = await service.compute.validate_workspace(review['workspace'], review['members'], PROFILE, original['course_ceiling'])
++                validation = await service.compute.validate_workspace(review['workspace'], review['members'], PROFILE, review['target_ceiling'])
+@@ -296 +315 @@
+-                    and type(validation.get('selected_gpu_memory_gib')) is int and validation['selected_gpu_memory_gib'] == 5,
++                    and type(validation.get('selected_gpu_memory_gib')) is int and validation['selected_gpu_memory_gib'] == review['target_ceiling']['gpuMemoryGiB'],
+@@ -301 +320 @@
+-                    'course_id':original['course_id'],'term_id':original['term_id']}
++                    'course_id':original['course_id'],'term_id':original['term_id'],'ceiling':review['target_ceiling']}
+@@ -303,0 +323,5 @@
++                if target_course != original_course:
++                    phase = 'course-ceiling-commit'
++                    saved_course = await service.provider.put('courses',target_course,actor=review['actor'])
++                    require(saved_course == target_course, 'Source course ceiling commit changed other fields')
++                    await guard()
+@@ -310 +334 @@
+-                    original['course_ceiling'], registration=registered)
++                    review['target_ceiling'], registration=registered)
+@@ -313 +337 @@
+-                    and final['selected_gpu_memory_gib'] == 5, 'Fresh registered storage/member policy validation failed')
++                    and final['selected_gpu_memory_gib'] == review['target_ceiling']['gpuMemoryGiB'], 'Fresh registered storage/member policy validation failed')
+@@ -330 +354,2 @@
+-                    'profile':PROFILE,'previous_profile':OLD_PROFILE,'local_sha256':digest(local),
++                    'profile':PROFILE,'previous_profile':OLD_PROFILE,'target_ceiling':review['target_ceiling'],
++                    'course_sha256':digest(target_course),'hardware_qualified':False,'local_sha256':digest(local),
+@@ -352 +377 @@
+-        'cps_compute.native_groups','cps_compute.policy','cps_compute.internal','cps_compute.identity','cps_compute.reservations','cps_compute.native_gpu_control',
++        'cps_compute.native_groups','cps_compute.native_pool','cps_compute.native_qualification','cps_compute.policy','cps_compute.internal','cps_compute.identity','cps_compute.reservations','cps_compute.native_gpu_control',
+--- frozen10001/factory.py
++++ source_qualification_factory.py
+@@ -12 +12 @@
+-HANDOVER_SHA='00a91da2cb6bbb19eefa8e9f320773d2adccf7acf20d8f8eb53af36307dbbc4b'
++HANDOVER_SHA = '53c5ed41ad95729a6f4248cf9d3f384c4c5c834b0bbef92134fe25c9ede8f870'
+@@ -67 +67 @@
+-    closed(value,{'version','enabled','source','workspace','handover','console','gateway','policy','qualified_config','kubernetes','freeze'},'Closed actual Root metadata required')
++    closed(value,{'version','enabled','source','workspace','handover','console','gateway','policy','qualification_config','kubernetes','freeze'},'Closed actual Root metadata required')
+@@ -70 +70 @@
+-    for key in ('handover','policy','qualified_config'):
++    for key in ('handover','policy','qualification_config'):
+@@ -280 +280 @@
+-    from cps_compute.native_groups import NativeGroupDeployment
++    from cps_compute.native_qualification import NativeGroupQualification
+@@ -283,2 +283,2 @@
+-    groups=NativeGroupDeployment.from_config(decode(protected(metadata['qualified_config']['path'],metadata['qualified_config']['sha256'])),policy)
+-    require(groups is not None and groups.approval(metadata['source'],metadata['workspace']) is not None,'Actual qualified source approval required')
++    groups=NativeGroupQualification.from_config(decode(protected(metadata['qualification_config']['path'],metadata['qualification_config']['sha256'])),policy)
++    require(groups is not None and groups.approval(metadata['source'],metadata['workspace']) is not None,'Actual operator qualification source approval required')
+@@ -308 +308 @@
+-    return {'service':service,'policy':policy,'qualified_groups':groups,'authority_backend':backend,
++    return {'service':service,'policy':policy,'operator_qualification':groups,'authority_backend':backend,
+--- frozen10001/grant_handover.py
++++ source_qualification_grants.py
+@@ -1,2 +1 @@
+-#!/usr/bin/env python3
+-"""Inert by default: reviewed existing source fixture grants only.
++"""Bounded default-inert Source grant transition for CPS5/CIT10 qualification.
+@@ -4,2 +3,2 @@
+-Capture is readonly; apply requires a fresh Root-reviewed external writer/start
+-exclusion. This helper does not create exclusion or pretend grant PUT has CAS.
++Derivative of frozen10001 grant1590; only existing selected fixture grants
++change one profile, preserving all original times, resources and source fields.
+@@ -19,3 +18,4 @@
+-OLD='interactive-native-pilot-5'
+-NEW='interactive-shared-5'
+-ACTOR='operator:native-group-qualification-20261009:canonical-grant-handover'
++OLD='interactive-shared-5'
++NEW='interactive-native-qualification-5'
++NEW_BY_SOURCE={'cps':NEW,'cit':'interactive-native-qualification-10'}
++ACTOR='operator:native-profile-qualification-20261011:scoped-grant-handover'
+@@ -62 +62 @@
+-def expected_grants(source): return {'native-pilot-'+source+'-'+u:p for u,p in PEOPLE[source].items()}
++def expected_grants(source): return {'native-pilot-'+source+'-'+u:p for u,p in PEOPLE[source].items() if source=='cit' or u[-1] in ('c','d')}
+@@ -67,0 +68 @@
++    NEW=NEW_BY_SOURCE[source]
+@@ -102 +103 @@
+-        require(all(w.get(k)==v for k,v in e.items()) and w.get('course_id')==COURSE and w.get('term_id')==TERM and w.get('source')=='local' and w.get('external_id') is None and w.get('state')=='stopped' and w.get('profile')==OLD and w.get('course_ceiling')==CEILING and not any(w.get(k) for k in ('archive_pending','reconciliation_pending','membership_removal_pending')),'Exact stopped existing fixture workspace with clear barriers required')
++        require(all(w.get(k)==v for k,v in e.items()) and w.get('course_id')==COURSE and w.get('term_id')==TERM and w.get('source')=='local' and w.get('external_id') is None and w.get('state')=='stopped' and (w.get('profile')==OLD or (source=='cps' and w['id']=='native-group-a' and w.get('profile')=='interactive-native-pilot-5')) and w.get('course_ceiling')==CEILING and not any(w.get(k) for k in ('archive_pending','reconciliation_pending','membership_removal_pending')),'Exact stopped existing fixture workspace with clear barriers required')
+@@ -133 +134 @@
+-    provider,compute,service=settings_guard(settings,source);expected=copy.deepcopy(before['grants']);receipt={'state':'incomplete','source':source,'actor':ACTOR,'before_sha256':digest(before),'changes':[],'automatic_start':False,'qualification':False}
++    provider,compute,service=settings_guard(settings,source);expected=copy.deepcopy(before['grants']);receipt={'state':'incomplete','source':source,'actor':ACTOR,'before_sha256':digest(before),'changes':[],'automatic_start':False,'qualification':False,'profile':NEW_BY_SOURCE[source]}
+--- frozen10001/normal_source_workspace.py
++++ source_qualification_workspace.py
+@@ -1 +1 @@
+-"""Separate Root proposal for the genuine configured console lifecycle.
++"""Separate operator-only qualification through the genuine console lifecycle.
+@@ -13,2 +13,2 @@
+-STAGE = '/tmp/cps-native-handover-operator10001'
+-HANDOVER_SHA = '00a91da2cb6bbb19eefa8e9f320773d2adccf7acf20d8f8eb53af36307dbbc4b'
++STAGE = '/tmp/cps-native-profile-qualification-20261011'
++HANDOVER_SHA = '53c5ed41ad95729a6f4248cf9d3f384c4c5c834b0bbef92134fe25c9ede8f870'
+@@ -16 +16 @@
+-    'cps': {'actor': 'bjoern', 'workspace': 'native-group-b', 'group': 'native-pilot-group-b',
++    'cps': {'profile':'interactive-native-qualification-5', 'ceiling':{'cpu':'4','memory':'16Gi','gpuMemoryGiB':5}, 'actor': 'bjoern', 'workspace': 'native-group-b', 'group': 'native-pilot-group-b',
+@@ -19 +19 @@
+-    'cit': {'actor': 'akadmin', 'workspace': 'native-group-a', 'group': 'native-pilot-group-a',
++    'cit': {'profile':'interactive-native-qualification-10', 'ceiling':{'cpu':'4','memory':'16Gi','gpuMemoryGiB':10}, 'actor': 'akadmin', 'workspace': 'native-group-a', 'group': 'native-pilot-group-a',
+@@ -52 +52 @@
+-                'profile': 'interactive-shared-5'}
++                'profile': target['profile'], 'course_ceiling':target['ceiling']}
+@@ -58,0 +59 @@
++    require(operation in ('get','start','stop'), 'Exact normal operation required')
+@@ -69,0 +71,4 @@
++    elif operation == 'stop':
++        # close is the existing audited app Stop: actual Hub stop, reservation
++        # release after shutdown, Shares revocation, then persisted stopped.
++        await service.close(target['workspace'], actor=target['actor'], archive=False)
+@@ -72,0 +78 @@
++    require(operation != 'stop' or after.get('state') == 'stopped', 'Normal Stop must read back stopped')
+@@ -81,2 +87,2 @@
+-    raw = protected(STAGE + '/handover.py', HANDOVER_SHA)
+-    namespace = {'__name__': 'pinned_normal_start_app_loader', '__file__': STAGE + '/handover.py'}
++    raw = protected(STAGE + '/source_qualification_handover.py', HANDOVER_SHA)
++    namespace = {'__name__': 'pinned_normal_start_app_loader', '__file__': STAGE + '/source_qualification_handover.py'}
+@@ -83,0 +90,10 @@
++    closure=json.loads(protected(args.source_closure,args.source_closure_sha256))
++    namespace['verify_source_closure'](closure)
++    from cps_compute.policy import Policy
++    from cps_compute.native_qualification import NativeGroupQualification
++    policy=Policy(json.loads(protected(args.policy,args.policy_sha256)))
++    mode=NativeGroupQualification.from_config(json.loads(protected(args.qualification_config,args.qualification_config_sha256)),policy)
++    require(mode is not None and set(mode.workspaces)=={'cps:native-group-b','cit:native-group-a'}
++        and set(mode.profiles)=={'interactive-native-qualification-5','interactive-native-qualification-10'}
++        and mode.approval(args.source,target['workspace'])['profiles']==[target['profile']],
++        'Exact bounded CPS5/CIT10 operator qualification required')
+@@ -95,0 +112,5 @@
++    # Actual source-owned central registration must match the typed mode before
++    # Start/Stop. This uses the genuine configured Source credential and endpoint.
++    from urllib.parse import quote
++    registered=await service.compute._request('workspaces/'+quote(target['workspace'],safe=''))
++    mode.authorize(args.source,registered,target['profile'])
+@@ -103 +124 @@
+-    parser.add_argument('--operation', choices=('get', 'start'))
++    parser.add_argument('--operation', choices=('get', 'start', 'stop'))
+@@ -104,0 +126,3 @@
++    for field in ('source-closure','policy','qualification-config'):
++        parser.add_argument('--'+field)
++        parser.add_argument('--'+field+'-sha256')
+@@ -109 +133,3 @@
+-    require(args.source and args.operation and args.source_sha256, 'Explicit source, operation and source pin required')
++    require(args.source and args.operation and args.source_sha256
++        and all(getattr(args,k.replace('-','_')) for k in ('source-closure','source-closure-sha256','policy','policy-sha256','qualification-config','qualification-config-sha256')),
++        'Explicit source, operation and protected typed configuration/closure pins required')

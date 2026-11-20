@@ -1,0 +1,27 @@
+{
+  "createdAt": "2026-10-07T04:13:00.586820+00:00",
+  "scope": "live suspended CronJob template, bounded dry-run only",
+  "passed": true,
+  "report": {
+    "examined": 37,
+    "eligible": 0,
+    "deleted": 0,
+    "skipped": 37,
+    "errors": 0,
+    "objects": [],
+    "apply": false,
+    "truncated": false,
+    "reconciled": 0,
+    "version": 1,
+    "image": "ghcr.io/mul-cps/cps-compute:qualification-25e2190@sha256:7a9caff2fe4874adad523dd2be3fc6dcb00930b7dc4d3ddbc2f3141de20d15ea",
+    "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d"
+  },
+  "jobUid": "6cf92752-d3cd-4cd9-8299-ebdff5885660",
+  "logSha256": "df892ad612a981d051c5b493b17324b033029d5561e99ca763c6a54ef963f64f",
+  "limitations": [
+    "No deletion or metadata reconciliation requested.",
+    "Does not qualify retention mutation, ambiguous-delete recovery, off-host backups or real user OAuth."
+  ],
+  "jobRemoved": true,
+  "podsRemoved": true
+}

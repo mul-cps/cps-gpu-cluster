@@ -1,0 +1,478 @@
+{
+  "schema": "cps-native-import-assessment/v1",
+  "date": "2026-10-09",
+  "status": "bounded-import-matrix-measured-pass",
+  "productionQualified": false,
+  "groupSharingEnabled": false,
+  "sourceImportGuardQualified": false,
+  "boundedImportMatrixPassed": true,
+  "scope": "Trusted same-GPU two-Pod native5GiB-capped probes; same-parent imports succeed and cross-parent imports are denied.",
+  "source": {
+    "driverVersion": "615.71.09",
+    "coreElfSha256": "59f623fe5fdc89ef06f8055ee4dbfafeabe70b1d0bcabc487bc6fe04b78d6e77",
+    "coreSrcversion": "C6CF64F73A3430C26C030B7",
+    "driverGeneration": "c814c591-c494-4a67-ade2-1af3c64ad608",
+    "loadObservedNs": 1791535454163003624,
+    "guardEnabled": true,
+    "guardFlagMode": "0400",
+    "loadReceiptSha256": "2ae1cbf8631a08f9e945bd0641889ce666d196ad1783a4685736ccc02f6b2f0d",
+    "coreBuildIdentityUsesElfHash": true,
+    "buildReceiptSha256": "691fbf79e9f762129f917512d0eea80c88050de41664b738fcafd1b4873ae938",
+    "sourceCommit": "61dcc93722ecb418bb5f2e00923f05b4b8051dd1",
+    "patchSha256": "58823f1b3518578ef0c275d77caf194e5cb00fd4dc322dff1ef30389ab78689a",
+    "buildReceiptScope": "CPU build receipt; actual loading is recorded separately in the load receipt."
+  },
+  "bindings": {
+    "main": {
+      "specSha256": "004e337268d54d72a473f52d994359457c66085a3765fa192e57283b875ba368",
+      "capBytes": 5368709120,
+      "policyHash": "sha256:b5c32203f0f6b5db6471ea1e910fd04a6bd92fc69ce5b1e537aff5870592308a"
+    },
+    "peer": {
+      "specSha256": "b1d721ce0aee249d3affd1e3e286c5a9126402e97e45565c307f9b3bddd531fc",
+      "capBytes": 5368709120,
+      "policyHash": "sha256:b5c32203f0f6b5db6471ea1e910fd04a6bd92fc69ce5b1e537aff5870592308a"
+    }
+  },
+  "cases": [
+    {
+      "case": "same-vmm",
+      "status": "same-parent-functional-pass",
+      "exportParent": "main",
+      "importParent": "main",
+      "exportCudaResult": 0,
+      "importCudaResult": 0,
+      "freshDriverDenialReason": null,
+      "freshDenialCount": 0,
+      "processes": {
+        "export": {
+          "containerPid": 158,
+          "returnCode": 0,
+          "startObservedNs": 1791536092479182871,
+          "exitObservedNs": 1791536102313752933,
+          "rawFinalStatus": "bounded-measurement-completed"
+        },
+        "import": {
+          "containerPid": 168,
+          "returnCode": 0,
+          "startObservedNs": 1791536092925075174,
+          "exitObservedNs": 1791536102315238839,
+          "rawFinalStatus": "bounded-measurement-completed"
+        }
+      },
+      "firstObservedNs": 1791536092479182871,
+      "lastObservedNs": 1791536102315238839,
+      "allRecordedImportExportMilestonesBracketedByPeer": true,
+      "phaseCoverage": [
+        {
+          "role": "export",
+          "phase": "vmm-export",
+          "observedNs": 1791536093115436132,
+          "peerTickBeforeNs": 1791536092927979409,
+          "peerTickAfterNs": 1791536093128825709
+        },
+        {
+          "role": "import",
+          "phase": "vmm-import",
+          "observedNs": 1791536093115576865,
+          "peerTickBeforeNs": 1791536092927979409,
+          "peerTickAfterNs": 1791536093128825709
+        },
+        {
+          "role": "import",
+          "phase": "importer-retained-backing-start",
+          "observedNs": 1791536093116310855,
+          "peerTickBeforeNs": 1791536092927979409,
+          "peerTickAfterNs": 1791536093128825709
+        },
+        {
+          "role": "import",
+          "phase": "importer-retained-backing-end",
+          "observedNs": 1791536102116862314,
+          "peerTickBeforeNs": 1791536101956258156,
+          "peerTickAfterNs": 1791536102161848462
+        }
+      ]
+    },
+    {
+      "case": "cross-vmm",
+      "status": "expected-cross-parent-denial",
+      "exportParent": "main",
+      "importParent": "peer",
+      "exportCudaResult": 0,
+      "importCudaResult": 800,
+      "freshDriverDenialReason": 6,
+      "freshDenialCount": 1,
+      "processes": {
+        "export": {
+          "containerPid": 184,
+          "returnCode": 1,
+          "startObservedNs": 1791536102908935314,
+          "exitObservedNs": 1791536103674312954,
+          "rawFinalStatus": "inconclusive"
+        },
+        "import": {
+          "containerPid": 133,
+          "returnCode": 1,
+          "startObservedNs": 1791536103305394502,
+          "exitObservedNs": 1791536103669580566,
+          "rawFinalStatus": "inconclusive"
+        }
+      },
+      "firstObservedNs": 1791536102908935314,
+      "lastObservedNs": 1791536103674312954,
+      "allRecordedImportExportMilestonesBracketedByPeer": true,
+      "phaseCoverage": [
+        {
+          "role": "export",
+          "phase": "vmm-export",
+          "observedNs": 1791536103467998235,
+          "peerTickBeforeNs": 1791536103365516979,
+          "peerTickAfterNs": 1791536103566258680
+        },
+        {
+          "role": "import",
+          "phase": "vmm-import",
+          "observedNs": 1791536103468171719,
+          "peerTickBeforeNs": 1791536103365516979,
+          "peerTickAfterNs": 1791536103566258680
+        }
+      ]
+    },
+    {
+      "case": "same-ipc",
+      "status": "same-parent-functional-pass",
+      "exportParent": "main",
+      "importParent": "main",
+      "exportCudaResult": 0,
+      "importCudaResult": 0,
+      "freshDriverDenialReason": null,
+      "freshDenialCount": 0,
+      "processes": {
+        "export": {
+          "containerPid": 200,
+          "returnCode": 0,
+          "startObservedNs": 1791536104268062917,
+          "exitObservedNs": 1791536104983116769,
+          "rawFinalStatus": "bounded-measurement-completed"
+        },
+        "import": {
+          "containerPid": 210,
+          "returnCode": 0,
+          "startObservedNs": 1791536104665569069,
+          "exitObservedNs": 1791536104979649814,
+          "rawFinalStatus": "bounded-measurement-completed"
+        }
+      },
+      "firstObservedNs": 1791536104268062917,
+      "lastObservedNs": 1791536104983116769,
+      "allRecordedImportExportMilestonesBracketedByPeer": true,
+      "phaseCoverage": [
+        {
+          "role": "export",
+          "phase": "ipc-export",
+          "observedNs": 1791536104813492504,
+          "peerTickBeforeNs": 1791536104769799943,
+          "peerTickAfterNs": 1791536104970223378
+        },
+        {
+          "role": "import",
+          "phase": "ipc-import",
+          "observedNs": 1791536104813925312,
+          "peerTickBeforeNs": 1791536104769799943,
+          "peerTickAfterNs": 1791536104970223378
+        }
+      ]
+    },
+    {
+      "case": "cross-ipc",
+      "status": "expected-cross-parent-denial",
+      "exportParent": "main",
+      "importParent": "peer",
+      "exportCudaResult": 0,
+      "importCudaResult": 800,
+      "freshDriverDenialReason": 6,
+      "freshDenialCount": 1,
+      "processes": {
+        "export": {
+          "containerPid": 226,
+          "returnCode": 1,
+          "startObservedNs": 1791536105578826439,
+          "exitObservedNs": 1791536106243684663,
+          "rawFinalStatus": "inconclusive"
+        },
+        "import": {
+          "containerPid": 143,
+          "returnCode": 1,
+          "startObservedNs": 1791536105934052918,
+          "exitObservedNs": 1791536106248472644,
+          "rawFinalStatus": "inconclusive"
+        }
+      },
+      "firstObservedNs": 1791536105578826439,
+      "lastObservedNs": 1791536106248472644,
+      "allRecordedImportExportMilestonesBracketedByPeer": true,
+      "phaseCoverage": [
+        {
+          "role": "export",
+          "phase": "ipc-export",
+          "observedNs": 1791536106079794718,
+          "peerTickBeforeNs": 1791536105973020254,
+          "peerTickAfterNs": 1791536106176255670
+        },
+        {
+          "role": "import",
+          "phase": "ipc-import",
+          "observedNs": 1791536106079948836,
+          "peerTickBeforeNs": 1791536105973020254,
+          "peerTickAfterNs": 1791536106176255670
+        }
+      ]
+    }
+  ],
+  "sameParentVmmRetainedBacking": {
+    "status": "measured-after-exporter-local-reference-release",
+    "startObservedNs": 1791536093116310855,
+    "endObservedNs": 1791536102116862314,
+    "retainedSeconds": 9.000551459,
+    "exporterReferenceReleaseObservedNs": 1791536093116286770,
+    "windowSampleCount": 34,
+    "preFillOwnerUsedBytes": 868384128,
+    "minimumRequiredOwnerUsedBytes": 935492992,
+    "ownerUsedMinimumBytes": 1002601856,
+    "ownerUsedMaximumBytes": 1002601856,
+    "abovePreFillBaselineMinimumBytes": 134217728,
+    "importerReadbackAfterHoldCudaResult": 0,
+    "exporterContextDestroyedDuringWindow": false,
+    "exporterProcessExitedDuringWindow": false,
+    "exporterContextOrProcessDeathQualification": "untested; exporter remains alive with its context while waiting for importer completion"
+  },
+  "nativeAccounting": {
+    "totalSampleCount": 225,
+    "retainedWindowSampleCount": 34,
+    "firstObservedNs": 1791536092059896520,
+    "lastObservedNs": 1791536152854717068,
+    "ranges": {
+      "main": {
+        "minUsedBytes": 0,
+        "maxUsedBytes": 1002601856,
+        "capBytes": 5368709120
+      },
+      "peer": {
+        "minUsedBytes": 436341440,
+        "maxUsedBytes": 802163392,
+        "capBytes": 5368709120
+      }
+    },
+    "lastSampleUsedBytes": {
+      "main": 0,
+      "peer": 436341440
+    },
+    "mainZeroAfterAllProbeProcessesFinishedWhilePeerActive": true
+  },
+  "independentPeer": {
+    "containerPid": 118,
+    "contextReadyNs": 1791536091723605765,
+    "completionNs": 1791536181770919225,
+    "elapsedSeconds": 90.04731346,
+    "successfulTicks": 449,
+    "maximumTickGapNs": 205590306,
+    "allCaseImportExportMilestonesBracketed": true
+  },
+  "limitations": [
+    "Production and group sharing remain disabled; this bounded controlled experiment does not qualify the source guard for deployment.",
+    "Cross-parent CUDA800 is corroborated by fresh driver hook reason6; the generic probe reports inconclusive and exits1 for this expected refusal.",
+    "225 accounting samples are total across the experiment;34 are inside the9-second retained-backing window.",
+    "Exporter local references are released while the importer retains backing; exporter context/process death before importer completion is explicitly untested.",
+    "This is not the full arbitrary-client, MPS delegation, restart or production reservation lifecycle matrix.",
+    "The owner charge is128MiB above measured pre-fill baseline, covering imported backing and importer fill; it is not claimed to be exactly the imported64MiB alone.",
+    "CPU assessment validation adds no GPU evidence."
+  ],
+  "provenance": [
+    {
+      "capture": "cross-ipc-after.dmesg",
+      "sha256": "b6baf466eeb427d7202d19f82d66484766787f6bc484b2f230da28c9907df220",
+      "bytes": 620954
+    },
+    {
+      "capture": "cross-ipc-before.dmesg",
+      "sha256": "631d7ab0eddfc7fae08da7d85c5a7a2c6405acc71bd9026ea73cbb626f28fae8",
+      "bytes": 620945
+    },
+    {
+      "capture": "cross-ipc-export.jsonl",
+      "sha256": "e67717e5e083a9b1efba98855810ce89bd17243901b5492f3481dbc8d435124b",
+      "bytes": 2615
+    },
+    {
+      "capture": "cross-ipc-export.stderr",
+      "sha256": "b7f96cc60f0e31a6f98816161473bf5f45c0702b8d7f48b7ffc48172055ed0e2",
+      "bytes": 36
+    },
+    {
+      "capture": "cross-ipc-fresh-denials.json",
+      "sha256": "4f10af83c9ee13a4059bf2e9aca913fe21ad27097ad4451a7a5ba72e9b189474",
+      "bytes": 112
+    },
+    {
+      "capture": "cross-ipc-import.jsonl",
+      "sha256": "1fa992177be2992622502bc612ee20fefa43402dde5577f2d36b9a6c9547caa3",
+      "bytes": 2631
+    },
+    {
+      "capture": "cross-ipc-import.stderr",
+      "sha256": "b7f96cc60f0e31a6f98816161473bf5f45c0702b8d7f48b7ffc48172055ed0e2",
+      "bytes": 36
+    },
+    {
+      "capture": "cross-vmm-after.dmesg",
+      "sha256": "631d7ab0eddfc7fae08da7d85c5a7a2c6405acc71bd9026ea73cbb626f28fae8",
+      "bytes": 620945
+    },
+    {
+      "capture": "cross-vmm-before.dmesg",
+      "sha256": "b87c3e87e0f29c662f108a2faee2ba7c173ae9eaa2d4522487a3cbc90ed68598",
+      "bytes": 621002
+    },
+    {
+      "capture": "cross-vmm-export.jsonl",
+      "sha256": "4d283e461ef39d864517e9fdc67bb6072fcc9336404a849970ee7b8096a4ae06",
+      "bytes": 3328
+    },
+    {
+      "capture": "cross-vmm-export.stderr",
+      "sha256": "b7f96cc60f0e31a6f98816161473bf5f45c0702b8d7f48b7ffc48172055ed0e2",
+      "bytes": 36
+    },
+    {
+      "capture": "cross-vmm-fresh-denials.json",
+      "sha256": "6ed5a2de9c2d093cd0eaa28b64a46f4ff59dd2db1b8e0e38b0bead178740845d",
+      "bytes": 112
+    },
+    {
+      "capture": "cross-vmm-import.jsonl",
+      "sha256": "eb592599c0ce8dc8d95dd3eb7df22ac240dc48f9a50e69e80241c61e49449f15",
+      "bytes": 2631
+    },
+    {
+      "capture": "cross-vmm-import.stderr",
+      "sha256": "b7f96cc60f0e31a6f98816161473bf5f45c0702b8d7f48b7ffc48172055ed0e2",
+      "bytes": 36
+    },
+    {
+      "capture": "native-accounting.jsonl",
+      "sha256": "625f10a1bbe79f756678d2bba95960cd9d47dab60c090bb044b8c051337dd445",
+      "bytes": 181177
+    },
+    {
+      "capture": "native-accounting.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "capture": "native-cap-main-live.json",
+      "sha256": "535cc34fc2b7f4f5995ad696c625691e81dd99d469505f626b8b88bf572a38fd",
+      "bytes": 14019
+    },
+    {
+      "capture": "native-cap-peer-live.json",
+      "sha256": "45d3a7c523724168687d5b1a39c087b5098537b9e1f2537b87ee4222d2bc837f",
+      "bytes": 14020
+    },
+    {
+      "capture": "peer-heartbeat.jsonl",
+      "sha256": "91d2b7d0be3db29a9974cab0c4435d4307c63134c950b90382a09f791341df44",
+      "bytes": 91930
+    },
+    {
+      "capture": "peer-heartbeat.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "capture": "same-ipc-after.dmesg",
+      "sha256": "631d7ab0eddfc7fae08da7d85c5a7a2c6405acc71bd9026ea73cbb626f28fae8",
+      "bytes": 620945
+    },
+    {
+      "capture": "same-ipc-before.dmesg",
+      "sha256": "631d7ab0eddfc7fae08da7d85c5a7a2c6405acc71bd9026ea73cbb626f28fae8",
+      "bytes": 620945
+    },
+    {
+      "capture": "same-ipc-export.jsonl",
+      "sha256": "5e86cb528bbad0b42012bd42662a1af68bb110400ea3faf4ecdc76ba44a197da",
+      "bytes": 2632
+    },
+    {
+      "capture": "same-ipc-export.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "capture": "same-ipc-fresh-denials.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3
+    },
+    {
+      "capture": "same-ipc-import.jsonl",
+      "sha256": "48ee5e7d837d93c4fc972536bc8bbb1fae2866522c7215ca9f9e242adcbaa3aa",
+      "bytes": 3231
+    },
+    {
+      "capture": "same-ipc-import.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "capture": "same-vmm-after.dmesg",
+      "sha256": "b87c3e87e0f29c662f108a2faee2ba7c173ae9eaa2d4522487a3cbc90ed68598",
+      "bytes": 621002
+    },
+    {
+      "capture": "same-vmm-before.dmesg",
+      "sha256": "b87c3e87e0f29c662f108a2faee2ba7c173ae9eaa2d4522487a3cbc90ed68598",
+      "bytes": 621002
+    },
+    {
+      "capture": "same-vmm-export.jsonl",
+      "sha256": "3bbac93efc3f0c95645842997a5be51131404a34d66eaa1f37f5018348b45800",
+      "bytes": 3497
+    },
+    {
+      "capture": "same-vmm-export.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "capture": "same-vmm-fresh-denials.json",
+      "sha256": "37517e5f3dc66819f61f5a7bb8ace1921282415f10551d2defa5c3eb0985b570",
+      "bytes": 3
+    },
+    {
+      "capture": "same-vmm-import.jsonl",
+      "sha256": "7728110fb95f41f3b7ee167b3040886d147a2cf17639071ae7c7298593279fae",
+      "bytes": 4446
+    },
+    {
+      "capture": "same-vmm-import.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "capture": "same-vmm-retained-window.json",
+      "sha256": "cc8dca5c14eb3bb348de48f5bcc1fa0e2c1e4e2cb612d84e91ed7330e6ad0b78",
+      "bytes": 332
+    },
+    {
+      "capture": "sealed-journal.json",
+      "sha256": "de56e164a47ff4ca50a830df657e9090accdfca2fb8e846e9b77b8a8a111f973",
+      "bytes": 3529
+    },
+    {
+      "capture": "summary.json",
+      "sha256": "5f4b2906a94e20fdb60e9e8c11285b30a7fe7dab26f9f625641e587a21762398",
+      "bytes": 1035
+    }
+  ]
+}

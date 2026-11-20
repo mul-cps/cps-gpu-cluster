@@ -1,0 +1,27 @@
+{
+  "scope": "Actual CPS student sharing and Compute OAuth; limited pilot",
+  "checked_at": "2026-10-15T19:02:10.045307+00:00",
+  "fresh_directory_logins": true,
+  "server": "/user/mikasa/lab",
+  "personal_share": {
+    "owner": "mikasa",
+    "server_name": "",
+    "recipient": "armin",
+    "scope": "access:servers!server=mikasa/",
+    "expires_at": null
+  },
+  "users": [
+    {"name": "mikasa", "admin": false, "shared_server": 200, "browser_identity": "mikasa", "compute_identity": "15164372-7ae5-4cfd-8b5d-fd402aa891bd", "compute_connected": true, "workspaces": 200, "shared_gpu_lab_visible": true, "admin_console": 403, "unshared_bjoern_server": 403},
+    {"name": "armin", "admin": false, "shared_server": 200, "browser_identity": "armin", "compute_identity": "85de720c-94b0-4bc7-807e-c04512133494", "compute_connected": true, "workspaces": 200, "shared_gpu_lab_visible": true, "admin_console": 403, "unshared_bjoern_server": 403}
+  ],
+  "compute_service": "cps-compute-ui",
+  "workspace": {"id": "shared-gpu-lab", "profile": "interactive-shared-5", "status": "running"},
+  "transient_observation": "An initial existing-session Armin discovery response was empty. Repeat and fresh-login checks returned the registered workspace. The exact authorization/readiness guard responsible was not identified; no policy was relaxed.",
+  "evidence_sha256": {
+    "initial_attempt": "5a2c735c362fc72e4e6e88ad3092b4da80607e2b11748aa6dcee24d9c888547f",
+    "existing_session_repeat": "55366c309bae31774106d0b930fe87d5e5f597fb34b289662cf0b200c1b1ee11",
+    "fresh_login": "a68a77f0a5626d4f42b7e58149cf88dee050cbc86564ef122c2b91069c440977"
+  },
+  "changes_during_verification": "Normal student login and OAuth consent only; no server restart, Share, role, GPU or storage changes",
+  "not_qualified": ["membership-removal connection revocation", "GPU531 hardware adoption", "full production readiness"]
+}

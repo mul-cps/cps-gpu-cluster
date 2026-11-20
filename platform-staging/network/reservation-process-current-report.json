@@ -1,0 +1,55 @@
+{
+  "status": "passed",
+  "evidence_class": "controlled-fixture",
+  "production_qualification": false,
+  "source_sha": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "reservations_sha256": "492804a580a89235a7b30a3b2a06656f4fd9e75c4ef5fb6d29e3d1cefca88f57",
+  "checks": [
+    "two_distinct_processes",
+    "exactly_one_winner",
+    "loser_unique_insert_rolled_back",
+    "loser_binding_absent",
+    "unconfirmed_release_refused",
+    "stale_attempt_refused",
+    "confirmed_correct_attempt_releases",
+    "losing_workspace_retry_succeeds"
+  ],
+  "separate_process_rounds": 52,
+  "spawn_trace_rounds": 20,
+  "reused_fork_rounds": 32,
+  "spawn_win_counts": {
+    "CPS:A": 7,
+    "CIT:B": 13
+  },
+  "pytest": {
+    "status": "passed",
+    "count": 32,
+    "warning_count": 1,
+    "duration_seconds": 1.25,
+    "command": "/home/bjoern/git/cps-compute/.venv/bin/python -m pytest -q tests/test_core.py tests/test_completion.py tests/test_reservation_state.py",
+    "initial_system_python_collection": "Missing kubernetes; rerun using existing project venv passed"
+  },
+  "source_changes": false,
+  "commits_created": false,
+  "production_changes": false,
+  "limits": [
+    "Temporary SQLite database and synthetic canonical identities only.",
+    "No live Hub servers, GPUs, human identity linkage, storage restore, or production deployment tested.",
+    "Application shutdown confirmation is supplied by the fixture; observer authenticity is outside this gate."
+  ],
+  "artifacts": {
+    "spawn_summary": "spawn-trace-current/summary.json",
+    "per_round_traces": "spawn-trace-current/round-*/proof.json",
+    "reused_report": "reused-32-round-report.json",
+    "spawn_harness": "process_race.py",
+    "reused_harness_snapshot": "reused_qualify.py"
+  },
+  "harness_sha256": {
+    "process_race.py": "19c5c169194c4b46117f7fbee04b3d1d8e4e281a5566b34540714905810dd98c",
+    "reused_qualify.py": "01304b5d49d607edd4342b81d0980ac10b85241f9d55982e227e08e0a7d62282"
+  },
+  "remote_branch": "feat/gateway-release-qualification",
+  "remote_source_sha": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "remote_verification": "git ls-remote origin refs/heads/feat/gateway-release-qualification",
+  "evidenceSha256": "453d4f6a47b981a02fd7a98bb5f2096780e8f3daa74cb5869b39c638da0ca259"
+}

@@ -1,0 +1,54 @@
+{
+  "consoles": {
+    "cit-admin": {
+      "deployment_uid": "54466777-ece9-4d63-bcd8-8156caba55af",
+      "evidence_sha256": {
+        "cit-admin-actual-applied.private.json": "09c9f0fc3346251778fc390667139e561e76b4aa4cdf65f0b1d2c6c6099173c5",
+        "cit-admin-actual-ready-deployment.private.json": "414b28d5110c6f5bb80ceb75282f4af3df6f2ea93c6aedf9b34236641c7ffe9a",
+        "cit-admin-actual-ready-pod.private.json": "15b465d35acfe98007e97686b9adc7ea007f912f15db90d622b3697af02c39c8",
+        "cit-admin-patch.private.json": "1565b4727b456236606bcbba1d56a6f0d362c7047b22e64f51979a2b96a2e606",
+        "cit-admin-preimage.private.json": "c7389c72f993f860143ccb7c93399d199920fdde1d13fdf80c3fc84836ab4c58",
+        "cit-admin-sqlite-backup-receipt.json": "fc6020eaf01e3954ac00ab120d04391ad9355f486f096c182d425860724ab6bd"
+      },
+      "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:b36c54a57f526e6cb4595bf9e552d80d217a72ba6a7ee30767d8b3bc3d3ec5c7",
+      "matching_predeployment_sqlite_bytes": 667648,
+      "matching_predeployment_sqlite_sha256": "82471cb968db125f1cf3dfe09ed1a27e6b11b627f87e42f22181bf168e6a7e68",
+      "pod": "cit-admin-7f4f685866-fbmhw",
+      "pod_uid": "b24a29e6-9e42-4d23-bdff-b421d2eff3b2",
+      "ready": true,
+      "restarts": 0
+    },
+    "cps-admin": {
+      "deployment_uid": "cea488be-b5c5-481f-b41d-169d22f56f33",
+      "evidence_sha256": {
+        "cps-admin-actual-applied.private.json": "0a22bc856e9079142f5ef1f06b097dbbc266daee31c3cbe8b106199ace817c70",
+        "cps-admin-actual-ready-deployment.private.json": "c36a18ea03c6a3f7d26969108a89b2fbebf066d107fe483333527a0f8be2869b",
+        "cps-admin-actual-ready-pod.private.json": "c8dd38449f9d10a431cb241214f04a7589bab0bacb95da321830a033508ac9b0",
+        "cps-admin-patch.private.json": "a1a7c3001f71016a071ac202c892acd651dce7d2a90d7f1061389c756285652c",
+        "cps-admin-preimage.private.json": "01ca679033f9e655b62965d99161b57e7034a49e321baab0211dc6bda2565d7f",
+        "cps-admin-sqlite-backup-receipt.json": "c5721b4fd52f76332f8282100dbdb5efbf28403bb244accf55db2294526dbb55"
+      },
+      "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:b36c54a57f526e6cb4595bf9e552d80d217a72ba6a7ee30767d8b3bc3d3ec5c7",
+      "matching_predeployment_sqlite_bytes": 3461120,
+      "matching_predeployment_sqlite_sha256": "f91a55de49642fa421ff94bae073b023e83752e8b9ef9c69e26bdc4d113a6c36",
+      "pod": "cps-admin-5956d77cf9-pg5ks",
+      "pod_uid": "d2a78523-94e2-4fc4-99c0-7f4a46c8cee3",
+      "ready": true,
+      "restarts": 0
+    }
+  },
+  "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:b36c54a57f526e6cb4595bf9e552d80d217a72ba6a7ee30767d8b3bc3d3ec5c7",
+  "kind": "actual-paired-console-legacy-runtime-validator-adoption",
+  "limits": [
+    "Source runtime validators installed; matching legacy Hub enrollment and live activity are separate pending gates.",
+    "Base rootfs and config are unchanged. Three base layer compressed encodings differ from remote87; tested payload equivalence, not compressed-prefix equivalence, is claimed."
+  ],
+  "only_deployment_change": "console.image",
+  "production_qualified": false,
+  "replicas_per_console": 1,
+  "schema_migrations_enabled": false,
+  "source_revision": "e905ed734e903fcf37e522720978286fda693e01",
+  "status": "both_ready",
+  "strategy": "Recreate",
+  "version": 1
+}

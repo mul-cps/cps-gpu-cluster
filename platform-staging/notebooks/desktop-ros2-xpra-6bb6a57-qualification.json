@@ -1,0 +1,97 @@
+{
+  "qualified": false,
+  "scope": "ROS Xpra desktop image compatibility only; GPU isolation and full release matrix incomplete",
+  "digest": "sha256:b94a5a2672f3500f4c5634611743f8cd32105c90cf652f9615d8be67bd0130fb",
+  "linuxManifest": "sha256:d390203067d4be497f682c8e7a95ff7832e35753a0aa5816050dbe7f706ccfe6",
+  "user": "1000",
+  "predicateTypes": [
+    "https://slsa.dev/provenance/v1"
+  ],
+  "offlinePackageInstallation": true,
+  "pipCheckPassed": true,
+  "releaseRunnerTestsPassed": 14,
+  "sbomMode": "standalone required",
+  "fullImageSbomVerified": true,
+  "variant": "desktop-ros2-xpra",
+  "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+  "wheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.14",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "ROS Xpra desktop image runtime only; no GPU isolation or Hub browser qualification",
+    "freshKernelSourceHashesVerified": true,
+    "pytorchCpuVerified": true,
+    "pytorchVersion": "2.11.0+cu129",
+    "ros2SystemPythonLoopbackVerified": true,
+    "ros2Interpreter": "/usr/bin/python3",
+    "ros2Distro": "jazzy"
+  },
+  "published": true,
+  "deployed": false,
+  "gpuExecution": false,
+  "desktopHttp": {
+    "uid": 1000,
+    "http": {
+      "status": 200,
+      "sha256": "b655489c842f8e3985668637ac655b5348d96b3bbc193f18a568b755cfd7fa70",
+      "bytes": 65538
+    },
+    "xfceProcessObserved": true,
+    "nativeServerInfoVerified": true,
+    "networkScope": "isolated container loopback only",
+    "gpuExecution": false,
+    "browserInteractionVerified": false,
+    "qualified": false
+  },
+  "standaloneSbom": {
+    "format": "standalone SPDX JSON",
+    "file": "image.tar.sbom.spdx.json",
+    "sourceImageId": "sha256:e8803bd0582248b322687be317add01e46ed35c5aa113c3f173ab6720f8b70b8",
+    "packages": 5522,
+    "sha256": "c8710d3331f8d5a4666b6f888653d6df2c4987f7ce05b60b6d1bc9f42d11b3a1",
+    "nativeFile": "image.tar.sbom.syft.json",
+    "nativeSha256": "bc7c8f6c52eb4b79098dd5fcc54d21359f829f518b62169f5817d0a6bd89036a",
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill",
+      "ros-jazzy-desktop",
+      "ros-jazzy-rclpy",
+      "torch",
+      "torchvision",
+      "virtualgl",
+      "xfce4",
+      "xpra",
+      "xpra-html5",
+      "xpra-server"
+    ],
+    "fileInventoryEntries": 165802
+  },
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-desktop-ros2-xpra@sha256:b94a5a2672f3500f4c5634611743f8cd32105c90cf652f9615d8be67bd0130fb",
+  "remoteIndexAndChildrenVerified": true,
+  "standaloneSbomRemoteVerified": true,
+  "sbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3820bc64af6a07b164f91404ddee3e702a5103c40c91f1a07e2881c69d822ec2",
+  "parent": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:af54f9a7b2d4ec521350d9a5fbb3d1efeca74d78edd8ee0ff62cb45e480a4b35",
+  "parentScope": "Previously published ROS Xpra qualification parent; not a common-tag production parent",
+  "credentialCleanup": {
+    "temporaryHostConfigRemoved": true,
+    "temporaryContainerConfigRemoved": true,
+    "credentialInBuildContext": false
+  }
+}

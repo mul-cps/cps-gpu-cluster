@@ -1,0 +1,122 @@
+{
+  "claims": {
+    "delivery_completion": true,
+    "fresh_four_process_acknowledgments": true,
+    "hardware_cap_qualified": false,
+    "human_oauth": false,
+    "legacy_runtime_enrollment": false,
+    "normal_source_stop_acceptance": false,
+    "paired_hub_image_adoption": true,
+    "production_qualified": false
+  },
+  "evidence": {
+    "installed_qualification": {
+      "artifact": "cit-legacy-stop-persistence-20261014/hub-oci/qualification-receipt-v2.json",
+      "raw_sha256": "d3eedcc9d8d708d57f4f0b6fc9ac0d29c8d0706a5a1d2681fd0e4ff958bfc07c"
+    },
+    "phase_final": {
+      "artifact": "cit-legacy-runtime-handover-47456a47/phase-47456a47/final.json",
+      "raw_sha256": "9ff3def00e933c78e73858713fa35dbbc3cdfd5f23937296776913a08e54f30f"
+    },
+    "root_execution_stdout": {
+      "artifact": "cit-legacy-runtime-handover-47456a47/root-actual-firststage.stdout.private",
+      "raw_sha256": "36efbc8fa6afa4e0b1db1a250f2e46fefd5dba8780b1d3174df077fc1203f136"
+    },
+    "source_console_adoption": {
+      "artifact": "console-legacy-runtime-adoption-actual-20261014.json",
+      "raw_sha256": "0adf5435db7198d3334018e54691f18a1b08753cfb36d0e12c4d876139d6b690"
+    }
+  },
+  "handover": {
+    "approval_revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+    "controller_uid": "7e6ffd5e-c598-435f-875b-f9bccb03b4bf",
+    "four_process_acknowledgments": {
+      "gateway": {
+        "acknowledgment_sha256": "sha256:514434b8624d57ca961d5d5ea1582c51221659c49ebd9ea999698beeee236112",
+        "deployment_uid": "f5f9b266-433d-4825-83de-d51e31c71648",
+        "document_data_sha256": "sha256:a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+        "document_uid": "e483a437-21fd-4133-99fb-c456ec25290c",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:08f7720eb59874c117ad0920fc87609152e87023a013699ed30e92e6620c1d4b",
+        "observed_at": "2026-10-14T19:35:33.215581+00:00",
+        "process_uid": "4bfdd443-4504-4fd0-9d64-0e87ef19c4c6"
+      },
+      "hub:cit": {
+        "acknowledgment_sha256": "sha256:60eac26f23dc4e8b66354f7d316c470d8b342ce94f4017cdbcad9525c1ed97b9",
+        "deployment_uid": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e",
+        "document_data_sha256": "sha256:a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+        "document_uid": "53829fdb-7f38-40e8-91bd-1b43a2eef4e6",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:d920a278df8c920f8e4c143e42b082e7ff8ed8755e08a1d3944b8bbcc0559beb",
+        "observed_at": "2026-10-14T19:35:29.513745+00:00",
+        "process_uid": "ff43ec56-3ff2-4562-9e78-a40aa4c99f5a"
+      },
+      "hub:cps": {
+        "acknowledgment_sha256": "sha256:943b121d567b0711d74c04a1ee2095dd00a30bf11d915fb55c09d4b6a636ea5c",
+        "deployment_uid": "02fb8421-d323-4636-b006-2490cd6f5b63",
+        "document_data_sha256": "sha256:a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+        "document_uid": "d21b157f-2ee2-4ccf-9289-ae00adf5dcd3",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:d920a278df8c920f8e4c143e42b082e7ff8ed8755e08a1d3944b8bbcc0559beb",
+        "observed_at": "2026-10-14T19:35:29.452675+00:00",
+        "process_uid": "f00917a2-3a17-4b91-9547-d92b09bd4ed8"
+      },
+      "node": {
+        "acknowledgment_sha256": "sha256:c23d7a929b475df72d62c16ed1c1a3996ec7ef1a25b49455d5ca2901e84f33be",
+        "deployment_uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076",
+        "document_data_sha256": "sha256:a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+        "document_uid": "179499b3-168d-4b86-9ad8-6f9b00990d31",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+        "observed_at": "2026-10-14T19:35:22.718473+00:00",
+        "process_uid": "33b919f3-11e6-4c24-9c38-51edbc965484"
+      }
+    },
+    "new_delivery_completed": true,
+    "new_seed_sha256": "sha256:83e8b6bab32cc1b3e6b6cd50182c9a6b6edee955dd49a905b37e981f8119184e",
+    "old_journal_retained": true,
+    "plan_sha256": "sha256:aa5fbfa5f85c6be75fe6e452b800d6452eff0b71b994a848350e086d13d382a9",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "publication_sha256": "sha256:ae38ef38953880e4b0485ad89a06faff687881241d81cd9dbd04bd3440f12b27",
+    "root_completion_stage": "paired_hub_handover_completed"
+  },
+  "hub_package": {
+    "changed_existing_modules": [
+      "hub.py",
+      "legacy_runtime_custody.py"
+    ],
+    "config_digest": "sha256:8b27f74f9443208c098db4ed764eae2580f56786d7ebbf20f7f9ec84383bd1f3",
+    "entrypoints_unchanged": true,
+    "host_focused_tests": {
+      "passed": 234,
+      "skipped": 3
+    },
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:d920a278df8c920f8e4c143e42b082e7ff8ed8755e08a1d3944b8bbcc0559beb",
+    "installed_hub_modules_matching_wheel": 16,
+    "installed_tests": {
+      "jupyterhub": "5.5.2",
+      "kubespawner": "7.1.0",
+      "passed": 421,
+      "skip_scope": "Three unchanged root-gate CLI cases require an explicit disposable root CPU fixture; qualification ran UID1000.",
+      "skipped": 3
+    },
+    "noneditable": true,
+    "pip_check": true,
+    "preserved_core_files": 48,
+    "preserved_dependencies": 137,
+    "previous_image": "ghcr.io/mul-cps/cps-compute@sha256:29b7b3e9a9af380ebeff8de06c2ab187f370acca7e52828a1c2b2f4001259973",
+    "source_commit": "406a7a40342fd9fc021a3eb09a191ac987c135a7",
+    "wheel_sha256": "9bd7650204669b910b0d0128b53a25e31cd31151daa3a7f3748a99700a5d3843"
+  },
+  "kind": "actual-first-stage-paired-hub-stop-persistence-adoption",
+  "open_gates": [
+    "Same-image CIT legacy runtime enrollment and its subsequent bounded handover remain open.",
+    "Normal Source Start/Close, automatic persisted native-state clearance, owned kernel/SDK activity and exact restoration require separate Root acceptance evidence.",
+    "Human OAuth and production qualification remain open."
+  ],
+  "phase": "47456a47",
+  "scope": "First-stage paired Hub image adoption and completed delivery only; no config, secret, token, actor or protected DB payloads are published.",
+  "source_consoles": {
+    "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:b36c54a57f526e6cb4595bf9e552d80d217a72ba6a7ee30767d8b3bc3d3ec5c7",
+    "provenance": "Existing separate public paired-console adoption receipt; Source deployment was not part of this Hub handover.",
+    "source_commit": "e905ed734e903fcf37e522720978286fda693e01"
+  },
+  "status": "first-stage-completed",
+  "version": 1
+}

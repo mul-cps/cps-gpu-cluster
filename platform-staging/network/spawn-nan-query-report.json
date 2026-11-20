@@ -1,0 +1,41 @@
+{
+  "createdAt": "2026-10-07T04:16:03.236404+00:00",
+  "sourceRevision": "f3addbc81c1b5862eb23fa16428bd632c0fa39ca",
+  "scope": "candidate dashboard expression evaluated against live Prometheus, no deployment",
+  "candidateExpression": "(histogram_quantile(0.95, sum by (le, namespace) ((rate(jupyterhub_server_spawn_duration_seconds_bucket[10m]) and (time() - timestamp(jupyterhub_server_spawn_duration_seconds_bucket) <= 120)))) >= 0)",
+  "deployedRecordingResult": {
+    "resultType": "vector",
+    "result": [
+      {
+        "metric": {
+          "__name__": "cps:hub_spawn_p95_seconds",
+          "namespace": "jupyterhub"
+        },
+        "value": [
+          1791346563.225,
+          "NaN"
+        ]
+      },
+      {
+        "metric": {
+          "__name__": "cps:hub_spawn_p95_seconds",
+          "namespace": "cit-jhub"
+        },
+        "value": [
+          1791346563.225,
+          "NaN"
+        ]
+      }
+    ]
+  },
+  "candidateResult": {
+    "resultType": "vector",
+    "result": []
+  },
+  "passed": true,
+  "productionRulesChanged": false,
+  "limitations": [
+    "No representative startup burst ran.",
+    "Empty candidate result means unavailable; it does not establish successful startup."
+  ]
+}

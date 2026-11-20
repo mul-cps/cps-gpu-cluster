@@ -1,0 +1,29 @@
+{
+  "actualImageId": "ghcr.io/mul-cps/cps-compute@sha256:7a9caff2fe4874adad523dd2be3fc6dcb00930b7dc4d3ddbc2f3141de20d15ea",
+  "all15KubernetesResourcesRemovedByUid": true,
+  "automaticCleanupActivated": false,
+  "controllerSha256": "9cadec1f0229222f34923b18f456a0506ae5e92826ea78ab7e791e1e72e73542",
+  "fixtureSha256": "7d1b0d4d2688da204dc417be7a599f13a330cb69b93bcd9ffe54eecbd5c239ee",
+  "leastPrivilegeUnownedWorkflowDenied": true,
+  "limitations": [
+    "All terminal states are controlled synthetic workflow status; no real notebook execution is claimed.",
+    "Clocks are supplied only to individual unchanged controller sweeps; no host or service clock was changed.",
+    "Acknowledgement ambiguity is injected at the real conditional-delete boundary; no network outage was induced.",
+    "Surviving unique-prefix QA artifacts and immutable provenance remain as evidence.",
+    "Real gateway snapshot, executed notebook and user retain lifecycle, off-host restores, and scheduled cleanup remain separate gates."
+  ],
+  "nodeObservationSource": "Actual scoped kubectl Pod JSONPath during execution",
+  "observedCpuPodNode": "k3s-wk-gpu1",
+  "planSha256": "2deb18cb99d86cc6054e5cb4375c0dd9456cba37640939c91af016e72d962705",
+  "productionCronSpecUnchanged": true,
+  "productionQualified": false,
+  "reportSha256": "a0f25f9a91eabee2158aefb4038c67b8878eb8485476647ef508b5723eb81361",
+  "runnerSha256": "c7ea0916c86a31bc78e31bfd32595170c1e951dec3dd2e44a746324683516e8d",
+  "state": "controlled-14-and-90-day-retention-passed",
+  "tests": {
+    "allPassed": true,
+    "existingRetentionTests": 20,
+    "newGuardTests": 4
+  },
+  "version": 1
+}

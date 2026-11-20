@@ -1,0 +1,24 @@
+# Append this extraEnv entry by name; merge this extraConfig key.
+# Preserve all existing Hub values, lists and native reservation configuration.
+hub:
+  extraEnv:
+  - name: PERSONAL_ARGO_OAUTH_CLIENT_SECRET
+    valueFrom:
+      secretKeyRef:
+        name: personal-argo-oauth
+        key: oauth-client-secret
+  extraConfig:
+    99-personal-argo-service: "# Appended service and default normal-user access;\
+      \ no admin API role.\nimport os\n_personal_name = 'cps-argo-ui'\nif any(s.get('name')\
+      \ == _personal_name for s in c.JupyterHub.services):\n    raise RuntimeError('Dedicated\
+      \ personal Argo service already configured')\nc.JupyterHub.services = list(c.JupyterHub.services)\
+      \ + [{\n    'name': _personal_name,\n    'api_token': os.environ['PERSONAL_ARGO_OAUTH_CLIENT_SECRET'],\n\
+      \    'oauth_client_id': 'service-' + _personal_name,\n    'oauth_redirect_uri':\
+      \ 'https://jupyterhub.dshl.unileoben.ac.at/argo/oauth_callback',\n    'oauth_client_allowed_scopes':\
+      \ [],\n    'display': False,\n}]\n_personal_roles = [dict(role) for role in\
+      \ c.JupyterHub.load_roles]\n_personal_user = next((role for role in _personal_roles\
+      \ if role.get('name') == 'user'), None)\nif _personal_user is None:\n    _personal_user\
+      \ = {'name': 'user', 'scopes': ['self']}\n    _personal_roles.append(_personal_user)\n\
+      _personal_scope = 'access:services!service=' + _personal_name\n_personal_user['scopes']\
+      \ = list(dict.fromkeys([*_personal_user.get('scopes', ['self']), _personal_scope]))\n\
+      c.JupyterHub.load_roles = _personal_roles\n"

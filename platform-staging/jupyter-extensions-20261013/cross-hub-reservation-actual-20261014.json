@@ -1,0 +1,84 @@
+{
+  "both_normal_stops_confirmed": true,
+  "completed_at": "2026-10-14T15:32:16.633809+00:00",
+  "conflict_transport": {
+    "audit_bookmark": 1712,
+    "conflict_audit_seq": 1720,
+    "execution_ended": "2026-10-14T15:30:35.330651+00:00",
+    "execution_started": "2026-10-14T15:29:28.254196+00:00",
+    "gateway_audit_required": true,
+    "gateway_outcome": "reservation_conflict",
+    "loser_attempt": "b0b7142d-0bfd-4f43-bebd-b3a9430bad78",
+    "loser_attempt_authority": "Gateway-authoritative loser attempt; no independent Hub-state attempt claim",
+    "loser_http_status": 503,
+    "source_409_ux_qualified": false,
+    "winner_attempt": "3d858164-4261-485a-84e1-2ecf869e29ba",
+    "winner_audit_seq": 1719
+  },
+  "events": [
+    "one_ready_one_conflict_loser_no_partial_binding",
+    "winner_shutdown_confirmed_before_retry",
+    "loser_retry_ready_after_release",
+    "retry_normal_close_confirmed"
+  ],
+  "evidence_sha256": {
+    "actual-run-d1f0c87e/exact-current-reservation-conflict.json": "56f55b6b8480f54b6e938bbcf67b90c285fe58cb753d582856f7dc24c3f9a898",
+    "actual-run-d1f0c87e/gateway-audit-after-start.private.json": "9e18a0b278646a51e601423eed8998456a5ef26fd54d509e5946b55931e385ee",
+    "actual-run-d1f0c87e/loser-conflict-stopped.json": "d45f8ab10192cd8493108858c3b377f301c82c2aeb155b9c1b0b06d6b1f350be",
+    "actual-run-d1f0c87e/loser-retry-confirmed-stopped.json": "5061415d1deb5c807104846c000ff171cc81ffffe3951095f52f7a6fd86b5dc5",
+    "actual-run-d1f0c87e/loser-retry-ready.json": "c3358402c12bd7e7d34f5641ac76d517c910ec64dc564349a3bbb579f0ba52a7",
+    "actual-run-d1f0c87e/result.json": "fca105c36cb6f53aab190acd39c99f99277376b529e88f4fe8a8fa24beef7173",
+    "actual-run-d1f0c87e/simultaneous-start-responses.private.json": "b3180dfeac62c8da5525691cac1230243a8d5ebc3886738120628d4c0920662b",
+    "actual-run-d1f0c87e/winner-confirmed-stopped.json": "8e494365b50f335476cf0de0e1a38d13d5b5bc6402bc3cc86800166dcb22a0a5",
+    "actual-run-d1f0c87e/winner-ready.json": "364d553650153f2c4ce98d2e8a898498193f4c6347f2b55b200ba6c18dabd962",
+    "reviewed-plan.json": "d1f0c87e91ca72b7e02d3bb40fa961ea6c24208bf1d2947980f3a649187b0ef5",
+    "root-actual-execution/execution-receipt.json": "10434d37c29e4d218c5935c3073b2e0b2532bfcc51ed53ab5b1cd42fc9f42ae4",
+    "software-freeze.json": "22846970a2d711dbc51b9cf3be51c2089a8a0556521ba7ad8f156c270614ba6f"
+  },
+  "exact_original_windows_groups_grants_restored": {
+    "cit": {
+      "passed": true,
+      "result": {
+        "actor_groups_restored": true,
+        "all_grants_byte_equal": true,
+        "confirmed_stopped": true,
+        "exact_windows_restored": true,
+        "group_members_restored": true,
+        "no_direct_sql_writes": true
+      }
+    },
+    "cps": {
+      "passed": true,
+      "result": {
+        "actor_groups_restored": true,
+        "all_grants_byte_equal": true,
+        "confirmed_stopped": true,
+        "exact_windows_restored": true,
+        "group_members_restored": true,
+        "no_direct_sql_writes": true
+      }
+    }
+  },
+  "execution_exit_code": 0,
+  "hardware_cap_qualified": false,
+  "human_oauth": false,
+  "kind": "actual-simultaneous-cross-hub-member-reservation-acceptance",
+  "limits": [
+    "Source surfaces an asynchronous Hub reservation conflict as HTTP503; an exact fresh Gateway audit proves the conflict. HTTP409 UI behavior remains unqualified.",
+    "This uses two approved pilot workspaces with the same two canonical test members. Wider GPU packing and different-member partial rollback remain separate.",
+    "CIT legacy runtime activity scope is being repaired separately."
+  ],
+  "loser_no_server_pod_shares_or_partial_binding": true,
+  "loser_retry_reached_ready": true,
+  "one_reservation_per_shared_person": true,
+  "only_owned_tokens_revoked": {
+    "cit": 430,
+    "cps": 657
+  },
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "production_qualified": false,
+  "retry_after_confirmed_release": "cps:native-group-a",
+  "shared_canonical_members": 2,
+  "winner": "cit:native-group-a",
+  "winner_shutdown_confirmed_before_retry": true
+}

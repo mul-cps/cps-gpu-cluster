@@ -1,0 +1,18 @@
+{
+  "published": true,
+  "deployed": false,
+  "scope": "Preserving prospective531 Hub plus the registered CIT CPU image resolver",
+  "image": "ghcr.io/mul-cps/cps-compute@sha256:6bbd8788d5c84b9e5aa3d968d54350bf4de9fed8e08922cf136abf75b892d488",
+  "tag": "qualification-prospective531-cit-hub-9739a9ec-20261015",
+  "source_commit": "9739a9ece7e63650db2e7bc54e94dea725416c33",
+  "qualification_receipt_sha256": "2c2be873513f0090c2d13cf330c5dced72415e23b78c1bff3274eb8d505cf44c",
+  "installed_tests_passed": 119,
+  "remote_manifest_exact": true,
+  "remote_manifest_matches_qualified_bytes": true,
+  "all_75_portable_OCI_blobs_rehashed_by_root": true,
+  "production_native916_guard_unchanged": true,
+  "production_qualified": false,
+  "hardware_qualified": false,
+  "recorded_at": "2026-10-15T17:26:12.144238+00:00",
+  "live_configuration_or_native_approval_registry_changed": false
+}

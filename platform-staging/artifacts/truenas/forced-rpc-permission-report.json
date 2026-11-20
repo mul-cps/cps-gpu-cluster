@@ -1,0 +1,53 @@
+{
+  "group": "qualification-forced-posix-5008b6df094b49798a0560f79986d387",
+  "provision": {
+    "path": "/mnt/persistent1/cps_persistent1_shared/compute/cps/4d270d5740f8508286134a94b36cb3a3c2cfeafa0f8d7db7d6c042707b00f7e3",
+    "read_only": false,
+    "immutable": false,
+    "files_preserved": true,
+    "evidence": {
+      "dataset": "persistent1/cps_persistent1_shared/compute/cps/4d270d5740f8508286134a94b36cb3a3c2cfeafa0f8d7db7d6c042707b00f7e3",
+      "readonly": false,
+      "mechanism": "zfs-readonly",
+      "permissions_verified": true,
+      "acltype": "POSIX1E",
+      "aclmode": "DISCARD",
+      "uid": 1000,
+      "gid": 1000,
+      "mode": "0770",
+      "default_acl": false
+    }
+  },
+  "archive": {
+    "path": "/mnt/persistent1/cps_persistent1_shared/compute/cps/4d270d5740f8508286134a94b36cb3a3c2cfeafa0f8d7db7d6c042707b00f7e3",
+    "read_only": true,
+    "immutable": true,
+    "files_preserved": true,
+    "evidence": {
+      "dataset": "persistent1/cps_persistent1_shared/compute/cps/4d270d5740f8508286134a94b36cb3a3c2cfeafa0f8d7db7d6c042707b00f7e3",
+      "readonly": true,
+      "mechanism": "zfs-readonly"
+    }
+  },
+  "status": {
+    "path": "/mnt/persistent1/cps_persistent1_shared/compute/cps/4d270d5740f8508286134a94b36cb3a3c2cfeafa0f8d7db7d6c042707b00f7e3",
+    "read_only": true,
+    "immutable": true,
+    "files_preserved": true,
+    "evidence": {
+      "dataset": "persistent1/cps_persistent1_shared/compute/cps/4d270d5740f8508286134a94b36cb3a3c2cfeafa0f8d7db7d6c042707b00f7e3",
+      "readonly": true,
+      "mechanism": "zfs-readonly"
+    }
+  },
+  "installedRPC": {
+    "oldSHA256": "2512824dd854452b82e1200bb310a5ec2a964810186d93aabc1caa7aaaad9216",
+    "newSHA256": "3406968cd1cafc9cd8cf94d4b0a8073db7e5e044bb5f09b38cd9b9e438c1646f",
+    "backup": "/home/truenas_admin/.ssh/cps-workspace-rpc.py.backup-2512824dd854452b"
+  },
+  "limitations": [
+    "Synthetic gateway-pod transport request; not authenticated HTTP controller provisioning",
+    "No Kubernetes binding or mounted writer lifecycle exercised in this transport check",
+    "Read-only synthetic dataset and export retained; no human dataset altered"
+  ]
+}

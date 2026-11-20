@@ -1,0 +1,85 @@
+{
+  "artifactKind": "sanitized-qualified-runtime-receipt",
+  "consoleProfiles": {
+    "citConfiguredConsoleDataEnabledShared5": true,
+    "cpsAuthenticatedApiEnabledShared5": true,
+    "unapprovedAndGlobalCpsApiExcludeShared5": true
+  },
+  "evidenceSha256": {
+    "afterPreflight": "sha256:cd8b02b46bcdf20b91bb12d7464cab1fe3fc49901e565e8c2ac8848e17caa148",
+    "beforePreflight": "sha256:4c5d8ab81d8b25155d09f7b1a6ae111d00adc4fe204dd0ac3c7d88178c7bbeaa",
+    "citKernelControls": "sha256:c7f142a129ee50819d8b1e51cfc63f696adc1c75edbd7d30e1f0d6b51c0f94b9",
+    "citProfileHandover": "sha256:5eb1a95e21714199a57b5f41bc74f2ef10ac31529d7809891d7da6d49c96a6b4",
+    "cpsKernelControls": "sha256:15af6639d922496f367f17843fc83a4409bb0d8c0c58245f26c944a99a61dc79",
+    "cpsProfileHandover": "sha256:db205e7336fb4a84765cb1426434206d735c9eb17d34255e5f5c084506099684",
+    "immutableCleanupReports": [
+      "sha256:c54c7d79cfb9511095278c9828a2d8ddc4a5d834255c7b525aa78593143a38aa",
+      "sha256:7a82fcf7406285a6a7ca13b10c6ee119919013c746de5c0827e548c695f66369"
+    ]
+  },
+  "gpuControls": {
+    "afterControlsMemoryChargeBytes": [
+      0,
+      0
+    ],
+    "beforeAfterIdentityAndCapsStable": true,
+    "capMiBPerWorkspace": 5120,
+    "kernelPositiveAndRecoveryPassedBoth": true,
+    "kernelVectorElements": 256,
+    "managedAllocationDeniedBoth": 801,
+    "migEnabled": false,
+    "ordinaryAllocationMiB": 64,
+    "samePhysicalA100": true
+  },
+  "limits": [
+    "Only the two approved workspaces and selected A100 are covered.",
+    "Ordinary GPU profiles, additional scopes and the eight-GPU fleet remain unqualified.",
+    "Same-person simultaneous cross-Hub starts, human CIT OAuth/browser collaboration and representative burst timing are not established.",
+    "This is an observed qualification snapshot, not an operational heartbeat."
+  ],
+  "normalGrants": {
+    "citProfileOnlyChanges": 2,
+    "cpsProfileOnlyChanges": 4,
+    "identitiesAllowancesTimesPreserved": true
+  },
+  "normalStarts": {
+    "cit": {
+      "humanOAuthTested": false,
+      "passed": true,
+      "path": "controlled-owning-source-service"
+    },
+    "cps": {
+      "elapsedSeconds": 49.86,
+      "httpStatus": 200,
+      "path": "authenticated-console"
+    }
+  },
+  "policyHash": "sha256:78fb2d7ca42585a000e58b52c297d072a11dfbc466b19f50aa9d276d567a413f",
+  "policyVersion": "0.1.1",
+  "profileHandover": {
+    "bothNormalSourceFlowsPassed": true,
+    "fullStoragePreserved": true
+  },
+  "reviewedAt": "2026-10-09T21:28:09.230649Z",
+  "schemaVersion": 1,
+  "scopes": [
+    "cps:native-group-b",
+    "cit:native-group-a"
+  ],
+  "shutdown": {
+    "bothImmutableRetirementsZeroCharge": true,
+    "bothNativeReservationsReleased": true,
+    "bothStopped": true,
+    "citFirstConflict": 409,
+    "citSameNormalCloseResumePassed": true,
+    "cpsNormalConsoleHttpStatus": 200,
+    "retainedCompletedPodLifetimes": 14,
+    "terminalLedgerRecords": 19
+  },
+  "status": "qualified-pilot-available",
+  "storage": {
+    "cpsOriginalPvcPvUidSpecAndSentinelPreserved": true,
+    "ownQualificationSentinelRemoved": true,
+    "registeredStorageIdentitiesPreservedBoth": true
+  }
+}

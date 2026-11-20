@@ -1,0 +1,135 @@
+{
+  "status": "isolated-fixture-qualified-not-production",
+  "baseline": {
+    "cps": {
+      "tcp": {
+        "193.170.30.58:111": false,
+        "193.170.30.58:2049": true,
+        "10.71.1.55:111": false,
+        "10.71.1.55:2049": false
+      },
+      "dns": true,
+      "https": true,
+      "mockHub-cps": true,
+      "mockHub-cit": true,
+      "mountedNfsWriteRead": true,
+      "fileSha256": "e3f4ad1177efebef96a605eeafdabfa5ff57af7cbec2e6bdd6aca9af2cd85962",
+      "probeFileRemoved": true
+    },
+    "cit": {
+      "tcp": {
+        "193.170.30.58:111": false,
+        "193.170.30.58:2049": true,
+        "10.71.1.55:111": false,
+        "10.71.1.55:2049": false
+      },
+      "dns": true,
+      "https": true,
+      "mockHub-cps": false,
+      "mockHub-cit": true,
+      "mountedNfsWriteRead": true,
+      "fileSha256": "e3f4ad1177efebef96a605eeafdabfa5ff57af7cbec2e6bdd6aca9af2cd85962",
+      "probeFileRemoved": true
+    },
+    "batch": {
+      "tcp": {
+        "193.170.30.58:111": false,
+        "193.170.30.58:2049": true,
+        "10.71.1.55:111": false,
+        "10.71.1.55:2049": false
+      },
+      "dns": true,
+      "https": true,
+      "mockHub-cps": true,
+      "mockHub-cit": true,
+      "mountedNfsWriteRead": true,
+      "fileSha256": "e3f4ad1177efebef96a605eeafdabfa5ff57af7cbec2e6bdd6aca9af2cd85962",
+      "probeFileRemoved": true
+    }
+  },
+  "compiled": {
+    "cps": {
+      "tcp": {
+        "193.170.30.58:111": false,
+        "193.170.30.58:2049": false,
+        "10.71.1.55:111": false,
+        "10.71.1.55:2049": false
+      },
+      "dns": true,
+      "https": true,
+      "mockHub-cps": true,
+      "mockHub-cit": true,
+      "mountedNfsWriteRead": true,
+      "fileSha256": "e3f4ad1177efebef96a605eeafdabfa5ff57af7cbec2e6bdd6aca9af2cd85962",
+      "probeFileRemoved": true
+    },
+    "cit": {
+      "tcp": {
+        "193.170.30.58:111": false,
+        "193.170.30.58:2049": false,
+        "10.71.1.55:111": false,
+        "10.71.1.55:2049": false
+      },
+      "dns": true,
+      "https": true,
+      "mockHub-cps": false,
+      "mockHub-cit": true,
+      "mountedNfsWriteRead": true,
+      "fileSha256": "e3f4ad1177efebef96a605eeafdabfa5ff57af7cbec2e6bdd6aca9af2cd85962",
+      "probeFileRemoved": true
+    },
+    "batch": {
+      "tcp": {
+        "193.170.30.58:111": false,
+        "193.170.30.58:2049": false,
+        "10.71.1.55:111": false,
+        "10.71.1.55:2049": false
+      },
+      "dns": true,
+      "https": true,
+      "mockHub-cps": true,
+      "mockHub-cit": true,
+      "mountedNfsWriteRead": true,
+      "fileSha256": "e3f4ad1177efebef96a605eeafdabfa5ff57af7cbec2e6bdd6aca9af2cd85962",
+      "probeFileRemoved": true
+    }
+  },
+  "compilerSha256": "a0059df31ce3311e40d31cb482e4a9801ee40b9a5498015bd68a1e3d1ac874b7",
+  "targets": {
+    "schemaVersion": 1,
+    "blockedPodDestinations": [
+      "193.170.30.58/32",
+      "10.71.1.55/32"
+    ],
+    "scope": "Known IPv4 NAS service addresses; keep node-side NFS mounts unchanged"
+  },
+  "unitTestsPassed": 5,
+  "productionPoliciesChanged": false,
+  "discoveredLegacyBypass": {
+    "cpsToken": {
+      "serviceAccount": "dask-sa",
+      "automountExplicit": false,
+      "projectedTokenVolumes": 1
+    },
+    "citToken": {
+      "serviceAccount": "default",
+      "automount": false,
+      "projectedTokenVolumes": 0
+    },
+    "daskRoleBindingNamespace": "jupyterhub",
+    "allowedResources": [
+      "daskclusters",
+      "daskworkergroups",
+      "daskjobs",
+      "daskautoscalers"
+    ],
+    "risk": "Dask-created workers may miss singleuser policy, use host networking or arbitrary template service accounts; resource creation must be restricted through reviewed launchers before privacy is qualified"
+  },
+  "cleanup": {
+    "namespaceAndClientMockPodsRemoved": true,
+    "temporaryImagePullSecretRemoved": true,
+    "claimsAndTemporaryRetainPvRemoved": true,
+    "probeFilesRemoved": true,
+    "existingNfsQualificationDataPreserved": true
+  }
+}

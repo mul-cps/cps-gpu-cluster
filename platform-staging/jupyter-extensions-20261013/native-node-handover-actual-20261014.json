@@ -1,0 +1,38 @@
+{
+  "all_four_current_process_acknowledgments": true,
+  "begin_replayed": false,
+  "capture_companion_node_image_updated": true,
+  "evidence_base": "private operator state native-kai-node-epoch-handover-preparation-20261014",
+  "evidence_sha256": {
+    "root-actual-execution/probe-cap-finish-receipt.json": "3e3f5527840f680ace0fc25e3039a675826be47689caa1c1003273a98b7afa31",
+    "run-probe-cap-e3c706d0/module-only-resume.json": "093e94ee21cad2ab38a302a3e4d32544012bcd3bdb1ed1765ccd6f27d1e87400",
+    "run-probe-cap-e3c706d0/phase-e3c706d0/delivery-activation-readiness.json": "093458981fcb7fe7f49f75c29daf0800260640907209d6be5beaaeda446437cd",
+    "run-probe-cap-e3c706d0/phase-e3c706d0/final.json": "c7c999ab359be1e0f802b6d5309bce1140a0268207745a699137ca2687e7ce6e",
+    "run-probe-cap-e3c706d0/phase-e3c706d0/new-delivery-activation-readback.json": "2622492d52cb687322cea9341849bd281ec359f9e54fb74fe40486899a47ffc2",
+    "run-probe-cap-e3c706d0/phase-e3c706d0/observer-b3479ebb/independent-physical-epoch.json": "d81d6069be2fe220b666b8b6f43882b26f7eab6539874c8d00d7b818d24bdd79",
+    "run-probe-cap-e3c706d0/phase-e3c706d0/observer-b3479ebb/post-barrier-native-zero.json": "fb765c8a243c4848214f585c80aba893fe19df91eecdee73b01e3e3ed69540d6",
+    "run-probe-cap-e3c706d0/phase-e3c706d0/old-journal-byte-receipt.json": "6c96309e5dca6d9c8bde8e96ca4ed9d11b7333814b4ae7ffdeaabf060779fe6a",
+    "run-probe-cap-e3c706d0/phase-e3c706d0/operator-code.json": "d1351849e7c9eb1f474bb7afeb020a823c8b7842c8aff22c31b865418ef7aae2"
+  },
+  "execution_exit_code": 0,
+  "gateway_main_image": "ghcr.io/mul-cps/cps-compute@sha256:440711b2bb00151f8625e9df54c97e7ed4d137ca246453aae9ad7524d6681c3d",
+  "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:a7155bebb5dff1b70ff79edbf57a1012bb37feed082bac8212c885b46e1cb950",
+  "kai_coordinator_mode_enabled": false,
+  "kind": "actual-native-node-image-handover",
+  "limits": [
+    "This completes the Node image handover, not KAI coordinator/binder activation or post-Bind cap/CDI qualification.",
+    "No stock GPU driver, MIG mode, entitlement, Hub image or Gateway main image was changed."
+  ],
+  "native_pool_policy_unchanged": true,
+  "new_delivery_journal_completed": true,
+  "new_delivery_seed_sha256": "sha256:3d18e22d7ca25bf23edebd293be22db0e3cbb7bb91a40f049789b46da07988c3",
+  "node_image": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+  "observed_at": "2026-10-14T10:37:24.144841+00:00",
+  "old_journal_bytes_sha256": "55e3cd77065e21d1743463e8a4f69ee066b3f21792f25de9c51d01f7e7bbc137",
+  "post_barrier_hardware_probe_readonly": true,
+  "post_barrier_hardware_read_capability_exception": [
+    "SYS_ADMIN"
+  ],
+  "production_qualified": false,
+  "reviewed_resume_sha256": "sha256:f2fed6beacafde7d334d3bba08bbaf706306ce3ff6b134a86ef92fef44f24711"
+}

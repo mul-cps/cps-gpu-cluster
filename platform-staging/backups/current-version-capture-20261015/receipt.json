@@ -1,0 +1,97 @@
+{
+  "version": 1,
+  "captured_at": "2026-10-15T17:07:37.345793+00:00",
+  "scope": "Current-version console/gateway backup execution and private Hub/configuration capture",
+  "production_qualified": false,
+  "connected_restore_proven": false,
+  "coordinated_atomic_snapshot": false,
+  "encrypted_offhost_restore_proven": false,
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "owned_verification_jobs_and_pods_absent": true,
+  "existing_backups_preserved": true,
+  "hub_images": {
+    "jupyterhub": "ghcr.io/mul-cps/cps-compute@sha256:604c94e62da8c3594579dcec21b3b5810479fadece94abfc0e90aec542165b62",
+    "cit-jhub": "ghcr.io/mul-cps/cps-compute@sha256:604c94e62da8c3594579dcec21b3b5810479fadece94abfc0e90aec542165b62"
+  },
+  "private_hub_bundle_manifest_sha256": "b9de40d7274f1a345b8870f45e0dc95463e9d1d4c32d96f5eaf4944a409e45ce",
+  "private_hub_bundle_files_verified": 12,
+  "private_compute_configuration_manifest_sha256": "897b2d05e842f011b7fb715260fbfddc24e70e6b10552bb88566faeeba78d164",
+  "results": [
+    {
+      "cronjob": "cps-admin-backup",
+      "cronjob_uid": "c708081a-dac4-4396-a1fb-3af6363e2e8d",
+      "job": "qual-backup-cps-admin-3e632cbc",
+      "job_uid": "8d8f02bd-72e5-48be-9266-aea4e3c28e9f",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "script": "/scripts/backup-console.py",
+      "pod_uid": "c67a01b6-3703-40e4-acd4-0548d337855e",
+      "completion_time": "2026-10-15T17:06:07+00:00",
+      "proof": {
+        "backup_path": "20261015T170604.547783Z-8aa9bb13c9a647f6994ee3fb520d6343",
+        "manifest_sha256": "b769c5c3cc510f23cd9ced153b17b6ca90bc435409cc09b72eaf7a8a0b812f09",
+        "application_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+        "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+        "file_sha256": {
+          "console.sqlite": "3ddfaf97f119a0cbf88de5d60eb04ebbb35fde329cc302b3576e36a22db770d2"
+        },
+        "script_sha256": "3238c37f373ea84667221f3c964c0fd4634bbe4d472518faea69222a50ad5838",
+        "production_qualified": false,
+        "snapshot_integrity_check": true
+      }
+    },
+    {
+      "cronjob": "cit-admin-backup",
+      "cronjob_uid": "9e8ea225-9bec-409e-b046-b9254856f640",
+      "job": "qual-backup-cit-admin-a37cac9e",
+      "job_uid": "a655d1ea-0409-4f52-ade8-7e1486bc5aae",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "script": "/scripts/backup-console.py",
+      "pod_uid": "6248c75b-fcb6-4876-b546-c2be436b254c",
+      "completion_time": "2026-10-15T17:06:07+00:00",
+      "proof": {
+        "backup_path": "20261015T170604.927719Z-6a56db1b9a9440eabce2cf8def40184e",
+        "manifest_sha256": "f3ffc89b34836c6d4a4a41deef76b3eed666da20c303aff874c528c702c20cf6",
+        "application_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:51f7f392397e41be512b356fbee91980fb233296cee7557d25a758b99b045f44",
+        "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+        "file_sha256": {
+          "console.sqlite": "f0b57ea31ebc7b28ceabef478f15b8d3b6e5f5421d9f9fe9c4bfd7f8bc0bc96b"
+        },
+        "script_sha256": "3238c37f373ea84667221f3c964c0fd4634bbe4d472518faea69222a50ad5838",
+        "production_qualified": false,
+        "snapshot_integrity_check": true
+      }
+    },
+    {
+      "cronjob": "compute-state-backup",
+      "cronjob_uid": "8924e2ab-df98-466f-924c-3100bae8b5b3",
+      "job": "qual-backup-compute-state-d6073be2",
+      "job_uid": "f8144a4e-c928-4118-96b7-81a6a1e74d0c",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:d974acab8ee692fd68419875f8e0519f5bca482b83b33d36f990abc526959c38",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "script": "/scripts/backup-state.py",
+      "pod_uid": "3238ecc4-9ea3-44b5-9fef-f6a3ff4a2f35",
+      "completion_time": "2026-10-15T17:06:07+00:00",
+      "proof": {
+        "backup_path": "20261015T170604.912204Z",
+        "manifest_sha256": "d7928db2e08c02ea719166c4da103bc8344a6663dbc405c805d9b8b588724191",
+        "application_image": "ghcr.io/mul-cps/cps-compute@sha256:d974acab8ee692fd68419875f8e0519f5bca482b83b33d36f990abc526959c38",
+        "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+        "file_sha256": {
+          "control.sqlite": "db2c925d673e6f856e3e7113ecf95e3793184424bdb3bc7b89979107cb596f05",
+          "reservations.sqlite": "e370e5f0784d48add19a952dcabdfd58fa04d2917be4ad23c839c3bdc3583a71"
+        },
+        "script_sha256": "826457d6d45a1498b44a5c4094e9f0e66c081fd1e8900024c5375cbaa8759cd8",
+        "production_qualified": false,
+        "snapshot_integrity_check": true
+      }
+    }
+  ],
+  "limitations": [
+    "Sequential captures, not a coordinated point-in-time snapshot",
+    "SQLite checksums and read-only integrity checks; connected login/spawn recovery remains unproven",
+    "NFS data and artifact recovery remain unproven",
+    "Encrypted off-host durability and the next automatic backup schedule remain unproven"
+  ]
+}

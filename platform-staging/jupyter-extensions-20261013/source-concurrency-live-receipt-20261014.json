@@ -1,0 +1,86 @@
+{
+  "assets_changed": false,
+  "human_oauth_qualified": false,
+  "installed_image_tests": 303,
+  "new_account_lifecycle_qualified": false,
+  "production_qualified": false,
+  "rollout_plan_sha256": "f5c8c43d274c86076195915d76f7e7870cea3dcaa51e364b5559bcc7d8cdefc1",
+  "source_revision": "55c9a8865c462e4baeb306965fb1a6ed5da07dbd",
+  "source_tests": 303,
+  "state": "both-source-consoles-ready-existing-rows-preserved",
+  "targets": {
+    "cit-admin": {
+      "all_preexisting_rows_preserved": true,
+      "deployment_uid": "54466777-ece9-4d63-bcd8-8156caba55af",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:9698e84452c98385155571e570208e362f19ba4127e8cfe1e4320232a4365849",
+      "integrity": "ok",
+      "pod_uid": "86412a25-157e-4358-9073-05f13d0f95e0",
+      "private_readback_sha256": "6de857ce69876c838945e1f9599a51665148a45a61a6029bdb2b7f272f53ca1c",
+      "ready": true,
+      "schema": 7,
+      "table_fingerprints": {
+        "audit": {
+          "count": 341,
+          "sha256": "3741e25638416134293a666cb208c4c7461c475e9cf36bca29e9700b137a2c9c"
+        },
+        "console_owner": {
+          "count": 1,
+          "sha256": "f5dae5bcd7a1fde14321dfef59c8a3ab47081a58f5bd1f5321fe6e38e625f82c"
+        },
+        "email_links": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "records": {
+          "count": 6,
+          "sha256": "24c89dab2f382ea7a8e63cdef25ede4ae5fba0195e8d711533cbf89f19dc0918"
+        },
+        "reviewed_account_aliases": {
+          "count": 2,
+          "sha256": "a64b98966282e27ed6e1a4e8aa6c8f4cf722b3c3eae8151386ccd3b34f735980"
+        },
+        "workspace_accounts": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        }
+      }
+    },
+    "cps-admin": {
+      "all_preexisting_rows_preserved": true,
+      "deployment_uid": "cea488be-b5c5-481f-b41d-169d22f56f33",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:9698e84452c98385155571e570208e362f19ba4127e8cfe1e4320232a4365849",
+      "integrity": "ok",
+      "pod_uid": "277fd6f7-7676-4b65-815a-295cd9ec3949",
+      "private_readback_sha256": "5375565ce9d7faf824a59ec0e9db58b493d8891b6f7e40bbaf46b4751eedd919",
+      "ready": true,
+      "schema": 7,
+      "table_fingerprints": {
+        "audit": {
+          "count": 844,
+          "sha256": "09315c79be4ec20a2ed08ae6d061e9544267415170a56ccd716331e2f308b25c"
+        },
+        "console_owner": {
+          "count": 1,
+          "sha256": "23907f4d4d2b3f5f2c89c8117dfd84292c81077761ba0f4920b9c4b0cc58100f"
+        },
+        "email_links": {
+          "count": 0,
+          "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+        },
+        "records": {
+          "count": 11,
+          "sha256": "96a15aa72b6860c42ed0beaea8e9160518e0ec3196e5caeb14cff7e4d6663f94"
+        },
+        "reviewed_account_aliases": {
+          "count": 5,
+          "sha256": "02dacf46e34d63138199616fc7cfe3cca2a4a2c3e55c1f707657ccfa4d680d60"
+        },
+        "workspace_accounts": {
+          "count": 2,
+          "sha256": "aec349d274273713bd0f27e194e266c0448a92a36e616641ddd7be09a90d8a4b"
+        }
+      }
+    }
+  },
+  "version": 1
+}

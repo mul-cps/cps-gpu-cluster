@@ -1,0 +1,21 @@
+{
+  "derivatives": {
+    "source_qualification_factory.py": "a2bc90c6e8c63f675db33e20bfb430432f3c849b3aa3b0a71bcc858ab46fd0a2",
+    "source_qualification_grants.py": "a60d0a1402d7a22305d5e634945994e78dc66e85f71c1d13d64a9ed8d0eeb30a",
+    "source_qualification_handover.py": "53c5ed41ad95729a6f4248cf9d3f384c4c5c834b0bbef92134fe25c9ede8f870",
+    "source_qualification_reader.py": "bc16a76773fefb1d6c1b97385a08d815222064b2a888bb250313949b07466fe4",
+    "source_qualification_workspace.py": "98e86a516d0018d327d8714e624ce1f755ed3af2d075ad43c5f4259fe856735b"
+  },
+  "hardware_qualified": false,
+  "node_commit": "252e710ec139da3a82fd95353be0702c1fa20176",
+  "original_files_modified": false,
+  "original_pins": {
+    "activation-runtime/normal_source_workspace.py": "7f7bb1673d61d72e65a0d7284e50159b945df07588e14ebbbff57a2738baf127",
+    "factory.py": "e5d47b454b829a17cf347a8faaae61fc9e1f3170769a8db990be658fe162656b",
+    "grant_handover.py": "1590dab3b97ccc80576880a75efb4397e4d5506381954739039c2a13d488e101",
+    "handover.py": "00a91da2cb6bbb19eefa8e9f320773d2adccf7acf20d8f8eb53af36307dbbc4b",
+    "projected-reader/gateway_reader.py": "bc16a76773fefb1d6c1b97385a08d815222064b2a888bb250313949b07466fe4"
+  },
+  "sdk_commit": "4addb2ab82bc747f5d430c18417529f4cdb21ecd",
+  "version": 1
+}

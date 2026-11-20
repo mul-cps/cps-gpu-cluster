@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "status": "corrected-live-gpu-status-deployed",
+  "source": "55585c0de5631610bb840f138696b476ed1bbb6e",
+  "wheel_sha256": "092aeac0195b1a48af838977444739c4ee4ab3359ba23cc5cddd36f94beb5a6b",
+  "main_js_sha256": "bd3330740c1c48e5505ac59a536455cca1275473909b400db6912331fe8669f7",
+  "rollouts": [
+    {
+      "name": "cps-admin",
+      "namespace": "cps-compute",
+      "deployment_uid": "cea488be-b5c5-481f-b41d-169d22f56f33",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:e720c8af11d6a7c43958108221a3154c31753694afc5b524cb06a1ffe0badb14",
+      "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:e720c8af11d6a7c43958108221a3154c31753694afc5b524cb06a1ffe0badb14",
+      "ready": true,
+      "full_spec_cas_readback": true,
+      "schema": 7,
+      "schema_upgrade_enabled": false
+    },
+    {
+      "name": "cit-admin",
+      "namespace": "cps-compute",
+      "deployment_uid": "54466777-ece9-4d63-bcd8-8156caba55af",
+      "image": "ghcr.io/mul-cps/e2x-course-hub@sha256:e720c8af11d6a7c43958108221a3154c31753694afc5b524cb06a1ffe0badb14",
+      "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:e720c8af11d6a7c43958108221a3154c31753694afc5b524cb06a1ffe0badb14",
+      "ready": true,
+      "full_spec_cas_readback": true,
+      "schema": 7,
+      "schema_upgrade_enabled": false
+    }
+  ],
+  "python_tests_passed": 277,
+  "ui_tests_passed": 57,
+  "live_cps_browser_checks_passed": 11,
+  "live_page_errors": 0,
+  "live_browser_writes": 0,
+  "human_oauth": false,
+  "production_qualified": false,
+  "qualification_state": "operator report unavailable; approved workspace availability separately verified",
+  "previous_receipt_retained": "receipt.json",
+  "pending": [
+    "human CPS/CIT OAuth",
+    "CIT legacy adoption",
+    "permanent neutral-account registry activation",
+    "broader GPU and scheduling qualification"
+  ]
+}

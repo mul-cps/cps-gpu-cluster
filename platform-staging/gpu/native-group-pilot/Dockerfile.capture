@@ -1,0 +1,13 @@
+# Context contains one verified noneditable SDK wheel and SHA256SUMS.
+ARG SDK_IMAGE
+FROM ${SDK_IMAGE}
+USER 0
+WORKDIR /opt/cps-native-capture
+COPY cps_compute-*.whl SHA256SUMS ./
+RUN sha256sum --check SHA256SUMS \
+    && python -m pip install --no-index --no-deps --force-reinstall ./cps_compute-*.whl \
+    && python -m pip check \
+    && python -c "import cps_compute.native_group_capture_server; import cps_compute.native_group_capture"
+ENV PYTHONDONTWRITEBYTECODE=1 PYTHONUNBUFFERED=1
+USER 1000:1000
+ENTRYPOINT ["python", "-m", "cps_compute.native_group_capture_server"]

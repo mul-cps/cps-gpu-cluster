@@ -1,0 +1,54 @@
+{
+  "active_native_entries_after_stop": 0,
+  "both_lifecycles_confirmed": true,
+  "charged_native_bytes_after_stop": 0,
+  "cross_hub_qualified": false,
+  "cuda_pair_receipt_sha256": "ffefcc219230e16f790e5d2e0f57dbd8f107df032d5ad24902d209984800cd3f",
+  "directions": [
+    {
+      "over_cap_cuda_result": 2,
+      "payload_mib": 64,
+      "peer_progress_spans_oom_and_recovery": true,
+      "peer_ticks": 225
+    },
+    {
+      "over_cap_cuda_result": 2,
+      "payload_mib": 64,
+      "peer_progress_spans_oom_and_recovery": true,
+      "peer_ticks": 225
+    }
+  ],
+  "gpu_epoch": {
+    "boot_id": "209f8bc9-a478-48e4-925a-6e07ffa56f7a",
+    "driver_generation": "b10498fc-9153-4394-875a-ea7cfb498625",
+    "gpu_uuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "node": "k3s-wk-gpu2",
+    "node_uid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41"
+  },
+  "imports_qualified": false,
+  "kai_placement_qualified": false,
+  "members_overlap": false,
+  "memory_cap_bytes_per_workspace": 5368709120,
+  "mps_qualified": false,
+  "native_cap_readback_passed": true,
+  "native_cap_receipt_sha256": "eccb1947fb0a5ec39f3d5362f7d1150dccce1b89cdd3c75124bbb12aad8da890",
+  "operator_runner_sha256": "d241f8f3ad8ff03c42d18f3a914db578e3138511f9355ef29cd99c5152490bbd",
+  "physical_capacity_free_inferred": false,
+  "plan_sha256": "ba9daed9377e2f5c736189e985c37501aef694f9b7ade3dc450c0e68b1d95bd9",
+  "prior_records_restored_exactly": true,
+  "production_qualified": false,
+  "profile": "interactive-shared-5",
+  "restart_qualified": false,
+  "source": "cps",
+  "state": "bounded-two-CPS-five-GiB-pair-passed",
+  "targets": {
+    "native-group-a": "f9cb378c-eb92-4f52-9cf9-e284d15b6b4a",
+    "native-group-b": "e699c460-80a9-4f56-ba52-885582215ea6"
+  },
+  "trusted_probe_sha256": {
+    "cuda_probe.py": "e0a3e28c00336d9dd5bc2c6267eb2b0792ef467940fd96c86aa11cd1c180e2eb",
+    "native-imports": "0e19d4ec396dd64cabe364607fee151c001821cdcb2da5e5b181d7f902a76f69",
+    "session_probe.py": "a54bba4924b8ce72480c1bbcc3cb64865a5802c6a168058868c2ed2142ce3973"
+  },
+  "version": 1
+}

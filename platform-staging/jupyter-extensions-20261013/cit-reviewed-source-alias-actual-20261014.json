@@ -1,0 +1,27 @@
+{
+  "authenticated_owning_hub_admin": true,
+  "authority": "reviewed_account_alias",
+  "canonical_person_id": "d98fbadd-d9a0-4981-8d20-1ab58bb75745",
+  "console": "cit",
+  "cross_hub_runtime_linkage_verified": false,
+  "email_automatically_matched": false,
+  "email_links_created": false,
+  "email_verification_required": false,
+  "evidence_base": "private operator state cit-authenticated-linkage-20261014",
+  "evidence_sha256": {
+    "actual-reviewed-alias-persisted-readback-receipt.json": "a6835e3db0c841cfc81b2fbb6a6c7fada2b1bf6a07968cf294202e31a38c1001",
+    "actual-reviewed-alias-post-receipt.json": "6bd669f5a5cd14acb84a0b2fad4b76de77d8cc331ed9eddc02b2998082c20a16",
+    "actual-reviewed-alias-postimage.private.json": "bed262e33b2e48174fb56e5b8444001e8961221f3eba68e6dc01aa93d4d45009"
+  },
+  "gateway_and_cit_hub_mapping_propagation_done": false,
+  "kind": "actual-reviewed-cit-source-person-alias",
+  "limits": [
+    "Source alias is persisted; the Gateway and CIT Hub currently still need their reviewed runtime map update.",
+    "No usernames, home paths, roles or email links were changed."
+  ],
+  "linked_cps_username": "bjoern",
+  "normal_source_http_status": 200,
+  "observed_at": "2026-10-14T11:02:54.348914+00:00",
+  "source_alias_persisted": true,
+  "username": "akadmin"
+}

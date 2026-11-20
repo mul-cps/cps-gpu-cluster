@@ -1,0 +1,20 @@
+[
+  {
+    "name": "kai-cpu-deny",
+    "deletedUid": "afb5decc-3f34-4304-9d73-c85e2276f07b",
+    "originalAbsenceConfirmed": true,
+    "attempts": 1
+  },
+  {
+    "name": "native-stale",
+    "deletedUid": "bce55f8f-2d29-4742-8347-3e24c211e3f3",
+    "originalAbsenceConfirmed": true,
+    "attempts": 1
+  },
+  {
+    "name": "native-cancel",
+    "deletedUid": "74ae407d-cfe1-4c08-8207-7a8c3443d953",
+    "originalAbsenceConfirmed": true,
+    "attempts": 1
+  }
+]

@@ -1,0 +1,100 @@
+{
+  "claims": {
+    "actual_notebook_server_token_activity_http_200": true,
+    "automatic_native_state_clear": true,
+    "exact_grants_windows_and_groups_restored": true,
+    "full_sdk_acceptance": false,
+    "hardware_cap_qualified": false,
+    "human_oauth": false,
+    "normal_source_start_stop": true,
+    "notebook_tokens_and_oauth_codes_absent_after_stop": true,
+    "ordinary_sdk_default_accepted": false,
+    "production_qualified": false
+  },
+  "current_stopped_custody": {
+    "approved_cli_proof_raw_sha256": "fa1128deb00f2baa6ec80fbe8a6b5675fe3f9341c40e09732bf9b76af905e466",
+    "current_custody_verified": true,
+    "hub_api_servers_absent": true,
+    "incarnation": "c7fe7099-2f91-49d9-be78-9f6b31f7ecfe",
+    "native_runtime_empty": true,
+    "notebook_tokens_absent": true,
+    "oauth_codes_absent": true,
+    "orm_server_absent": true,
+    "owner": "citnativegroupa",
+    "owner_id": 14,
+    "pvc_uid": "28f66788-df70-4f6a-a902-4ce2270544e5",
+    "readonly_snapshot_sha256": "f12f46263da8fcaa0f8aea3d68835d58d75406ef41f8c95543633b1996266445",
+    "runtime_role_id": 21,
+    "version": 1
+  },
+  "evidence": {
+    "actual-notebook-activity-sdk-proof.json": {
+      "artifact": "cit-legacy-runtime-enrolled-acceptance-20261014/actual-run-v1/actual-notebook-activity-sdk-proof.json",
+      "raw_sha256": "0111303b1ad272e0835c848af82b4d7b421cc680c580e3560f570754db6a8132"
+    },
+    "automatic-stopped-runtime-proof.json": {
+      "artifact": "cit-legacy-runtime-enrolled-acceptance-20261014/actual-run-v1/automatic-stopped-runtime-proof.json",
+      "raw_sha256": "0605f6e032b3a46aa0a24721213a5cd4973ab4eba94b2d8c8c1eee0bbbe60942"
+    },
+    "owned_actor_token_revocation": {
+      "artifact": "cit-legacy-runtime-enrolled-acceptance-20261014/root-token438-revoked.private.json",
+      "http_status": 204,
+      "raw_sha256": "fa743f93f12a584f3a23f5e7e1825a5420545b3e855fbafccd056332e3475a22"
+    },
+    "plan.json": {
+      "artifact": "cit-legacy-runtime-enrolled-acceptance-20261014/actual-run-v1/plan.json",
+      "raw_sha256": "2c39b5eaa875b37a6da104cba49bd66dd7c33186e46caf46ccf383b041655e89"
+    },
+    "result.json": {
+      "artifact": "cit-legacy-runtime-enrolled-acceptance-20261014/actual-run-v1/result.json",
+      "raw_sha256": "899281b4f911311965763188be523bafa712f256a23aee23c93590910f808c11"
+    }
+  },
+  "kind": "actual-cit-enrolled-notebook-activity-lifecycle",
+  "notebook_probe": {
+    "activity": {
+      "http_status": 200,
+      "response_body_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "credential_source": "existing_JUPYTERHUB_API_TOKEN_inside_bound_notebook",
+    "cuda_or_hardware_probe": false,
+    "human_oauth": false,
+    "owner": "citnativegroupa",
+    "pod_environment_dumped": false,
+    "pod_uid": "643ac583-8712-4a81-9f20-08d91e59c714",
+    "sdk_default": {
+      "default_environment_configured": false,
+      "explicit_probe_environment_injected": false,
+      "gate": "blocked_configuration",
+      "installed_distribution_version": "0.1.0",
+      "installed_module_available": true,
+      "installed_sdk_module_sha256": "fd3456fba4cfdcece2567ed2aaed2539ebee80aa33bb639cafcd355e9e9cf8fa",
+      "missing_environment_names": [
+        "CPS_COMPUTE_URL",
+        "CPS_COMPUTE_TOKEN",
+        "CPS_COMPUTE_HUB"
+      ]
+    },
+    "server": "rtc",
+    "token_returned": false,
+    "version": 1
+  },
+  "open_gates": [
+    "Ordinary SDK connection defaults require the released Hub adapter fix and a fresh unmodified notebook client /v1/me check.",
+    "Personal notebook SDK configuration and other release modes remain separate gates.",
+    "Human OAuth, ordinary visitor collaboration and full production qualification remain open."
+  ],
+  "phase": "d414c198",
+  "restoration": {
+    "actor_groups_restored": true,
+    "all_grants_byte_equal": true,
+    "confirmed_stopped": true,
+    "exact_windows_restored": true,
+    "group_members_restored": true,
+    "no_direct_sql_writes": true
+  },
+  "scope": "normal_source_ready_actual_server_token_activity200_normal_close_exact_restoration",
+  "seed_sha256": "sha256:6b69b858f3d91fa6fa8201ea144ac8165e145a6589525af5723227089f786456",
+  "status": "passed",
+  "version": 1
+}

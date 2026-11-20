@@ -1,0 +1,68 @@
+{
+  "activation_recovery": {
+    "ack_ttl_seconds": 30,
+    "new_input_journal_uids_preserved": true,
+    "only_original_controller_cas_remaining": true,
+    "previous_mutations_replayed": false
+  },
+  "all_four_fresh_process_acknowledgments": true,
+  "artifact_eof_gateway_published_not_deployed": true,
+  "evidence_sha256": {
+    "delivery-activation-intent.json": "f29be31d0988a3e7355c52bd2128c00361696f02fc3ac5a881cb18864466c00d",
+    "final.json": "fdcc44e5efdc14e81be2286ab845b368ad832c3ac79d1c22aca3b39cfc8a11d6",
+    "new-delivery-activation-readback.json": "34e7b03ae2f9a9e0c9eaa8dd119b8cd064c1e280e5c99ef6ddae758d2a4d1765",
+    "new-delivery-seed.json": "dfc839bf1a4f5458c96d316437a157f578b5eb923c2851af4aeef6438cc9ff27",
+    "root-activation-only-continuation.json": "c2e01cb817b10f1aa9cabe1177162110ba6146129d90f1bd9b221f58014960a3"
+  },
+  "hub_source_commit": "9b7df79ba591ccc6fd6eb29b32e1e27ef0cc90e1",
+  "hubs": [
+    {
+      "all_other_secret_data_preserved": true,
+      "namespace": "jupyterhub",
+      "realm": "cps",
+      "secret_uid": "11419586-2125-4fb4-a6df-40acd7937d88",
+      "selected_cpu_image": "sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f"
+    },
+    {
+      "all_other_secret_data_preserved": true,
+      "namespace": "cit-jhub",
+      "realm": "cit",
+      "secret_uid": "ad92b761-beb9-4824-8dd6-6c1f7b8f841e",
+      "selected_cpu_image": "sha256:d75d54d9b2b3b1b497e577124a30ca4c82993dd8458550a0b1fa73c37159b64f"
+    }
+  ],
+  "identity_mappings_and_end_user_grants_preserved": true,
+  "live_lab_api_acceptance_pending": true,
+  "native_zero": true,
+  "new_completed_delivery_journal": true,
+  "original_failed_activation_retained": true,
+  "phase": "lab-xsrf-handover-03f5e258/phase-03f5e258",
+  "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+  "process_images": {
+    "gateway": "ghcr.io/mul-cps/cps-compute@sha256:bb6113b7b222d002393c55e3efe56a90a58899abd93f0f6128ffd85f52fd13c0",
+    "hub:cit": "ghcr.io/mul-cps/cps-compute@sha256:1e8bdc639ecc6f07a0f101f9157a724637bcc4468138fe1e19ff7dfe4bc73da4",
+    "hub:cps": "ghcr.io/mul-cps/cps-compute@sha256:1e8bdc639ecc6f07a0f101f9157a724637bcc4468138fe1e19ff7dfe4bc73da4",
+    "node": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b"
+  },
+  "production_qualified": false,
+  "public_ca_and_capture_credentials_preserved": true,
+  "ready": true,
+  "recorded_at": "2026-10-15T10:17:27.254121+00:00",
+  "running_personal_pods_preserved": true,
+  "running_personal_servers_restart_pending": true,
+  "scope": "Hub personal SDK environment and prebuilt Lab XSRF connection; no running notebook replacement",
+  "seed_sha256": "sha256:ae233b2b33e3707cf89cee36db3aa7fdc26e7a5ca260fb48330fa19d680608b8",
+  "tests": {
+    "actual_panel_browser": true,
+    "existing_hub_skips": 5,
+    "existing_sdk_ca_skips": 1,
+    "handover": 17,
+    "installed_hub": 524,
+    "installed_lab": 9,
+    "installed_sdk_ca": 13,
+    "node": 43,
+    "real_hub_5_5_2_chromium": true
+  },
+  "ui_source_commit": "6854d532fca5be53f326ecea46dfbe3264c13698",
+  "version": 1
+}

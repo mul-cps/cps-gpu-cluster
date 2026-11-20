@@ -1,0 +1,154 @@
+{
+  "schemaVersion": 1,
+  "kind": "fresh-cps-c7-student-sdk-and-batch-actual",
+  "capturedAt": "2026-10-15T18:23:42.802990+00:00",
+  "passed": true,
+  "installedRuntimeSDKAndBatch": {
+    "passed": true,
+    "username": "armin",
+    "Root_confirmed_pod_uid": "921b8b7c-e8de-45e3-856c-b2426ed1ed7b",
+    "image": "sha256:9444a023984ffe792ba6588b5f54d459edae1c69b13399597498a659b591df7f",
+    "sdk_environment_overrides": false,
+    "other_users_touched": false,
+    "gpu_requests": false,
+    "empty_before": true,
+    "created_kernel": "0bc45ea1-93e6-4264-bc9a-96f39f7b6987",
+    "own_kernel_delete_http_status": 204,
+    "own_kernel_deleted": true,
+    "remaining_kernel_count": 0,
+    "remaining_session_count": 0,
+    "events": {
+      "sdk": {
+        "environment_overrides": false,
+        "http_status": 200,
+        "identity": "85de720c-94b0-4bc7-807e-c04512133494",
+        "passed": true,
+        "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+        "principal_kind": "person",
+        "stage": "GET /v1/me"
+      },
+      "submitted": {
+        "name": "cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0",
+        "phase": null,
+        "uid": "77ed87fe-cda5-451c-aca0-2e68ba705426"
+      },
+      "artifact": {
+        "bytes": 3902,
+        "http_status": 200,
+        "label": "armin-executed.ipynb",
+        "sha256": "f1d478dd7e5249efade0ee47706476805cc6d18bd2e37b676332508f19518a32"
+      },
+      "batch": {
+        "environment_overrides": false,
+        "executed_artifact_http_status": 200,
+        "jobs": [
+          {
+            "name": "cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0",
+            "phase": "Succeeded",
+            "terminal": true,
+            "uid": "77ed87fe-cda5-451c-aca0-2e68ba705426"
+          }
+        ],
+        "logs": {
+          "bytes": 1318,
+          "http_status": 200,
+          "sha256": "5247c65be631061e65a5ccab7368a8d6bca633e9bda5bf5ce5ab86292c1b7309"
+        },
+        "own_temp_files_deleted": true,
+        "passed": true,
+        "selected_support_file": true,
+        "stage": "executed-artifact",
+        "typed_parameters": true,
+        "workflow": {
+          "name": "cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0",
+          "phase": "Succeeded",
+          "uid": "77ed87fe-cda5-451c-aca0-2e68ba705426"
+        }
+      }
+    },
+    "completed_at": "2026-10-15T18:21:23.921004+00:00"
+  },
+  "normalComputeWorkloadsGUIAndForeignDenial": {
+    "readOnly": true,
+    "workflow": {
+      "name": "cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0",
+      "phase": null,
+      "uid": "77ed87fe-cda5-451c-aca0-2e68ba705426"
+    },
+    "visitorResponses": [
+      {
+        "path": "/services/cps-compute-ui/api/compute/v1/jobsets",
+        "status": 503
+      },
+      {
+        "path": "/services/cps-compute-ui/api/compute/v1/workflows",
+        "status": 200
+      },
+      {
+        "path": "/services/cps-compute-ui/api/compute/v1/workflows/cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0/logs",
+        "status": 200
+      },
+      {
+        "path": "/services/cps-compute-ui/api/compute/v1/workflows/cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0/artifacts",
+        "status": 200
+      }
+    ],
+    "ownRowSucceeded": true,
+    "logsStatus": 200,
+    "artifactsStatus": 200,
+    "downloadPaths": [
+      {
+        "path": "/services/cps-compute-ui/api/compute/v1/workflows/cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0/artifacts",
+        "download": "snapshot.tar",
+        "query": "?download=snapshot"
+      },
+      {
+        "path": "/services/cps-compute-ui/api/compute/v1/workflows/cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0/artifacts",
+        "download": "executed.ipynb",
+        "query": "?download=executed-notebook"
+      },
+      {
+        "path": "/services/cps-compute-ui/api/compute/v1/workflows/cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0/artifacts",
+        "download": "executed.ipynb",
+        "query": "?download=executed-notebook"
+      }
+    ],
+    "foreignMeStatus": 200,
+    "foreignIdentity": "15164372-7ae5-4cfd-8b5d-fd402aa891bd",
+    "foreignStatuses": {
+      "inspect": 403,
+      "logs": 403,
+      "executedArtifact": 403
+    },
+    "passed": true
+  },
+  "rootIndependentConcurrentGPUAndWorkflowReadback": {
+    "captured_at": "2026-10-15T18:22:04.409890+00:00",
+    "gpu_pod_uid": "63cb095a-153e-4ca9-8216-85df3b6944bf",
+    "gpu_pod_ready": true,
+    "gpu_pod_restarts": 0,
+    "ledger": {
+      "member_reservations": 3,
+      "reservation_bindings": 1,
+      "read_only": true
+    },
+    "cpu_workflow": {
+      "name": "cps-00151a154b3e8d5e93a7350c24a7e26337df80e38607e6e0",
+      "uid": "77ed87fe-cda5-451c-aca0-2e68ba705426",
+      "phase": "Succeeded",
+      "started_at": "2026-10-15T18:21:11Z",
+      "finished_at": "2026-10-15T18:21:21Z",
+      "no_gpu_resource_request": true
+    }
+  },
+  "rawProofSha256": {
+    "receipt.json": "45893a06808307d2177ed17f3ddf8dab24a5a3cd1fd1ecea23033d55ab0da44a",
+    "workload-gui-readback.json": "498b4f259033d884e8206547ef59ea3a63b5d3849b35029ecf541a1e45ecad8c"
+  },
+  "productionQualified": false,
+  "limitations": [
+    "One ordinary CPS CPU notebook runtime and one CPU batch; no CIT or GPU531 qualification",
+    "Optional distributed JobSets are not configured and remain visibly unavailable",
+    "Source supports normal workloads; broader adversarial matrix and expiry/recovery gates remain separate"
+  ]
+}

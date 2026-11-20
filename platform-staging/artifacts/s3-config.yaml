@@ -1,0 +1,18 @@
+# Vendor-neutral consumer boundary. SeaweedFS on TrueNAS is selected, not deployed.
+enabled: false
+endpoint: null
+bucket: cps-compute
+credentialsSecretRef: null
+verifyTLS: true
+retention:
+  temporaryDays: 14
+  runArtifactDays: 90
+  preserveActiveInputs: true
+  preserveExplicitlyRetainedOutputs: true
+# Lifecycle deletion must operate only on temporary/ and eligible completed/
+# prefixes. Inputs of running/retrying workflows and retained/ are excluded.
+# Do not apply blanket bucket age deletion: it can destroy active inputs.
+prefixes:
+  temporary: temporary/
+  completed: completed/
+  retained: retained/

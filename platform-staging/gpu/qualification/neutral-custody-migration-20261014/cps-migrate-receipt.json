@@ -1,0 +1,13 @@
+{
+  "captured_at": "2026-10-14T02:33:37.115486+00:00",
+  "custody_module_sha256": "fd7d9ec5b7502747901d880210f8f2fddc508898f9c88300036f72e2116a84fa",
+  "helper_sha256": "9009346c57c4a060e901a383729110697dc0ba2cbf352032769efbf69371030e",
+  "kind": "actual-operator-custody-phase",
+  "packet_sha256": "41363fd6e290781dd66915bf911e9b049c1d9029de2645efc820a410d3f222e1",
+  "phase": "migrate",
+  "readback_sha256": "b5b3fb9a3913106458a7dc016bb20e163fa6a43ec28f92c4910c5b00878ff293",
+  "root_admission_sha256": "7e72f0b71f59934aa5e73b6960c987b04d3e6f9bb7260db4201f76f820652498",
+  "source": "cps",
+  "target_hub_image": "ghcr.io/mul-cps/cps-compute@sha256:f5bff2df99281b659f550f8cddbdfafbdbc6593d827c1f417779263658998396",
+  "version": 1
+}

@@ -1,0 +1,60 @@
+{
+  "actual_audit_payload_bytes": 3029008,
+  "actual_nfs_marker_write_read": true,
+  "actual_resource_quantities": {
+    "cpu": "2",
+    "memory_bytes": 8589934592
+  },
+  "actual_saved_marker_survives_new_pod": true,
+  "authenticated_actor": "existing CPS bjoern administrator; own short-lived ORM API token",
+  "authenticated_notebook_api_access": true,
+  "broader_gpu_and_production_qualified": false,
+  "different_notebook_pod_uid": true,
+  "evidence_base": "private operator state cps-full-project-20261013",
+  "evidence_sha256": {
+    "source-cpu-nfs-restart-final-20261014/actual-normal-http/original-owned-windows-groups-restoration.json": "590dad50419ccc4cd7ca59128c70784108f42c5d278b7fb7b210baeb5bb378c5",
+    "source-cpu-nfs-restart-final-20261014/actual-v9-execution/actual-audit-response.private.json": "ad6518921c09e32d5b101522408ed4faf396d66dc96369c9b4b439e130c4bcd6",
+    "source-cpu-nfs-restart-final-20261014/actual-v9-execution/actual-runtime-marker.json": "589466d73791c46db08b1f6586d4a94d9f1ff167de0545c344dc43720fa673cc",
+    "source-cpu-nfs-restart-final-20261014/actual-v9-execution/api-access-cycle-1.json": "878b11b2f10a34e287cbb97fd15f311422656babc7f588c791cc0166ff29d0c6",
+    "source-cpu-nfs-restart-final-20261014/actual-v9-execution/owned-audit.json": "a22e230c480b33da102ba95a3b99fecace766fce733c3216ff7599b6f80ffb34",
+    "source-cpu-nfs-restart-final-20261014/actual-v9-execution/ready-cycle-1.json": "c4831cecfda30d55b37ae8dc20ed324b7f5a53972bc880a2ad50fa4f7fde36c0",
+    "source-cpu-nfs-restart-final-20261014/actual-v9-execution/result.json": "4b14abfbd97ec74700b576a4fc2a23d4f79bc5b3b5cc6743c1e5378431f5b22d",
+    "source-cpu-nfs-restart-final-20261014/actual-v9-execution/stopped-cycle-1.json": "a3cfc542598e194923103921ea0cfd6fd5300b234199a4fb25a8df6956aac154",
+    "source-cpu-nfs-restart-final-20261014/cleanup-readonly-proof-3629/cleanup-receipt.json": "d17f5e0a036825ecec32e0f3a8436497afbab33c17cfce72c463397372266d4c",
+    "source-cpu-nfs-restart-final-20261014/frozen-receipt.json": "5b696554bae2d1da40875534e221b8254a6bab47d1b6a3c85cab7ff8d870e585",
+    "source-cpu-nfs-restart-final-20261014/root-actual-execution/execution-receipt.json": "80cd2f5d110fc6b06205c52f47235a5d906e2052b78c9b144a9658a2d837be1b",
+    "source-cpu-nfs-restart-final-20261014/token-revocation-receipt.json": "5cb21e138f1fd3cf9cd5730e21a877d55c6fe21f5195bd818089961d7466942b"
+  },
+  "execution_exit_code": 0,
+  "fresh_readonly_cleanup_confirmed": true,
+  "full_audit_assertions_passed": true,
+  "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:29b7b3e9a9af380ebeff8de06c2ab187f370acca7e52828a1c2b2f4001259973",
+  "human_oauth_verified": false,
+  "immutable_notebook_zero_restarts": true,
+  "kind": "actual-normal-source-cpu-nfs-restart-lifecycle",
+  "limits": [
+    "Existing owning admin API token acceptance; fresh human OAuth and distinct ordinary visitor RTC remain separate.",
+    "Existing ff0 notebook retained to isolate the packaged Hub fix; qualified notebook SDK/Lab adoption is next.",
+    "Broader GPU pooling, scheduling, restoration and production qualification remain open."
+  ],
+  "new_notebook_packages_adopted": false,
+  "nfs_mount": "/workspace",
+  "normal_source_start_ready_and_stop": true,
+  "normal_stop_removes_server_and_shares": true,
+  "notebook_image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:ff0c30d92f8b0483623acb719a909daba8dc93ab3f1910706e65b3f15237ae35",
+  "observed_at": "2026-10-14T12:44:02.198231+00:00",
+  "only_own_token_revoked": true,
+  "process_gid": 100,
+  "process_uid": 1000,
+  "restoration": {
+    "all_other_grants_byte_equal": true,
+    "authenticated_user_groups_exact": true,
+    "exact_owned_windows_restored": true,
+    "no_direct_sql_writes": true,
+    "source_group_record_exact": true
+  },
+  "retained_pv_pvc_exact_uid_and_spec": true,
+  "same_reviewed_neutral_identity_and_storage": true,
+  "source_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:87a1c0b99331259199ff56d52b83c5bc5fcff1c05d0965a9f097138208ea1e61",
+  "visitor_identity_separation_verified": false
+}

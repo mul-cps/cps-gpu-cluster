@@ -1,0 +1,91 @@
+{
+  "schemaVersion": 1,
+  "artifactKind": "sanitized-qualification-summary",
+  "id": "native-groups-v1",
+  "date": "2026-10-09",
+  "state": "root-reviewed-bounded-hardware-evidence",
+  "policy": {
+    "version": "0.1.1",
+    "hash": "sha256:78fb2d7ca42585a000e58b52c297d072a11dfbc466b19f50aa9d276d567a413f",
+    "ordinaryGpuQualified": false
+  },
+  "profile": {
+    "id": "interactive-shared-5",
+    "qualificationStatus": "qualified-group",
+    "mechanism": "r615-native-cgroup-managed-deny",
+    "cpu": "4",
+    "memory": "16Gi",
+    "nativeCapMiB": 5120
+  },
+  "approvedScopes": [
+    {
+      "source": "cps",
+      "workspace": "native-group-b",
+      "namespace": "jupyterhub"
+    },
+    {
+      "source": "cit",
+      "workspace": "native-group-a",
+      "namespace": "cit-jhub"
+    }
+  ],
+  "nodePool": {
+    "node": "k3s-wk-gpu2",
+    "nodeUid": "3336cdd5-d245-436e-b57c-2f66c6dcaa41",
+    "gpuUuid": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "maxWorkspaces": 2,
+    "migEnabled": false
+  },
+  "driver": {
+    "coreSha256": "sha256:4fdcafcdf7f57b9de81f56e8e17db06a91e27680c6a711f3888fd0b76da46421",
+    "uvmSha256": "sha256:b2ae67722e9e21a70c319aeed2184f5b2d1f23b8e32dea00816cfd5cd2c3ee61",
+    "healthSha256": "sha256:52fdbdae3d5e2f66fd4653d94ef5a62f734e185fabec30450f4a1b70cfee7d67"
+  },
+  "images": {
+    "capGate": "ghcr.io/mul-cps/cps-compute@sha256:bc5b128f582641eae8395e1121d1fb248eddc39a56c9e863b7c564badd94b167",
+    "notebook": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-native-group-980408a@sha256:9167861058c1364c58d1c2fca0d6f536c3ffb53a33800dcdb9a1560f14ca4dc0",
+    "restartGateway": "ghcr.io/mul-cps/cps-compute@sha256:85f2fbd31eab0449ed00cf1a1464401e1d555b52721b8b40e83b8eb252aa8772"
+  },
+  "evidence": {
+    "privateProofRawSha256": "sha256:ea27b779fb564ca0f98b3973b13368faada720cdc5ebbc835e7699d98bea01c3",
+    "privateProofCanonicalSha256": "sha256:0bbef2a13f4f1eb6a376f8576498563c39fc9fe14e51b550499d1c0f93ccdaf7",
+    "gatewayObservation": "The five non-restart gates used the bc5 cap-gate image as gateway; restart-cleanup used the separately pinned 85f2 gateway."
+  },
+  "gates": {
+    "cap-assignment": {
+      "passed": true,
+      "privateReportRawSha256": "sha256:ae81783b0af6a9d3f232ab5416bf6ec80a9e1fd6352ab00d79e94f4674bd45f1"
+    },
+    "oom-peer": {
+      "passed": true,
+      "privateReportRawSha256": "sha256:2e61c8d25f8b5f477c20458dce72b39ea46228cfe05d189342cd29f55d960209"
+    },
+    "aggregate": {
+      "passed": true,
+      "privateReportRawSha256": "sha256:f361ff1566ed6dd24a02386f3c4e5cccae80d387a05f25fe48e3688ee373d9dd"
+    },
+    "memory-import": {
+      "passed": true,
+      "privateReportRawSha256": "sha256:2df3e7d0a846ad2361170180e61fa207e5ff80883f3961b45207a37d6a89944b"
+    },
+    "restart-cleanup": {
+      "passed": true,
+      "privateReportRawSha256": "sha256:0207953a6d87ee6dac9b1bbfcf678980cb6cd9277256444eb5dfa6eca4ed2211"
+    },
+    "mps": {
+      "passed": true,
+      "privateReportRawSha256": "sha256:30286f8a814a4c4c5ae6d4274026b0722b071261b9a919e649d7031beaa686c9"
+    }
+  },
+  "runtimeActivation": {
+    "status": "qualified-pilot-available",
+    "reviewedAt": "2026-10-09T21:28:09.230649Z",
+    "receiptSha256": "sha256:51985393f2ff538d90f0e6ecef3d81c9b0b79f3ee98ec05a01e28e2627af33cd"
+  },
+  "claimLimits": [
+    "Only the two approved scopes, canonical 5 GiB profile and selected physical A100 are covered.",
+    "CIT authorization used its controlled owning source service; human CIT OAuth and browser collaboration are not established.",
+    "Retirement evidence covers the exact original Pod UID and native cgroup with zero charge; it is not a process-wide orphan inventory.",
+    "This summary is informational; the compiler requires the private full proof and all six checksummed reports."
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "Rules": [
+    {
+      "ID": "temporary-14-days",
+      "Status": "Enabled",
+      "Filter": {
+        "And": {
+          "Prefix": "notebook-inputs/",
+          "Tags": [
+            {
+              "Key": "retention",
+              "Value": "temporary-expirable"
+            },
+            {
+              "Key": "active",
+              "Value": "false"
+            },
+            {
+              "Key": "retained",
+              "Value": "false"
+            }
+          ]
+        }
+      },
+      "Expiration": {
+        "Days": 14
+      }
+    },
+    {
+      "ID": "runs-90-days",
+      "Status": "Enabled",
+      "Filter": {
+        "And": {
+          "Prefix": "run-artifacts/",
+          "Tags": [
+            {
+              "Key": "retention",
+              "Value": "run-expirable"
+            },
+            {
+              "Key": "active",
+              "Value": "false"
+            },
+            {
+              "Key": "retained",
+              "Value": "false"
+            }
+          ]
+        }
+      },
+      "Expiration": {
+        "Days": 90
+      }
+    }
+  ]
+}

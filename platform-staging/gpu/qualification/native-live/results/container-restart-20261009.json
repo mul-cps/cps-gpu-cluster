@@ -1,0 +1,142 @@
+{
+  "schema": "cps-native-container-restart-assessment/v1",
+  "date": "2026-10-09",
+  "status": "bounded-same-pod-container-restart-pass",
+  "productionQualified": false,
+  "groupSharingEnabled": false,
+  "sourceImportGuardQualified": false,
+  "boundedContainerRestartPassed": true,
+  "scope": "One exact main-container CRI stop/restart inside the existing peer Pod while the independent main Pod continues GPU heartbeats.",
+  "source": {
+    "driverVersion": "615.71.09",
+    "coreElfSha256": "59f623fe5fdc89ef06f8055ee4dbfafeabe70b1d0bcabc487bc6fe04b78d6e77",
+    "coreSrcversion": "C6CF64F73A3430C26C030B7",
+    "driverGeneration": "c814c591-c494-4a67-ade2-1af3c64ad608",
+    "loadObservedNs": 1791535454163003624,
+    "guardEnabled": true,
+    "guardFlagMode": "0400",
+    "loadReceiptSha256": "2ae1cbf8631a08f9e945bd0641889ce666d196ad1783a4685736ccc02f6b2f0d",
+    "coreBuildIdentityUsesElfHash": true,
+    "buildReceiptSha256": "691fbf79e9f762129f917512d0eea80c88050de41664b738fcafd1b4873ae938",
+    "sourceCommit": "61dcc93722ecb418bb5f2e00923f05b4b8051dd1",
+    "patchSha256": "58823f1b3518578ef0c275d77caf194e5cb00fd4dc322dff1ef30389ab78689a",
+    "buildReceiptScope": "CPU build receipt; actual loading is recorded separately in the load receipt.",
+    "sessionProbeSha256": "a54bba4924b8ce72480c1bbcc3cb64865a5802c6a168058868c2ed2142ce3973"
+  },
+  "binding": {
+    "samePodUid": true,
+    "sameCompleteSpecSha256": "b1d721ce0aee249d3affd1e3e286c5a9126402e97e45565c307f9b3bddd531fc",
+    "beforeContainerId": "containerd://ded8f0d1957c734e0254ab7563953fe4e8c59520abd84273bd83ecbc84ac5bce",
+    "afterContainerId": "containerd://39563067750c3e73f94cff204f86fd33b6c904bd5072a129d2b66f122a54962a",
+    "restartCountBefore": 0,
+    "restartCountAfter": 1,
+    "capBytes": 5368709120
+  },
+  "restart": {
+    "stopObservedNs": 1791536478726591741,
+    "freshContextReadyNs": 1791536480352971228,
+    "overCapCudaResult": 2,
+    "completionObservedNs": 1791536480354987181,
+    "recovery": {
+      "status": "asserted-by-pinned-probe-before-raw-successful-completion",
+      "rawSeparateRecoveryPhaseRecorded": false,
+      "allocationMiB": 64,
+      "requiredAllocationResult": 0,
+      "requiredTouchResult": 0,
+      "requiredPostOomTickResult": 0
+    }
+  },
+  "independentMain": {
+    "containerPid": 230,
+    "successfulTicks": 150,
+    "elapsedSeconds": 30.073041494,
+    "maximumTickGapNs": 201941285,
+    "allRestartMilestonesBracketed": true,
+    "milestoneCoverage": [
+      {
+        "milestone": "exact-container-stop",
+        "observedNs": 1791536478726591741,
+        "mainTickBeforeNs": 1791536478703549282,
+        "mainTickAfterNs": 1791536478904081993
+      },
+      {
+        "milestone": "restarted-context-ready",
+        "observedNs": 1791536480352971228,
+        "mainTickBeforeNs": 1791536480308418909,
+        "mainTickAfterNs": 1791536480509075042
+      },
+      {
+        "milestone": "restarted-over-cap-attempt",
+        "observedNs": 1791536480353802380,
+        "mainTickBeforeNs": 1791536480308418909,
+        "mainTickAfterNs": 1791536480509075042
+      },
+      {
+        "milestone": "restarted-probe-completion",
+        "observedNs": 1791536480354987181,
+        "mainTickBeforeNs": 1791536480308418909,
+        "mainTickAfterNs": 1791536480509075042
+      }
+    ]
+  },
+  "controllerAfterRestart": {
+    "samePairRepeatedlySealed": true,
+    "iterations": [
+      0,
+      1
+    ],
+    "sealedPairRows": 4,
+    "otherCleanedTombstoneRows": 12,
+    "blockedErrorRows": 0
+  },
+  "limitations": [
+    "Production and group sharing remain disabled.",
+    "A container restart within one unchanged Pod/cgroup generation is measured; Pod replacement, node reboot and driver unload/reload are separate tests.",
+    "The first cap gate is not rerun by this main-container restart.",
+    "The successful probe completion follows source assertions for64MiB recovery and a kernel tick; no separate raw recovery result is emitted.",
+    "Exporter context/process death with retained imported backing remains untested.",
+    "CPU assessment validation establishes no additional GPU behavior."
+  ],
+  "provenance": [
+    {
+      "capture": "export-controller-after-peer-restart.jsonl",
+      "sha256": "6ea71088ef7b9808e4bd7b7ee0ec9666eaecdc59686c69fd7826c635b99de201",
+      "bytes": 1900
+    },
+    {
+      "capture": "export-fixture-proposal.json",
+      "sha256": "03557bd68103e1766a37d67d5fca25251195dae60bfeb7b6104413da38e04d0e",
+      "bytes": 105314
+    },
+    {
+      "capture": "export-peer-after-restart.json",
+      "sha256": "ab4e13ee08a7d803eec0149f4888add78b50dd2a6ba656634b121cbb91164b8a",
+      "bytes": 14332
+    },
+    {
+      "capture": "export-peer-before-restart.json",
+      "sha256": "1e4a3a0c7996b4e60ad125310ef67637869bfc20da6c79b061215e882dbd29e6",
+      "bytes": 18416
+    },
+    {
+      "capture": "export-peer-stop-receipt.json",
+      "sha256": "cfac0d6b2bfa0285ced8424722fe3311c332a372d57c58ee8994968f87cbd396",
+      "bytes": 209
+    },
+    {
+      "capture": "export-restart-main-heartbeat.jsonl",
+      "sha256": "7a187bb2c8595ab968f8bfbd990ff57238ce6d4725ef461275da50ffaa1b84be",
+      "bytes": 30934
+    },
+    {
+      "capture": "export-restart-main-heartbeat.stderr",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "capture": "export-restart-peer-oom.jsonl",
+      "sha256": "b93ade49dbc7ba02996df466ea52397e1f04d7f5e195092cae5cfb94ab97cdbb",
+      "bytes": 405
+    }
+  ]
+}

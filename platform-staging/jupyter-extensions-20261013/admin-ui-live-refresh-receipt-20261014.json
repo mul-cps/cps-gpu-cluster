@@ -1,0 +1,37 @@
+{
+  "api_refresh": {
+    "drafts_preserved": true,
+    "no_store": true,
+    "read_deadline_seconds": 8,
+    "stale_reads_block_resource_dependent_saves": true,
+    "visible_view_interval_seconds": 20
+  },
+  "browser_tests_passed": 66,
+  "browser_tests_use_synthetic_visitor_apis": true,
+  "captured_at": "2026-10-14T05:51:25.610443+00:00",
+  "database_bytes_preserved": {
+    "cit": true,
+    "cps": true
+  },
+  "execution_helper_sha256": "05a8b3486206b4f0b96e470f2193fb0fba100a65782300f6cbfdac35df9ad665",
+  "kind": "source-admin-ui-only-live-cutover",
+  "live_human_oauth_qualified": false,
+  "only_Source_first_container_images_changed": true,
+  "packet_sha256": "511dbfdff6bcc51f7d8f784fe400b252ec28d09aa2a27dab512d2db2c5e23438",
+  "post_backup_receipt_sha256": "552757157a02ea160feca66023d317e49e534c213697f25ceaa27e6e8b39d873",
+  "pre_backup_receipt_sha256": "527e295198271a22aef98e4d98b58f47c34cf4f283ae52fd9f200ee9b472a6e2",
+  "preserved": {
+    "SQLite_schema7_all_rows_identity_receipts_workspace_references": true,
+    "all_native_and_QA_workspaces_stopped": true,
+    "both_Hub6c_Gateway440_UID_full_spec": true,
+    "five_ConfigMap_UID_data_binaryData_immutable": true,
+    "owned_neutral_Pod_absent": true,
+    "three_Secret_UID_type_data_binaryData_immutable": true
+  },
+  "private_final_receipt_sha256": "30a804e955d6a7f8a32671ff02d1f64820fe63fabefc3091186b0f3179e84696",
+  "production_qualified": false,
+  "qualification_receipt_sha256": "bb9db0b768a9abd0f4145784b65958360d1f841730cb30c76a83c11aa784b6f0",
+  "source_image": "ghcr.io/mul-cps/e2x-course-hub@sha256:87a1c0b99331259199ff56d52b83c5bc5fcff1c05d0965a9f097138208ea1e61",
+  "source_revision": "1443b05a5d2f3aa33b2f2c2a70c136a9e5023e04",
+  "version": 1
+}

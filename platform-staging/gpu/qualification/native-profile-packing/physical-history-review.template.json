@@ -1,0 +1,17 @@
+{
+  "version": 2,
+  "state": "source-close-and-physical-inert-history-root-reviewed",
+  "source": null,
+  "observed_at": null,
+  "policy_hash": "sha256:02316f90f705f5550ab54d1d514ed48f73aa6a13324eea7d4aeaaef959af2fd5",
+  "ledger_uid": null,
+  "ledger_state_sha256": null,
+  "normal_close_receipt_sha256": null,
+  "protected_retirement_capture_sha256": null,
+  "history_raw_sha256": null,
+  "all_native_released": false,
+  "physical_inert_history_verified": false,
+  "historical_recovery_uid": "8066366f-6e7e-42ea-83b2-86a58e9c3bad",
+  "normal_stop_passed": false,
+  "hardware_qualification": false
+}

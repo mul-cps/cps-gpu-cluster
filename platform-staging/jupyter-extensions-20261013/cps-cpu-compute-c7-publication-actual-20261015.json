@@ -1,0 +1,19 @@
+{
+  "published": true,
+  "deployed": false,
+  "scope": "CPS CPU prebuilt Compute C7 extension with existing SDK and runtime preserved",
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:9444a023984ffe792ba6588b5f54d459edae1c69b13399597498a659b591df7f",
+  "tag": "qualification-cps-cpu-compute-c7-06e942a-20261015",
+  "source_commit": "06e942a90b032f82e7671d0edb3d46225a0eff5d",
+  "qualification_receipt_sha256": "5f24606bc1fd0d1f08bdfe2e960c309a3a972a99fa0bee56b12dfe99b19de307",
+  "remote_manifest_exact": true,
+  "remote_manifest_matches_qualified_bytes": true,
+  "all_57_portable_OCI_blobs_rehashed_by_root": true,
+  "full_Core_and_SDK_unchanged": true,
+  "all_316_distribution_versions_unchanged": true,
+  "proper_prebuilt_Lab_entry": "static/remoteEntry.c7eaea5553822765e8f8.js",
+  "production_qualified": false,
+  "live_human_OAuth_qualified": false,
+  "recorded_at": "2026-10-15T17:32:11.228764+00:00",
+  "live_configuration_or_native_approval_registry_changed": false
+}

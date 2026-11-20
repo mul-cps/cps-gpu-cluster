@@ -1,0 +1,21 @@
+{
+  "modules": {
+    "cps_compute.identity": "7793713dd5348547e04d5dfefeef664df17cd46b9be1ecb2f6e695d1ced5221f",
+    "cps_compute.internal": "479498ce1d6c03e9d4604e7721c35e5bb703a1c78ad51281831184b7ba7454ee",
+    "cps_compute.native_gpu_control": "533da93275b2ed38e8a77520ba6706463b0c1b33f387f7918446e6d520111fa0",
+    "cps_compute.native_gpu_controller": "f40ef40f71c9f1206f23fb7052fd69aafd103c0f03a24e6bf3987395dacfd179",
+    "cps_compute.native_groups": "11f7f1ff6d5d38dfecf4273c08b375462993c0fa24413cbbb68b4587c3998a8f",
+    "cps_compute.native_pool": "e18472430a28b65daf7f40a265b5e7e3af2edf6b20165f8393d3ababd33d484d",
+    "cps_compute.native_qualification": "c8b389ff4a8f10de286b256a43143591625621db87e00692e5985d73382ae6eb",
+    "cps_compute.policy": "3f47a11dee56cdf4b1768663b5f94d5cca7abbeb831ec4d5b5bc1431e2a5a955",
+    "cps_compute.reservations": "492804a580a89235a7b30a3b2a06656f4fd9e75c4ef5fb6d29e3d1cefca88f57",
+    "e2x_course_hub.course_service.app": "80994c638cbed4503ff6c828126e387b41fd99d2c6dd2324fadccd335952f96a",
+    "e2x_course_hub.cps.compute": "06a310715087a89b9e3e7f18c87b980396a653856b92ba7a2a26b152b889c0a8",
+    "e2x_course_hub.cps.expiry": "0c86f0e17e335eba41a7829901cbfa09b63055e329f616897bd340ce0bc07bea",
+    "e2x_course_hub.cps.identity": "f4f5b3fcd83afce81abc990bc3f583b73783a7a255002cae9ba739106a438fc3",
+    "e2x_course_hub.cps.providers": "7c8ce0c1f615b30ec7bb60c8bb1f6d4c759403c20f62af772432e0b01cae43aa",
+    "e2x_course_hub.cps.validation": "17088942da7a68a53cc8bd8fc43974007a644050a889fdf4917bb888643c5145",
+    "e2x_course_hub.cps.workspaces": "6ceebcc3cf8c06ada2458a1e20b358e5367db5523bcdbf07bd2bd6f17517790b"
+  },
+  "version": 1
+}

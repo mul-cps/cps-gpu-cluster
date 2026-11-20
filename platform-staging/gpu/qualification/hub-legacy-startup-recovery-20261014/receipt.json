@@ -1,0 +1,130 @@
+{
+  "actual_processes": {
+    "gateway": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:440711b2bb00151f8625e9df54c97e7ed4d137ca246453aae9ad7524d6681c3d",
+      "name": "compute-gateway-6784b99798-rqvj8",
+      "namespace": "cps-compute",
+      "uid": "955e5f3b-616d-472a-8b7c-1af1d1758f97"
+    },
+    "hub:cit": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:145bfde0bc7848ed3a2dde77de7909638a7069d08168aa2fd90f730d3360eb7e",
+      "name": "hub-6849767b8f-gmktk",
+      "namespace": "cit-jhub",
+      "uid": "9f26e793-9459-475d-85aa-41b4d6ce1bde"
+    },
+    "hub:cps": {
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:145bfde0bc7848ed3a2dde77de7909638a7069d08168aa2fd90f730d3360eb7e",
+      "name": "hub-6fdb4b8d67-42zrl",
+      "namespace": "jupyterhub",
+      "uid": "bc9ff0a4-9f31-4016-ac36-0bff307a75b0"
+    },
+    "node": {
+      "image": "ghcr.io/mul-cps/cps-compute:qualification-native-node-980408a@sha256:5079458fe0fcb3c11231b21f1bbc1f4c12ad3ac578799932aa0bc9f46d5510c7",
+      "name": "cps-native-node-agent-7fbbbc4b48-hjmv4",
+      "namespace": "cps-native-system",
+      "uid": "32abc203-cc00-46f7-bef6-c7fed7ca0d6e"
+    }
+  },
+  "approval_revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+  "evidence_time_scope": "2026-10-14 successor handover completion; native zero and readiness describe this observation only.",
+  "initial_failure": {
+    "cause": "Configured legacy kernel owners were compared with only registry-managed owners. The owners remained in the Hub databases.",
+    "custody_migration_successful_before_failure": true,
+    "error": "Kernel role configuration cannot restore revoked ownership",
+    "failed_phase_rederived_plan_sha256": "sha256:60ea3941d16479bb1a773fbd0c0c1f05ded098470cc6b2ae324a1b07ad8aa3f7",
+    "failed_plan_sha256": "sha256:abf07bf055cbeb6ae33659d603da27ecb656333560121a15a456397502deab7b",
+    "fresh_readiness_passed": false,
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:f5bff2df99281b659f550f8cddbdfafbdbc6593d827c1f417779263658998396",
+    "source_revision": "6c13ae4db96bef64f4455e69d5b9bfcbdc12ba57",
+    "stage": "both-Hub startup before fresh process acknowledgments"
+  },
+  "native_final_readback": {
+    "actual_active_caps": 0,
+    "actual_used_bytes": 0,
+    "all_native_ledger_rows_released": true,
+    "ledger_uid": "33ab24b0-8e9a-4bee-b308-12a19c076924"
+  },
+  "new_delivery_objects": {
+    "pvc": {
+      "name": "cps-native-delivery-journal-hub-145bfde0",
+      "namespace": "cps-compute",
+      "uid": "54b34e7d-3d87-4902-ad0e-a2857ec2a0cd"
+    },
+    "secret": {
+      "name": "cps-native-delivery-input-hub-145bfde0",
+      "namespace": "cps-compute",
+      "uid": "16cae08d-8cb9-4d1f-ba34-946fc71dfeb4"
+    }
+  },
+  "new_delivery_pod": {
+    "name": "cps-native-approval-delivery-cc66fcdff-s49jh",
+    "namespace": "cps-compute",
+    "uid": "1c038de8-9ea6-4c47-890a-8b856888305f"
+  },
+  "preserved_custody": {
+    "custody_tables_and_QA_repair_not_rolled_back": true,
+    "live_post_startup_SQL_equality_not_claimed": true,
+    "no_DB_operator_called_by_handover": true,
+    "receipt_reverified": true,
+    "successful_migration_receipt_sha256": "996975fdb0ca17c5b7f8a1594a019c8b82036dd2be7933a184157185fffadb7d"
+  },
+  "production_qualified": false,
+  "proof_file_sha256": {
+    "final.json": "7572aae269608b32f9bafd86a3d9b7e730d1278986d6ba8aff0e828b1a47885e",
+    "gateway-loaded-runtime-proof.json": "636cf90b55c887b6fcf52647664a4e5824cfa1e3fb19a0cc230812f88b1208fc",
+    "live-installed-hub-code-readback.json": "7815c824ee8558a22d47bbeaed211aba264545583880ebfa582f1baed9d6562f",
+    "new-delivery-activation-readback.json": "308319611d574cd1c02969e8a15e559ef483e69268d3bf537c946fcc2f98e758",
+    "old-journal-byte-receipt.json": "6a1df4d1dd4ac569f20b112f1b1881d63f9fd3ba925497c375111c1b4a49f034",
+    "successor-final-readback-native.json": "3dbf818e755415ad6316ea12c977ce0e7e7581a8e67c578da3e6743a171bda81"
+  },
+  "qualification_receipt_sha256": "8e79bd00ff8dd92d916c2d7fdf81ad3bf579774ed058b5e25334fc64d9286033",
+  "recovery": {
+    "config_sha256": "25ce464fac0e0e3597811ebf407741f3b1616766b07ddd86956f354bef052792",
+    "delivery_controller_unpaused": true,
+    "four_process_readiness_passed": true,
+    "hub_wheel_sha256": "36483c8df2d071055c1d23e525603413f2781abb45a2da2c48c6fec647e6be0e",
+    "image": "ghcr.io/mul-cps/cps-compute@sha256:145bfde0bc7848ed3a2dde77de7909638a7069d08168aa2fd90f730d3360eb7e",
+    "mounted_gateway_runtime_matches": true,
+    "new_delivery_journal_completed": true,
+    "new_seed_sha256": "sha256:73acc5ace84ee3b19ed92e53b9912c17f6cd34cc746768bbfa57ddd8354e0644",
+    "operator_executor_sha256": "300649401ee470aa7040d60447f930a2aa4f737ca47e77982071567415f27862",
+    "operator_helper_sha256": "fb49a5b7ee577900ce4d90f3e53d8fc5f01fe13491d0a571e50b28fbf1f1eef8",
+    "reviewed_plan_sha256": "sha256:2a3ad3250b2bb8f6233e806e413182a195cae0a35304bd7b2d8c52dfd4e318c7",
+    "seven_full_preimage_role_updates_passed": true,
+    "source_revision": "4999a79684fbef3c4be0475dc5c791f70c30486d"
+  },
+  "retained_old_delivery_objects": {
+    "pvc": {
+      "name": "cps-native-delivery-journal-gateway-440711b2",
+      "namespace": "cps-compute",
+      "uid": "0232c56d-8f61-4c57-a9a1-9c756a02ea5e"
+    },
+    "secret": {
+      "name": "cps-native-delivery-input-gateway-440711b2",
+      "namespace": "cps-compute",
+      "uid": "e2537566-417f-4cb0-9493-411d0241ff36"
+    }
+  },
+  "retained_original_journal_bytes_sha256": "28cfce18da16a697806a37b0511eae5b14540576e47406f8ec44c19d60dd5010",
+  "scope_limits": [
+    "Qualification image recovery only; overall production and MPS qualification remain pending",
+    "No Starts, GPU jobs, driver changes or node-agent changes",
+    "Source9698 and Gateway440 image/code remain unchanged",
+    "Successful SQL custody migration and QA repair preserved; no schema rollback",
+    "Previous immutable delivery seed, Secret and journal PVC retained"
+  ],
+  "state": "both-hub-legacy-custody-startup-recovery-passed",
+  "validation": {
+    "existing_fixture_skips": 3,
+    "installed_candidate_hub_tests_passed": 134,
+    "live_Hub_UID": 1000,
+    "live_core_payload_sha256": "0ec6563054a754af08ddd3d304a56ac62a00a2e2fd5a36d94d27bb55e1756034",
+    "live_installed_module_files_exact_per_Hub": 12,
+    "live_jupyterhub": "5.5.2",
+    "live_kubespawner": "7.1.0",
+    "ruff_passed": true,
+    "source_tests_passed": 1814,
+    "successor_guard_tests_passed": 4
+  },
+  "version": 1
+}

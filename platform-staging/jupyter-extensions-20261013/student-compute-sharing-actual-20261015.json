@@ -1,0 +1,246 @@
+{
+  "version": 1,
+  "scope": "ordinary CPS student Compute and exact personal CPU server sharing; not full production qualification",
+  "recorded_at": "2026-10-15T16:41:31.668049+00:00",
+  "accounts": {
+    "mikasa": {
+      "admin": false,
+      "canonical_person": "15164372-7ae5-4cfd-8b5d-fd402aa891bd"
+    },
+    "armin": {
+      "admin": false,
+      "canonical_person": "85de720c-94b0-4bc7-807e-c04512133494"
+    }
+  },
+  "identity_linkage": "Explicit reviewed identities for the two newly created CIT-directory test accounts; no name or email matching",
+  "source_project": "shared-gpu-lab",
+  "personal_cpu_share": {
+    "owner": "mikasa",
+    "server": "",
+    "recipient": "armin",
+    "scope": "access:servers!server=mikasa/",
+    "normal_directory_login": true,
+    "server_status": 200,
+    "actual_visitor_identity": "armin",
+    "server_identity_status": 200,
+    "administrator_token_used": false
+  },
+  "compute_visitor": {
+    "services": [
+      "cps-compute-ui",
+      "cit-compute-ui"
+    ],
+    "both_services_deployed_and_oauth_registered": true,
+    "both_anonymous_proxy_redirects_verified": true,
+    "both_hub_and_gateway_tls_verified": true,
+    "cps_armin_normal_oauth_and_own_panel_identity_verified": true,
+    "cps_mikasa_normal_oauth_and_own_panel_identity_verified": true,
+    "mikasa_workloads_live_verified": true,
+    "distributed_disabled_notice_visible": true,
+    "mikasa_admin_console_status": 403,
+    "student_admin_console_scope_granted": false,
+    "temporary_group_role_was_restored_before_default_role_adoption": true,
+    "restart_persistent_default_user_role_adoption": {
+      "source_commit": "47e01f738817d425fdf0e2b26b4ff1e7ff418fe9",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:604c94e62da8c3594579dcec21b3b5810479fadece94abfc0e90aec542165b62",
+      "deployed": true,
+      "ready": true,
+      "authority": "student-membership-handover-fdef85f9/phase-fdef85f9",
+      "seed_sha256": "sha256:ce5ecdcc5a4a7d89be18fc03546a4c0b169a13f228e03f828debf5dc6b92b8b1",
+      "activation_intent_sha256": "sha256:a106654c97f12b0db9cee553375bd62e72b47f9b219bc5c0fa6fed0ef4fe15a5",
+      "four_raw_hashes": {
+        "final.json": "689c5e1399eccfbb5aa11cd40812c5243564d63df2d0093d16d1a345afe7731a",
+        "new-delivery-seed.json": "ac53b30160524a8a3b81926b3b5d43303f7a26d2d4a5c4efe548b1d90775e9c2",
+        "new-delivery-activation-readback.json": "e44fbd2e38aa3af51123e148ba4105f3097f4ba7279504689506cbc92c14a596",
+        "delivery-activation-intent.json": "d2dd502c1cc4c806e42100b57f14f5f172866644766054b312fb665ba8498f89"
+      },
+      "installed_tests_passed": 93,
+      "installed_hub_version": "5.5.2",
+      "installed_kubespawner_version": "7.1.0",
+      "restart_persistent_default_user_compute_scopes": true,
+      "static_default_user_membership_snapshot_removed": true,
+      "legacy_cit_personal_gpu_path_requires_central_policy": true,
+      "policy_and_driver_epoch_unchanged": true,
+      "production_qualified": false,
+      "authority_scope": "Historical Hub604 adoption; current four-process custody is current_authority"
+    },
+    "ordinary_student_compute_browser_acceptance_epoch": "after the 604c paired-Hub restart, retaining the original browser cookies",
+    "historical_f6_default_user_role_adoption": {
+      "source_commit": "53f5c75283c38927aa5bb97e5c5270230ece380e",
+      "image": "ghcr.io/mul-cps/cps-compute@sha256:f6c40516a180407aa42d64e4b1b4205ef44879e9f98b997b7ea1a01469c37fe4",
+      "deployed": true,
+      "ready": true,
+      "authority": "legacy-guard-handover-81a6f1ca/phase-81a6f1ca",
+      "seed_sha256": "sha256:0474dec64a79185d4882e356534c11b3dbdd3d58517826fdcf6ee7be5465aced",
+      "activation_intent_sha256": "sha256:826f8f5d5d40dc4071c92cda9a98a3e9bc7da63836f50c6d3c44f64387d61be7",
+      "four_raw_hashes": {
+        "final.json": "170badca7f0143f1095713de7b51713abf7dd4048eab5a1aa30a1fc49cb8110b",
+        "new-delivery-seed.json": "93d42506fa5d3367cced3df4fcf858d8500565caf1e1e96324bee19f96e721c8",
+        "new-delivery-activation-readback.json": "74935bc263a32d197b1e0f9547734ce9004f9ed2d28b87aee13b1692e0c73a78",
+        "delivery-activation-intent.json": "0fd7b8b9d52e4007ea7670c8909405517cec26b938c9c2a316c25aac38569642"
+      },
+      "installed_tests_passed": 52,
+      "installed_hub_version": "5.5.2",
+      "installed_kubespawner_version": "7.1.0",
+      "restart_persistent_default_user_compute_scopes": true,
+      "legacy_cit_personal_gpu_path_requires_central_policy": true,
+      "policy_and_driver_epoch_unchanged": true,
+      "production_qualified": false
+    },
+    "post_604c_restart_student_compute_and_personal_share_retest": {
+      "passed": true,
+      "distinct_people": true,
+      "both_compute_http": 200,
+      "both_personal_shared_server_http": 200,
+      "both_admin_http": 403,
+      "private_receipt_raw_sha256": "d48615bd422d89a8bf3266ad1538a7d803885b83cb23e219fb8c853004781e0c"
+    },
+    "cit_post_604c_restart_cookie_and_default_user_role_retest": {
+      "passed": true,
+      "both_users": [
+        "mikasa",
+        "armin"
+      ],
+      "reauthenticated": false,
+      "compute_requests": 0,
+      "private_receipt_raw_sha256": "3a277d8b153a284e5df74d575590118929a06e6c5e21a6a6692111edbbe5b25e"
+    },
+    "membership_adoption_receipt": "student-user-role-membership-adoption-actual-20261015.json"
+  },
+  "addon": {
+    "source_commit": "ab0202e56aa20d0e2d4671fb661637830b6bcafc",
+    "wheel_sha256": "1050c39bb9caed73b0350e5e7dc784e83a62d9c618f0e06f282f7ca3c9a5beaa",
+    "entry": "static/remoteEntry.c7eaea5553822765e8f8.js",
+    "installed_users": {
+      "bjoern": {
+        "pod_uid": "915b3fac-53fa-469c-8c3f-0180fb285504",
+        "kernel_count": 3,
+        "kernel_ids_preserved": true,
+        "server_restart": false,
+        "kernel_restart": false
+      },
+      "cpsadmin": {
+        "pod_uid": "a984023f-eb34-4af1-b01d-bad6ea159ef4",
+        "kernel_count": 1,
+        "kernel_ids_preserved": true,
+        "server_restart": false,
+        "kernel_restart": false
+      },
+      "mikasa": {
+        "pod_uid": "31846900-989b-48d1-95b3-846e9526fbb5",
+        "kernel_count": 0,
+        "kernel_ids_preserved": true,
+        "server_restart": false,
+        "kernel_restart": false
+      }
+    },
+    "node_tests": 57,
+    "packaging_hook_tests": 10,
+    "snippets_refinement_passes": 5,
+    "control_cells_inserted_without_execution": true
+  },
+  "limitations": [
+    "The managed 5 GiB workspace passed normal Start, Ready, RTC and GPU execution; its GPU916 Compute panel and ordinary SDK still need the reviewed package fixes; personal Shared Workspaces discovery passed after Gatewayd974 adoption.",
+    "Post-604c personal Share access and distinct visitor identity passed; the two-way RTC edit test remains historical pre-f6 evidence.",
+    "CIT personal runtime still needs its preserving SDK/Compute/RTC image.",
+    "Membership-removal connection revocation, CIT own/foreign workflow coverage and production qualification remain separate gates."
+  ],
+  "production_qualified": false,
+  "personal_cpu_rtc": {
+    "verified": true,
+    "server_owner": "mikasa",
+    "normal_directory_browsers": [
+      "mikasa",
+      "armin"
+    ],
+    "visitor_identities": {
+      "mikasa": "mikasa",
+      "armin": "armin"
+    },
+    "edits_synced_both_directions_without_reload": true,
+    "code_executed": false,
+    "kernel_cleanup_confirmed": true,
+    "demo_sessions_deleted": 1,
+    "private_receipt_raw_sha256": "ce37577abc1cd839ddf064378548b8e30e94ada88f4fab7032463ca4022049a7",
+    "acceptance_epoch": "before the f6 paired-Hub restart",
+    "post_604c_restart_personal_share_access_verified": true,
+    "post_604c_restart_access_private_receipt_raw_sha256": "d48615bd422d89a8bf3266ad1538a7d803885b83cb23e219fb8c853004781e0c",
+    "post_604c_restart_two_way_edit_retest": "not recorded by this receipt"
+  },
+  "managed_workspace_start_request": {
+    "workspace": "shared-gpu-lab",
+    "source": "cps",
+    "profile": "interactive-shared-5",
+    "storage_version": 2,
+    "source_structural_approval_verified": true,
+    "source_profile_provision_verified": true,
+    "grant_people": [
+      "mikasa",
+      "armin",
+      "bjoern"
+    ],
+    "grant_count": 3,
+    "grant_duration_days": 7,
+    "state_at_start_request": "stopped",
+    "normal_source_start_requested": true,
+    "start_outcome": "running",
+    "ready_verified": true,
+    "managed_rtc_verified": true,
+    "gpu_allocation_verified": true,
+    "evidence_basis": "Root normal Source Start plus current-driver cap, two-browser RTC/GPU and read-only Gateway reservation proof receipts",
+    "normal_source_start_http": 200,
+    "native_cap_gib": 5,
+    "global_reservation_row_count_verified": true,
+    "acceptance_receipt": "student-discovery-adoption-actual-20261015.json",
+    "active_global_member_reservations": 3,
+    "latest_normal_restart_verified": true,
+    "current_pod_uid": "79388657-dea1-4d49-b5e6-6c7d7e6a514b",
+    "saved_demo_and_outputs_survived_restart": true
+  },
+  "ordinary_student_gui_batch_receipt": "ordinary-student-gui-batch-actual-20261015.json",
+  "managed_workspace_acceptance_receipt": "student-discovery-adoption-actual-20261015.json",
+  "current_authority": {
+    "authority": "gateway-discovery-handover-8bfcb51c/phase-8bfcb51c",
+    "seed_sha256": "sha256:ef1d257be57411fb94548657e1214ec8c19f328415f4c713b5e3ffb52aa0ebe5",
+    "activation_intent_sha256": "sha256:917c0b9c9e465d895ff9dc676fba37fbf249f6a74dac228bdff2e76306c763d1",
+    "four_raw_hashes": {
+      "final.json": "dc1a62802884c9ad681d0f53f336c8b9c45fb130834ac5b7c51d411e2d6ed31b",
+      "new-delivery-seed.json": "ff80c815e12f7cc14a69f345681ff1b7d5124409dbb015e464cccbb86328f744",
+      "new-delivery-activation-readback.json": "8fff4875e0a26bbd9f65fc432d5a948bd7f653339638f1670c7ac729cd596a1b",
+      "delivery-activation-intent.json": "559c221bc632afe201efbbba9d3e043e6e1d6b5ea1fab995cfbd3e08ce0fa2b8"
+    },
+    "ready": true,
+    "actual_controller_readback_ready": true,
+    "receipt": "student-discovery-adoption-actual-20261015.json"
+  },
+  "current_gateway_discovery_adoption_receipt": "student-discovery-adoption-actual-20261015.json",
+  "shared_workspace_discovery": {
+    "navigation": [
+      "Compute",
+      "Shared Workspaces",
+      "Open workspace"
+    ],
+    "gateway_discovery_wiring_fixed": true,
+    "results": {
+      "mikasa": {
+        "http_status": 200,
+        "normal_student_oauth": true,
+        "own_canonical_identity_verified": true,
+        "authorized_workspace_found": true,
+        "panel_link_present": true
+      },
+      "armin": {
+        "http_status": 200,
+        "normal_student_oauth": true,
+        "own_canonical_identity_verified": true,
+        "authorized_workspace_found": true,
+        "panel_link_present": true
+      }
+    }
+  },
+  "student_urls": {
+    "group": "https://jupyterhub.dshl.unileoben.ac.at/user/cps-ws-27c474f74f9d41c53eac0be01fcca8a3/rtc/lab/tree/shared-gpu-demo-20261015.ipynb",
+    "personal_mikasa_share": "https://jupyterhub.dshl.unileoben.ac.at/user/mikasa/lab"
+  },
+  "historical_summary_recorded_at": "2026-10-15T15:35:25.490175+00:00"
+}

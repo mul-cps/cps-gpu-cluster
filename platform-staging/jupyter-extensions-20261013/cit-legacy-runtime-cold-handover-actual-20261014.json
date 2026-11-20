@@ -1,0 +1,193 @@
+{
+  "claims": {
+    "activity_callback_verified": false,
+    "cold_hub_handover": true,
+    "controller_delivery_completed": true,
+    "hardware_cap_qualified": false,
+    "human_oauth": false,
+    "legacy_runtime_enrollment": true,
+    "native_active_caps_zero": true,
+    "owned_kernel_sdk_me_verified": false,
+    "production_qualified": false,
+    "sdk_default_configuration_verified": false
+  },
+  "cold_handover": {
+    "all_four_images_unchanged": true,
+    "approval_revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca",
+    "both_hub_process_uids_refreshed": true,
+    "four_process_acknowledgments": {
+      "gateway": {
+        "acknowledgment_sha256": "sha256:017f7e8a2ae05f0073c94529e15c170f4c0e1f629041180ef4af5f36477fec7c",
+        "deployment_uid": "f5f9b266-433d-4825-83de-d51e31c71648",
+        "document_data_sha256": "sha256:a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+        "document_uid": "e483a437-21fd-4133-99fb-c456ec25290c",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:08f7720eb59874c117ad0920fc87609152e87023a013699ed30e92e6620c1d4b",
+        "observed_at": "2026-10-14T20:12:00.491262+00:00",
+        "process_uid": "4bfdd443-4504-4fd0-9d64-0e87ef19c4c6"
+      },
+      "hub:cit": {
+        "acknowledgment_sha256": "sha256:f87f03e527144939005002b6bf8fa489910844b0929685ac98f35f5c5e901c78",
+        "deployment_uid": "dd90f866-47d3-4b9f-ba41-b4ebf8cb2b1e",
+        "document_data_sha256": "sha256:a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+        "document_uid": "53829fdb-7f38-40e8-91bd-1b43a2eef4e6",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:d920a278df8c920f8e4c143e42b082e7ff8ed8755e08a1d3944b8bbcc0559beb",
+        "observed_at": "2026-10-14T20:11:57.280268+00:00",
+        "process_uid": "0a34e79a-e6b7-480c-ae11-65ea2e0d50a1"
+      },
+      "hub:cps": {
+        "acknowledgment_sha256": "sha256:c9ed52e89bf8135f23af1752daee3a0281b1b650bbb6ceeff8ce66bd1e848b22",
+        "deployment_uid": "02fb8421-d323-4636-b006-2490cd6f5b63",
+        "document_data_sha256": "sha256:a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+        "document_uid": "d21b157f-2ee2-4ccf-9289-ae00adf5dcd3",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:d920a278df8c920f8e4c143e42b082e7ff8ed8755e08a1d3944b8bbcc0559beb",
+        "observed_at": "2026-10-14T20:11:57.128179+00:00",
+        "process_uid": "e2e38c48-bde6-40e4-9757-81e05446850d"
+      },
+      "node": {
+        "acknowledgment_sha256": "sha256:45a5ca61854dfce1e6d926c144fe1f716c95cda33701fedee1998eedc6da1814",
+        "deployment_uid": "03e6bf5e-39ab-4c4a-b73f-1d6cf0ee8076",
+        "document_data_sha256": "sha256:a82c95c813e61314596a7c0f32604fcf06cc6199cdd27352904e0275446a282a",
+        "document_uid": "179499b3-168d-4b86-9ad8-6f9b00990d31",
+        "image": "ghcr.io/mul-cps/cps-compute@sha256:8c2c456b90330622645d509f94882a11a465ac208a6fa7fc824900d6320e5c0b",
+        "observed_at": "2026-10-14T20:11:44.725642+00:00",
+        "process_uid": "33b919f3-11e6-4c24-9c38-51edbc965484"
+      }
+    },
+    "gateway_and_node_process_uids_retained": true,
+    "hub_source_commit": "406a7a40342fd9fc021a3eb09a191ac987c135a7",
+    "new_seed_sha256": "sha256:6b69b858f3d91fa6fa8201ea144ac8165e145a6589525af5723227089f786456",
+    "plan_sha256": "sha256:1e34bb92de0080be067871ec6200d0f007899d1bcf203d7885de6870ba57c559",
+    "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+    "previous_seed_sha256": "sha256:83e8b6bab32cc1b3e6b6cd50182c9a6b6edee955dd49a905b37e981f8119184e",
+    "process_access_role_patch_count": 7,
+    "process_access_stage_ready": false,
+    "publication_sha256": "sha256:b216ca9321f8bdfc519e01c134e3805ad382ae6eeed18bc2c91ca3a382708d7d",
+    "same_hub_image": "ghcr.io/mul-cps/cps-compute@sha256:d920a278df8c920f8e4c143e42b082e7ff8ed8755e08a1d3944b8bbcc0559beb",
+    "subsequent_final_readiness": true
+  },
+  "delivery_completion": {
+    "controller_process_uid": "7a3a4347-d7d7-4ba4-90e8-318bedefe149",
+    "controller_uid": "7e6ffd5e-c598-435f-875b-f9bccb03b4bf",
+    "journal_matches_final_publication": true,
+    "journal_process_refresh_empty": true,
+    "journal_raw_sha256": "db0da3298399da2be369c87e15978aedd420a15b4a36de61b8c2ffbc2b8d20c6",
+    "journal_seed_sha256": "sha256:6b69b858f3d91fa6fa8201ea144ac8165e145a6589525af5723227089f786456",
+    "journal_transition_empty": true,
+    "ready": true,
+    "retained_previous_journal_sha256": "26dfe314b7d7a6dd02d1ef5e5493944425aff93872d0f7ddf2c243b017faa951",
+    "structural_prior": false
+  },
+  "enrollment": {
+    "authority_bound_to_actual_cli_proof": true,
+    "checked_at": "2026-10-14T20:04:43.627747+00:00",
+    "descriptor_sha256": "sha256:afe84a506be95ce3a8a14eb0bd2c7864fa99c67ac636b1b91eed6f156ba46331",
+    "hub_identity_id": 14,
+    "identity_preserved": true,
+    "identity_sha256": "sha256:d78dacc5a2f7ba4eb2fbb38384589178ec1f03ff7d07757beec96b97e0bf0b54",
+    "reviewed_plan_sha256": "0999543cbcc8830bf60a9b2ee539fd2893fe2fec6d0079f1e0d48c803c9eaec3",
+    "runtime_role": {
+      "id": 21,
+      "incarnation": "c7fe7099-2f91-49d9-be78-9f6b31f7ecfe",
+      "name": "cps-workspace-runtime-citnativegroupa",
+      "scopes": [
+        "access:servers!server=citnativegroupa/rtc",
+        "users:activity!user=citnativegroupa"
+      ]
+    },
+    "workspace_descriptor_preserved": true
+  },
+  "evidence": {
+    "activation_four_process_readiness": {
+      "artifact": "phase-d414c198/delivery-activation-readiness.json",
+      "raw_sha256": "5b3d888c637efff1a0038b897284cf67b1005daab2360d779d780284754d2386"
+    },
+    "actual_cli_plan": {
+      "artifact": "root-operator/actual-cli-plan.private.json",
+      "raw_sha256": "c729c5d87cc6715f1db154c6106e5d1b6be6d4d4638321c9bbe4834c35c66dd1"
+    },
+    "actual_cli_proof": {
+      "artifact": "root-operator/actual-cli-proof.private.json",
+      "raw_sha256": "fa1128deb00f2baa6ec80fbe8a6b5675fe3f9341c40e09732bf9b76af905e466"
+    },
+    "actual_delivery_activation_readback": {
+      "artifact": "phase-d414c198/new-delivery-activation-readback.json",
+      "raw_sha256": "b15ca8fbf2735c24ff16e50ea5d8d78f9ff8d2f877eb883d224f244b240c265a"
+    },
+    "enrollment_authority": {
+      "artifact": "phase-d414c198/legacy-runtime-enrollment-authority.json",
+      "raw_sha256": "2b63f59dc0969c166212438bbcb14ceec0ebee74d971eb272ff8b18b4a93386d"
+    },
+    "native_zero_final": {
+      "artifact": "phase-d414c198/native-zero-final-readback.json",
+      "raw_sha256": "1ec504f98f731ba080e38a60eddd9d822e582a789fb68b364fae32ad51e62a87"
+    },
+    "phase_enrollment_proof": {
+      "artifact": "phase-d414c198/legacy-runtime-enrollment-proof.json",
+      "raw_sha256": "72032740b501a27fbb4f43af265fdcdc1b9c7bcd61f4d19e1f8e2bd95aae0ae3"
+    },
+    "phase_enrollment_review": {
+      "artifact": "phase-d414c198/legacy-runtime-enrollment-review.json",
+      "raw_sha256": "d8ae1efc2470a0b6adb12696c2d3a7b129ae5d8f25576f3697f3f02ea710e30f"
+    },
+    "phase_final": {
+      "artifact": "phase-d414c198/final.json",
+      "raw_sha256": "adcd5a162d019a09143073ebcb8f15a8d14e3f746a33620d6a61c8750b4a3983"
+    },
+    "post_cold_retained_pvc": {
+      "artifact": "root-operator/post-cold-pvc.private.json",
+      "raw_sha256": "a88900b4ece8a78a204dfb5440e19ec6a725c6990e350b8b3a6d78e743e06a28"
+    },
+    "prior_first_stage_adoption": {
+      "artifact": "hub-stop-persistence-adoption-actual-20261014.json",
+      "raw_sha256": "d600a9851a4b48eca82ef5e51acd2b8cff759e85cdce46b82005af487ffd4d33"
+    },
+    "prior_normal_cit_stop": {
+      "artifact": "cit-normal-stop-persistence-actual-20261014.json",
+      "raw_sha256": "7f91338915c340522c96c59b2209d47d04291ac797be0904658c3a016fb3b344"
+    },
+    "process_access": {
+      "artifact": "phase-d414c198/process-access.json",
+      "raw_sha256": "ae4f2d9b7f19b73b5e4d574d55fcdf4315307e23253f6e769b5b7f31f22c2e86"
+    }
+  },
+  "kind": "actual-cit-legacy-runtime-enrollment-and-cold-handover",
+  "native_zero": {
+    "actual_active_caps": 0,
+    "actual_used_bytes": 0,
+    "all_ledger_rows_released": true,
+    "ledger_data_sha256": "sha256:c82bf2a1ea4709d035b0dde763670effb16d005cb02363d735f60e8a36c46474"
+  },
+  "open_gates": [
+    "Installed GPU notebook SDK defaults and actual workspace-principal /me require separate acceptance.",
+    "HTTP200 activity callback, owned server/kernel and browser behavior require separate acceptance.",
+    "Human OAuth and production qualification remain open."
+  ],
+  "phase": "d414c198",
+  "read_timeout_and_recovery": {
+    "hub_deletions_repeated": false,
+    "mutation_tail_replayed": false,
+    "prior_attempt_exit_code": 1,
+    "prior_failure_operation": "Read-only retrieval of Deployment/hub",
+    "process_role_mutations_repeated": false,
+    "read_timeout_seconds": 25,
+    "recovery_evidence": "Root reported tool output; no separate recovery stdout or receipt artifact was retained. Actual phase/readiness/controller/journal artifacts above bind the resulting state.",
+    "recovery_exit_code": 0,
+    "recovery_scope": "Root resumed the read-only four-process acknowledgment tail, finalization and one delivery activation; mutation stages were not replayed.",
+    "retained_failure_stderr": {
+      "artifact": "root-actual-coldstage.stderr.private",
+      "content_published": false,
+      "raw_sha256": "1869642bc2bc7a67e55dbb959266ef25d799ec293fab3c53d12032cef66af580"
+    }
+  },
+  "retained_workspace_pvc": {
+    "bound": true,
+    "deleted": false,
+    "same_uid_as_normal_stop": true,
+    "spec_sha256": "sha256:d349c7c5b17252d936e8a357500437672c339b790a2c0e6ec89838c4dfb40718",
+    "spec_unchanged": true,
+    "uid": "28f66788-df70-4f6a-a902-4ce2270544e5"
+  },
+  "scope": "Actual reviewed CIT runtime enrollment and same-image paired-Hub cold handover only. Payload publication is limited to identifiers, scopes, status and hashes; no config, secret, token, raw backup, protected DB, or failure stderr payload is emitted.",
+  "status": "completed",
+  "version": 1
+}

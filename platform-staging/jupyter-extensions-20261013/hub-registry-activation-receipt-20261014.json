@@ -1,0 +1,67 @@
+{
+  "actual_registry_schemas_valid": true,
+  "failed_prior_attempt_preserved": true,
+  "four_component_acknowledgments": {
+    "gateway": {
+      "observed_at": "2026-10-13T23:53:32.411817+00:00",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "process_image": "ghcr.io/mul-cps/cps-compute@sha256:7ad1b53f6acce766ad276597ecd3c812547473ceccae68eb3fbf16451e9c705b",
+      "process_uid": "f2d64420-0f5a-4911-ac97-ea3fd884ec0b",
+      "revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca"
+    },
+    "hub:cit": {
+      "observed_at": "2026-10-13T23:53:40.558549+00:00",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "process_image": "ghcr.io/mul-cps/cps-compute@sha256:466b8398285a513499440dd00aaf0abc377cc49afe05f19e5556e79908106486",
+      "process_uid": "53fc9c4e-7c73-45df-a6ab-f6f586dd806e",
+      "revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca"
+    },
+    "hub:cps": {
+      "observed_at": "2026-10-13T23:53:40.131649+00:00",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "process_image": "ghcr.io/mul-cps/cps-compute@sha256:466b8398285a513499440dd00aaf0abc377cc49afe05f19e5556e79908106486",
+      "process_uid": "3f370443-98a2-4ee0-ab29-6c577b7032cf",
+      "revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca"
+    },
+    "node": {
+      "observed_at": "2026-10-13T23:53:20.504824+00:00",
+      "policy_hash": "sha256:d48f6553ed036c2e7adcc97417623fe0308be93ad13b20f246047ada118511b0",
+      "process_image": "ghcr.io/mul-cps/cps-compute:qualification-native-node-980408a@sha256:5079458fe0fcb3c11231b21f1bbc1f4c12ad3ac578799932aa0bc9f46d5510c7",
+      "process_uid": "32abc203-cc00-46f7-bef6-c7fed7ca0d6e",
+      "revision": "sha256:832e841b6e7b5885a80de27e8850e8e25087b7a26a08a8270f38869f10bf71ca"
+    }
+  },
+  "fresh_process_observed_at": "2026-10-13T23:53:43.388084+00:00",
+  "hub_image": "ghcr.io/mul-cps/cps-compute@sha256:466b8398285a513499440dd00aaf0abc377cc49afe05f19e5556e79908106486",
+  "human_oauth_qualified": false,
+  "matching_backup_sha256": "9702b6b9f06a2b085b387e530a723941014ecf2b1d16f7ce21d6ec795f920270",
+  "matching_logical_backup_readbacks": [
+    {
+      "archive_bytes": 65545,
+      "archive_sha256": "002890b66176f57c09fe678d437d86d0a72ffd26227a067ca0ce0a42a045a5da",
+      "matching_pg_restore_list_passed": true,
+      "restore_demonstrated": false,
+      "source": "cps"
+    },
+    {
+      "archive_bytes": 167259,
+      "archive_sha256": "b16996ec17c2c102ae9bb9e472ea0ffc80d3c49b199b8edcfc03c09148ef80ce",
+      "matching_pg_restore_list_passed": true,
+      "restore_demonstrated": false,
+      "source": "cit"
+    }
+  ],
+  "migration_enabled": false,
+  "new_account_lifecycle_qualified": false,
+  "prior_inverse_verified": true,
+  "private_readback_sha256": "5d62ff566db8a1158c90c43d75010a6824a600d58cc736057095f19c8447aa73",
+  "production_qualified": false,
+  "ready": true,
+  "registry_rows_at_activation": {
+    "cit": 0,
+    "cps": 0
+  },
+  "source_api_custom_scope": "custom:cps:provision:workspace-account",
+  "state": "both-Hub-neutral-registry-activated-migration-retired",
+  "version": 1
+}

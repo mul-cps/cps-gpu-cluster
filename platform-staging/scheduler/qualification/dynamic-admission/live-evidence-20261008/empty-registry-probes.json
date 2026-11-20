@@ -1,0 +1,64 @@
+[
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "--as",
+      "system:serviceaccount:offline:declared-argo-controller",
+      "create",
+      "--dry-run=server",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 1,
+    "expected": "policy-deny",
+    "inputSha256": "7b944e9304d7867034ea8a874adbfb669ab5ff87f2dafe0b84721b7501f60413",
+    "matchedExpectation": true,
+    "name": "empty-pod-denied",
+    "stderr": "The pods \"offline-argo-5-declared\" is invalid: : ValidatingAdmissionPolicy 'cps-dynamic-admission-live-20261008-boundary' with binding 'cps-dynamic-admission-live-20261008-boundary' denied request: Every qualification Pod request requires an explicitly observed and approved creator\n",
+    "stdout": ""
+  },
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "--as",
+      "system:serviceaccount:offline:declared-binder",
+      "create",
+      "--dry-run=server",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 1,
+    "expected": "policy-deny",
+    "inputSha256": "e1c0662569885e68b68ba402cfc8a7f68aa28c8d27d40432ec0fda2086666651",
+    "matchedExpectation": true,
+    "name": "empty-configmap-denied",
+    "stderr": "The configmaps \"offline-argo-5-bcdfgh2-shared-gpu-1\" is invalid: : ValidatingAdmissionPolicy 'cps-dynamic-admission-live-20261008-quota' with binding 'cps-dynamic-admission-live-20261008-quota' denied request: Every ConfigMap mutation requires an explicitly reviewed authenticated writer\n",
+    "stdout": ""
+  },
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "--as",
+      "system:serviceaccount:offline:declared-binder",
+      "create",
+      "--raw",
+      "/api/v1/namespaces/cps-dynamic-admission-live-20261008/pods/offline-argo-5-declared/binding?dryRun=All",
+      "-f",
+      "-"
+    ],
+    "exitCode": 1,
+    "expected": "policy-deny",
+    "inputSha256": "38097949eaf144a7b67a02a77bd428242e6ed8b658faf7206a35a2ca2625f433",
+    "matchedExpectation": true,
+    "name": "empty-binding-denied",
+    "stderr": "The pods \"offline-argo-5-declared\" is invalid: : ValidatingAdmissionPolicy 'cps-dynamic-admission-live-20261008-binding' with binding 'cps-dynamic-admission-live-20261008-binding' denied request: The authenticated binder username must be explicitly observed and approved\n",
+    "stdout": ""
+  }
+]
