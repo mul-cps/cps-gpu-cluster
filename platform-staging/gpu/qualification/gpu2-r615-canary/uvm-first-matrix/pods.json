@@ -1,0 +1,966 @@
+{
+  "uvm-guard-main": {
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+      "annotations": {
+        "qualification.cap-controller": "manual-root-unqualified",
+        "qualification.expected-gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+        "qualification.hostile-isolation": "false",
+        "qualification.production": "false",
+        "source.data.sha256": "59cf0a816fbc4c118e5e442a6ae654c5733cc1f586ac40f79086899f73012e86",
+        "source.support.commit": "fd90fc289207d295bb1907dd2beb52f0dfdce5cb"
+      },
+      "creationTimestamp": "2026-10-08T15:05:10Z",
+      "generation": 1,
+      "labels": {
+        "compute.cps.unileoben.ac.at/qualification": "trusted-r615-driver-measurement"
+      },
+      "name": "uvm-guard-main",
+      "namespace": "cps-r615-uvm-guard-20261008",
+      "resourceVersion": "362135107",
+      "uid": "567b84be-5bd3-48bf-9ee1-0633a6676acd"
+    },
+    "spec": {
+      "activeDeadlineSeconds": 900,
+      "automountServiceAccountToken": false,
+      "containers": [
+        {
+          "command": [
+            "python",
+            "-u",
+            "-c",
+            "import json,os,runpy,sys;sys.path.insert(0,'/qualification'); from pathlib import Path; v=json.loads(Path('/phase/parent.json').read_text()); assert v.get('pod_uid')==os.environ['POD_UID'], 'Exact current phase Pod UID required'; sys.argv=['runtime_probe.py','--execute','--mode','all','--device-uuid','GPU-16128952-b438-556a-00bb-93039ee24e56','--parent-cgroup',v['parent_cgroup'],'--pod-uid',os.environ['POD_UID'],'--module-parameters','/host/uvm-parameters','--support-dir','/qualification']; runpy.run_path('/qualification/runtime_probe.py',run_name='__main__')"
+          ],
+          "env": [
+            {
+              "name": "POD_UID",
+              "valueFrom": {
+                "fieldRef": {
+                  "apiVersion": "v1",
+                  "fieldPath": "metadata.uid"
+                }
+              }
+            },
+            {
+              "name": "NVIDIA_VISIBLE_DEVICES",
+              "value": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+            },
+            {
+              "name": "NVIDIA_DRIVER_CAPABILITIES",
+              "value": "compute,utility"
+            },
+            {
+              "name": "NVIDIA_DISABLE_REQUIRE",
+              "value": "true"
+            },
+            {
+              "name": "PYTHONDONTWRITEBYTECODE",
+              "value": "1"
+            },
+            {
+              "name": "LD_PRELOAD"
+            },
+            {
+              "name": "CUDA_VISIBLE_DEVICES",
+              "value": "0"
+            },
+            {
+              "name": "HOME",
+              "value": "/tmp"
+            },
+            {
+              "name": "XDG_CACHE_HOME",
+              "value": "/tmp/.cache"
+            }
+          ],
+          "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:6b6a8d6a225df1b938fe98bcdad9e547aef249347392ce8f29adb3fedda512ae",
+          "imagePullPolicy": "Never",
+          "name": "main",
+          "resources": {
+            "limits": {
+              "cpu": "1",
+              "memory": "2Gi"
+            },
+            "requests": {
+              "cpu": "100m",
+              "memory": "128Mi"
+            }
+          },
+          "securityContext": {
+            "allowPrivilegeEscalation": false,
+            "capabilities": {
+              "drop": [
+                "ALL"
+              ]
+            },
+            "readOnlyRootFilesystem": true,
+            "runAsGroup": 100,
+            "runAsNonRoot": true,
+            "runAsUser": 1000,
+            "seccompProfile": {
+              "type": "RuntimeDefault"
+            }
+          },
+          "terminationMessagePath": "/dev/termination-log",
+          "terminationMessagePolicy": "File",
+          "volumeMounts": [
+            {
+              "mountPath": "/qualification",
+              "name": "source",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/tmp",
+              "name": "scratch"
+            },
+            {
+              "mountPath": "/phase",
+              "name": "phase",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/host/sys/fs/cgroup",
+              "name": "cgroup",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/host/uvm-parameters",
+              "name": "uvm-parameters",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "dnsPolicy": "ClusterFirst",
+      "enableServiceLinks": true,
+      "initContainers": [
+        {
+          "command": [
+            "python",
+            "-u",
+            "/qualification/gate_wait.py",
+            "--execute",
+            "--receipt",
+            "/cap-receipts/ready.json",
+            "--gpu-uuid",
+            "GPU-16128952-b438-556a-00bb-93039ee24e56",
+            "--cap-mib",
+            "512"
+          ],
+          "env": [
+            {
+              "name": "POD_UID",
+              "valueFrom": {
+                "fieldRef": {
+                  "apiVersion": "v1",
+                  "fieldPath": "metadata.uid"
+                }
+              }
+            },
+            {
+              "name": "NVIDIA_VISIBLE_DEVICES",
+              "value": "void"
+            },
+            {
+              "name": "PYTHONDONTWRITEBYTECODE",
+              "value": "1"
+            }
+          ],
+          "image": "ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "imagePullPolicy": "Never",
+          "name": "cps-driver-cap-gate",
+          "resources": {
+            "limits": {
+              "cpu": "200m",
+              "memory": "64Mi"
+            },
+            "requests": {
+              "cpu": "10m",
+              "memory": "32Mi"
+            }
+          },
+          "securityContext": {
+            "allowPrivilegeEscalation": false,
+            "capabilities": {
+              "drop": [
+                "ALL"
+              ]
+            },
+            "readOnlyRootFilesystem": true,
+            "runAsGroup": 0,
+            "runAsNonRoot": false,
+            "runAsUser": 0,
+            "seccompProfile": {
+              "type": "RuntimeDefault"
+            }
+          },
+          "terminationMessagePath": "/dev/termination-log",
+          "terminationMessagePolicy": "File",
+          "volumeMounts": [
+            {
+              "mountPath": "/qualification",
+              "name": "source",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/tmp",
+              "name": "scratch"
+            },
+            {
+              "mountPath": "/cap-receipts",
+              "name": "receipts"
+            },
+            {
+              "mountPath": "/phase",
+              "name": "phase"
+            }
+          ]
+        }
+      ],
+      "nodeName": "k3s-wk-gpu2",
+      "preemptionPolicy": "PreemptLowerPriority",
+      "priority": 0,
+      "restartPolicy": "Never",
+      "runtimeClassName": "nvidia",
+      "schedulerName": "default-scheduler",
+      "securityContext": {},
+      "serviceAccount": "default",
+      "serviceAccountName": "default",
+      "terminationGracePeriodSeconds": 10,
+      "tolerations": [
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/not-ready",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        },
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/unreachable",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        }
+      ],
+      "volumes": [
+        {
+          "configMap": {
+            "defaultMode": 292,
+            "name": "r615-uvm-guard-59cf0a816fbc"
+          },
+          "name": "source"
+        },
+        {
+          "emptyDir": {
+            "sizeLimit": "1Mi"
+          },
+          "name": "receipts"
+        },
+        {
+          "emptyDir": {
+            "sizeLimit": "1Mi"
+          },
+          "name": "phase"
+        },
+        {
+          "emptyDir": {
+            "sizeLimit": "128Mi"
+          },
+          "name": "scratch"
+        },
+        {
+          "hostPath": {
+            "path": "/sys/fs/cgroup",
+            "type": "Directory"
+          },
+          "name": "cgroup"
+        },
+        {
+          "hostPath": {
+            "path": "/sys/module/nvidia_uvm/parameters",
+            "type": "Directory"
+          },
+          "name": "uvm-parameters"
+        }
+      ]
+    },
+    "status": {
+      "conditions": [
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-08T15:06:55Z",
+          "observedGeneration": 1,
+          "status": "False",
+          "type": "PodReadyToStartContainers"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-08T15:06:47Z",
+          "observedGeneration": 1,
+          "status": "True",
+          "type": "Initialized"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-08T15:06:54Z",
+          "observedGeneration": 1,
+          "reason": "PodFailed",
+          "status": "False",
+          "type": "Ready"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-08T15:06:54Z",
+          "observedGeneration": 1,
+          "reason": "PodFailed",
+          "status": "False",
+          "type": "ContainersReady"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-08T15:05:10Z",
+          "observedGeneration": 1,
+          "status": "True",
+          "type": "PodScheduled"
+        }
+      ],
+      "containerStatuses": [
+        {
+          "allocatedResources": {
+            "cpu": "100m",
+            "memory": "128Mi"
+          },
+          "containerID": "containerd://6243d0865ccfa54764097423afe3ea5b29bc983462f2edacf4b71df0a413c14a",
+          "image": "ghcr.io/mul-cps/cps-jupyter-notebook:latest-pytorch-code",
+          "imageID": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:6b6a8d6a225df1b938fe98bcdad9e547aef249347392ce8f29adb3fedda512ae",
+          "lastState": {},
+          "name": "main",
+          "ready": false,
+          "resources": {
+            "limits": {
+              "cpu": "1",
+              "memory": "2Gi"
+            },
+            "requests": {
+              "cpu": "100m",
+              "memory": "128Mi"
+            }
+          },
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "terminated": {
+              "containerID": "containerd://6243d0865ccfa54764097423afe3ea5b29bc983462f2edacf4b71df0a413c14a",
+              "exitCode": 1,
+              "finishedAt": "2026-10-08T15:06:54Z",
+              "reason": "Error",
+              "startedAt": "2026-10-08T15:06:47Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 100,
+              "supplementalGroups": [
+                27,
+                100
+              ],
+              "uid": 1000
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/qualification",
+              "name": "source",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/tmp",
+              "name": "scratch"
+            },
+            {
+              "mountPath": "/phase",
+              "name": "phase",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/host/sys/fs/cgroup",
+              "name": "cgroup",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/host/uvm-parameters",
+              "name": "uvm-parameters",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ],
+      "hostIP": "10.21.0.43",
+      "hostIPs": [
+        {
+          "ip": "10.21.0.43"
+        }
+      ],
+      "initContainerStatuses": [
+        {
+          "allocatedResources": {
+            "cpu": "10m",
+            "memory": "32Mi"
+          },
+          "containerID": "containerd://b94f528628526b222ec1e62a33d5b23c0cdb00e8a3d9d1c7c2150f3eec7ece8b",
+          "image": "sha256:a1528be4ace384ba06ed5de4152cabdf1376256b1af521a4c098768e1dd84cb2",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "lastState": {},
+          "name": "cps-driver-cap-gate",
+          "ready": true,
+          "resources": {
+            "limits": {
+              "cpu": "200m",
+              "memory": "64Mi"
+            },
+            "requests": {
+              "cpu": "10m",
+              "memory": "32Mi"
+            }
+          },
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "terminated": {
+              "containerID": "containerd://b94f528628526b222ec1e62a33d5b23c0cdb00e8a3d9d1c7c2150f3eec7ece8b",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:06:46Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:05:10Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/qualification",
+              "name": "source",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/tmp",
+              "name": "scratch"
+            },
+            {
+              "mountPath": "/cap-receipts",
+              "name": "receipts"
+            },
+            {
+              "mountPath": "/phase",
+              "name": "phase"
+            }
+          ]
+        }
+      ],
+      "observedGeneration": 1,
+      "phase": "Failed",
+      "podIP": "10.42.7.24",
+      "podIPs": [
+        {
+          "ip": "10.42.7.24"
+        }
+      ],
+      "qosClass": "Burstable",
+      "startTime": "2026-10-08T15:05:10Z"
+    }
+  },
+  "uvm-guard-peer": {
+    "apiVersion": "v1",
+    "kind": "Pod",
+    "metadata": {
+      "annotations": {
+        "qualification.cap-controller": "manual-root-unqualified",
+        "qualification.expected-gpu": "GPU-16128952-b438-556a-00bb-93039ee24e56",
+        "qualification.hostile-isolation": "false",
+        "qualification.production": "false",
+        "source.data.sha256": "59cf0a816fbc4c118e5e442a6ae654c5733cc1f586ac40f79086899f73012e86",
+        "source.support.commit": "fd90fc289207d295bb1907dd2beb52f0dfdce5cb"
+      },
+      "creationTimestamp": "2026-10-08T15:05:10Z",
+      "generation": 1,
+      "labels": {
+        "compute.cps.unileoben.ac.at/qualification": "trusted-r615-driver-measurement"
+      },
+      "name": "uvm-guard-peer",
+      "namespace": "cps-r615-uvm-guard-20261008",
+      "resourceVersion": "362136044",
+      "uid": "1f02616c-6d0e-4cfd-ae34-a8bb31ee5f39"
+    },
+    "spec": {
+      "activeDeadlineSeconds": 900,
+      "automountServiceAccountToken": false,
+      "containers": [
+        {
+          "command": [
+            "python",
+            "-u",
+            "-c",
+            "import json,os,runpy,sys;sys.path.insert(0,'/qualification'); from pathlib import Path; v=json.loads(Path('/phase/parent.json').read_text()); assert v.get('pod_uid')==os.environ['POD_UID'], 'Exact current phase Pod UID required'; sys.argv=['runtime_probe.py','--execute','--mode','heartbeat','--device-uuid','GPU-16128952-b438-556a-00bb-93039ee24e56','--parent-cgroup',v['parent_cgroup'],'--pod-uid',os.environ['POD_UID'],'--module-parameters','/host/uvm-parameters','--support-dir','/qualification']; runpy.run_path('/qualification/runtime_probe.py',run_name='__main__')"
+          ],
+          "env": [
+            {
+              "name": "POD_UID",
+              "valueFrom": {
+                "fieldRef": {
+                  "apiVersion": "v1",
+                  "fieldPath": "metadata.uid"
+                }
+              }
+            },
+            {
+              "name": "NVIDIA_VISIBLE_DEVICES",
+              "value": "GPU-16128952-b438-556a-00bb-93039ee24e56"
+            },
+            {
+              "name": "NVIDIA_DRIVER_CAPABILITIES",
+              "value": "compute,utility"
+            },
+            {
+              "name": "NVIDIA_DISABLE_REQUIRE",
+              "value": "true"
+            },
+            {
+              "name": "PYTHONDONTWRITEBYTECODE",
+              "value": "1"
+            },
+            {
+              "name": "LD_PRELOAD"
+            },
+            {
+              "name": "CUDA_VISIBLE_DEVICES",
+              "value": "0"
+            },
+            {
+              "name": "HOME",
+              "value": "/tmp"
+            },
+            {
+              "name": "XDG_CACHE_HOME",
+              "value": "/tmp/.cache"
+            }
+          ],
+          "image": "ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "imagePullPolicy": "Never",
+          "name": "main",
+          "resources": {
+            "limits": {
+              "cpu": "1",
+              "memory": "512Mi"
+            },
+            "requests": {
+              "cpu": "100m",
+              "memory": "128Mi"
+            }
+          },
+          "securityContext": {
+            "allowPrivilegeEscalation": false,
+            "capabilities": {
+              "drop": [
+                "ALL"
+              ]
+            },
+            "readOnlyRootFilesystem": true,
+            "runAsGroup": 100,
+            "runAsNonRoot": true,
+            "runAsUser": 1000,
+            "seccompProfile": {
+              "type": "RuntimeDefault"
+            }
+          },
+          "terminationMessagePath": "/dev/termination-log",
+          "terminationMessagePolicy": "File",
+          "volumeMounts": [
+            {
+              "mountPath": "/qualification",
+              "name": "source",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/tmp",
+              "name": "scratch"
+            },
+            {
+              "mountPath": "/phase",
+              "name": "phase",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/host/sys/fs/cgroup",
+              "name": "cgroup",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/host/uvm-parameters",
+              "name": "uvm-parameters",
+              "readOnly": true
+            }
+          ]
+        }
+      ],
+      "dnsPolicy": "ClusterFirst",
+      "enableServiceLinks": true,
+      "initContainers": [
+        {
+          "command": [
+            "python",
+            "-u",
+            "/qualification/gate_wait.py",
+            "--execute",
+            "--receipt",
+            "/cap-receipts/ready.json",
+            "--gpu-uuid",
+            "GPU-16128952-b438-556a-00bb-93039ee24e56",
+            "--cap-mib",
+            "512"
+          ],
+          "env": [
+            {
+              "name": "POD_UID",
+              "valueFrom": {
+                "fieldRef": {
+                  "apiVersion": "v1",
+                  "fieldPath": "metadata.uid"
+                }
+              }
+            },
+            {
+              "name": "NVIDIA_VISIBLE_DEVICES",
+              "value": "void"
+            },
+            {
+              "name": "PYTHONDONTWRITEBYTECODE",
+              "value": "1"
+            }
+          ],
+          "image": "ghcr.io/mul-cps/cps-compute:qualification-40b9525@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "imagePullPolicy": "Never",
+          "name": "cps-driver-cap-gate",
+          "resources": {
+            "limits": {
+              "cpu": "200m",
+              "memory": "64Mi"
+            },
+            "requests": {
+              "cpu": "10m",
+              "memory": "32Mi"
+            }
+          },
+          "securityContext": {
+            "allowPrivilegeEscalation": false,
+            "capabilities": {
+              "drop": [
+                "ALL"
+              ]
+            },
+            "readOnlyRootFilesystem": true,
+            "runAsGroup": 0,
+            "runAsNonRoot": false,
+            "runAsUser": 0,
+            "seccompProfile": {
+              "type": "RuntimeDefault"
+            }
+          },
+          "terminationMessagePath": "/dev/termination-log",
+          "terminationMessagePolicy": "File",
+          "volumeMounts": [
+            {
+              "mountPath": "/qualification",
+              "name": "source",
+              "readOnly": true
+            },
+            {
+              "mountPath": "/tmp",
+              "name": "scratch"
+            },
+            {
+              "mountPath": "/cap-receipts",
+              "name": "receipts"
+            },
+            {
+              "mountPath": "/phase",
+              "name": "phase"
+            }
+          ]
+        }
+      ],
+      "nodeName": "k3s-wk-gpu2",
+      "preemptionPolicy": "PreemptLowerPriority",
+      "priority": 0,
+      "restartPolicy": "Never",
+      "runtimeClassName": "nvidia",
+      "schedulerName": "default-scheduler",
+      "securityContext": {},
+      "serviceAccount": "default",
+      "serviceAccountName": "default",
+      "terminationGracePeriodSeconds": 10,
+      "tolerations": [
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/not-ready",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        },
+        {
+          "effect": "NoExecute",
+          "key": "node.kubernetes.io/unreachable",
+          "operator": "Exists",
+          "tolerationSeconds": 300
+        }
+      ],
+      "volumes": [
+        {
+          "configMap": {
+            "defaultMode": 292,
+            "name": "r615-uvm-guard-59cf0a816fbc"
+          },
+          "name": "source"
+        },
+        {
+          "emptyDir": {
+            "sizeLimit": "1Mi"
+          },
+          "name": "receipts"
+        },
+        {
+          "emptyDir": {
+            "sizeLimit": "1Mi"
+          },
+          "name": "phase"
+        },
+        {
+          "emptyDir": {
+            "sizeLimit": "128Mi"
+          },
+          "name": "scratch"
+        },
+        {
+          "hostPath": {
+            "path": "/sys/fs/cgroup",
+            "type": "Directory"
+          },
+          "name": "cgroup"
+        },
+        {
+          "hostPath": {
+            "path": "/sys/module/nvidia_uvm/parameters",
+            "type": "Directory"
+          },
+          "name": "uvm-parameters"
+        }
+      ]
+    },
+    "status": {
+      "conditions": [
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-08T15:08:00Z",
+          "observedGeneration": 1,
+          "status": "False",
+          "type": "PodReadyToStartContainers"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-08T15:05:58Z",
+          "observedGeneration": 1,
+          "reason": "PodCompleted",
+          "status": "True",
+          "type": "Initialized"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-08T15:07:59Z",
+          "observedGeneration": 1,
+          "reason": "PodCompleted",
+          "status": "False",
+          "type": "Ready"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-08T15:07:59Z",
+          "observedGeneration": 1,
+          "reason": "PodCompleted",
+          "status": "False",
+          "type": "ContainersReady"
+        },
+        {
+          "lastProbeTime": null,
+          "lastTransitionTime": "2026-10-08T15:05:10Z",
+          "observedGeneration": 1,
+          "status": "True",
+          "type": "PodScheduled"
+        }
+      ],
+      "containerStatuses": [
+        {
+          "allocatedResources": {
+            "cpu": "100m",
+            "memory": "128Mi"
+          },
+          "containerID": "containerd://73a6a2140010ec4a87735bb80da71cca54cddf3b7f26f8f1158259a863653ffc",
+          "image": "sha256:a1528be4ace384ba06ed5de4152cabdf1376256b1af521a4c098768e1dd84cb2",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "lastState": {},
+          "name": "main",
+          "ready": false,
+          "resources": {
+            "limits": {
+              "cpu": "1",
+              "memory": "512Mi"
+            },
+            "requests": {
+              "cpu": "100m",
+              "memory": "128Mi"
+            }
+          },
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "terminated": {
+              "containerID": "containerd://73a6a2140010ec4a87735bb80da71cca54cddf3b7f26f8f1158259a863653ffc",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:07:58Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:05:58Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 100,
+              "supplementalGroups": [
+                100
+              ],
+              "uid": 1000
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/qualification",
+              "name": "source",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/tmp",
+              "name": "scratch"
+            },
+            {
+              "mountPath": "/phase",
+              "name": "phase",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/host/sys/fs/cgroup",
+              "name": "cgroup",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/host/uvm-parameters",
+              "name": "uvm-parameters",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            }
+          ]
+        }
+      ],
+      "hostIP": "10.21.0.43",
+      "hostIPs": [
+        {
+          "ip": "10.21.0.43"
+        }
+      ],
+      "initContainerStatuses": [
+        {
+          "allocatedResources": {
+            "cpu": "10m",
+            "memory": "32Mi"
+          },
+          "containerID": "containerd://e0322f1f7d934741fa7766cef1817ae512c64491a899230174f2830545e141b2",
+          "image": "sha256:a1528be4ace384ba06ed5de4152cabdf1376256b1af521a4c098768e1dd84cb2",
+          "imageID": "ghcr.io/mul-cps/cps-compute@sha256:b3802a7f70077ff56adbc060d1177409eeff76c8b3cf8ccf9f39047c1e6716bf",
+          "lastState": {},
+          "name": "cps-driver-cap-gate",
+          "ready": true,
+          "resources": {
+            "limits": {
+              "cpu": "200m",
+              "memory": "64Mi"
+            },
+            "requests": {
+              "cpu": "10m",
+              "memory": "32Mi"
+            }
+          },
+          "restartCount": 0,
+          "started": false,
+          "state": {
+            "terminated": {
+              "containerID": "containerd://e0322f1f7d934741fa7766cef1817ae512c64491a899230174f2830545e141b2",
+              "exitCode": 0,
+              "finishedAt": "2026-10-08T15:05:57Z",
+              "reason": "Completed",
+              "startedAt": "2026-10-08T15:05:11Z"
+            }
+          },
+          "user": {
+            "linux": {
+              "gid": 0,
+              "supplementalGroups": [
+                0
+              ],
+              "uid": 0
+            }
+          },
+          "volumeMounts": [
+            {
+              "mountPath": "/qualification",
+              "name": "source",
+              "readOnly": true,
+              "recursiveReadOnly": "Disabled"
+            },
+            {
+              "mountPath": "/tmp",
+              "name": "scratch"
+            },
+            {
+              "mountPath": "/cap-receipts",
+              "name": "receipts"
+            },
+            {
+              "mountPath": "/phase",
+              "name": "phase"
+            }
+          ]
+        }
+      ],
+      "observedGeneration": 1,
+      "phase": "Succeeded",
+      "podIP": "10.42.7.23",
+      "podIPs": [
+        {
+          "ip": "10.42.7.23"
+        }
+      ],
+      "qosClass": "Burstable",
+      "startTime": "2026-10-08T15:05:10Z"
+    }
+  }
+}

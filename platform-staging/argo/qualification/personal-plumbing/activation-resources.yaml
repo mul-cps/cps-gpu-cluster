@@ -1,0 +1,513 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: argo-ui-token-rotator
+  namespace: cps-compute
+automountServiceAccountToken: false
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cps-argo-ui-token-request
+  namespace: cps-argo
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - serviceaccounts/token
+  resourceNames:
+  - argo-artifact-reader
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cps-argo-ui-token-publish
+  namespace: cps-compute
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - secrets
+  resourceNames:
+  - cps-argo-ui-reader
+  verbs:
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cps-argo-ui-token-request
+  namespace: cps-argo
+subjects:
+- kind: ServiceAccount
+  name: argo-ui-token-rotator
+  namespace: cps-compute
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cps-argo-ui-token-request
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cps-argo-ui-token-publish
+  namespace: cps-compute
+subjects:
+- kind: ServiceAccount
+  name: argo-ui-token-rotator
+  namespace: cps-compute
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cps-argo-ui-token-publish
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: argo-ui-token-rotator
+  namespace: cps-compute
+spec:
+  schedule: '*/5 * * * *'
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 1
+      activeDeadlineSeconds: 90
+      template:
+        metadata:
+          labels:
+            app: argo-ui-token-rotator
+        spec:
+          restartPolicy: Never
+          serviceAccountName: argo-ui-token-rotator
+          automountServiceAccountToken: true
+          imagePullSecrets:
+          - name: cps-compute-image-pull
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 10001
+            runAsGroup: 10001
+            seccompProfile:
+              type: RuntimeDefault
+          containers:
+          - name: rotate
+            image: ghcr.io/mul-cps/cps-compute@sha256:74cfb93dcf0078c116b88662b19b6ef14611f616e34ae3141f1fd24ceb3e12ce
+            command:
+            - python
+            - -c
+            args:
+            - 'import base64
+
+              from kubernetes import client, config
+
+              config.load_incluster_config()
+
+              api = client.CoreV1Api()
+
+              request = {''apiVersion'': ''authentication.k8s.io/v1'', ''kind'': ''TokenRequest'',
+              ''spec'': {''audiences'': [], ''expirationSeconds'': 900}}
+
+              token = api.create_namespaced_service_account_token(''argo-artifact-reader'',
+              ''cps-argo'', request, _request_timeout=(5, 15)).status.token
+
+              api.patch_namespaced_secret(''cps-argo-ui-reader'', ''cps-compute'',
+              {''data'': {''token'': base64.b64encode(token.encode()).decode()}},
+              _request_timeout=(5, 15))
+
+              print(''Short-lived personal Argo reader credential rotated'')
+
+              '
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                - ALL
+            resources:
+              requests:
+                cpu: 50m
+                memory: 64Mi
+              limits:
+                cpu: 250m
+                memory: 256Mi
+  suspend: true
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cit-argo-ui-ingress
+  namespace: cps-compute
+spec:
+  podSelector:
+    matchLabels:
+      app: cit-argo-ui
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/component: controller
+    ports:
+    - protocol: TCP
+      port: 8080
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cps-argo-ui-ingress
+  namespace: cps-compute
+spec:
+  podSelector:
+    matchLabels:
+      app: cps-argo-ui
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: ingress-nginx
+      podSelector:
+        matchLabels:
+          app.kubernetes.io/component: controller
+    ports:
+    - protocol: TCP
+      port: 8080
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cit-argo-ui
+  namespace: cps-compute
+spec:
+  selector:
+    app: cit-argo-ui
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cps-argo-ui
+  namespace: cps-compute
+spec:
+  selector:
+    app: cps-argo-ui
+  ports:
+  - name: http
+    port: 8080
+    targetPort: http
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cit-argo-ui
+  namespace: cps-compute
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cit-argo-ui
+  template:
+    metadata:
+      labels:
+        app: cit-argo-ui
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 40
+      imagePullSecrets:
+      - name: cps-compute-image-pull
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: argo-ui
+        image: ghcr.io/mul-cps/e2x-course-hub:qualification-native-assets-373dc09@sha256:c4df863a35a46d598cb319508b7d4e45caae3d1f9b71e24b2f1692c65e5f07bc
+        command:
+        - python
+        - -m
+        - e2x_course_hub.cps.argo_app
+        args:
+        - --host
+        - 0.0.0.0
+        - --port
+        - '8080'
+        ports:
+        - name: http
+          containerPort: 8080
+        env:
+        - name: ARGO_USER_SOURCE
+          value: cit
+        - name: ARGO_USER_OAUTH_CLIENT_ID
+          value: service-cit-argo-ui
+        - name: ARGO_USER_OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: cit-argo-ui-oauth
+              key: oauth-client-secret
+        - name: ARGO_USER_COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: cit-argo-ui-oauth
+              key: cookie-secret
+        - name: ARGO_USER_PUBLIC_ORIGIN
+          value: https://jhub.dshl.unileoben.ac.at
+        - name: ARGO_USER_HUB_API_URL
+          value: https://jhub.dshl.unileoben.ac.at/hub/api
+        - name: ARGO_USER_HUB_AUTHORIZATION_URL
+          value: https://jhub.dshl.unileoben.ac.at/hub/api/oauth2/authorize
+        - name: ARGO_USER_COMPUTE_URL
+          value: https://compute-gateway.cps-compute.svc.cluster.local:8000
+        - name: ARGO_USER_NATIVE_ARGO_URL
+          value: https://cps-argo-argo-workflows-server.cps-argo.svc.cluster.local:2746
+        - name: ARGO_USER_HUB_CA_FILE
+          value: /etc/ssl/certs/ca-certificates.crt
+        - name: ARGO_USER_COMPUTE_CA_FILE
+          value: /trust/ca.crt
+        - name: ARGO_USER_NATIVE_ARGO_CA_FILE
+          value: /trust/ca.crt
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: '1'
+            memory: 512Mi
+        readinessProbe:
+          tcpSocket:
+            port: http
+        volumeMounts:
+        - name: trust
+          mountPath: /trust
+          readOnly: true
+        - name: temporary
+          mountPath: /tmp
+      volumes:
+      - name: trust
+        configMap:
+          name: cps-compute-gateway-ca
+      - name: temporary
+        emptyDir:
+          sizeLimit: 64Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cps-argo-ui
+  namespace: cps-compute
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: cps-argo-ui
+  template:
+    metadata:
+      labels:
+        app: cps-argo-ui
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 40
+      imagePullSecrets:
+      - name: cps-compute-image-pull
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+      - name: argo-ui
+        image: ghcr.io/mul-cps/e2x-course-hub:qualification-native-assets-373dc09@sha256:c4df863a35a46d598cb319508b7d4e45caae3d1f9b71e24b2f1692c65e5f07bc
+        command:
+        - python
+        - -m
+        - e2x_course_hub.cps.argo_app
+        args:
+        - --host
+        - 0.0.0.0
+        - --port
+        - '8080'
+        ports:
+        - name: http
+          containerPort: 8080
+        env:
+        - name: ARGO_USER_SOURCE
+          value: cps
+        - name: ARGO_USER_OAUTH_CLIENT_ID
+          value: service-cps-argo-ui
+        - name: ARGO_USER_OAUTH_CLIENT_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: cps-argo-ui-oauth
+              key: oauth-client-secret
+        - name: ARGO_USER_COOKIE_SECRET
+          valueFrom:
+            secretKeyRef:
+              name: cps-argo-ui-oauth
+              key: cookie-secret
+        - name: ARGO_USER_PUBLIC_ORIGIN
+          value: https://jupyterhub.dshl.unileoben.ac.at
+        - name: ARGO_USER_HUB_API_URL
+          value: https://jupyterhub.dshl.unileoben.ac.at/hub/api
+        - name: ARGO_USER_HUB_AUTHORIZATION_URL
+          value: https://jupyterhub.dshl.unileoben.ac.at/hub/api/oauth2/authorize
+        - name: ARGO_USER_COMPUTE_URL
+          value: https://compute-gateway.cps-compute.svc.cluster.local:8000
+        - name: ARGO_USER_NATIVE_ARGO_URL
+          value: https://cps-argo-argo-workflows-server.cps-argo.svc.cluster.local:2746
+        - name: ARGO_USER_HUB_CA_FILE
+          value: /etc/ssl/certs/ca-certificates.crt
+        - name: ARGO_USER_COMPUTE_CA_FILE
+          value: /trust/ca.crt
+        - name: ARGO_USER_NATIVE_ARGO_CA_FILE
+          value: /trust/ca.crt
+        securityContext:
+          allowPrivilegeEscalation: false
+          readOnlyRootFilesystem: true
+          capabilities:
+            drop:
+            - ALL
+        resources:
+          requests:
+            cpu: 100m
+            memory: 128Mi
+          limits:
+            cpu: '1'
+            memory: 512Mi
+        readinessProbe:
+          tcpSocket:
+            port: http
+        volumeMounts:
+        - name: trust
+          mountPath: /trust
+          readOnly: true
+        - name: temporary
+          mountPath: /tmp
+      volumes:
+      - name: trust
+        configMap:
+          name: cps-compute-gateway-ca
+      - name: temporary
+        emptyDir:
+          sizeLimit: 64Mi
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: personal-argo-to-gateway
+  namespace: cps-compute
+  labels:
+    qualification.cps/owner: personal-argo-preparation
+spec:
+  podSelector:
+    matchLabels:
+      app: compute-gateway
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - cps-argo-ui
+          - cit-argo-ui
+    ports:
+    - protocol: TCP
+      port: 8000
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: personal-argo-native-assets
+  namespace: cps-argo
+  labels:
+    qualification.cps/owner: personal-argo-preparation
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: cps-argo
+      app.kubernetes.io/name: argo-workflows-server
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels:
+          kubernetes.io/metadata.name: cps-compute
+      podSelector:
+        matchExpressions:
+        - key: app
+          operator: In
+          values:
+          - cps-argo-ui
+          - cit-argo-ui
+    ports:
+    - protocol: TCP
+      port: 2746
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: personal-argo-registration
+  namespace: jupyterhub
+  labels:
+    qualification.cps/owner: personal-argo-preparation
+data:
+  personal-argo.py: "# Appended service and default normal-user access; no admin API\
+    \ role.\nfrom pathlib import Path\n_personal_name = 'cps-argo-ui'\nif any(s.get('name')\
+    \ == _personal_name for s in c.JupyterHub.services):\n    raise RuntimeError('Dedicated\
+    \ personal Argo service already configured')\nc.JupyterHub.services = list(c.JupyterHub.services)\
+    \ + [{\n    'name': _personal_name,\n    'api_token': Path('/etc/personal-argo/oauth-client-secret').read_text().strip(),\n\
+    \    'oauth_client_id': 'service-' + _personal_name,\n    'oauth_redirect_uri':\
+    \ 'https://jupyterhub.dshl.unileoben.ac.at/argo/oauth_callback',\n    'oauth_client_allowed_scopes':\
+    \ [],\n    'display': False,\n}]\n_personal_roles = [dict(role) for role in c.JupyterHub.load_roles]\n\
+    _personal_user = next((role for role in _personal_roles if role.get('name') ==\
+    \ 'user'), None)\nif _personal_user is None:\n    _personal_user = {'name': 'user',\
+    \ 'scopes': ['self']}\n    _personal_roles.append(_personal_user)\n_personal_scope\
+    \ = 'access:services!service=' + _personal_name\n_personal_user['scopes'] = list(dict.fromkeys([*_personal_user.get('scopes',\
+    \ ['self']), _personal_scope]))\nc.JupyterHub.load_roles = _personal_roles\n"
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: personal-argo-registration
+  namespace: cit-jhub
+  labels:
+    qualification.cps/owner: personal-argo-preparation
+data:
+  personal-argo.py: "# Appended service and default normal-user access; no admin API\
+    \ role.\nfrom pathlib import Path\n_personal_name = 'cit-argo-ui'\nif any(s.get('name')\
+    \ == _personal_name for s in c.JupyterHub.services):\n    raise RuntimeError('Dedicated\
+    \ personal Argo service already configured')\nc.JupyterHub.services = list(c.JupyterHub.services)\
+    \ + [{\n    'name': _personal_name,\n    'api_token': Path('/etc/personal-argo/oauth-client-secret').read_text().strip(),\n\
+    \    'oauth_client_id': 'service-' + _personal_name,\n    'oauth_redirect_uri':\
+    \ 'https://jhub.dshl.unileoben.ac.at/argo/oauth_callback',\n    'oauth_client_allowed_scopes':\
+    \ [],\n    'display': False,\n}]\n_personal_roles = [dict(role) for role in c.JupyterHub.load_roles]\n\
+    _personal_user = next((role for role in _personal_roles if role.get('name') ==\
+    \ 'user'), None)\nif _personal_user is None:\n    _personal_user = {'name': 'user',\
+    \ 'scopes': ['self']}\n    _personal_roles.append(_personal_user)\n_personal_scope\
+    \ = 'access:services!service=' + _personal_name\n_personal_user['scopes'] = list(dict.fromkeys([*_personal_user.get('scopes',\
+    \ ['self']), _personal_scope]))\nc.JupyterHub.load_roles = _personal_roles\n"

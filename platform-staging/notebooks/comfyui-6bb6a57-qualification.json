@@ -1,0 +1,99 @@
+{
+  "qualified": false,
+  "scope": "ComfyUI image compatibility only; GPU isolation and full release matrix incomplete",
+  "digest": "sha256:6708f95f63ad230c8d661151880159961e16dbc82009d052828c91db2ab2c8c6",
+  "linuxManifest": "sha256:46d42f478dcdabce9f8f2dac66ce1141483de7f702bd0993497383c42ea9fe17",
+  "user": "1000",
+  "predicateTypes": [
+    "https://slsa.dev/provenance/v1"
+  ],
+  "offlinePackageInstallation": true,
+  "pipCheckPassed": true,
+  "releaseRunnerTestsPassed": 14,
+  "sbomMode": "standalone required",
+  "fullImageSbomVerified": true,
+  "variant": "comfyui",
+  "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+  "wheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.14",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "ComfyUI image runtime only; no GPU isolation or Hub browser qualification",
+    "freshKernelSourceHashesVerified": true,
+    "pytorchCpuVerified": true,
+    "pytorchVersion": "2.11.0+cu129"
+  },
+  "published": true,
+  "deployed": false,
+  "gpuExecution": false,
+  "comfyuiHttp": {
+    "uid": 1000,
+    "systemStatsHttp": 200,
+    "objectInfoHttp": 200,
+    "nodeDefinitions": 827,
+    "cpuDeviceVerified": true,
+    "persistentDataDirectoriesVerified": true,
+    "persistentDatabaseVerified": true,
+    "networkScope": "isolated container loopback only",
+    "gpuExecution": false,
+    "cpuLatentWorkflowVerified": true,
+    "latentShape": [
+      1,
+      4,
+      8,
+      8
+    ],
+    "modelInferenceVerified": false,
+    "browserInteractionVerified": false,
+    "qualified": false
+  },
+  "standaloneSbom": {
+    "format": "standalone SPDX JSON",
+    "file": "image.tar.sbom.spdx.json",
+    "sourceImageId": "sha256:98ebffe46b6e653f152ff22089a7c2778c0c94d6a269e32db41b2e54ad73de42",
+    "packages": 5043,
+    "sha256": "fb1f89642327703114598c7f4b99ecc19dfb94816cde463c8a606aba3e151056",
+    "nativeFile": "image.tar.sbom.syft.json",
+    "nativeSha256": "a96a20da5b37c6e23a8372cec1116556621a3f0b1c00ab78ab11b5eab06b374c",
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill",
+      "torch",
+      "torchvision"
+    ],
+    "fileInventoryEntries": 78612
+  },
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-comfyui@sha256:6708f95f63ad230c8d661151880159961e16dbc82009d052828c91db2ab2c8c6",
+  "remoteIndexAndChildrenVerified": true,
+  "standaloneSbomRemoteVerified": true,
+  "sbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:958961129bebfe292b38f221a0f9c51bd3e779c6110f715fc2235677457441af",
+  "parent": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:0f251eff4c49c5381c3b31db1ac19baa5c85b5ec33150ec031afd3040d13a0c3",
+  "parentScope": "Previously published ComfyUI startup-repaired qualification parent; not a common-tag production parent",
+  "comfyuiSourceBinding": {
+    "startupSha256": "a078ead0c9ccc67c3fc4bd2603811dce815744168709dceaefd88b32f377ecfd",
+    "mainSha256": "540ec3899eb6680eeec725a935da29c9899057de16a112d7b3e7ad7825edd9e2",
+    "upstreamRevision": "9a9fdb10ed144ce760d9682cb247526ea23cc525"
+  },
+  "credentialCleanup": {
+    "temporaryHostConfigRemoved": true,
+    "temporaryContainerConfigRemoved": true,
+    "credentialInBuildContext": false
+  }
+}

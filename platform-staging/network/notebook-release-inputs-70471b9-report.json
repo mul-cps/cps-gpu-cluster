@@ -1,0 +1,19 @@
+{
+  "notebookSourceRevision": "b95c700a12229ff1435d986e4722b80e39290a0f",
+  "computeSourceRevision": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "computeWheelSha256": "86a0fa74cb6e15dd408fcfe36945ca1f614af14ff3bda555f49aaf4e85408d37",
+  "reviewedBaseDigests": 12,
+  "wheelsChecksummed": 146,
+  "packagesValidated": 133,
+  "inputValidationPassed": true,
+  "sourceTagBuildPassed": false,
+  "productionQualified": false,
+  "releasePublished": false,
+  "lockSha256": "b6aec8e295406eb6c1a060de170f825c26c169af12c88430a8b560f3cf309c91",
+  "limitations": [
+    "Candidate images are reviewed immutable bases, not proof of a source-tag release.",
+    "No build, image publication or release tag was performed.",
+    "A clean matching tagged source and actual offline multi-ABI builds remain required."
+  ],
+  "lock": "notebook-release-inputs-70471b9-lock.json"
+}

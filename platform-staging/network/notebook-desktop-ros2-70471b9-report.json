@@ -1,0 +1,77 @@
+{
+  "variant": "desktop-ros2",
+  "computeSourceRevision": "70471b9793f21a87d74ac7a673f871dfa9620101",
+  "wheelSha256": "86a0fa74cb6e15dd408fcfe36945ca1f614af14ff3bda555f49aaf4e85408d37",
+  "parentConfigId": "eaf34c86b9037624ec7cdf71817db818e4025b4ef267260b52a9e7021b7f6801",
+  "imageConfigId": "61f493b03cd5adde8e6c05e9be6eb1d35e29c109f698ae7cb963643b089d8d09",
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:c4e6f2b3f9e1173a7815e122e5192d4295473e9763cf206cc37af025ac3e144b",
+  "published": true,
+  "remoteManifestAndConfigVerified": true,
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.14",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "CPU fresh-kernel and native ROS loopback only; no GPU or Hub browser qualification",
+    "freshKernelSourceHashesVerified": true,
+    "pytorchCpuVerified": true,
+    "ros2SystemPythonLoopbackVerified": true
+  },
+  "runtimeArtifacts": {
+    "failure-input.ipynb": "b5d74eafd836534f9b618fe736d30271ec80d1ddee6a08a7362c6bc5932229e6",
+    "failure.ipynb": "647e24620ca75d73c5cdb3ba58743895c4ab62f5cc36df62c0224390ff3a3ed3",
+    "input.ipynb": "7e9f7aef4ac6985e219ca722bd13bc9d2da586b7562371c06d2b8d142e13d524",
+    "report.json": "953caf5f38c863ab0ce0263b9110b4ca1d318663acf4bef5ea72d46bc650fa23",
+    "success.ipynb": "74d09befcef2f5f11004c42026bfd10fa2a9153d45f9418dbe3d3a20af8948f6"
+  },
+  "parentStartupConfigurationPreserved": true,
+  "pipCheckPassed": true,
+  "qualified": false,
+  "deployed": false,
+  "limitations": [
+    "Layered qualification build; common-source release tag and full matrix remain open.",
+    "No GPU devices mounted; hardware isolation and variant-specific GPU behavior unqualified."
+  ],
+  "fixtureCorrection": {
+    "initialFailure": "Missing newline joining notebook code fragments produced SyntaxError; no image failure inferred",
+    "failedLogSha256": "f26f5f0aab18705a942889eb730eb3611a4d1da9ef08999c58965818acbbfd55",
+    "correctedRunPassed": true
+  },
+  "sbom": {
+    "variant": "desktop-ros2",
+    "subject": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:c4e6f2b3f9e1173a7815e122e5192d4295473e9763cf206cc37af025ac3e144b",
+    "sourceImageId": "sha256:61f493b03cd5adde8e6c05e9be6eb1d35e29c109f698ae7cb963643b089d8d09",
+    "packages": 5443,
+    "files": 161547,
+    "requiredPackagesVerified": [
+      "cps-compute",
+      "hera-workflows",
+      "jupyter-collaboration",
+      "jupyterlab",
+      "papermill"
+    ],
+    "checksums": {
+      "sbom.spdx.json": "31f6f11e23bcc05e8d66b40ea752ea47996a97e93933cad9ce513072251b6870",
+      "sbom.syft.json": "5a07629bd0202d9d156076c56a1caadc38595633deddfc8c045e9d49cf9e72ba"
+    },
+    "attachment": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:89042a7ea1eca3107cd95e8c6c521a38b0c0233ddb956d352b0738b0a85e9f62",
+    "subjectVerified": true,
+    "downloadHashesMatched": true,
+    "scannerSha256": "dbf75864e7a7ff9e1fbf00552c31483f693188632a9f68f343cd7653dac513d6",
+    "productionQualified": false,
+    "createdAt": "2026-10-07T05:28:44.270719+00:00",
+    "fileCoverage": "package-owned files (Syft metadata selection owned-by-package); not every image file"
+  },
+  "sbomPublished": true
+}

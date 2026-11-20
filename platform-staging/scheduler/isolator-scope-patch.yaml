@@ -1,0 +1,18 @@
+# Mandatory post-render patch: upstream NotIn(ignore) matches nearly all pods.
+# A fail-closed webhook must be scoped to the controlled workload namespace.
+# The client-controlled object opt-out is removed.
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: kai-resource-isolator-mutating
+webhooks:
+  - name: vgpu.lib.kai-resource-isolator.io
+    namespaceSelector:
+      $patch: replace
+      matchLabels:
+        compute.cps.unileoben.ac.at/isolation: required
+    objectSelector:
+      $patch: replace
+    matchConditions:
+      - name: kai-workload
+        expression: object.spec.schedulerName == 'kai-scheduler'

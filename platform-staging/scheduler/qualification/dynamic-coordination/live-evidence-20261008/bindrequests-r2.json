@@ -1,0 +1,43 @@
+{
+    "apiVersion": "v1",
+    "items": [
+        {
+            "apiVersion": "scheduling.run.ai/v1alpha2",
+            "kind": "BindRequest",
+            "metadata": {
+                "creationTimestamp": "2026-10-08T12:29:22Z",
+                "generation": 1,
+                "labels": {
+                    "selected-node": "k3s-cp3"
+                },
+                "name": "kai-cpu-allow",
+                "namespace": "cps-dynamic-admission-coord-live-20261008",
+                "ownerReferences": [
+                    {
+                        "apiVersion": "v1",
+                        "kind": "Pod",
+                        "name": "kai-cpu-allow",
+                        "uid": "0df80855-e549-47ba-b08c-d46e4665c6a1"
+                    }
+                ],
+                "resourceVersion": "361996188",
+                "uid": "2658c9cd-c45d-4ccf-a3b4-decd3b96dfe3"
+            },
+            "spec": {
+                "podName": "kai-cpu-allow",
+                "receivedGPU": {
+                    "portion": "0.00"
+                },
+                "receivedResourceType": "Regular",
+                "selectedNode": "k3s-cp3"
+            },
+            "status": {
+                "phase": "Succeeded"
+            }
+        }
+    ],
+    "kind": "List",
+    "metadata": {
+        "resourceVersion": ""
+    }
+}

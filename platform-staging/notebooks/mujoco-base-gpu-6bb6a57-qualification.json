@@ -1,0 +1,54 @@
+{
+  "qualified": false,
+  "scope": "MuJoCo base GPU image compatibility only; GPU isolation and full release matrix incomplete",
+  "digest": "sha256:9be5a05c7f081b3bf7a557b736bb5af960e9ac0a55d74f029b958e9dfb6ad32f",
+  "linuxManifest": "sha256:a8fbcf645366fc86125135f1921fe036642abf98fce851f39a200e710bd83894",
+  "user": "1000",
+  "predicateTypes": [
+    "https://spdx.dev/Document",
+    "https://slsa.dev/provenance/v1"
+  ],
+  "offlinePackageInstallation": true,
+  "pipCheckPassed": true,
+  "releaseRunnerTestsPassed": 14,
+  "variant": "mujoco-base-gpu",
+  "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+  "wheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.12",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "MuJoCo base GPU image runtime only; no GPU isolation or Hub browser qualification",
+    "freshKernelSourceHashesVerified": true,
+    "pytorchCpuVerified": true,
+    "mujocoPhysicsVerified": false,
+    "mujocoPackageExpectedInDescendant": true
+  },
+  "published": true,
+  "deployed": false,
+  "gpuExecution": false,
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook-mujoco-base-gpu:qualification-storage-resources-6bb6a57@sha256:9be5a05c7f081b3bf7a557b736bb5af960e9ac0a55d74f029b958e9dfb6ad32f",
+  "remoteIndexAndChildrenVerified": true,
+  "initialHarnessFailure": {
+    "reason": "MuJoCo import incorrectly expected in minimal parent; package is installed by mujoco-xpra descendant",
+    "retainedEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-mujoco-base-gpu-6bb6a57/failed-runtime",
+    "harness": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-mujoco-base-gpu-6bb6a57/failed-runtime-harness.py"
+  },
+  "credentialCleanup": {
+    "temporaryHostConfigRemoved": true,
+    "temporaryContainerConfigRemoved": true,
+    "credentialInBuildContext": false
+  }
+}

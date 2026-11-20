@@ -97,3 +97,12 @@ kubectl get pods -A -l kai.scheduler/queue=batch
 
 Eviction events are also visible via `kubectl get events -n <pod-namespace>
 --field-selector reason=Evicted` for evicted batch pods.
+
+## Current qualification pause (2026-10-06)
+
+The actual chart/runtime version is 0.34.0. The legacy live policy lacked the
+candidate's restartable opt-in and gang exclusions, so its CronJob was suspended
+without an active Job. Git now renders `suspend: true`; KAI continues scheduling.
+Qualify and install the narrower policy before resuming. Direct Descheduler
+scraping and the representative churn/performance comparison remain open.
+See the [current audit](../../../../../platform-staging/gateway-qualified/qualification/monitoring-current.md).

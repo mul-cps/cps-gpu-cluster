@@ -1,0 +1,12 @@
+{
+  "reference": "ghcr.io/mul-cps/cps-compute:qualification-permissions-a8426ed",
+  "digest": "sha256:0b98f7fccb25e6e189693056bff2ad1def7fc276242255ece545e1fb55c01f52",
+  "applicationRevision": "a8426ede088b3a2e458eaa177c2ef2d8743b1a2a",
+  "recipeRevision": "658dc4ca6f90dad66cd9dfb0084c66a68d051aaa",
+  "imageManifest": "sha256:9e9b46c1b9025e0847c4f76515127454c69b5f50d18ec918baa686a7cc700ebb",
+  "attestationManifest": "sha256:65c075269fa9481bc6e31c06d8ca6aeb657d7bb56c6817ed7ad1dc0326b4e694",
+  "attestationReferencesImage": true,
+  "productionPromoted": false,
+  "knownMissingGuard": "Active ancestor NFS mounts are not rejected before provisioning",
+  "productionStorageActivationAllowed": false
+}

@@ -1,0 +1,61 @@
+{
+  "scope": "Complete shared SDK/addon/RTC wheelhouse in isolated targets; not notebook base or GPU qualification",
+  "wheels": 146,
+  "package_versions": 133,
+  "install_network": "none",
+  "interpreters": [
+    {
+      "python": "3.12.13",
+      "packages": 133,
+      "required_dependencies_consistent": true,
+      "source_modules_matched": 21,
+      "addon_assets_matched": 5,
+      "lab": "4.5.7",
+      "rtc": "4.4.1",
+      "site_packages_disabled": true
+    },
+    {
+      "python": "3.13.12",
+      "packages": 133,
+      "required_dependencies_consistent": true,
+      "source_modules_matched": 21,
+      "addon_assets_matched": 5,
+      "lab": "4.5.7",
+      "rtc": "4.4.1",
+      "site_packages_disabled": true
+    }
+  ],
+  "release_tests_passed": 13,
+  "notebook_matrix_qualified": false,
+  "kernels": {
+    "scope": "Owned local kernels from isolated common wheelhouse; not Hub/gateway/NFS/GPU end-to-end qualification",
+    "interpreters": [
+      {
+        "python": "3.12.13",
+        "fresh_kernel_success": true,
+        "typed_parameters": true,
+        "failure_executed_notebook_retained": true,
+        "input_unchanged": true,
+        "selected_sdk_target_verified_in_kernel": true
+      },
+      {
+        "python": "3.13.12",
+        "fresh_kernel_success": true,
+        "typed_parameters": true,
+        "failure_executed_notebook_retained": true,
+        "input_unchanged": true,
+        "selected_sdk_target_verified_in_kernel": true
+      }
+    ]
+  },
+  "pycrdt_source_checksums": {
+    "authority": "https://pypi.org/pypi/pycrdt/0.13.0/json",
+    "checksums_verified": [
+      "pycrdt-0.13.0-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl",
+      "pycrdt-0.13.0-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl"
+    ]
+  },
+  "notebook_revision": "ad2242961d0e683dad79bf5aabba20840d5a7f94",
+  "compute_revision": "ecca9028cf11c263f1753c4d01200ca753fcfce8",
+  "requirements_sha256": "081338b3e2d7608daa58e3933eacdc52d9bccb99c5c9bb79e2796f494fa3e162"
+}

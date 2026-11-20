@@ -1,0 +1,50 @@
+2026-10-08T15:26:45.758572476Z DRIVER_ARCH is x86_64
+2026-10-08T15:26:45.764252190Z 
+2026-10-08T15:26:45.764275193Z ========== NVIDIA Software Installer ==========
+2026-10-08T15:26:45.764279291Z 
+2026-10-08T15:26:45.764281365Z Starting installation of NVIDIA driver version 580.95.05 for Linux kernel version 6.8.0-134-generic
+2026-10-08T15:26:45.764283138Z 
+2026-10-08T15:26:45.766643245Z Unloading NVIDIA driver kernel modules...
+2026-10-08T15:26:45.766717804Z Unmounting NVIDIA driver rootfs...
+2026-10-08T15:26:45.774527998Z Updating the package cache...
+2026-10-08T15:26:51.506519452Z Resolving Linux kernel version...
+2026-10-08T15:26:51.506587900Z Proceeding with Linux kernel version 6.8.0-134-generic
+2026-10-08T15:26:51.511763975Z Installing Linux kernel headers...
+2026-10-08T15:27:00.620827614Z Installing Linux kernel module files...
+2026-10-08T15:27:05.933044293Z Generating Linux kernel version string...
+2026-10-08T15:27:06.415429642Z Verifying archive integrity... OK
+2026-10-08T15:27:10.839741140Z Uncompressing NVIDIA Accelerated Graphics Driver for Linux-x86_64 580.95.05....................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................................
+2026-10-08T15:27:10.872961557Z 
+2026-10-08T15:27:10.873017621Z WARNING: Unable to determine the default X library path. The path /tmp/null/lib will be used, but this path was not detected in the ldconfig(8) cache, and no directory exists at this path, so it is likely that libraries installed there will not be found by the loader.
+2026-10-08T15:27:10.873024544Z 
+2026-10-08T15:27:10.979655200Z 
+2026-10-08T15:27:10.979690766Z WARNING: The nvidia-drm module will not be installed. As a result, DRM-KMS will not function with this installation of the NVIDIA driver.
+2026-10-08T15:27:10.979694643Z 
+2026-10-08T15:27:30.406227681Z 
+2026-10-08T15:27:30.406359256Z WARNING: Unable to find a suitable destination to install 32-bit compatibility libraries. Your system may not be set up for 32-bit compatibility. 32-bit compatibility files will not be installed; if you wish to install them, re-run the installation and set a valid directory with the --compat32-libdir option.
+2026-10-08T15:27:30.406367631Z 
+2026-10-08T15:27:30.541062571Z 
+2026-10-08T15:27:30.541106073Z ERROR: Failure creating directory '/lib/firmware/nvidia' : (No such file or directory)
+2026-10-08T15:27:30.541111052Z 
+2026-10-08T15:27:30.541113357Z 
+2026-10-08T15:27:30.541129527Z ERROR: Failure creating directory '/lib/firmware/nvidia' : (No such file or directory)
+2026-10-08T15:27:30.541133795Z 
+2026-10-08T15:27:35.641413477Z 
+2026-10-08T15:27:35.641478818Z WARNING: Unable to find installed file '/lib/firmware/nvidia/580.95.05/gsp_tu10x.bin' (No such file or directory).
+2026-10-08T15:27:35.641506621Z 
+2026-10-08T15:27:35.641509296Z 
+2026-10-08T15:27:35.641511661Z WARNING: Unable to find installed file '/lib/firmware/nvidia/580.95.05/gsp_ga10x.bin' (No such file or directory).
+2026-10-08T15:27:35.641513304Z 
+2026-10-08T15:27:36.072735057Z Parsing kernel module parameters...
+2026-10-08T15:27:36.072807563Z Configuring the following firmware search path in '/sys/module/firmware_class/parameters/path': /run/nvidia/driver/lib/firmware
+2026-10-08T15:27:36.074511304Z WARNING: A search path is already configured in /sys/module/firmware_class/parameters/path
+2026-10-08T15:27:36.074524569Z          Retaining the current configuration
+2026-10-08T15:27:36.074527735Z Loading ipmi and i2c_core kernel modules...
+2026-10-08T15:27:36.081453004Z Loading NVIDIA driver kernel modules...
+2026-10-08T15:27:36.081528085Z + modprobe nvidia NVreg_CoherentGPUMemoryMode=driver
+2026-10-08T15:27:36.354427955Z + modprobe nvidia-uvm
+2026-10-08T15:27:36.464846958Z + modprobe nvidia-modeset
+2026-10-08T15:27:36.483632654Z + set +o xtrace -o nounset
+2026-10-08T15:27:36.483631371Z Starting NVIDIA persistence daemon...
+2026-10-08T15:27:39.195377288Z Mounting NVIDIA driver rootfs...
+2026-10-08T15:27:39.204350432Z Done, now waiting for signal

@@ -1,0 +1,26 @@
+{
+  "hubs": {
+    "jupyterhub": {
+      "schema": "4621fec11365",
+      "users": 6,
+      "databaseVersion": "15.17 (Debian 15.17-1.pgdg13+1)",
+      "image": "docker.io/library/postgres@sha256:866264fb97643e747f9d0981cd060114f83b49450e5bac4988324bb3c6af2fd7",
+      "logicalRestorePassed": true
+    },
+    "cit-jhub": {
+      "schema": "4621fec11365",
+      "users": 13,
+      "databaseVersion": "18.4",
+      "image": "docker.io/bitnami/postgresql@sha256:256bf40a7343862b9a66d1d27cd34599e80dad99284fc5450b24cb02e26ff34e",
+      "logicalRestorePassed": true
+    }
+  },
+  "productionQualified": false,
+  "limitations": [
+    "Database logical restore only; source row equality and role/ACL fingerprints require separate comparisons",
+    "No connected Hub OAuth/spawning, NFS, coordinated snapshot or off-host recovery"
+  ],
+  "evidenceSha256": "98e5456147fa8a6656440047af781ffd0226262d7b4faf1f8a0864719a7daeb9",
+  "restoreToolSha256": "f302e6a28d81d52f0ec2fa51ee227509bb153b756b02be31feee4ac9bfcadf18",
+  "scope": "Current protected backup-hubs.py bundle restored into separate matching cached PostgreSQL images"
+}

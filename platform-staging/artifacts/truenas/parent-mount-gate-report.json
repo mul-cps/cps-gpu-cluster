@@ -1,0 +1,13 @@
+{
+  "blockedBeforeNAS": true,
+  "reason": "Active parent NFS mount exposes private workspace tree",
+  "inventory": "Actual live cluster via operator credentials",
+  "nasMutations": false,
+  "humanSessionChanges": false,
+  "computeRevision": "9e5682a",
+  "tests": {
+    "passed": 243,
+    "warnings": 22
+  },
+  "productionDeployed": false
+}

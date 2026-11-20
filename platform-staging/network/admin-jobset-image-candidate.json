@@ -1,0 +1,41 @@
+{
+  "adminCommit": "cdbc1d7ea848f1d6d791f6bc3aeeba807b7d95b9",
+  "computeCommit": "ecca9028cf11c263f1753c4d01200ca753fcfce8",
+  "image": "ghcr.io/mul-cps/e2x-course-hub:qualification-proxy-cdbc1d7@sha256:40e3c0cfa8c9ac25d640e593db1e8739ba95f72a54157e21cce09aadab6ba841",
+  "computeImage": "ghcr.io/mul-cps/cps-compute:qualification-addon-ecca902@sha256:f0b96b871d2615d0873ac3437a9f3c65138aaf7a4a3418dc16b77835d538c6e3",
+  "computeWheelSha256": "31c1b5307236a3a56feb0945f31e268ac71e750fee66441d9a1a2644c6e97369",
+  "installedBackendTestsPassed": 58,
+  "installedSubtestsPassed": 4,
+  "testNetwork": "none",
+  "imagePipCheck": "passed",
+  "verification": {
+    "uid": 10001,
+    "installed_admin_modules_matched": 42,
+    "installed_compute_modules_matched": 21,
+    "hub_version": "5.5.2",
+    "rbac_version": "0.3.0",
+    "rbac_revision_verified": true,
+    "jobset_route_allowlist_verified": true,
+    "frontend_asset_hashes": {
+      "../../../share/e2x_course_hub/static/course-service-ui/assets/main.css": "9ad9607c67ef0680a0a90dc155d2d47f00b95cf36ebd3cc822b2392df86e5576",
+      "../../../share/e2x_course_hub/static/course-service-ui/main.js": "1019344e63664a0f1beb3d96ec8fd399941ca231820e6470eb631f459cf0f33d"
+    }
+  },
+  "attestations": {
+    "platformManifest": "sha256:9e77451455b011932c90f1182e6cd05576a943959363bb5b5b71ca43868fdf18",
+    "attestationManifest": "sha256:190f03bdc86380868934edcf1d412e200ff781aadb47510fb445b07f40671b45",
+    "predicates": [
+      "https://spdx.dev/Document",
+      "https://slsa.dev/provenance/v1"
+    ],
+    "subjectsVerified": true
+  },
+  "remoteIndexAndChildrenVerified": true,
+  "testContainerRemoved": true,
+  "productionDeployed": false,
+  "pending": [
+    "Matching notebook image variants",
+    "Actual CPS/CIT Hub OAuth and gateway/addon integration",
+    "Production database/grant transition and remaining full platform release gates"
+  ]
+}

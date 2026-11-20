@@ -1,0 +1,96 @@
+{
+  "qualifiedScope": "installed native asset transport and unauthenticated fail-closed startup",
+  "authenticationForAssetTransport": "loopback test fixture only; not Hub OAuth",
+  "nativeTlsValidated": true,
+  "nativeRoot": "https://cps-argo-argo-workflows-server.cps-argo.svc.cluster.local:2746",
+  "indexStatus": 200,
+  "indexBaseHref": "/argo/",
+  "assetPath": "/argo/main.f0ae7e3350b22f5d6dbf.js",
+  "assetStatus": 200,
+  "assetContentType": "text/javascript; charset=utf-8",
+  "upstreamCredentialHeadersSent": false,
+  "arbitraryNonAssetStatus": 404,
+  "arbitraryNonAssetForwarded": false,
+  "unauthenticatedRedirects": [
+    {
+      "path": "/argo/",
+      "status": 302,
+      "clientId": "service-cps-argo-ui"
+    },
+    {
+      "path": "/argo/api/v1/info",
+      "status": 302,
+      "clientId": "service-cps-argo-ui"
+    }
+  ],
+  "realBrowserOAuthQualified": false,
+  "normalUserOwnershipQualified": false,
+  "observedAt": "2026-10-08T09:54:43.893735+00:00",
+  "namespace": "cps-personal-argo-qualification-20261008",
+  "pod": "cps-argo-ui-5fd9548f59-k2qdb",
+  "requestedImage": "ghcr.io/mul-cps/e2x-course-hub:qualification-native-assets-373dc09@sha256:c4df863a35a46d598cb319508b7d4e45caae3d1f9b71e24b2f1692c65e5f07bc",
+  "runtimeImage": "sha256:089e0f1b4d6c9b974b011de21f8a11067a2ad06b4adc4388b1d9fc52ded98bdb",
+  "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:c4df863a35a46d598cb319508b7d4e45caae3d1f9b71e24b2f1692c65e5f07bc",
+  "frontendSourceRevision": "373dc09c34e0add10cad1a3f52ae6cb593955d01",
+  "gatewaySdkRevision": "40b9525",
+  "sourceTests": 118,
+  "installedArgoOAuthTests": 36,
+  "installedModuleMatchesSource": true,
+  "uid": 10001,
+  "sdkIncluded": false,
+  "resources": {
+    "limits": {
+      "cpu": "1",
+      "memory": "512Mi"
+    },
+    "requests": {
+      "cpu": "100m",
+      "memory": "128Mi"
+    }
+  },
+  "automountServiceAccountToken": false,
+  "temporaryNetworkPolicy": {
+    "namespace": "cps-argo",
+    "name": "personal-argo-qualification-native-assets-20261008",
+    "uid": "b87dfdf5-b921-4b6b-aab6-a89409ca6d58",
+    "spec": {
+      "ingress": [
+        {
+          "from": [
+            {
+              "namespaceSelector": {
+                "matchLabels": {
+                  "kubernetes.io/metadata.name": "cps-personal-argo-qualification-20261008"
+                }
+              },
+              "podSelector": {
+                "matchLabels": {
+                  "app": "cps-argo-ui"
+                }
+              }
+            }
+          ],
+          "ports": [
+            {
+              "port": 2746,
+              "protocol": "TCP"
+            }
+          ]
+        }
+      ],
+      "podSelector": {
+        "matchLabels": {
+          "app.kubernetes.io/instance": "cps-argo",
+          "app.kubernetes.io/name": "argo-workflows-server"
+        }
+      },
+      "policyTypes": [
+        "Ingress"
+      ]
+    },
+    "deletedAndAbsenceVerified": true
+  },
+  "ingressPublished": false,
+  "hubFixtureUsersCreated": 0,
+  "productionGatewayHubIngressChanged": false
+}

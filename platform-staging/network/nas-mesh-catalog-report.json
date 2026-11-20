@@ -1,0 +1,87 @@
+{
+  "catalog": {
+    "schemaVersion": 1,
+    "blockedPodDestinations": [
+      "193.170.30.58/32",
+      "10.71.1.55/32",
+      "100.65.233.45/32"
+    ],
+    "scope": "Known IPv4 NAS service addresses and configured relay mesh destination; keep node-side NFS mounts unchanged"
+  },
+  "productionChanged": false,
+  "effectivePrivacyQualified": false,
+  "scope": "Compiler regression and Kubernetes server dry-run only; no production NetworkPolicy applied",
+  "policies": [
+    {
+      "namespace": "jupyterhub",
+      "sourcePolicy": "cps-hub-postgresql-backup",
+      "sourceSpecSha256": "e9c598d108452e72ffb834b614a101be5b33e54a9fd2e1739983e54f265f7124",
+      "serverDryRunAccepted": true,
+      "temporaryObjectAbsent": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "sourcePolicy": "hub",
+      "sourceSpecSha256": "2e05abd97002f9f71895bdfad58f30eb2573c0178b19f985ff1927eaccb552c9",
+      "serverDryRunAccepted": true,
+      "temporaryObjectAbsent": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "sourcePolicy": "jupyterhub-ssh",
+      "sourceSpecSha256": "5781d4af4b8198dace6a44440ee71b0dc7b7b6b32accebc8739631e2766a6270",
+      "serverDryRunAccepted": true,
+      "temporaryObjectAbsent": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "sourcePolicy": "proxy",
+      "sourceSpecSha256": "9e4c1a9524ea1525eb2da6ff09e24529449761ae7ac55749a4d7b9dc2c9fcc16",
+      "serverDryRunAccepted": true,
+      "temporaryObjectAbsent": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "sourcePolicy": "singleuser",
+      "sourceSpecSha256": "3a828b018f4e3a794f301ddfa80a23d6577b7a11e34ce720d70b17764c7a1d60",
+      "serverDryRunAccepted": true,
+      "temporaryObjectAbsent": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "sourcePolicy": "cit-hub-postgresql-backup",
+      "sourceSpecSha256": "3d7bcc4f3346beaff59c95002155494aa17bb915fcc113c2f1cdec79273afcb3",
+      "serverDryRunAccepted": true,
+      "temporaryObjectAbsent": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "sourcePolicy": "hub",
+      "sourceSpecSha256": "0efc805bf17bd44d3b286ab55249f9ef921f463d8459dbd73dd7d62ca5d267e6",
+      "serverDryRunAccepted": true,
+      "temporaryObjectAbsent": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "sourcePolicy": "jupyterhub-postgresql",
+      "sourceSpecSha256": "6a5afd78f92ff57324a076716993653214c70f905a929fa6bdc1cbc1eaf6ea31",
+      "serverDryRunAccepted": true,
+      "temporaryObjectAbsent": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "sourcePolicy": "proxy",
+      "sourceSpecSha256": "bff8cb8548ccc59dda16c22e55062ac3eb003bba5095696e4cfde8c867031c08",
+      "serverDryRunAccepted": true,
+      "temporaryObjectAbsent": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "sourcePolicy": "singleuser",
+      "sourceSpecSha256": "80eded11ea84721abcfd176b50c60cca5de59549087fa5cd34084d35bcb52e50",
+      "serverDryRunAccepted": true,
+      "temporaryObjectAbsent": true
+    }
+  ],
+  "regressionTestsPassed": 6
+}

@@ -1,0 +1,25 @@
+{
+  "qualified": false,
+  "scope": "gateway image candidate only; full platform qualification incomplete",
+  "digest": "sha256:05f9e4428f576bede669c969398090b64af6f53faa487ba0c8a546db77b0170f",
+  "linuxManifest": "sha256:52142eaa71eec346f9ea26e92ac4705b3320c22b55bb9d3b506fb6057a9326f5",
+  "user": "10001",
+  "predicateTypes": [
+    "https://spdx.dev/Document",
+    "https://slsa.dev/provenance/v1"
+  ],
+  "pipCheckPassed": true,
+  "sourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+  "wheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+  "installedVerification": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 10001,
+    "pipCheckPassed": true
+  },
+  "buildDependencyNetwork": "enabled; runtime versions constrained, wheel checksum independently verified",
+  "installedWheelTestsPassed": 267,
+  "image": "ghcr.io/mul-cps/cps-compute:qualification-storage-resources-6bb6a57@sha256:05f9e4428f576bede669c969398090b64af6f53faa487ba0c8a546db77b0170f",
+  "remoteIndexAndChildrenVerified": true,
+  "deployed": false
+}

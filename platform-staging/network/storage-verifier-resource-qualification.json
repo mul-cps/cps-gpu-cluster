@@ -1,0 +1,75 @@
+{
+  "passed": true,
+  "checks": [
+    {
+      "namespace": "jupyterhub",
+      "kind": "Job",
+      "admitted": true,
+      "resources": {
+        "limits": {
+          "cpu": "500m",
+          "memory": "256Mi"
+        },
+        "requests": {
+          "cpu": "100m",
+          "memory": "64Mi"
+        }
+      },
+      "dryRun": true
+    },
+    {
+      "namespace": "jupyterhub",
+      "kind": "Pod",
+      "admitted": true,
+      "resources": {
+        "limits": {
+          "cpu": "500m",
+          "memory": "256Mi"
+        },
+        "requests": {
+          "cpu": "100m",
+          "memory": "64Mi"
+        }
+      },
+      "dryRun": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "kind": "Job",
+      "admitted": true,
+      "resources": {
+        "limits": {
+          "cpu": "500m",
+          "memory": "256Mi"
+        },
+        "requests": {
+          "cpu": "100m",
+          "memory": "64Mi"
+        }
+      },
+      "dryRun": true
+    },
+    {
+      "namespace": "cit-jhub",
+      "kind": "Pod",
+      "admitted": true,
+      "resources": {
+        "limits": {
+          "cpu": "500m",
+          "memory": "256Mi"
+        },
+        "requests": {
+          "cpu": "100m",
+          "memory": "64Mi"
+        }
+      },
+      "dryRun": true
+    }
+  ],
+  "scope": "operator server dry-run only; no Pod started, PVC mounted or service-account authorization tested",
+  "sourceRevision": "6bb6a57",
+  "storageTestsPassed": 36,
+  "computeTestsPassed": 267,
+  "warnings": 22,
+  "deployed": false
+}

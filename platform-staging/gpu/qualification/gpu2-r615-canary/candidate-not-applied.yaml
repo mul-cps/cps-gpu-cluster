@@ -1,0 +1,194 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: gpu2-r615-driver-canary
+  namespace: gpu-operator
+  labels:
+    qualification.cps/owner: gpu2-r615-driver-canary
+spec:
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: gpu2-r615-driver-canary
+  template:
+    metadata:
+      labels:
+        app: gpu2-r615-driver-canary
+        qualification.cps/owner: gpu2-r615-driver-canary
+      annotations:
+        qualification.cps/state: proposal-only-manually-quiesced-no-manager
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: app.kubernetes.io/component
+                operator: In
+                values:
+                - nvidia-driver
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - args:
+        - init
+        command:
+        - nvidia-driver
+        env:
+        - name: NODE_NAME
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: spec.nodeName
+        - name: NODE_IP
+          valueFrom:
+            fieldRef:
+              apiVersion: v1
+              fieldPath: status.hostIP
+        - name: KERNEL_MODULE_TYPE
+          value: auto
+        image: nvcr.io/nvidia/driver@sha256:bc7572b7f14177c467e4dd8b66c4f4535f462ea9cf6a65cebd7603cc966ebbd7
+        imagePullPolicy: IfNotPresent
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - rm -f /run/nvidia/validations/.driver-ctr-ready
+        name: nvidia-driver-ctr
+        resources: {}
+        securityContext:
+          privileged: true
+          seLinuxOptions:
+            level: s0
+        startupProbe:
+          exec:
+            command:
+            - sh
+            - -c
+            - nvidia-smi && touch /run/nvidia/validations/.driver-ctr-ready
+          failureThreshold: 120
+          initialDelaySeconds: 60
+          periodSeconds: 10
+          successThreshold: 1
+          timeoutSeconds: 60
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+        volumeMounts:
+        - mountPath: /run/nvidia
+          mountPropagation: Bidirectional
+          name: run-nvidia
+        - mountPath: /run/nvidia-fabricmanager
+          name: run-nvidia-fabricmanager
+        - mountPath: /run/nvidia-topologyd
+          name: run-nvidia-topologyd
+        - mountPath: /var/log
+          name: var-log
+        - mountPath: /dev/log
+          name: dev-log
+        - mountPath: /host-etc/os-release
+          name: host-os-release
+          readOnly: true
+        - mountPath: /run/mellanox/drivers/usr/src
+          mountPropagation: HostToContainer
+          name: mlnx-ofed-usr-src
+        - mountPath: /run/mellanox/drivers
+          mountPropagation: HostToContainer
+          name: run-mellanox-drivers
+        - mountPath: /sys/devices/system/memory/auto_online_blocks
+          name: sysfs-memory-online
+        - mountPath: /sys/module/firmware_class/parameters/path
+          name: firmware-search-path
+        - mountPath: /lib/firmware
+          name: nv-firmware
+      dnsPolicy: ClusterFirst
+      hostPID: true
+      initContainers:
+      - name: gpu2-firmware-search-path
+        image: nvcr.io/nvidia/driver@sha256:bc7572b7f14177c467e4dd8b66c4f4535f462ea9cf6a65cebd7603cc966ebbd7
+        imagePullPolicy: IfNotPresent
+        command:
+        - /bin/sh
+        - -ec
+        args:
+        - printf %s "/run/nvidia/firmware-r615-canary" > /sys/module/firmware_class/parameters/path
+        securityContext:
+          privileged: true
+        volumeMounts:
+        - name: firmware-search-path
+          mountPath: /sys/module/firmware_class/parameters/path
+      nodeSelector:
+        kubernetes.io/hostname: k3s-wk-gpu2
+      priorityClassName: system-node-critical
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: nvidia-driver
+      serviceAccountName: nvidia-driver
+      terminationGracePeriodSeconds: 30
+      tolerations:
+      - effect: NoSchedule
+        key: nvidia.com/gpu
+        operator: Exists
+      - effect: NoSchedule
+        key: gpu-pool
+        operator: Exists
+      volumes:
+      - hostPath:
+          path: /run/nvidia
+          type: DirectoryOrCreate
+        name: run-nvidia
+      - hostPath:
+          path: /var/log
+          type: ''
+        name: var-log
+      - hostPath:
+          path: /dev/log
+          type: ''
+        name: dev-log
+      - hostPath:
+          path: /etc/os-release
+          type: ''
+        name: host-os-release
+      - hostPath:
+          path: /run/nvidia-fabricmanager
+          type: DirectoryOrCreate
+        name: run-nvidia-fabricmanager
+      - hostPath:
+          path: /run/nvidia-topologyd
+          type: DirectoryOrCreate
+        name: run-nvidia-topologyd
+      - hostPath:
+          path: /run/mellanox/drivers/usr/src
+          type: DirectoryOrCreate
+        name: mlnx-ofed-usr-src
+      - hostPath:
+          path: /run/mellanox/drivers
+          type: DirectoryOrCreate
+        name: run-mellanox-drivers
+      - hostPath:
+          path: /run/nvidia/validations
+          type: DirectoryOrCreate
+        name: run-nvidia-validations
+      - hostPath:
+          path: /
+          type: ''
+        name: host-root
+      - hostPath:
+          path: /sys
+          type: Directory
+        name: host-sys
+      - hostPath:
+          path: /sys/module/firmware_class/parameters/path
+          type: ''
+        name: firmware-search-path
+      - hostPath:
+          path: /sys/devices/system/memory/auto_online_blocks
+          type: ''
+        name: sysfs-memory-online
+      - hostPath:
+          path: /run/nvidia/firmware-r615-canary
+          type: DirectoryOrCreate
+        name: nv-firmware
+  updateStrategy:
+    type: OnDelete

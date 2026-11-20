@@ -1,0 +1,179 @@
+{
+  "observedAt": "2026-10-07T00:47:55.745769+00:00",
+  "status": "partial qualification candidate set",
+  "productionPromotionAllowed": false,
+  "gpuSharingQualified": false,
+  "policyHash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+  "hubTarget": {
+    "chart": "4.4.2",
+    "jupyterhub": "5.5.2",
+    "kubespawner": "7.x"
+  },
+  "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+  "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+  "artifacts": [
+    {
+      "component": "gateway",
+      "image": "ghcr.io/mul-cps/cps-compute:qualification-storage-resources-6bb6a57@sha256:05f9e4428f576bede669c969398090b64af6f53faa487ba0c8a546db77b0170f",
+      "linuxManifest": "sha256:52142eaa71eec346f9ea26e92ac4705b3320c22b55bb9d3b506fb6057a9326f5",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/home/bjoern/cps-platform-evidence/2026-10-07/compute-6bb6a57-image/report.json",
+      "storageHttpQualificationEvidence": "platform-staging/artifacts/truenas/gateway-6bb6a57-v2-http-report.json"
+    },
+    {
+      "component": "admin",
+      "image": "ghcr.io/mul-cps/e2x-course-hub:qualification-storage-resources-6bb6a57@sha256:1a5aa3ac4dec220a8d9b4cd6d7643a6f1ad71a45cdedfd3fb0fb0e48bfa1c1e3",
+      "linuxManifest": "sha256:2f7eae46868cfca274347c4169b3ebf01761342c801dbb9a9dc4c602aea6a1c7",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/home/bjoern/cps-platform-evidence/2026-10-07/admin-resource-image/report.json"
+    },
+    {
+      "component": "standard-cpu",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-cpu@sha256:2eebb5496efc59badc74dda10d9149dc59c6e1794cfb9c171d5edf81ca7bdfee",
+      "linuxManifest": "sha256:e35543b41faa5d56a252843d20cb3bc8a46985821791569f5580e37a5b72ee84",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/home/bjoern/cps-platform-evidence/2026-10-07/notebook-cpu-6bb6a57/standard-cpu/report.json"
+    },
+    {
+      "component": "base-cpu",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-cpu:qualification-storage-resources-6bb6a57@sha256:466ccae48fb92b036a26fc1761a5b4f9228f7341d89a080fed242b3544f32af9",
+      "linuxManifest": "sha256:fc9af9024a742b8b79e9943f17bd6104c03c15b9cc5b95696a640aa69cacd8c7",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/home/bjoern/cps-platform-evidence/2026-10-07/notebook-cpu-6bb6a57/base-cpu/report.json"
+    },
+    {
+      "component": "base-gpu",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook-base-gpu:qualification-storage-resources-6bb6a57@sha256:5278b7ee0230491da8789992d975ac65e52c07f6f255d055d2fd44527c4e2708",
+      "linuxManifest": "sha256:36189d865b17cfc9c2fea83fd86ccbef72fa309effea6922f8e3281c8986a063",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-base-gpu-6bb6a57/report.json"
+    },
+    {
+      "component": "mujoco-base-gpu",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook-mujoco-base-gpu:qualification-storage-resources-6bb6a57@sha256:9be5a05c7f081b3bf7a557b736bb5af960e9ac0a55d74f029b958e9dfb6ad32f",
+      "linuxManifest": "sha256:a8fbcf645366fc86125135f1921fe036642abf98fce851f39a200e710bd83894",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-mujoco-base-gpu-6bb6a57/report.json"
+    },
+    {
+      "component": "pytorch-runtime-base",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-pytorch-runtime-base@sha256:6182a355b3a2f7462b4e0c90062d1561125b4a7edab2f8caea51d647c893cf57",
+      "linuxManifest": "sha256:4b0202684a4dba5f4ebf8c16bea1f06019cacdf63e1f7371c6da0b596ee50d3b",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-pytorch-runtime-base-6bb6a57/report.json"
+    },
+    {
+      "component": "pytorch-code",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-pytorch-code@sha256:2646c45d9ae5853fac15aebbd58a0371920da6413f42f01cb833387fa70b8d58",
+      "linuxManifest": "sha256:fb8f5e7fd777e24fd0138e82c6a092c4ff314376353e29ccc4a0e1a36c9695c2",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-pytorch-code-6bb6a57/report.json"
+    },
+    {
+      "component": "tf-code",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-tf-code@sha256:07d42da7e80a89c53a939fbd73513119de9ddf54311ce8ce7c7b6f717fa88b6f",
+      "linuxManifest": "sha256:51d88ae96a3e2b3e651319a36e92570c48d834a4f897b3f084023975287b34d0",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-tf-code-6bb6a57/report.json"
+    },
+    {
+      "component": "desktop-xpra-base",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-desktop-xpra-base@sha256:76c1bc7af911bd64b6e770de6f41e229044ba3f86b0f76a40501007a7928e0eb",
+      "linuxManifest": "sha256:c53bec55580ed15591608d1349e42efab8170cf094f7d300a5859e789573b7a2",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-desktop-xpra-base-6bb6a57/report.json"
+    },
+    {
+      "component": "mujoco-xpra",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-mujoco-xpra@sha256:3b72daf7843f937020ed19a7b801ba39ebf8f68cb8e44311b199d824d2a41bac",
+      "linuxManifest": "sha256:9da8c19c0265c4769489584e581c66fb9b5a3e36adfb308d4c5464722f8945b5",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-mujoco-xpra-6bb6a57/report.json"
+    },
+    {
+      "component": "desktop-ros2",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-desktop-ros2@sha256:205251ead14700c9bd3e680b216320dfb3ea4aabe81bb189302d1f0d2b04c400",
+      "linuxManifest": "sha256:bf3aa8852af59db589063e327b1fde1fbf62183ef5f6d52932bd0e6b9804fbcb",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "standaloneSbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:4c27821c2cad1acffbf887b49c6dc55a09a01e234058feaf1b79300a1371469f",
+      "standaloneSbomRemoteVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-desktop-ros2-6bb6a57/report.json"
+    },
+    {
+      "component": "desktop-ros2-xpra",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-desktop-ros2-xpra@sha256:b94a5a2672f3500f4c5634611743f8cd32105c90cf652f9615d8be67bd0130fb",
+      "linuxManifest": "sha256:d390203067d4be497f682c8e7a95ff7832e35753a0aa5816050dbe7f706ccfe6",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "standaloneSbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:3820bc64af6a07b164f91404ddee3e702a5103c40c91f1a07e2881c69d822ec2",
+      "standaloneSbomRemoteVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-desktop-ros2-xpra-6bb6a57/report.json"
+    },
+    {
+      "component": "comfyui",
+      "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-comfyui@sha256:6708f95f63ad230c8d661151880159961e16dbc82009d052828c91db2ab2c8c6",
+      "linuxManifest": "sha256:46d42f478dcdabce9f8f2dac66ce1141483de7f702bd0993497383c42ea9fe17",
+      "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+      "computeWheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+      "remoteDigestsVerified": true,
+      "standaloneSbomReferrer": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:958961129bebfe292b38f221a0f9c51bd3e779c6110f715fc2235677457441af",
+      "standaloneSbomRemoteVerified": true,
+      "qualificationEvidence": "/mnt/cps_scratch1_tmp/bjoern/cps-platform-builds/2026-10-07/notebook-comfyui-6bb6a57/report.json"
+    }
+  ],
+  "observedProduction": [
+    {
+      "deployment": "cit-admin",
+      "images": [
+        "ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e"
+      ],
+      "readyReplicas": 1
+    },
+    {
+      "deployment": "compute-gateway",
+      "images": [
+        "ghcr.io/mul-cps/cps-compute:qualification-5771df5@sha256:627f093c3c96038c7ecd9e9b99f0138198c23c9460cabb7bd11b19e94f465096"
+      ],
+      "readyReplicas": 1
+    },
+    {
+      "deployment": "cps-admin",
+      "images": [
+        "ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e"
+      ],
+      "readyReplicas": 1
+    }
+  ],
+  "remainingNotebookVariants": 0,
+  "limitations": [
+    "Existing notebook parents do not prove common source-tag build",
+    "Full acceptance scenarios and migrations remain incomplete",
+    "Bounded current gateway HTTPS V2 storage lifecycle passed; full admin/Hub/browser integration remains pending"
+  ],
+  "candidateUpdatedAt": "2026-10-07T03:13:41.007484+00:00"
+}

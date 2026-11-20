@@ -1,0 +1,133 @@
+{{- if and .Values.enabled .Values.personalArgo.enabled }}
+{{- if not .Values.gateway.argoUi.enabled }}{{ fail "Personal Argo requires the owner-filtering gateway adapter" }}{{ end }}
+{{- $image := required "Personal Argo requires a released service image digest" .Values.personalArgo.image }}
+{{- if not (regexMatch "^[^@ ]+@sha256:[a-f0-9]{64}$" $image) }}{{ fail "Personal Argo service image must use a digest" }}{{ end }}
+{{- $native := required "Pinned native Argo HTTPS asset backend required" .Values.personalArgo.nativeUrl }}
+{{- if not (regexMatch "^https://[^/?#@ ]+(:[0-9]+)?(/argo)?/?$" $native) }}{{ fail "Native Argo backend must be HTTPS with a root or /argo base path" }}{{ end }}
+{{- range $source, $settings := .Values.personalArgo.sources }}
+{{- if $settings.enabled }}
+{{- if not (has $source (list "cps" "cit")) }}{{ fail "Only CPS/CIT personal Argo sources are permitted" }}{{ end }}
+{{- $origin := required "Personal Argo public HTTPS origin required" $settings.publicOrigin }}
+{{- if not (regexMatch "^https://[A-Za-z0-9.-]+(:[0-9]+)?$" $origin) }}{{ fail "Personal Argo origin must be HTTPS without a path" }}{{ end }}
+{{- $hub := required "Personal Argo public HTTPS Hub API URL required" $settings.hubApiUrl }}
+{{- if not (regexMatch "^https://[A-Za-z0-9.-]+(:[0-9]+)?/hub/api$" $hub) }}{{ fail "Personal Argo Hub API must be HTTPS and end in /hub/api" }}{{ end }}
+{{- $secret := required "Dedicated personal Argo OAuth Secret reference required" $settings.secretRef }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $source }}-argo-ui
+  namespace: {{ $.Values.namespace }}
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: {{ $source }}-argo-ui}
+  template:
+    metadata:
+      labels: {app: {{ $source }}-argo-ui}
+    spec:
+      automountServiceAccountToken: false
+      terminationGracePeriodSeconds: 40
+      imagePullSecrets: [{name: {{ $.Values.gateway.imagePullSecretRef }}}]
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 10001
+        runAsGroup: 10001
+        fsGroup: 10001
+        seccompProfile: {type: RuntimeDefault}
+      containers:
+        - name: argo-ui
+          image: {{ $image | quote }}
+          command: [python, -m, e2x_course_hub.cps.argo_app]
+          args: ["--host", "0.0.0.0", "--port", {{ $.Values.personalArgo.port | quote }}]
+          ports: [{name: http, containerPort: {{ $.Values.personalArgo.port }}}]
+          env:
+            - {name: ARGO_USER_SOURCE, value: {{ $source | quote }}}
+            - {name: ARGO_USER_OAUTH_CLIENT_ID, value: {{ printf "service-%s-argo-ui" $source | quote }}}
+            - name: ARGO_USER_OAUTH_CLIENT_SECRET
+              valueFrom:
+                secretKeyRef: {name: {{ $secret }}, key: oauth-client-secret}
+            - name: ARGO_USER_COOKIE_SECRET
+              valueFrom:
+                secretKeyRef: {name: {{ $secret }}, key: cookie-secret}
+            - {name: ARGO_USER_PUBLIC_ORIGIN, value: {{ $origin | quote }}}
+            - {name: ARGO_USER_HUB_API_URL, value: {{ $hub | quote }}}
+            - {name: ARGO_USER_HUB_AUTHORIZATION_URL, value: {{ printf "%s/oauth2/authorize" $hub | quote }}}
+            - {name: ARGO_USER_COMPUTE_URL, value: {{ $.Values.gateway.url | quote }}}
+            - {name: ARGO_USER_NATIVE_ARGO_URL, value: {{ $native | quote }}}
+            - {name: ARGO_USER_HUB_CA_FILE, value: /etc/ssl/certs/ca-certificates.crt}
+            - {name: ARGO_USER_COMPUTE_CA_FILE, value: /trust/ca.crt}
+            - {name: ARGO_USER_NATIVE_ARGO_CA_FILE, value: {{ $.Values.personalArgo.nativeCaFile | quote }}}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 100m, memory: 128Mi}
+            limits: {cpu: "1", memory: 512Mi}
+          readinessProbe:
+            tcpSocket: {port: http}
+          volumeMounts:
+            - {name: trust, mountPath: /trust, readOnly: true}
+            - {name: temporary, mountPath: /tmp}
+      volumes:
+        - name: trust
+          configMap:
+            name: {{ required "Personal Argo upstream CA ConfigMap required" $.Values.personalArgo.upstreamCaConfigMapRef }}
+        - {name: temporary, emptyDir: {sizeLimit: 64Mi}}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $source }}-argo-ui
+  namespace: {{ $.Values.namespace }}
+spec:
+  selector: {app: {{ $source }}-argo-ui}
+  ports: [{name: http, port: {{ $.Values.personalArgo.port }}, targetPort: http}]
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ $source }}-argo-ui-ingress
+  namespace: {{ $.Values.namespace }}
+spec:
+  podSelector:
+    matchLabels: {app: {{ $source }}-argo-ui}
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - namespaceSelector:
+            matchLabels: {kubernetes.io/metadata.name: ingress-nginx}
+          podSelector:
+            matchLabels: {app.kubernetes.io/component: controller}
+      ports: [{protocol: TCP, port: {{ $.Values.personalArgo.port }}}]
+{{- if $settings.ingress.enabled }}
+{{- $host := required "Personal Argo ingress host required" $settings.ingress.host }}
+{{- if ne $origin (printf "https://%s" $host) }}{{ fail "Ingress host and public OAuth origin must match exactly" }}{{ end }}
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $source }}-argo-ui
+  namespace: {{ $.Values.namespace }}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-buffering: "off"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "130"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "130"
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: [{{ $host | quote }}]
+      secretName: {{ required "Personal Argo ingress TLS Secret required" $settings.ingress.tlsSecretRef }}
+  rules:
+    - host: {{ $host | quote }}
+      http:
+        paths:
+          - path: /argo
+            pathType: Prefix
+            backend:
+              service: {name: {{ $source }}-argo-ui, port: {number: {{ $.Values.personalArgo.port }}}}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

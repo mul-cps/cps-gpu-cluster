@@ -1,0 +1,70 @@
+{
+  "qualified": false,
+  "scope": "Xpra desktop base image compatibility only; GPU isolation and full release matrix incomplete",
+  "digest": "sha256:76c1bc7af911bd64b6e770de6f41e229044ba3f86b0f76a40501007a7928e0eb",
+  "linuxManifest": "sha256:c53bec55580ed15591608d1349e42efab8170cf094f7d300a5859e789573b7a2",
+  "user": "1000",
+  "predicateTypes": [
+    "https://spdx.dev/Document",
+    "https://slsa.dev/provenance/v1"
+  ],
+  "offlinePackageInstallation": true,
+  "pipCheckPassed": true,
+  "releaseRunnerTestsPassed": 14,
+  "variant": "desktop-xpra-base",
+  "computeSourceRevision": "6bb6a57bc8d8426e281c0654ac8eedd1668ae600",
+  "wheelSha256": "05d82345b0f65a3a94c715c68788f52d14c545cba41a5e622249870e0e848667",
+  "installedHashes": {
+    "modulesMatched": 21,
+    "addonAssetsMatched": 5,
+    "uid": 1000
+  },
+  "runtime": {
+    "uid": 1000,
+    "python": "3.13.12",
+    "compute": "0.1.0",
+    "rtc": "4.4.1",
+    "lab": "4.5.7",
+    "freshKernelSuccess": true,
+    "typedParameters": true,
+    "immutableInput": true,
+    "failedExecutedNotebookRetained": true,
+    "qualified": false,
+    "scope": "Xpra desktop base image runtime only; no GPU isolation or Hub browser qualification",
+    "freshKernelSourceHashesVerified": true,
+    "pytorchCpuVerified": true,
+    "pytorchVersion": "2.10.0+cu128",
+    "xpraCliVerified": true,
+    "desktopCommandsVerified": true,
+    "virtualglCpuFallbackVerified": true,
+    "passwordlessSudoDenied": true,
+    "serverProxyVersion": "4.6.0"
+  },
+  "published": true,
+  "deployed": false,
+  "gpuExecution": false,
+  "desktopHttp": {
+    "uid": 1000,
+    "http": {
+      "status": 200,
+      "sha256": "b655489c842f8e3985668637ac655b5348d96b3bbc193f18a568b755cfd7fa70",
+      "bytes": 65538
+    },
+    "xfceProcessObserved": true,
+    "nativeServerInfoVerified": true,
+    "networkScope": "isolated container loopback only",
+    "gpuExecution": false,
+    "browserInteractionVerified": false,
+    "qualified": false,
+    "documentation": "https://github.com/Xpra-org/xpra-html5/blob/master/README.md"
+  },
+  "image": "ghcr.io/mul-cps/cps-jupyter-notebook:qualification-storage-resources-6bb6a57-desktop-xpra-base@sha256:76c1bc7af911bd64b6e770de6f41e229044ba3f86b0f76a40501007a7928e0eb",
+  "remoteIndexAndChildrenVerified": true,
+  "parent": "ghcr.io/mul-cps/cps-jupyter-notebook@sha256:7e9965dde5ddfcac924b2d3e8de3b97eaa3c758a0dc9b4da1d52f924c93de9dd",
+  "parentScope": "Previously published desktop qualification parent; not a common-tag production parent",
+  "credentialCleanup": {
+    "temporaryHostConfigRemoved": true,
+    "temporaryContainerConfigRemoved": true,
+    "credentialInBuildContext": false
+  }
+}

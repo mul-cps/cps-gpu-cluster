@@ -1,0 +1,36 @@
+{
+  "namespace": "cps-mesh-probe-d1dfdbec",
+  "productionChanged": false,
+  "policyEnforcementQualified": false,
+  "phase": "Succeeded",
+  "results": {
+    "100.65.233.45:8333": {
+      "reachable": false,
+      "errorType": "TimeoutError"
+    },
+    "100.65.233.45:8022": {
+      "reachable": false,
+      "errorType": "TimeoutError"
+    },
+    "193.170.30.58:2049": {
+      "reachable": true
+    },
+    "artifacts.cps-artifacts-relay.svc.cluster.local:8333": {
+      "reachable": false,
+      "errorType": "ConnectionRefusedError"
+    },
+    "artifacts.cps-artifacts-relay.svc.cluster.local:8022": {
+      "reachable": false,
+      "errorType": "ConnectionRefusedError"
+    }
+  },
+  "exitCode": 0,
+  "cleanupVerified": true,
+  "interpretation": {
+    "meshTimeout": "Unreachable baseline does not prove egress policy enforcement",
+    "directNfs": "Unrestricted fixture can reach physical NAS NFS",
+    "relayRefusal": "Fixture namespace is outside live artifacts-ingress allowlist; not evidence of relay outage",
+    "serviceEndpoints": "One ready serving endpoint observed after fixture",
+    "scope": "TCP connectivity only; no authentication, S3 operation or workspace RPC invoked"
+  }
+}

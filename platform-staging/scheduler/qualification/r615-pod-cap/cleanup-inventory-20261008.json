@@ -1,0 +1,67 @@
+{
+  "namespace": "cps-r615-memory-qualification-20261008",
+  "namespace_uid": "878473bc-b44f-4da0-96b6-fb652c160937",
+  "namespace_resource_version": "362068494",
+  "resources": [
+    {
+      "kind": "Pod",
+      "name": "r615-main",
+      "uid": "369a40b8-91c0-4505-b8bd-7bb565dc8cb7",
+      "resource_version": "362094329",
+      "phase": "Succeeded"
+    },
+    {
+      "kind": "Pod",
+      "name": "r615-peer",
+      "uid": "f3ddf587-d7c0-412b-8df4-98e81f3b8afe",
+      "resource_version": "362095135",
+      "phase": "Succeeded"
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "kube-root-ca.crt",
+      "uid": "657a60f9-46f6-4be1-8875-922c113eac5e",
+      "resource_version": "362068492",
+      "phase": null
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "r615-probe-03d575b",
+      "uid": "57441e32-d25d-46c6-bbe4-3a3be65f235a",
+      "resource_version": "362092492",
+      "phase": null
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "r615-probe-28d56ba",
+      "uid": "2c0b4a63-68d0-416c-ae04-a1b69910514c",
+      "resource_version": "362072509",
+      "phase": null
+    },
+    {
+      "kind": "ConfigMap",
+      "name": "r615-probe-b8e95fb",
+      "uid": "4d2562e1-bc61-421b-8a31-f0d91ce61cf0",
+      "resource_version": "362068506",
+      "phase": null
+    },
+    {
+      "kind": "ServiceAccount",
+      "name": "default",
+      "uid": "500cc49f-5465-4594-bf80-6d4fb16b788d",
+      "resource_version": "362068493",
+      "phase": null
+    },
+    {
+      "kind": "Secret",
+      "name": "cps-compute-image-pull",
+      "uid": "77262c1d-06c3-4e3a-bc62-2d033c82e58e",
+      "credential_bytes_recorded": false
+    }
+  ],
+  "pods_terminal": true,
+  "jobs": [],
+  "cleanup_authority": "root operator; namespace retained pending explicit cleanup",
+  "node_owned_cdi_and_driver_rollback": "root-owned separate scope",
+  "no_direct_gpu_calls_or_cap_writes_by_fixture_owner": true
+}

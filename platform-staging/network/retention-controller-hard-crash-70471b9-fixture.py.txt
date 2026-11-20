@@ -1,0 +1,75 @@
+import hashlib, importlib.util, json, os, signal, subprocess, sys
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
+import boto3
+from botocore.client import Config
+from botocore.exceptions import ClientError
+spec=importlib.util.spec_from_file_location('retention','/tmp/artifact-retention.py')
+m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+settings=json.loads(Path(os.environ['CPS_COMPUTE_CONFIG']).read_text())
+a=settings['artifacts']
+s3=boto3.client('s3',endpoint_url=a['endpoint'],verify=a['ca_file'],config=Config(connect_timeout=5,read_timeout=15,retries={'max_attempts':0}))
+assert settings.get('argo_token_file'),'Projected Argo credential required'
+proof=m.ArgoProof(settings['argo_url'],'cps-workflows',settings['argo_token_file'],settings.get('argo_ca_file'),kube_url='https://kubernetes.default.svc',kube_ca='/var/run/secrets/kubernetes.io/serviceaccount/ca.crt')
+if os.environ.get('CRASH_WORKER_MODE'):
+ context=json.loads(os.environ['CRASH_WORKER_CONTEXT'])
+ class CrashStorage:
+  def __getattr__(self,name):return getattr(s3,name)
+  def delete_object(self,**kwargs):os.kill(os.getpid(),signal.SIGKILL)
+ now=datetime.fromisoformat(context['now'])
+ storage=CrashStorage() if os.environ['CRASH_WORKER_MODE']=='crash' else s3
+ result=m.sweep(storage,a['bucket'],proof,apply=True,max_deletes=1,max_examined=5,prefix=context['prefix'],now=now,conditional_delete_qualified=True,lifecycle_qualified=True)
+ print(json.dumps(result));sys.exit(0)
+fixtures=json.loads(Path('/tmp/fixtures.json').read_text())
+report={'passed':False,'productionQualified':False,'scope':'Real SIGKILL at the conditional-delete barrier and fresh-process recovery; synthetic terminal status and advanced clock; real Argo HTTPS, Kubernetes CAS and S3. No execution Pods.','cases':[]}
+Path('/tmp/retention-report.json').write_text(json.dumps(report))
+class FaultStorage:
+ def __init__(self,mode):self.mode=mode;self.calls=0
+ def __getattr__(self,name):return getattr(s3,name)
+ def delete_object(self,**kwargs):
+  self.calls+=1
+  if self.mode=='ambiguous-before':raise TimeoutError('Injected pre-response transport ambiguity')
+  result=s3.delete_object(**kwargs)
+  if self.mode=='ambiguous-after':raise TimeoutError('Injected loss of successful delete acknowledgement')
+  return result
+for record in fixtures['cases']:
+ w=record['workflow'];name=w['metadata']['name'];uid=w['metadata']['uid'];identity=w['metadata']['annotations']['cps.compute/notebook-id'];case=record['case']
+ live=proof.get(name)
+ assert live['metadata']['uid']==uid and live['spec']['suspend'] is True
+ assert live['status']['phase']=='Succeeded'
+ key='notebook-inputs/'+identity+'/snapshot.tar';body=('controlled-retention-'+identity).encode();metadata=m.expected_metadata(live,key)
+ intent={'version':1,'notebook_id':identity,'policy_hash':live['metadata']['annotations']['compute.cps.unileoben.ac.at/policy-hash'],'owner':'retention-qualification','submission_hash':live['metadata']['annotations']['cps.compute/submission-hash'],'snapshot_hash':hashlib.sha256(body).hexdigest()}
+ binding={'version':1,'notebook_id':identity,'namespace':'cps-workflows','name':name,'uid':uid,'intent_hash':hashlib.sha256(json.dumps(intent,sort_keys=True,separators=(',',':')).encode()).hexdigest()}
+ for kind,value in [('intent',intent),('binding',binding)]:s3.put_object(Bucket=a['bucket'],Key='notebook-provenance/'+identity+'/'+kind+'.json',Body=json.dumps(value).encode(),IfNoneMatch='*')
+ s3.put_object(Bucket=a['bucket'],Key=key,Body=body,Metadata=metadata,Tagging='retention=temporary-expirable&active=false&retained=false',IfNoneMatch='*')
+ observed=s3.head_object(Bucket=a['bucket'],Key=key)
+ now=datetime.now(timezone.utc)+timedelta(days=16)
+ storage=FaultStorage(case)
+ context={'prefix':'notebook-inputs/'+identity+'/','now':now.isoformat()}
+ child=subprocess.run([sys.executable,__file__],env={**os.environ,'CRASH_WORKER_MODE':'crash','CRASH_WORKER_CONTEXT':json.dumps(context)},capture_output=True,text=True,timeout=90)
+ assert child.returncode==-signal.SIGKILL,'Worker was not killed at the delete barrier'
+ result={'deleted':0,'errors':1,'workerKilledBySignal':9};storage.calls=1
+ after=proof.kube_request(name);claim=m.lifecycle(after)['artifacts'].get('snapshot')
+ assert after['metadata']['uid']==uid
+ if case=='retained':assert claim['state']=='retained' and result['deleted']==0 and result['errors']==0 and storage.calls==0
+ elif case=='delete':assert claim['state']=='deleting' and claim['etag']==observed['ETag'] and result['deleted']==1 and result['errors']==0 and storage.calls==1
+ else:assert claim['state']=='deleting' and claim['etag']==observed['ETag'] and result['deleted']==0 and result['errors']==1 and storage.calls==1
+ present=True
+ try:current=s3.head_object(Bucket=a['bucket'],Key=key)
+ except ClientError as exc:
+  assert exc.response['ResponseMetadata']['HTTPStatusCode']==404
+  present=False
+ assert present==(case in ('retained','ambiguous-before'))
+ calls=storage.calls
+ context['now']=(now+timedelta(days=100)).isoformat()
+ recovered=subprocess.run([sys.executable,__file__],env={**os.environ,'CRASH_WORKER_MODE':'recover','CRASH_WORKER_CONTEXT':json.dumps(context)},capture_output=True,text=True,timeout=90)
+ assert recovered.returncode==0,'Fresh recovery process failed'
+ repeat=json.loads(recovered.stdout)
+ assert hashlib.sha256(s3.get_object(Bucket=a['bucket'],Key=key)['Body'].read()).hexdigest()==hashlib.sha256(body).hexdigest()
+ assert repeat['deleted']==0 and repeat['errors']==0 and storage.calls==calls
+ assert m.lifecycle(proof.kube_request(name))['artifacts']['snapshot']==claim
+ report['cases'].append({'case':case,'name':name,'uid':uid,'firstSweep':result,'repeatSweep':repeat,'snapshotPresent':present,'permanentClaimPreserved':True,'deletionBarrierReached':True,'workerExitSignal':9,'freshRecoveryProcessPassed':True,'snapshotBodyHashPreserved':True})
+ Path('/tmp/retention-report.json').write_text(json.dumps(report,indent=2))
+report['passed']=True
+Path('/tmp/retention-report.json').write_text(json.dumps(report,indent=2))
+print(json.dumps({'passed':True,'cases':len(report['cases']),'productionQualified':False}))

@@ -1,0 +1,6 @@
+apiVersion: v2
+name: cps-compute-platform
+version: 0.1.0
+appVersion: 0.1.0
+description: Separate CPS/CIT consoles and shared compute gateway, disabled pending qualification
+type: application

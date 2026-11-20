@@ -1,0 +1,581 @@
+{
+  "source": "f5c005ca8b36995c6b4221873d3d0b4d334be3d4",
+  "image": "ghcr.io/mul-cps/e2x-course-hub:qualification-reviewed-alias-f5c005c@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767",
+  "namespace": "cps-compute",
+  "created_at": "2026-10-08T09:33:17.466086+00:00",
+  "consoles": {
+    "cps-admin": {
+      "old_image": "ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e",
+      "deployment_resourceVersion": "359460716",
+      "configuration": {
+        "cps-admin-config": {
+          "resourceVersion": "358832248",
+          "sha256": "f3290a84cef5d577e07f34501959c717830ea23a1e7da699c5ede5f2f323db48"
+        },
+        "compute-policy": {
+          "resourceVersion": "359464932",
+          "sha256": "934288badd8360300a9b87e84051bdbde58a9c719727fdc95dcaf9ceb0afa674"
+        },
+        "cps-compute-gateway-ca": {
+          "resourceVersion": "358830196",
+          "sha256": "8223daba5ada8bd68af272e02a80b9b4794ba99a81716dce2f5560cf0684a3c6"
+        }
+      },
+      "before": {
+        "user_version": 5,
+        "integrity": "ok",
+        "tables": {
+          "audit": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "console_owner": {
+            "count": 1,
+            "sha256": "23907f4d4d2b3f5f2c89c8117dfd84292c81077761ba0f4920b9c4b0cc58100f"
+          },
+          "email_links": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "records": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "email_verification_counts": {}
+      },
+      "qualification": {
+        "backup_path": "/backup/20261008T093334.910989Z-75b0404e9c8b4dea9eadb06d5b576712",
+        "manifest": {
+          "application_image": "ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e",
+          "created_at": "2026-10-08T09:33:34.911013+00:00",
+          "owner": "cps",
+          "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+          "schema_sha256": "86fb90be98352411e24f272a122494ba1fdd08d9380d93f1eb670af95d34eb44",
+          "schema_version": 1,
+          "scope": "Single console SQLite database; mounted configuration and central gateway state require matching independent backups",
+          "sha256": {
+            "console.sqlite": "22c681f554320d5d4015a2f535cc639eb219b9e371a3cde8736e8bdc00eea3b3"
+          },
+          "user_version": 5
+        },
+        "before": {
+          "user_version": 5,
+          "integrity": "ok",
+          "tables": {
+            "audit": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "console_owner": {
+              "count": 1,
+              "sha256": "23907f4d4d2b3f5f2c89c8117dfd84292c81077761ba0f4920b9c4b0cc58100f"
+            },
+            "email_links": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "records": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          },
+          "email_verification_counts": {}
+        },
+        "after": {
+          "user_version": 6,
+          "integrity": "ok",
+          "tables": {
+            "audit": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "console_owner": {
+              "count": 1,
+              "sha256": "23907f4d4d2b3f5f2c89c8117dfd84292c81077761ba0f4920b9c4b0cc58100f"
+            },
+            "email_links": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "records": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "reviewed_account_aliases": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          },
+          "email_verification_counts": {}
+        },
+        "startup_config_imports": true,
+        "startup_config_sha256": "4d82f1464127970eb8e3d0062092755f6ae2b4e3eb6072913b03cd9e36bb66b0",
+        "filesystem_adapter": "cps_compute.storage",
+        "packages": {
+          "e2x-course-hub": "0.1.1",
+          "cps-compute": "0.1.0",
+          "jupyterhub": "5.5.2"
+        },
+        "uid": 10001,
+        "backup_file_mode": "0600",
+        "backup_job": "reviewed-alias-cps-093318"
+      },
+      "patch_resourceVersion": "359460716",
+      "ready": {
+        "pod": "cps-admin-58c6f68c88-pq58n",
+        "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767"
+      },
+      "after": {
+        "user_version": 6,
+        "integrity": "ok",
+        "tables": {
+          "audit": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "console_owner": {
+            "count": 1,
+            "sha256": "23907f4d4d2b3f5f2c89c8117dfd84292c81077761ba0f4920b9c4b0cc58100f"
+          },
+          "email_links": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "records": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "reviewed_account_aliases": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "email_verification_counts": {}
+      },
+      "oauth_redirect": {
+        "status": 302,
+        "oauth_host": null,
+        "oauth_path": "/hub/api/oauth2/authorize"
+      },
+      "configuration_unchanged": true,
+      "rollback_available": true,
+      "persisted_backup": {
+        "present": true,
+        "integrity": "ok",
+        "schema": 5,
+        "file_mode": "0o600",
+        "directory_mode": "0o2700",
+        "sha256": "22c681f554320d5d4015a2f535cc639eb219b9e371a3cde8736e8bdc00eea3b3"
+      },
+      "pod_template_changed_only_image": true,
+      "final_deployment_resourceVersion": "361845330",
+      "final_deployment_generation": 6,
+      "local_backup_file_mode": "0o600",
+      "rollback_copy_test": {
+        "uid": 10001,
+        "old_image_compatible": true,
+        "schema": 5,
+        "restored_checksums_preserved": true
+      },
+      "inspected_owning_hub_account": {
+        "username": "bjoern",
+        "exact_match": true,
+        "admin": true,
+        "canonical_uuid_candidates": []
+      },
+      "backup_metadata_patch": {
+        "before": "ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e",
+        "after": "ghcr.io/mul-cps/e2x-course-hub:qualification-reviewed-alias-f5c005c@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767",
+        "resourceVersion_precondition": "361480643",
+        "resourceVersion_after": "361855976",
+        "only_BACKUP_IMAGE_changed": true,
+        "runner_image": "ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e",
+        "schedule": "17 2 * * *"
+      },
+      "post_upgrade_backup": {
+        "backup_path": "/backup/20261008T094650.734594Z-5f1af3ad394d420da8c5ce17c6fc988a",
+        "manifest": {
+          "application_image": "ghcr.io/mul-cps/e2x-course-hub:qualification-reviewed-alias-f5c005c@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767",
+          "created_at": "2026-10-08T09:46:50.734622+00:00",
+          "owner": "cps",
+          "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+          "schema_sha256": "cb71be2adc6aaf8433ab6ddf2bdcea13266aa7eaa328172b33b7bfc1a34d799e",
+          "schema_version": 1,
+          "scope": "Single console SQLite database; mounted configuration and central gateway state require matching independent backups",
+          "sha256": {
+            "console.sqlite": "049f1e4c2fcd956e5a55e9e88a65efa057caab1a0f06b40701ac6469eb01f0c8"
+          },
+          "user_version": 6
+        },
+        "before": {
+          "user_version": 6,
+          "integrity": "ok",
+          "tables": {
+            "audit": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "console_owner": {
+              "count": 1,
+              "sha256": "23907f4d4d2b3f5f2c89c8117dfd84292c81077761ba0f4920b9c4b0cc58100f"
+            },
+            "email_links": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "records": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "reviewed_account_aliases": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          },
+          "email_verification_counts": {}
+        },
+        "after": {
+          "user_version": 6,
+          "integrity": "ok",
+          "tables": {
+            "audit": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "console_owner": {
+              "count": 1,
+              "sha256": "23907f4d4d2b3f5f2c89c8117dfd84292c81077761ba0f4920b9c4b0cc58100f"
+            },
+            "email_links": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "records": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "reviewed_account_aliases": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          },
+          "email_verification_counts": {}
+        },
+        "startup_config_imports": true,
+        "startup_config_sha256": "4d82f1464127970eb8e3d0062092755f6ae2b4e3eb6072913b03cd9e36bb66b0",
+        "filesystem_adapter": "cps_compute.storage",
+        "packages": {
+          "e2x-course-hub": "0.1.1",
+          "cps-compute": "0.1.0",
+          "jupyterhub": "5.5.2"
+        },
+        "uid": 10001,
+        "backup_file_mode": "0600",
+        "backup_job": "reviewed-alias-cps-094639",
+        "persisted": {
+          "present": true,
+          "integrity": "ok",
+          "schema": 6,
+          "file_mode": "0o600",
+          "directory_mode": "0o2700",
+          "sha256": "049f1e4c2fcd956e5a55e9e88a65efa057caab1a0f06b40701ac6469eb01f0c8"
+        },
+        "local_file_mode": "0o600"
+      },
+      "backup_metadata_guard_tests": {
+        "stale_resourceVersion_denied": true,
+        "wrong_observed_image_denied": true,
+        "failed_guards_do_not_mutate": true
+      }
+    },
+    "cit-admin": {
+      "old_image": "ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e",
+      "deployment_resourceVersion": "359461393",
+      "configuration": {
+        "cit-admin-config": {
+          "resourceVersion": "358832247",
+          "sha256": "f2b41df5549d341765a6f81dac2ebfbdf53c53ec913f9e88789f502fd4093527"
+        },
+        "compute-policy": {
+          "resourceVersion": "359464932",
+          "sha256": "934288badd8360300a9b87e84051bdbde58a9c719727fdc95dcaf9ceb0afa674"
+        },
+        "cps-compute-gateway-ca": {
+          "resourceVersion": "358830196",
+          "sha256": "8223daba5ada8bd68af272e02a80b9b4794ba99a81716dce2f5560cf0684a3c6"
+        }
+      },
+      "before": {
+        "user_version": 5,
+        "integrity": "ok",
+        "tables": {
+          "audit": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "console_owner": {
+            "count": 1,
+            "sha256": "f5dae5bcd7a1fde14321dfef59c8a3ab47081a58f5bd1f5321fe6e38e625f82c"
+          },
+          "email_links": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "records": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "email_verification_counts": {}
+      },
+      "qualification": {
+        "backup_path": "/backup/20261008T093349.711797Z-50cffa7075454559acb30f6608520d4a",
+        "manifest": {
+          "application_image": "ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e",
+          "created_at": "2026-10-08T09:33:49.711829+00:00",
+          "owner": "cit",
+          "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+          "schema_sha256": "86fb90be98352411e24f272a122494ba1fdd08d9380d93f1eb670af95d34eb44",
+          "schema_version": 1,
+          "scope": "Single console SQLite database; mounted configuration and central gateway state require matching independent backups",
+          "sha256": {
+            "console.sqlite": "c68d169228b7ea066ac0a20a659e9157f74a95189ea67bb33c39b2fb9e66b048"
+          },
+          "user_version": 5
+        },
+        "before": {
+          "user_version": 5,
+          "integrity": "ok",
+          "tables": {
+            "audit": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "console_owner": {
+              "count": 1,
+              "sha256": "f5dae5bcd7a1fde14321dfef59c8a3ab47081a58f5bd1f5321fe6e38e625f82c"
+            },
+            "email_links": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "records": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          },
+          "email_verification_counts": {}
+        },
+        "after": {
+          "user_version": 6,
+          "integrity": "ok",
+          "tables": {
+            "audit": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "console_owner": {
+              "count": 1,
+              "sha256": "f5dae5bcd7a1fde14321dfef59c8a3ab47081a58f5bd1f5321fe6e38e625f82c"
+            },
+            "email_links": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "records": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "reviewed_account_aliases": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          },
+          "email_verification_counts": {}
+        },
+        "startup_config_imports": true,
+        "startup_config_sha256": "b8677ce7ec494b0775bf099eb2db8157eca23c23f5c6819eb58dc9d799443171",
+        "filesystem_adapter": "cps_compute.storage",
+        "packages": {
+          "e2x-course-hub": "0.1.1",
+          "cps-compute": "0.1.0",
+          "jupyterhub": "5.5.2"
+        },
+        "uid": 10001,
+        "backup_file_mode": "0600",
+        "backup_job": "reviewed-alias-cit-093338"
+      },
+      "patch_resourceVersion": "359461393",
+      "ready": {
+        "pod": "cit-admin-5b985f6949-bmpzj",
+        "imageID": "ghcr.io/mul-cps/e2x-course-hub@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767"
+      },
+      "after": {
+        "user_version": 6,
+        "integrity": "ok",
+        "tables": {
+          "audit": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "console_owner": {
+            "count": 1,
+            "sha256": "f5dae5bcd7a1fde14321dfef59c8a3ab47081a58f5bd1f5321fe6e38e625f82c"
+          },
+          "email_links": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "records": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          },
+          "reviewed_account_aliases": {
+            "count": 0,
+            "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+          }
+        },
+        "email_verification_counts": {}
+      },
+      "oauth_redirect": {
+        "status": 302,
+        "oauth_host": null,
+        "oauth_path": "/hub/api/oauth2/authorize"
+      },
+      "configuration_unchanged": true,
+      "rollback_available": true,
+      "persisted_backup": {
+        "present": true,
+        "integrity": "ok",
+        "schema": 5,
+        "file_mode": "0o600",
+        "directory_mode": "0o2700",
+        "sha256": "c68d169228b7ea066ac0a20a659e9157f74a95189ea67bb33c39b2fb9e66b048"
+      },
+      "pod_template_changed_only_image": true,
+      "final_deployment_resourceVersion": "361845900",
+      "final_deployment_generation": 6,
+      "local_backup_file_mode": "0o600",
+      "rollback_copy_test": {
+        "uid": 10001,
+        "old_image_compatible": true,
+        "schema": 5,
+        "restored_checksums_preserved": true
+      },
+      "inspected_owning_hub_account": {
+        "username": "akadmin",
+        "exact_match": true,
+        "admin": true,
+        "canonical_uuid_candidates": []
+      },
+      "backup_metadata_patch": {
+        "before": "ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e",
+        "after": "ghcr.io/mul-cps/e2x-course-hub:qualification-reviewed-alias-f5c005c@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767",
+        "resourceVersion_precondition": "361480682",
+        "resourceVersion_after": "361856399",
+        "only_BACKUP_IMAGE_changed": true,
+        "runner_image": "ghcr.io/mul-cps/e2x-course-hub:qualification-combined-sdk-0ef266b@sha256:03634029cbe382c4a5c520f9e19a32fc047a676afbe51de47639c62e0aa1b12e",
+        "schedule": "17 2 * * *"
+      },
+      "post_upgrade_backup": {
+        "backup_path": "/backup/20261008T094709.562871Z-b13a4145cd4c40f9ac115461b5ac466c",
+        "manifest": {
+          "application_image": "ghcr.io/mul-cps/e2x-course-hub:qualification-reviewed-alias-f5c005c@sha256:735f891ba008c58a9d3f4d324c22893d13b094dabe7ea39f80c776ffb6c89767",
+          "created_at": "2026-10-08T09:47:09.562910+00:00",
+          "owner": "cit",
+          "policy_hash": "sha256:051cd754210af2830d67968eea898f674a55ff66f5c88b3db95dff205f04e33d",
+          "schema_sha256": "cb71be2adc6aaf8433ab6ddf2bdcea13266aa7eaa328172b33b7bfc1a34d799e",
+          "schema_version": 1,
+          "scope": "Single console SQLite database; mounted configuration and central gateway state require matching independent backups",
+          "sha256": {
+            "console.sqlite": "b7ce26c7d3361a552025a5116c5772a9876dc7627611358327a8ba327a9bdf46"
+          },
+          "user_version": 6
+        },
+        "before": {
+          "user_version": 6,
+          "integrity": "ok",
+          "tables": {
+            "audit": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "console_owner": {
+              "count": 1,
+              "sha256": "f5dae5bcd7a1fde14321dfef59c8a3ab47081a58f5bd1f5321fe6e38e625f82c"
+            },
+            "email_links": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "records": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "reviewed_account_aliases": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          },
+          "email_verification_counts": {}
+        },
+        "after": {
+          "user_version": 6,
+          "integrity": "ok",
+          "tables": {
+            "audit": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "console_owner": {
+              "count": 1,
+              "sha256": "f5dae5bcd7a1fde14321dfef59c8a3ab47081a58f5bd1f5321fe6e38e625f82c"
+            },
+            "email_links": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "records": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            },
+            "reviewed_account_aliases": {
+              "count": 0,
+              "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+            }
+          },
+          "email_verification_counts": {}
+        },
+        "startup_config_imports": true,
+        "startup_config_sha256": "b8677ce7ec494b0775bf099eb2db8157eca23c23f5c6819eb58dc9d799443171",
+        "filesystem_adapter": "cps_compute.storage",
+        "packages": {
+          "e2x-course-hub": "0.1.1",
+          "cps-compute": "0.1.0",
+          "jupyterhub": "5.5.2"
+        },
+        "uid": 10001,
+        "backup_file_mode": "0600",
+        "backup_job": "reviewed-alias-cit-094657",
+        "persisted": {
+          "present": true,
+          "integrity": "ok",
+          "schema": 6,
+          "file_mode": "0o600",
+          "directory_mode": "0o2700",
+          "sha256": "b7ce26c7d3361a552025a5116c5772a9876dc7627611358327a8ba327a9bdf46"
+        },
+        "local_file_mode": "0o600"
+      },
+      "backup_metadata_guard_tests": {
+        "stale_resourceVersion_denied": true,
+        "wrong_observed_image_denied": true,
+        "failed_guards_do_not_mutate": true
+      }
+    }
+  },
+  "completed_at": "2026-10-08T09:49:16.289999+00:00",
+  "scope": "Console Deployment images and backup BACKUP_IMAGE provenance only; no identity records, gateway state, grants, storage configuration, Hub services, roles, ingress or GPU flags changed",
+  "backup_cronjob_boundary": "BACKUP_IMAGE references now match new live image; runner images, schedules, mounts and other environment unchanged. Rollback restores old metadata after matching schema5 database and old-image restoration."
+}

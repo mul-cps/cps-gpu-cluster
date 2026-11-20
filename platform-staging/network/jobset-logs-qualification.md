@@ -1,0 +1,11 @@
+# Distributed worker log qualification
+
+Status: source and installed-wheel tests plus operator-owned CPU cluster fixture passed; production gateway/Hub/addon integration remains pending.
+
+The compute qualification branch adds authenticated `GET /v1/jobsets/{name}/logs`. It authorizes the JobSet's canonical owner before discovery and traverses actual JobSet → Job → Pod owner UIDs. Discovery labels do not grant access. Buffered logs are returned only after fresh Pod, Job and JobSet identity checks; replacement or reparenting fails closed. Only the fixed worker container and trusted namespace are read, with bounded pages, worker count, lines and bytes.
+
+Five new regression tests cover other-person denial before backend log access, spoofed discovery labels, Pod replacement, Job reparenting, explicit pending availability, historical ownership after grant expiry, missing UIDs, incomplete pages, authentication, tail bounds and absent launcher. All 266 tests passed against both source and the built wheel; every packaged Python module matched source. The wheel digest and source revision are recorded in `jobset-logs-report.json`.
+
+A separate namespace ran a single fixed CPU-only JobSet printing an owned marker, using the existing pinned recovery image. The source gateway ran locally with real Kubernetes adapters and explicit synthetic HTTP identities. Its response contained exactly the owned Pod's marker and observed UID, verified against the real controller's Job and Pod owner references. A separate standalone Job carrying the same discovery label was excluded. Anonymous/other-person requests returned 401/403; an excessive tail returned 422. This establishes actual API/controller compatibility, not production OAuth, shared-kernel attribution or a new container release. No human Pod or GPU workload was accessed.
+
+The owned namespace, pull credential reference, account, Jobs, Pods and JobSet were removed; namespace deletion was confirmed. Existing production gateway image and qualification flags remain unchanged. Before promotion, publish the combined compute candidate, qualify the authenticated Hub bridge and addon paths, and complete the remaining distributed/runtime and isolation gates. Existing namespace-scoped gateway roles already contain Job get/list, Pod get/list and pods/log get; do not add cluster-wide log access.

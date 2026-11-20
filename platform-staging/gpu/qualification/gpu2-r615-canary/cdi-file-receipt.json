@@ -1,0 +1,22 @@
+{
+  "observedAt": "2026-10-08T14:04:50.929829+00:00",
+  "registeredHostPath": "/var/run/cdi/cps-r615-canary.json",
+  "sha256": "bf89492a56f1235e0772fb1d26e88243200c739c09793e770a16a6a842c7f448",
+  "size": 17066,
+  "kind": "management.nvidia.com/gpu",
+  "devices": [
+    "GPU-16128952-b438-556a-00bb-93039ee24e56",
+    "GPU-1e6145d5-8ee2-43e2-a0d5-6d345909e8a6",
+    "all"
+  ],
+  "registeredBy": "root",
+  "workerOperations": "read-only",
+  "strayUnregisteredFile": {
+    "path": "/--format.yaml",
+    "sha256": "29cad3cef29273fdee40cb610f9eb21cc0fd56269795edb447d162511e873f59",
+    "size": 19880,
+    "createdBy": "worker CLI output flag parsing mistake",
+    "registered": false,
+    "cleanupOwner": "root"
+  }
+}

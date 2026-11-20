@@ -1,0 +1,92 @@
+[
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "--dry-run=server",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 0,
+    "expectedAllow": true,
+    "matchedExpectation": true,
+    "name": "valid-reviewed-quota",
+    "stderr": "",
+    "stdout": "{\n    \"apiVersion\": \"cps-dynamic-admission-live-20261008.compute.cps.unileoben.ac.at/v1alpha1\",\n    \"kind\": \"DynamicGpuQuotaPolicy\",\n    \"metadata\": {\n        \"annotations\": {\n            \"compute.cps.unileoben.ac.at/kai-source\": \"bdf434e5e9201cccf4e05fad04d814363653f692\",\n            \"compute.cps.unileoben.ac.at/qualification-state\": \"disabled-offline-candidate\",\n            \"compute.cps.unileoben.ac.at/source-files-sha256\": \"2067e6238c1eb33988ca232780dc7f04e92f71e0468edec6f73e44fef3292431\"\n        },\n        \"creationTimestamp\": \"2026-10-08T08:38:31Z\",\n        \"generation\": 2,\n        \"name\": \"reviewed-quota-maps\",\n        \"namespace\": \"cps-dynamic-admission-live-20261008\",\n        \"resourceVersion\": \"361806093\",\n        \"uid\": \"c13a9c61-10f4-49e4-841c-0ad497812e4e\"\n    },\n    \"records\": [\n        {\n            \"cudaDeviceMemoryLimit\": \"5324m\",\n            \"gpuPortion\": \"0.13\",\n            \"gpuUuid\": \"GPU-22222222-2222-2222-2222-222222222222\",\n            \"name\": \"offline-argo-5-bcdfgh4-shared-gpu-1\",\n            \"namespace\": \"cps-dynamic-admission-live-20261008\",\n            \"physicalGpuMemoryMiB\": \"40960\",\n            \"podName\": \"offline-argo-5-declared-i1\",\n            \"podUid\": \"11111111-1111-1111-1111-111111111111\",\n            \"runaiNumOfGpus\": \"0.13\",\n            \"type\": \"capabilities\",\n            \"visibleDevices\": \"k8s.device-plugin.nvidia.com/gpu=1\"\n        },\n        {\n            \"cudaDeviceMemoryLimit\": \"5324m\",\n            \"gpuPortion\": \"0.13\",\n            \"gpuUuid\": \"GPU-22222222-2222-2222-2222-222222222222\",\n            \"name\": \"offline-argo-5-bcdfgh4-shared-gpu-1-evar\",\n            \"namespace\": \"cps-dynamic-admission-live-20261008\",\n            \"physicalGpuMemoryMiB\": \"40960\",\n            \"podName\": \"offline-argo-5-declared-i1\",\n            \"podUid\": \"11111111-1111-1111-1111-111111111111\",\n            \"runaiNumOfGpus\": \"0.13\",\n            \"type\": \"evar\",\n            \"visibleDevices\": \"k8s.device-plugin.nvidia.com/gpu=1\"\n        }\n    ],\n    \"writers\": [\n        \"system:serviceaccount:cps-admission-runner-20261008:probe\"\n    ]\n}\n"
+  },
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "--dry-run=server",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 1,
+    "expectedAllow": false,
+    "matchedExpectation": true,
+    "name": "mismatched-portions",
+    "stderr": "The DynamicGpuQuotaPolicy \"reviewed-quota-maps\" is invalid: records[0]: Invalid value: \"object\": Both upstream GPU portion aliases must match\n",
+    "stdout": ""
+  },
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "--dry-run=server",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 1,
+    "expectedAllow": false,
+    "matchedExpectation": true,
+    "name": "forged-quota",
+    "stderr": "The DynamicGpuQuotaPolicy \"reviewed-quota-maps\" is invalid: records[0]: Invalid value: \"object\": HAMi quota must truncate the reviewed advertised memory label times received portion\n",
+    "stdout": ""
+  },
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "--dry-run=server",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 1,
+    "expectedAllow": false,
+    "matchedExpectation": true,
+    "name": "oversized-device",
+    "stderr": "The DynamicGpuQuotaPolicy \"reviewed-quota-maps\" is invalid: \n* records[0].visibleDevices: Too long: may not be more than 73 bytes\n* <nil>: Invalid value: null: some validation rules were not checked because the object was invalid; correct the existing errors to complete validation\n",
+    "stdout": ""
+  },
+  {
+    "command": [
+      "kubectl",
+      "--request-timeout=20s",
+      "replace",
+      "--dry-run=server",
+      "-f",
+      "-",
+      "-o",
+      "json"
+    ],
+    "exitCode": 1,
+    "expectedAllow": false,
+    "matchedExpectation": true,
+    "name": "bad-uuid",
+    "stderr": "The DynamicGpuQuotaPolicy \"reviewed-quota-maps\" is invalid: records[0].podUid: Invalid value: \"not-a-uid\": records[0].podUid in body should match '^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$'\n",
+    "stdout": ""
+  }
+]
