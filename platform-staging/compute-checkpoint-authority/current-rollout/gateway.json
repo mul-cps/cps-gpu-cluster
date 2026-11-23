@@ -160,7 +160,7 @@
                 }
               }
             ],
-            "image": "ghcr.io/mul-cps/cps-compute@sha256:88ec929066be2322f755599aef7617f17d7b2122edead4d47589747c7d30cbe9",
+            "image": "ghcr.io/mul-cps/cps-compute@sha256:e26e58e0a57e2a5e2164682d8a7101f11d2f692daab8ec69b670124d6b07d340",
             "imagePullPolicy": "IfNotPresent",
             "name": "gateway",
             "ports": [
@@ -527,7 +527,7 @@
             "name": "upstream-runtime",
             "secret": {
               "defaultMode": 256,
-              "secretName": "gateway-reviewed-identity-publishers-20261123"
+              "secretName": "gateway-cps-poweruser-group-20261123"
             }
           },
           {
