@@ -7,12 +7,33 @@ membership and profile entitlement, and creates the workload in the appropriate
 KAI queue. Use the gateway workflow ID to check status, retrieve logs and
 artifacts, or cancel the workflow.
 
+| Action | Gateway API |
+| --- | --- |
+| Submit | `POST /v1/workflows` |
+| List your workflows | `GET /v1/workflows` |
+| Check a workflow | `GET /v1/workflows/{key}` |
+| Read logs | `GET /v1/workflows/{key}/logs` |
+| List artifacts | `GET /v1/workflows/{key}/artifacts` |
+| Cancel | `POST /v1/workflows/{key}/terminate` |
+
+Keep the returned workflow key. Use the same idempotency key if you retry
+the same submission after losing the response.
+
 ## GPU profiles
 
 The production gateway currently accepts CPU batch through `batch-cpu`.
 GPU batch profiles remain disabled. The first planned GPU pilot uses
 `batch-shared-5` and requires reviewed user and CI access. CPU Small and
 GPU Shared (5 GiB) are interactive Hub choices.
+
+For the GPU pilot, one active GPU workload is allowed per canonical person
+across CPS, CIT, and batch, with one waiting batch submission. A CI key
+submitting GPU work must map to a verified quota owner. When you request an
+interactive session, the gateway holds your queued batch or requests a
+checkpoint from your running batch. If checkpoint acknowledgement is still
+missing after 120 seconds, batch keeps running and the interactive request
+continues waiting. Check workflow status for the waiting reason. A resumable
+workflow must persist its checkpoint outside the container filesystem.
 
 For a fixed GPU share, KAI accounts for the requested memory using NvFractions.
 The operator-managed Fractioning stack and required NRI plugin handle runtime
