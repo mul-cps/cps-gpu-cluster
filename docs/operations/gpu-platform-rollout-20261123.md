@@ -262,3 +262,14 @@ The existing production Pod remained available. This blocks the parity
 test and requires recovery of the approval/bootstrap relationship before
 relying on a fresh gateway start. Evidence is in
 `gateway-source-parity-WQkiJQcn`.
+
+The approval mismatch was caused by the empty-state fixture. Its registry
+projection differed from the mounted bootstrap head, which matched the
+live ConfigMaps. Both images successfully constructed their gateway
+applications once given independent copies of the four restored databases
+and a writer lock scoped to each temporary clone. The incumbent clone
+matched all 50 live route and method entries. The candidate retained all
+50 and added the checkpoint route. The source claim and retained snapshot
+were not mounted writable. The restore contains database copies and needs
+a verified writer-lock provisioning step before a real authority starts
+from it. Production stayed on the incumbent image.
