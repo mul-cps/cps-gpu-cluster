@@ -65,3 +65,15 @@ Evidence is stored in the rollout artifact directories
 `cit-fleet-adoption-2fRN4cn3`, `gateway-fleet-adoption-oA2VtROX`, and
 `kai-019-render-20261123` under
 `/home/bjoern/artifacts/cps-upstream-sharing-20261116/`.
+
+## 5 GiB GPU workflow operator fixture
+
+Argo workflow `gpu-batch-nvfractions-fixture-1123093838` reached Succeeded
+through KAI on `k3s-wk-gpu1`. Pod UID
+`750d69b4-aa1c-4a3a-95be-4837068f5b34` recorded the required Fractioning
+plugin and equal 5120 MiB request and limit. CUDA enumerated one device and
+reported the same GPU UUID as the admitted pod annotation. It allocated,
+wrote and freed a 16 MiB device buffer. Argo removed the pod after completion.
+The evidence is under `gpu-batch-profile-render-y45VXJ4j` in the rollout
+artifact directory. Normal tenant admission, 5 GiB enforcement under
+contention, and the live checkpoint/resume path remain open.
