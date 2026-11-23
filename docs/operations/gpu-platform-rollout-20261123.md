@@ -172,3 +172,11 @@ policy/binding warning and a source read-only mount produced no warning.
 The Deny/Audit binding render passed server-side dry run. Both gateways
 remain available on the original claim. The source deny phase has not
 been activated.
+
+The refreshed authenticated observer reached its cadence gate but did not
+pass the all-samples criterion. Seven of 26 baseline cycles had at least
+one timeout. A concurrent-request variant timed out in eight of 26 cycles
+and was discarded. A separate probe measured bare Kubernetes exec at up
+to 171 ms. Authenticated four-request batches sometimes took 1.09 s even
+when every individual HTTP response and body was correct. The eight-probe
+measurement remains unqualified at the original sample deadline.
