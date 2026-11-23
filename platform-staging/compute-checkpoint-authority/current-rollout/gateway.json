@@ -160,7 +160,7 @@
                 }
               }
             ],
-            "image": "ghcr.io/mul-cps/cps-compute@sha256:0244e5502cd1554ef936f39fe7c43bc3d37e2e0d57d667b19225d96c7c3b3cf3",
+            "image": "ghcr.io/mul-cps/cps-compute@sha256:c6ae13fddb1d17de3205fbc306f19e0a9b8ba774a62051263142ae13d41157d1",
             "imagePullPolicy": "IfNotPresent",
             "name": "gateway",
             "ports": [
