@@ -3,18 +3,17 @@
 ## Course profiles and controller backup
 
 The live CIT Hub uses the immutable `cit-student-shared5-rino-20261123` Secret
-and retains the scoped `cps-rino-mujoco-exception` reference. The CIT candidate
-is on `work/approved-gpu-platform-rollout` in the CIT teaching platform repo,
-based on the active Fleet revision `b68a5cfa`. Rendering JupyterHub 4.4.2
-with the reviewed patch matches the live Hub pod template after normalizing
-the restart timestamp and Kubernetes volume defaults. The home claim
-`claim-m12113877` is Bound.
+and retains the scoped `cps-rino-mujoco-exception` reference. Fleet adopted
+CIT teaching platform revision `e876e33e069de3c896454d8e03563d3fc3c21ce7`
+and reported nine of nine bundles and 55 of 55 resources ready. Helm records
+the current Secret reference. The live Hub pod template and Deployment
+generation matched their pre-adoption values, and `claim-m12113877` is Bound.
 
 The [Gateway and backup render](../../platform-staging/compute-checkpoint-authority/current-rollout/)
 matches the live Deployment, CronJob and backup ConfigMap. It references the
 immutable runtime Secret containing the reviewed identity link. Secret
 contents stay in the protected configuration. The render passed server-side
-dry run. Both GitOps candidates still need reconciler adoption.
+dry run. The gateway and backup package still needs reconciler adoption.
 
 The live scheduled backup now uses `compute-state-timed-gpu3-20261119` with
 a digest-pinned runner and the gateway image and upstream policy hash recorded
@@ -57,6 +56,7 @@ runtime. Production SM sharing, GPU4 eviction recovery, elastic VRAM and
 superseded component retirement remain open.
 
 Evidence is stored in the rollout artifact directories
-`backup-cron-pin-zbeVH2Bo`, `cit-gitops-readback-TffSraGk`, and
+`backup-cron-pin-zbeVH2Bo`, `cit-gitops-readback-TffSraGk`,
+`cit-fleet-adoption-2fRN4cn3`, and
 `kai-019-render-20261123` under
 `/home/bjoern/artifacts/cps-upstream-sharing-20261116/`.
