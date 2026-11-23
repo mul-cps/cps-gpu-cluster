@@ -300,3 +300,10 @@ the two launch orders. The blocked source acquired the allowance after
 confirmed release in each case. All 116 restored custody records were
 clean, and all four restored database hashes stayed identical.
 See `staged-image-restore-TTHSgfGn/allowance-result.json`.
+
+The new retained standby claim is protected by
+`cps-staged-restore-write-fence` in Deny/Audit mode. Server dry runs
+accepted a read-only mount and rejected the writable counterpart through
+the named policy and binding. No active pod had the standby mounted
+writable. Current gateway Deployments, EndpointSlices, claim identities
+and backup spec are captured in `staged-image-restore-TTHSgfGn`.
