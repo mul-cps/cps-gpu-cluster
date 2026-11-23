@@ -292,3 +292,11 @@ manifest SHA-256, SQLite integrity, required-table, and foreign-key checks
 for all four databases. The independent PV uses reclaim policy `Retain`.
 Evidence is in `staged-image-restore-TTHSgfGn`. This exercise did not
 switch the production endpoint.
+
+The deployed gateway image also passed the cross-Hub allowance check on
+a disposable clone of the restored reservation database. Using one
+synthetic canonical identity, CPS blocked CIT and CIT blocked CPS in
+the two launch orders. The blocked source acquired the allowance after
+confirmed release in each case. All 116 restored custody records were
+clean, and all four restored database hashes stayed identical.
+See `staged-image-restore-TTHSgfGn/allowance-result.json`.
