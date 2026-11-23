@@ -35,15 +35,36 @@ missing after 120 seconds, batch keeps running and the interactive request
 continues waiting. Check workflow status for the waiting reason. A resumable
 workflow must persist its checkpoint outside the container filesystem.
 
-For the pilot, a checkpoint client uses an authorized gateway credential
-for the workflow owner. The gateway supplies the submission ID in
-`CPS_GPU_BATCH_SUBMISSION`. Use `cps_compute.sdk.checkpoint_request()` to
-read the current attempt and deadline, then call
-`acknowledge_checkpoint(attempt=..., deadline=..., reference=...)`
-after persisting the checkpoint. The resumed attempt reads the stored
-reference from `CPS_GPU_BATCH_CHECKPOINT`. A stale acknowledgement returns
-HTTP 409. Confirm how the pilot will provide the checkpoint client with
-an authorized credential before running a checkpointable job.
+A checkpoint client can run in the submitter's environment with the
+workflow owner's gateway credential. The batch container receives
+`CPS_GPU_BATCH_SUBMISSION`, `CPS_GPU_BATCH_ATTEMPT`, and
+`CPS_GPU_BATCH_CHECKPOINT`. It does not receive the submitter's token
+automatically. Keep that token out of the workflow manifest.
+
+Call `cps_compute.sdk.checkpoint_request(workflow_id)` from the
+checkpoint client. When the response's `checkpoint.state` is
+`requested`, use the returned `attempt` and `checkpoint.deadline`.
+Acknowledge only after verifying that this attempt has persisted a
+checkpoint to storage it can access on resume:
+
+```python
+from cps_compute.sdk import acknowledge_checkpoint, checkpoint_request
+
+request = checkpoint_request(workflow_id)
+checkpoint = request["checkpoint"]
+if checkpoint and checkpoint["state"] == "requested":
+    acknowledge_checkpoint(
+        workflow_id=workflow_id,
+        attempt=request["attempt"],
+        deadline=checkpoint["deadline"],
+        reference=verified_checkpoint_reference,
+    )
+```
+
+A stale acknowledgement returns HTTP 409. The pilot must verify that
+the client and resumed container can both access the checkpoint and
+that the resumed attempt reads its reference from
+`CPS_GPU_BATCH_CHECKPOINT`.
 
 For a fixed GPU share, KAI accounts for the requested memory using NvFractions.
 The operator-managed Fractioning stack and required NRI plugin handle runtime
