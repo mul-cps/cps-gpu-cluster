@@ -330,3 +330,11 @@ only `null`. No institution delivery test was sent. The approved receiver
 and firing/resolved receipts are still required. Sanitized receiver names,
 rule expressions and the compute-backup metric response are saved in
 `staged-image-restore-TTHSgfGn`.
+
+Fleet revision `7df8a626` deployed the five gateway backup-readiness
+rules. Prometheus evaluated all five successfully. A temporary test rule
+reached Alertmanager as active with the `null` receiver. After its
+expression was cleared, Prometheus reported it inactive and Alertmanager
+no longer listed it. The temporary rule was removed. Evidence is in
+`staged-image-restore-TTHSgfGn/alert-rehearsal-*.json`. Institutional
+firing and resolved receipts remain outstanding.
