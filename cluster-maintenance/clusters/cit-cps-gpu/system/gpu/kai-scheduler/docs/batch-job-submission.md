@@ -35,6 +35,16 @@ missing after 120 seconds, batch keeps running and the interactive request
 continues waiting. Check workflow status for the waiting reason. A resumable
 workflow must persist its checkpoint outside the container filesystem.
 
+For the pilot, a checkpoint client uses an authorized gateway credential
+for the workflow owner. The gateway supplies the submission ID in
+`CPS_GPU_BATCH_SUBMISSION`. Use `cps_compute.sdk.checkpoint_request()` to
+read the current attempt and deadline, then call
+`acknowledge_checkpoint(attempt=..., deadline=..., reference=...)`
+after persisting the checkpoint. The resumed attempt reads the stored
+reference from `CPS_GPU_BATCH_CHECKPOINT`. A stale acknowledgement returns
+HTTP 409. Confirm how the pilot will provide the checkpoint client with
+an authorized credential before running a checkpointable job.
+
 For a fixed GPU share, KAI accounts for the requested memory using NvFractions.
 The operator-managed Fractioning stack and required NRI plugin handle runtime
 device assignment and memory enforcement. Tenant submissions specify the
