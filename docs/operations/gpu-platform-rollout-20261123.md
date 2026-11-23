@@ -194,3 +194,18 @@ The maximum gap between sample starts was 0.797 seconds. The probe still
 pins Source pod and container identities, verifies TLS and response bodies,
 and keeps the original deadline. Twenty-five offline cutover tests passed.
 This read-only prequalification is in `observer-keepalive-iWvUCUEr`.
+
+## SM-sharing canary scope
+
+The released Fractioning 0.1.9 chart was rendered with SM sharing off and
+on. Only the operator Deployment changed, via its `SUPPORT_SM_SHARING`
+environment variable. The production operator targets all four upstream
+workers through its single cluster-scoped Fractioning Config. Its node
+selector controls the whole daemon installation. Restricting a workload
+profile to one worker does not scope the operator feature switch.
+
+The operator-managed SM-sharing canary therefore still needs isolated GPU
+capacity under a separate installation, or a verified mechanism that can
+scope the operator change to the test worker. Production remains on
+`SUPPORT_SM_SHARING=false`. The exact release renders are in
+`sm-canary-render-rYq2u6ze`.
