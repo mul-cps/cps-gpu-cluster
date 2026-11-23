@@ -187,3 +187,10 @@ cycles. Combining TLS reuse with parallel GETs produced five timeouts in
 discarded. The evidence is in the `observer-shared-tls-X9eIcJ7Q` and
 `observer-parallel-shared-tls-10Er2YIo` directories under the refreshed
 recovery input bundle.
+
+Reusing a single verified HTTPS connection for each Source batch passed
+all 48 consecutive live observer cycles across all eight endpoints.
+The maximum gap between sample starts was 0.797 seconds. The probe still
+pins Source pod and container identities, verifies TLS and response bodies,
+and keeps the original deadline. Twenty-five offline cutover tests passed.
+This read-only prequalification is in `observer-keepalive-iWvUCUEr`.

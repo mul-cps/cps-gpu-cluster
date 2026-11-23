@@ -1,5 +1,5 @@
 """Unarmed GET-only outage observer; no tokens minted and no mutating HTTP methods."""
-import argparse,hashlib,json,multiprocessing as mp,os,pathlib,re,ssl,time,signal,subprocess,urllib.request,urllib.parse,urllib.error
+import argparse,hashlib,http.client,json,multiprocessing as mp,os,pathlib,re,ssl,time,signal,subprocess,urllib.request,urllib.parse,urllib.error
 
 MAX_BODY=1024*1024
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -70,6 +70,43 @@ def probe(e,source_environment=False):
  except (ValueError,AssertionError):result['category']='input-or-body-invalid'
  return result
 
+def source_https_batch(endpoints):
+ host='compute-gateway.cps-compute.svc.cluster.local'
+ context=ssl.create_default_context(cafile='/trust/ca.crt')
+ assert context.verify_mode==ssl.CERT_REQUIRED and context.check_hostname
+ token=os.environ['COMPUTE_POLICY_TOKEN'].strip()
+ assert token and len(token)<=8192 and not any(c.isspace() for c in token)
+ connection=http.client.HTTPSConnection(host,8000,timeout=.6,context=context)
+ rows=[]
+ try:
+  for e in endpoints:
+   row=failures([e],'transport-error')[0]
+   rows.append(row)
+   url=urllib.parse.urlsplit(e['url'])
+   assert url.scheme=='https' and url.netloc==host+':8000' and not url.query and not url.fragment
+   try:
+    connection.request('GET',url.path,headers={'Authorization':'Bearer '+token,'Accept':'application/json'})
+    response=connection.getresponse()
+    row['status']=response.status
+    raw=response.read(MAX_BODY+1)
+    if len(raw)>MAX_BODY:
+     row['category']='input-or-body-invalid'
+     connection.close()
+     continue
+    row['ok']=(response.status==e['expectedStatus'] and subset(e['expectedJSONSubset'],json.loads(raw))
+       and (not e.get('expectedBodySHA256') or hashlib.sha256(raw).hexdigest()==e['expectedBodySHA256']))
+    row['category']=('verified-source-isolation' if response.status==404 else 'verified-api') if row['ok'] else 'body-or-status-mismatch'
+   except (ssl.CertificateError,ssl.SSLCertVerificationError):
+    row['category']='tls-verification-failed'
+    connection.close()
+   except (OSError,http.client.HTTPException):
+    connection.close()
+   except ValueError:
+    row['category']='input-or-body-invalid'
+ finally:
+  connection.close()
+ return rows
+
 def source_probe_batch(endpoints):
  assert endpoints and all(e['transport']=='source-pod' for e in endpoints)
  b=endpoints[0]['podBinding'];assert all(e['podBinding']==b for e in endpoints),'Mixed Source identity in batch'
@@ -82,7 +119,7 @@ def source_probe_batch(endpoints):
  remote_endpoints=[{k:v for k,v in e.items()if k not in ('podBinding','tokenFile')}for e in endpoints]
  # Fixed code goes on stdin, never a token/long script in exec argv. Remote
  # existing Source credential stays in that process and never returns to Root.
- code="import signal;signal.alarm(1)\n"+pathlib.Path(__file__).read_text().rsplit("if __name__=='__main__':",1)[0]+"\nprint(json.dumps([probe(e,source_environment=True) for e in "+repr(remote_endpoints)+"]))\n"
+ code="import signal;signal.alarm(1)\n"+pathlib.Path(__file__).read_text().rsplit("if __name__=='__main__':",1)[0]+"\nprint(json.dumps(source_https_batch("+repr(remote_endpoints)+")))\n"
  r=subprocess.run(base+['exec','-i',b['name'],'-c','console','--','python','-'],input=code.encode(),capture_output=True,timeout=.8)
  assert r.returncode==0 and len(r.stdout)<=8192
  rows=json.loads(r.stdout);assert isinstance(rows,list) and len(rows)==len(endpoints)

@@ -25,34 +25,32 @@ class BatchTests(unittest.TestCase):
  def test_generated_four_request_code_one_exec_compiles(self):compile(self.program(),'batch-stdin','exec')
  def test_generated_four_request_code_retains_each_status(self):
   code=self.program();bootstrap=r'''
-import os,sys,json,ssl,socket,urllib.request,urllib.error,io
+import os,sys,json,ssl,socket,http.client
 os.environ['COMPUTE_POLICY_TOKEN']='owned-dummy-token'
 original_context=ssl.create_default_context
 ssl.create_default_context=lambda **kw:original_context()
 def no_network(*a,**k):raise AssertionError('No network in offline test')
 socket.socket=no_network
 calls=[]
+connections=[]
 class Response:
- status=200
- def __init__(self,body):self.body=body
- def __enter__(self):return self
- def __exit__(self,*a):return False
+ def __init__(self,status,body):self.status=status;self.body=body
  def read(self,n):return self.body
-class Opener:
- def open(self,request,timeout):
-  assert request.get_method()=='GET'
-  assert request.get_header('Authorization')=='Bearer owned-dummy-token'
-  key=request.full_url.rsplit('/',1)[-1];calls.append(key)
-  if key=='isolation':raise urllib.error.HTTPError(request.full_url,404,'not found',{},io.BytesIO(b'{"detail":"Workspace not found"}'))
-  # A genuine individual body mismatch must remain visible beside good peers.
-  return Response(json.dumps({'kind':'wrong'if key=='profiles'else key}).encode())
-def opener(*handlers):
- assert handlers[0].proxies=={}
- assert handlers[2]._context.check_hostname and handlers[2]._context.verify_mode==ssl.CERT_REQUIRED
- return Opener()
-urllib.request.build_opener=opener
+class Connection:
+ def __init__(self,host,port,timeout,context):
+  assert host=='compute-gateway.cps-compute.svc.cluster.local' and port==8000 and timeout==.6
+  assert context.check_hostname and context.verify_mode==ssl.CERT_REQUIRED
+  connections.append(self)
+ def request(self,method,path,headers):
+  assert method=='GET' and headers['Authorization']=='Bearer owned-dummy-token'
+  self.key=path.rsplit('/',1)[-1];calls.append(self.key)
+ def getresponse(self):
+  if self.key=='isolation':return Response(404,b'{"detail":"Workspace not found"}')
+  return Response(200,json.dumps({'kind':'wrong'if self.key=='profiles'else self.key}).encode())
+ def close(self):pass
+http.client.HTTPSConnection=Connection
 exec(compile(sys.stdin.buffer.read(),'actual-batch-stdin','exec'),{'__name__':'remote_probe'})
-assert calls==['reservation','workspace','profiles','isolation']
+assert calls==['reservation','workspace','profiles','isolation'] and len(connections)==1
 '''
   r=subprocess.run([sys.executable,'-I','-c',bootstrap],input=code,capture_output=True,timeout=5);self.assertEqual(r.returncode,0,r.stderr.decode());rows=json.loads(r.stdout)
   self.assertEqual([x['status']for x in rows],[200,200,200,404]);self.assertEqual([x['ok']for x in rows],[True,True,False,True]);self.assertNotIn(b'owned-dummy-token',r.stdout)

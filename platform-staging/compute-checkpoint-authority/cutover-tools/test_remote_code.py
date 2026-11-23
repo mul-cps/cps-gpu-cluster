@@ -11,12 +11,12 @@ class RemoteProgramTests(unittest.TestCase):
   return run.call_args.kwargs['input']
  def test_actual_generated_program_compiles(self):
   code=self.program();compile(code,'actual-remote-stdin','exec')
-  self.assertIn(b"source_environment=True",code)
+  self.assertIn(b"print(json.dumps(source_https_batch(",code)
   self.assertNotIn(b"print(json.dumps(run(",code)
  def test_actual_generated_program_executes_with_mock_http_no_network(self):
   code=self.program()
   bootstrap=r'''
-import os,sys,json,ssl,socket,urllib.request
+import os,sys,json,ssl,socket,http.client
 os.environ['COMPUTE_POLICY_TOKEN']='owned-dummy-token'
 original_context=ssl.create_default_context
 ssl.create_default_context=lambda **kw: original_context()
@@ -27,18 +27,16 @@ class Response:
  def __enter__(self):return self
  def __exit__(self,*a):return False
  def read(self,bound):return b'{"active":false,"attempt":null}'
-class Opener:
- def open(self,request,timeout):
-  assert request.get_method()=='GET'
-  assert request.get_header('Authorization')=='Bearer owned-dummy-token'
-  assert request.full_url=='https://compute-gateway.cps-compute.svc.cluster.local:8000/internal/v1/reservations/owned'
-  return Response()
-def opener(*handlers):
- assert handlers[0].proxies=={}
- assert handlers[2]._context.check_hostname
- assert handlers[2]._context.verify_mode==ssl.CERT_REQUIRED
- return Opener()
-urllib.request.build_opener=opener
+class Connection:
+ def __init__(self,host,port,timeout,context):
+  assert host=='compute-gateway.cps-compute.svc.cluster.local' and port==8000 and timeout==.6
+  assert context.check_hostname and context.verify_mode==ssl.CERT_REQUIRED
+ def request(self,method,path,headers):
+  assert method=='GET' and headers['Authorization']=='Bearer owned-dummy-token'
+  assert path=='/internal/v1/reservations/owned'
+ def getresponse(self):return Response()
+ def close(self):pass
+http.client.HTTPSConnection=Connection
 exec(compile(sys.stdin.buffer.read(),'actual-remote-stdin','exec'),{'__name__':'remote_probe'})
 '''
   r=subprocess.run([sys.executable,'-I','-c',bootstrap],input=code,capture_output=True,timeout=5)
