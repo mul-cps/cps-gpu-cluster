@@ -180,3 +180,10 @@ and was discarded. A separate probe measured bare Kubernetes exec at up
 to 171 ms. Authenticated four-request batches sometimes took 1.09 s even
 when every individual HTTP response and body was correct. The eight-probe
 measurement remains unqualified at the original sample deadline.
+
+Reusing one TLS context per Source batch produced three timeouts in 27
+cycles. Combining TLS reuse with parallel GETs produced five timeouts in
+26 cycles. Neither met the all-samples criterion, so both experiments were
+discarded. The evidence is in the `observer-shared-tls-X9eIcJ7Q` and
+`observer-parallel-shared-tls-10Er2YIo` directories under the refreshed
+recovery input bundle.
