@@ -155,3 +155,13 @@ orders passed on the restored copy. Both production authorities remained
 available during the operation. Evidence is in
 `current-image-restore-1QzWquSI`. The timed endpoint recovery and rollback
 rehearsal remain open.
+
+The current recovery input bundle `recovery-current-inputs-RbiQEPMy` captures
+the two Gateway Deployments, backup CronJob, claims, PVs, EndpointSlices
+and Fleet revision. It binds the standby specs to the exact source specs
+and volume UIDs. The new standby claim has a live
+`cps-current-restore-write-fence` admission policy and binding. A server-side
+dry run accepted a read-only mount and rejected the otherwise identical
+writable mount through that exact policy and binding. The standby has
+no active writable pods. Both production Deployments remain on the
+original authority. Endpoint handoff and rollback timing remain open.
