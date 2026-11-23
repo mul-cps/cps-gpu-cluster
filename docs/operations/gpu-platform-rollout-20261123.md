@@ -77,3 +77,11 @@ wrote and freed a 16 MiB device buffer. Argo removed the pod after completion.
 The evidence is under `gpu-batch-profile-render-y45VXJ4j` in the rollout
 artifact directory. Normal tenant admission, 5 GiB enforcement under
 contention, and the live checkpoint/resume path remain open.
+
+The replacement workflow `gpu-batch-limit-fixture-1123093957` used the same
+physical GPU on worker 1. Its new pod UID was
+`79895022-f7a2-4df7-a870-92fd7720a1b9`. A 5,248 MiB CUDA request returned
+error 2 (out of memory). The process subsequently allocated, wrote and freed
+16 MiB. The workflow succeeded and Argo removed its pod. This qualified
+sequential device reuse and the standalone cap for this fixture. The
+concurrent contention and tenant gates remain open.
