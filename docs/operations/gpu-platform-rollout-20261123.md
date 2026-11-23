@@ -143,3 +143,15 @@ operator, the generated services, and the Helm hooks. The pinned overlay
 was applied to staging, where all seven KAI pod specs and three hook Job
 templates matched the image lock. Production still runs the previous
 release.
+
+## Recovery source after the gateway image rollout
+
+A backup using the current scheduled template and gateway pin
+`sha256:2d4578b7dbee657a41b84c364f990b9950646fd6b38a28fb2261fe9996fae53a`
+completed and restored all four databases on
+`compute-state-current-restore-1123095535`. The independent PV is retained.
+Integrity, database and schema hashes, custody, and both cross-Hub allowance
+orders passed on the restored copy. Both production authorities remained
+available during the operation. Evidence is in
+`current-image-restore-1QzWquSI`. The timed endpoint recovery and rollback
+rehearsal remain open.
