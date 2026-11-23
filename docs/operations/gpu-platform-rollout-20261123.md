@@ -347,3 +347,11 @@ class still exists, and the prior GPU2 migration record says the
 stopped cap writer retained custody. These checks leave retirement
 open pending proof of host runtime callers and cap-writer custody on
 all workers. No component was removed.
+
+A read-only host mount in the existing NVIDIA toolkit Pods supplied
+containerd runtime sections from all four GPU workers. None contained
+the `nvidia-legacy` handler or matching legacy cap-writer unit filenames.
+No live Deployment, StatefulSet, DaemonSet, CronJob, or Job template
+selected that RuntimeClass. Host custody and external callers still
+require proof before removal. Raw scoped outputs are in
+`staged-image-restore-TTHSgfGn/k3s-wk-gpu*-legacy-runtime.txt`.
