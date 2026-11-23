@@ -85,3 +85,12 @@ error 2 (out of memory). The process subsequently allocated, wrote and freed
 16 MiB. The workflow succeeded and Argo removed its pod. This qualified
 sequential device reuse and the standalone cap for this fixture. The
 concurrent contention and tenant gates remain open.
+
+The pair `gpu-batch-pair-1123094107-a/b` ran concurrently on the same GPU
+on worker 1. Both main containers completed 20 synchronized CUDA writes
+and readback checks against their own 256 MiB buffers, and both workflows
+succeeded with no pods remaining. The receipt binds each workflow to its
+pod UID and container ID and records the overlapping CUDA execution times.
+This tests concurrent progress at the 5 GiB profile. The test held
+256 MiB per process, so it does not establish competing near-capacity
+working sets or tenant checkpoint behaviour.
