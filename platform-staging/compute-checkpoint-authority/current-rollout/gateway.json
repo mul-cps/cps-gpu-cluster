@@ -26,7 +26,7 @@
           "cps.compute/qualified-runtime-sha256": "sha256:eaa3fa1e15b619668cbe84e33e4a9262e6a7e2393c63ea1d32f3c29d25ac1fa2",
           "cps.unileoben.ac.at/native-approval-stage": "sdk-ed9777ea",
           "cps.unileoben.ac.at/upstream-policy-hash": "sha256:2b2ad6ce656db38a0e9cc2a0d3365c48d6061a835d317236a322776c11dc3fcb",
-          "cps.unileoben.ac.at/upstream-source": "b5a7729c6f9519ba88d02a4861d741df897dbf1b",
+          "cps.unileoben.ac.at/upstream-source": "e646bc5f7ad6a2d3a7372ff6a7738f1b5bb8f28c",
           "kubectl.kubernetes.io/restartedAt": "2026-10-12T15:01:31+02:00"
         },
         "labels": {
@@ -142,7 +142,7 @@
                 }
               }
             ],
-            "image": "ghcr.io/mul-cps/cps-compute@sha256:1e6f74cf01a214137bc52b965c9ba5033f7ca69fc3a0de9ff7640839f225948c",
+            "image": "ghcr.io/mul-cps/cps-compute@sha256:2d4578b7dbee657a41b84c364f990b9950646fd6b38a28fb2261fe9996fae53a",
             "imagePullPolicy": "IfNotPresent",
             "name": "gateway",
             "ports": [
