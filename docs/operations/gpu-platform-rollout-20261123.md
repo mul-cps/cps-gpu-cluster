@@ -322,3 +322,11 @@ stop proof for both old writers, fenced Services, a suspended backup
 CronJob, quiescent callers, and exact claim and node identities before
 it installs authority data. The isolated lock exercise does not satisfy
 those gates or authorize creating a lock on an active authority volume.
+
+Prometheus returns the last-success age for `cps-compute/compute-state-backup`.
+The backup-readiness alert group currently scopes its five rules to the
+two Hub PostgreSQL backups. Live Alertmanager receiver discovery returned
+only `null`. No institution delivery test was sent. The approved receiver
+and firing/resolved receipts are still required. Sanitized receiver names,
+rule expressions and the compute-backup metric response are saved in
+`staged-image-restore-TTHSgfGn`.
