@@ -1763,7 +1763,8 @@ helm:
                   if not getattr(spawner, "environment", None):
                       spawner.environment = {}
                   spawner.environment.update({'NVIDIA_VISIBLE_DEVICES':'all','NVIDIA_DRIVER_CAPABILITIES':'compute,utility'})
-                  spawner.node_selector = dict(getattr(spawner,'node_selector',{}) or {}, **{'accelerator':'nvidia'})
+                  spawner.node_selector = dict(getattr(spawner, 'node_selector', {}) or {})
+                  spawner.node_selector['nvidia.com/gpu.present'] = 'true'
 
                   # Multi-GPU exclusive profiles (whole-device, gpu > 1, no MPS
                   # 'memory_mib' fractional sharing) request more than one whole
