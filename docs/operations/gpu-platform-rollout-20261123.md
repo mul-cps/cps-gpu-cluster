@@ -355,3 +355,11 @@ No live Deployment, StatefulSet, DaemonSet, CronJob, or Job template
 selected that RuntimeClass. Host custody and external callers still
 require proof before removal. Raw scoped outputs are in
 `staged-image-restore-TTHSgfGn/k3s-wk-gpu*-legacy-runtime.txt`.
+
+The retained HAMi 1.1.0 isolator has zero libsync and monitor DaemonSet
+pods. Its live fail-closed CREATE webhook still matches KAI Pods in
+`cps-gpu-qualification`, the only namespace with its selector label.
+That namespace had zero active KAI Pods. The monitor's host backing
+directory `/usr/local/vgpu/containers` was empty on all four workers
+through existing read-only mounts. This accounts for HAMi monitor state.
+The separate custom cap-writer custody remains unverified.
