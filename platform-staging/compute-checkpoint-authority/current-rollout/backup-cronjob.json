@@ -40,7 +40,7 @@
                 "env": [
                   {
                     "name": "BACKUP_IMAGE",
-                    "value": "ghcr.io/mul-cps/cps-compute@sha256:531ec0539de3ea13a4efedb6e102e0cfc05d071b515a4d52bd18703de32ffb15"
+                    "value": "ghcr.io/mul-cps/cps-compute@sha256:88ec929066be2322f755599aef7617f17d7b2122edead4d47589747c7d30cbe9"
                   },
                   {
                     "name": "BACKUP_POLICY_HASH",
