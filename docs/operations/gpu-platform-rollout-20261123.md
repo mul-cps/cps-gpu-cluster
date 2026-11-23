@@ -130,3 +130,10 @@ CRD schemas at 0.19.0. The staging rehearsal restored both baseline specs
 under resource-version checks after verifying their stored versions.
 Readback matched all six baseline CRD version schemas. Hardware
 qualification remains open.
+
+The Fractioning 0.1.9 chart installed separately on the isolated cluster
+and its CRD hook completed. KAI was then upgraded again to 0.19.0. The
+Fractioning Config kept its UID and spec, eight running controller images
+matched the digest lock, and KAI scheduled a new CPU pod. Fractioning
+reported `NoTargetNodes` for the device daemons. The isolated cluster
+remains on both target release versions for further staging.
