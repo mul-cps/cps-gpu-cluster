@@ -209,3 +209,21 @@ capacity under a separate installation, or a verified mechanism that can
 scope the operator change to the test worker. Production remains on
 `SUPPORT_SM_SHARING=false`. The exact release renders are in
 `sm-canary-render-rYq2u6ze`.
+
+## GPU4 eviction source trace
+
+Fractioning 0.1.9 source `fb75540adca3392ab4b51d03e6c0da9b393fa842`
+takes the assigned device from the KAI annotation and passes it through
+`NVIDIA_VISIBLE_DEVICES` and CDI. It injects the independent memory request
+and limit before the workload starts. The open R620.70.06 kernel code
+charges video memory against `pGpu->gpuId` and sends the borrower
+soft-limit event to the subdevice looked up by that same ID. The open
+kernel release contains the notifier producer, while the logged MPS
+ordinal conversion remains unattributed.
+
+R620.73.04 is available in the upstream open-module source. The two
+kernel files on this charge and notification path are identical between
+R620.70.06 and R620.73.04. This does not establish parity of the MPS
+userspace binaries or qualify the newer driver. Re-run the stored
+cross-card witness with matched kernel and userspace versions before
+considering an elastic rollout.
