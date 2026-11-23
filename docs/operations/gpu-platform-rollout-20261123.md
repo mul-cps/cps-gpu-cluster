@@ -284,3 +284,11 @@ The live workflow inventory contained 17 succeeded and nine failed
 workflows, with no active workflows. This verifies staged deployment.
 The normal-user and approved-CI pilots remain open. See
 `gateway-source-parity-WQkiJQcn/compatible-live-*.json` for evidence.
+
+A manual Job from the current scheduled backup template recorded the
+staged gateway image and policy hash in snapshot `20261123T102843.756798Z`.
+An isolated restore to `compute-state-staged-restore-1123102832` passed
+manifest SHA-256, SQLite integrity, required-table, and foreign-key checks
+for all four databases. The independent PV uses reclaim policy `Retain`.
+Evidence is in `staged-image-restore-TTHSgfGn`. This exercise did not
+switch the production endpoint.
