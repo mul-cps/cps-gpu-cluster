@@ -307,3 +307,18 @@ accepted a read-only mount and rejected the writable counterpart through
 the named policy and binding. No active pod had the standby mounted
 writable. Current gateway Deployments, EndpointSlices, claim identities
 and backup spec are captured in `staged-image-restore-TTHSgfGn`.
+
+The staged gateway startup check mounted the retained standby read-only
+and copied all four databases into a fresh emptyDir. The unmodified
+startup guard rejected the database-only copy because its custody
+directory lacked the original writer lock. Seeding an exclusive 0600 lock
+on a fresh disposable copy let the same guard and application startup
+succeed. All 51 live OpenAPI route/method entries matched. The retained
+standby was never mounted writable during either startup check.
+See `staged-image-restore-TTHSgfGn/route-check*.log`.
+
+For the production rehearsal, the data adapter still requires a fresh
+stop proof for both old writers, fenced Services, a suspended backup
+CronJob, quiescent callers, and exact claim and node identities before
+it installs authority data. The isolated lock exercise does not satisfy
+those gates or authorize creating a lock on an active authority volume.
