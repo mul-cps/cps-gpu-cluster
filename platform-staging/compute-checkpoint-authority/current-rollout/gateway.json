@@ -72,6 +72,24 @@
                 }
               },
               {
+                "name": "GATEWAY_IDENTITY_PUBLISHER_CPS_TOKEN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "name": "cps-canonical-link-publisher-20261123",
+                    "key": "token"
+                  }
+                }
+              },
+              {
+                "name": "GATEWAY_IDENTITY_PUBLISHER_CIT_TOKEN",
+                "valueFrom": {
+                  "secretKeyRef": {
+                    "name": "cit-canonical-link-publisher-20261123",
+                    "key": "token"
+                  }
+                }
+              },
+              {
                 "name": "CPS_COMPUTE_CONFIG",
                 "value": "/upstream-config/runtime.json"
               },
@@ -509,7 +527,7 @@
             "name": "upstream-runtime",
             "secret": {
               "defaultMode": 256,
-              "secretName": "gateway-cps-gottam-parallel-20261123"
+              "secretName": "gateway-reviewed-identity-publishers-20261123"
             }
           },
           {
