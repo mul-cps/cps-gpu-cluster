@@ -338,3 +338,12 @@ expression was cleared, Prometheus reported it inactive and Alertmanager
 no longer listed it. The temporary rule was removed. Evidence is in
 `staged-image-restore-TTHSgfGn/alert-rehearsal-*.json`. Institutional
 firing and resolved receipts remain outstanding.
+
+The retirement audit found that the live KAI 0.18.1 Binder still runs
+with `nvfractions` enabled and `gpusharing` and `hamicore` disabled.
+The Binder Deployment still serves the production scheduler. No active
+Pod explicitly selected RuntimeClass `nvidia-legacy`. That runtime
+class still exists, and the prior GPU2 migration record says the
+stopped cap writer retained custody. These checks leave retirement
+open pending proof of host runtime callers and cap-writer custody on
+all workers. No component was removed.
