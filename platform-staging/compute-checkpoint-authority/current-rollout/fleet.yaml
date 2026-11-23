@@ -1,0 +1,7 @@
+name: cps-compute-authority
+defaultNamespace: cps-compute
+kustomize:
+  dir: .
+helm:
+  releaseName: cps-compute-authority
+  takeOwnership: true
