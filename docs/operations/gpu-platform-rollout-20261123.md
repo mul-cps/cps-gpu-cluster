@@ -165,3 +165,10 @@ dry run accepted a read-only mount and rejected the otherwise identical
 writable mount through that exact policy and binding. The standby has
 no active writable pods. Both production Deployments remain on the
 original authority. Endpoint handoff and rollback timing remain open.
+
+The source-side `cps-current-authority-write-fence` is installed in
+Warn/Audit mode. A source writable-mount dry run emitted the exact
+policy/binding warning and a source read-only mount produced no warning.
+The Deny/Audit binding render passed server-side dry run. Both gateways
+remain available on the original claim. The source deny phase has not
+been activated.
