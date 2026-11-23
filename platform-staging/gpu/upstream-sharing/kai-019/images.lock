@@ -1,0 +1,12 @@
+ghcr.io/kai-scheduler/gpu-fractioning/fractiond:v0.1.9 sha256:29c5fca25c1b35f22cf9f1e6c53acaa79d0b9f722ed6e8417caf438c06cd3739
+ghcr.io/kai-scheduler/gpu-fractioning/metricsd:v0.1.9 sha256:7a619c92651d0744bcd80745be264f3b6c213ad4f3a12fef19a339df422af2bf
+ghcr.io/kai-scheduler/gpu-fractioning/mpsd:v0.1.9 sha256:f161d6c653c668e49e384ae15794421777464248c5e533660ac26b006787b102
+ghcr.io/kai-scheduler/gpu-fractioning/operator:v0.1.9 sha256:83e0aa29b0951c58b5565cbc50b2ae1900da25c78cdfcdf6eddea437748fe22c
+ghcr.io/kai-scheduler/kai-scheduler/admission:v0.19.0 sha256:0e4257801008f3c88fa30ad9533e6e6d510dd6bb10d38707924250bed2e14c27
+ghcr.io/kai-scheduler/kai-scheduler/binder:v0.19.0 sha256:4d2d9f56e325d07ef80d693466246c7bff333ca0743aed36fb3ec1a477500d71
+ghcr.io/kai-scheduler/kai-scheduler/helm-hooks:v0.19.0 sha256:0c05f5aab40f76f45cc4ce8ad710ac0cc4a2027adb6d041257db6e0397a8206f
+ghcr.io/kai-scheduler/kai-scheduler/operator:v0.19.0 sha256:e9302404914d498db133cf58a1f3b8952fa9fb7d34fa6b81e020a41d3a9aecf4
+ghcr.io/kai-scheduler/kai-scheduler/podgroupcontroller:v0.19.0 sha256:d0c60235ce69426484934ccf52bf62671dd362805f5402d4ef28a6dba89881d3
+ghcr.io/kai-scheduler/kai-scheduler/podgrouper:v0.19.0 sha256:85b6c345964105c4fe6be6050faf4156d88e48b8310606c7673f50ef69f408c1
+ghcr.io/kai-scheduler/kai-scheduler/queuecontroller:v0.19.0 sha256:3cfff0ef889eef718f59a04f51b9a62900c6c034e9354987564c3899818bf912
+ghcr.io/kai-scheduler/kai-scheduler/scheduler:v0.19.0 sha256:b23b2c273cffa3e337858ddbfa41ccb954ea3267d2866973b241f3be5ae92286

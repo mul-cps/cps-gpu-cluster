@@ -1,0 +1,8 @@
+global:
+  tag: v0.19.0
+  gpuSharingMode: NvFractions
+  nvFractions:
+    set: false
+binder:
+  image:
+    tag: v0.19.0

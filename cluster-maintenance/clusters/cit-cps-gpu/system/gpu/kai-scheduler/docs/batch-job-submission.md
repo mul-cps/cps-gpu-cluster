@@ -1,103 +1,32 @@
-# Submitting Batch Jobs to KAI
+# Submitting batch jobs
 
-This covers how to submit workloads to the `batch` queue, when to use
-MPS-sharing vs. a full-exclusive GPU, and the checkpointing requirement
-for batch jobs. See `../kai-policy/README.md` for the general queue/priority
-overview and `../examples/batch-gang-job.yaml` for the manifests referenced
-below.
+Submit tenant workflows through the compute gateway using `kubectl cps submit`,
+the Python `ComputeClient`, or the `/v1/workflows` API. Use a gateway credential
+for your Hub and project. The gateway resolves your identity, checks project
+membership and profile entitlement, and creates the workload in the appropriate
+KAI queue. Use the gateway workflow ID to check status, retrieve logs and
+artifacts, or cancel the workflow.
 
-## Quick start
+## GPU profiles
 
-```
-kubectl apply -f ../examples/batch-gang-job.yaml
-```
+The production gateway currently accepts CPU batch through `batch-cpu`.
+GPU batch profiles remain disabled. The first planned GPU pilot uses
+`batch-shared-5` and requires reviewed user and CI access. CPU Small and
+GPU Shared (5 GiB) are interactive Hub choices.
 
-This creates both example patterns described below in the `default`
-namespace. Delete or rename resources as appropriate before reusing them
-for a real workload.
+For a fixed GPU share, KAI accounts for the requested memory using NvFractions.
+The operator-managed Fractioning stack and required NRI plugin handle runtime
+device assignment and memory enforcement. Tenant submissions specify the
+gateway profile. The gateway renders the GPU requests and runtime settings.
+Whole-device profiles request integer GPUs. Production SM sharing and elastic
+VRAM borrowing have separate qualification gates.
 
-To route a workload to the `batch` queue:
+## Operator examples
 
-1. Set `spec.schedulerName: kai-scheduler` in the pod spec.
-2. Add the label `kai.scheduler/queue: batch` to the pod (or, for a gang
-   job, set `queue: batch` in the explicit `PodGroup` - see below).
-3. Set `priorityClassName: kai-batch-low`.
-
-The `batch` queue has zero guaranteed quota (`quota: 0`) but a high
-`overQuotaWeight` (10), so it can burst hard into idle cluster capacity -
-it just has no reserved floor and is preempted first by `courses` and
-`phd-interactive` workloads whenever they need the capacity back.
-
-## MPS-shared vs. full-exclusive GPUs
-
-All 8 A100 GPUs in this cluster (`k3s-wk-gpu1..4`, 2 GPUs each) run in
-full (non-MIG) mode. There is no longer a static split between "MIG
-nodes" and "full nodes" - every GPU can serve either mode, and which one
-you get is determined entirely by what you request:
-
-- **Single-GPU, embarrassingly-parallel batch jobs** should request a
-  modest `gpu-memory` tier (an unprefixed pod annotation, MiB value, e.g.
-  `gpu-memory: "10240"` for ~10GB) so KAI can bin-pack them alongside
-  other MPS-shared workloads on the same physical GPU. Pair this with a
-  matching `CUDA_MPS_PINNED_DEVICE_MEM_LIMIT` container env var (e.g.
-  `CUDA_MPS_PINNED_DEVICE_MEM_LIMIT=0=10240M`) - **KAI only schedules
-  against the `gpu-memory` annotation, it does not enforce it**. Actual
-  memory enforcement on the shared GPU comes from NVIDIA MPS honoring
-  that env var, so the two values must match or your pod can still
-  exceed its declared share and starve neighbors. The pod also needs a
-  `hostPath` mount of the node's MPS pipe directory
-  (`/tmp/nvidia-mps` by default) to actually talk to the MPS control
-  daemon - see the `single-gpu-mps-shared-job` example, which mirrors
-  KAI's own upstream `docs/gpu-sharing/mps/gpu-sharing-with-mps.yaml`
-  example.
-
-  **Important:** a `gpu-memory`/`gpu-fraction`-annotated pod should
-  **not** also request an integer `nvidia.com/gpu` limit/request. KAI's
-  own upstream gpu-sharing examples (`docs/gpu-sharing/gpu-memory.yaml`,
-  `docs/gpu-sharing/gpu-sharing.yaml`, both from
-  `github.com/kai-scheduler/KAI-Scheduler`) only ever set the annotation,
-  never an `nvidia.com/gpu` limit on the same pod. Adding an integer
-  `nvidia.com/gpu` limit routes the pod through the stock NVIDIA device
-  plugin's whole-GPU allocation, which defeats sharing.
-
-- **Distributed multi-GPU jobs that need real NVLink/P2P** (e.g. PyTorch
-  DDP spanning multiple GPUs/pods) should request a whole GPU per pod via
-  plain `nvidia.com/gpu: "1"` in `resources.limits`, with **no**
-  `gpu-memory`/`gpu-fraction` annotation at all, combined with an explicit
-  `PodGroup` for gang scheduling (see below). See the
-  `distributed-gang-job` example.
-
-  An earlier draft of this design combined `nvidia.com/gpu: "1"` with a
-  full-device `gpu-memory: "40960"` annotation, on the theory that
-  requesting the whole ~40GB via the annotation would prevent KAI from
-  also MPS-sharing that GPU. On checking KAI's upstream gpu-sharing
-  examples, `gpu-memory`/`gpu-fraction` and an integer `nvidia.com/gpu`
-  limit are never combined on the same pod in any upstream example -
-  the annotation-based path and the device-plugin integer-request path
-  are presented as **alternatives**, not additive. The manifest here uses
-  the plain integer-request path (no `gpu-memory` annotation) instead,
-  which is the standard, non-fractional whole-GPU allocation route and
-  the safer choice for genuine exclusivity.
-
-  **Open item, still unverified:** whether a pod with no `gpu-memory`
-  annotation is fully protected from ever being co-scheduled with an
-  MPS-shared pod on the same physical GPU has not been validated against
-  the running cluster as of this writing - this depends on how KAI's
-  scheduler plugin accounts for GPUs already claimed via the plain
-  device-plugin path when placing fractional/`gpu-memory` pods. Validate
-  this in a test environment (schedule a small MPS-shared pod while a
-  plain `nvidia.com/gpu: 1` pod already occupies a GPU, and confirm the
-  shared pod is placed on a different device) before relying on it for
-  production distributed training jobs.
-
-  **Also unverified/not guaranteed by this manifest:** NVLink/P2P is
-  intra-node. Four single-GPU pods with `minMember: 4` are gang-scheduled
-  together, but nothing in this manifest guarantees they land on the same
-  physical node's NVLink domain rather than spread across up to 4
-  different nodes. If your workload genuinely requires intra-node NVLink
-  between specific ranks, add a KAI topology constraint (see KAI's
-  `docs/topology/`) or node affinity/anti-affinity on top of this
-  example - do not assume the manifest as written enforces co-location.
+The [KAI fixture](../examples/batch-gang-job.yaml) illustrates the older direct
+Kubernetes scheduling contract for operator testing. Its MPS settings represent
+the historical path. The active tenant gateway owns queue selection, admission,
+and workload creation.
 
 ## Gang scheduling multi-pod distributed jobs
 
