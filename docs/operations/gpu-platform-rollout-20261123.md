@@ -137,3 +137,9 @@ Fractioning Config kept its UID and spec, eight running controller images
 matched the digest lock, and KAI scheduled a new CPU pod. Fractioning
 reported `NoTargetNodes` for the device daemons. The isolated cluster
 remains on both target release versions for further staging.
+
+KAI staging revision 8 uses digest-bearing image references in the
+operator, the generated services, and the Helm hooks. The pinned overlay
+was applied to staging, where all seven KAI pod specs and three hook Job
+templates matched the image lock. Production still runs the previous
+release.

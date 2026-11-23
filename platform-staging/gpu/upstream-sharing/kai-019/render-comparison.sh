@@ -15,7 +15,7 @@ helm get hooks kai-scheduler -n kai-scheduler > "$output/rollback-hooks.yaml"
 helm template kai-scheduler "$charts/kai-scheduler-v0.18.1.tgz" -n kai-scheduler \
   --include-crds -f "$output/baseline-values.yaml" > "$output/rollback-chart-render.yaml"
 helm template kai-scheduler "$charts/kai-scheduler-v0.19.0.tgz" -n kai-scheduler \
-  --include-crds -f "$output/baseline-values.yaml" -f "$package/values.yaml" \
+  --include-crds -f "$output/baseline-values.yaml" -f "$package/values.yaml" -f "$package/pinned-images.yaml" \
   > "$output/candidate.yaml"
 helm template gpu-fractioning "$charts/gpu-fractioning-0.1.9.tgz" -n gpu-fractioning \
   --include-crds -f "$package/../fraction-values.yaml" > "$output/fractioning-reference.yaml"
