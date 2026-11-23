@@ -13,7 +13,12 @@ The [Gateway and backup render](../../platform-staging/compute-checkpoint-author
 matches the live Deployment, CronJob and backup ConfigMap. It references the
 immutable runtime Secret containing the reviewed identity link. Secret
 contents stay in the protected configuration. The render passed server-side
-dry run. The gateway and backup package still needs reconciler adoption.
+dry run. The scoped `cps-compute-authority` Fleet GitRepo adopted revision
+`12063190878ee5a868bf66814b6c01a395db945f` and reports three of three
+resources ready. Helm owns the existing objects. API readback matched all
+three UIDs and their original live content, and the gateway kept its pod
+template revision and ready replica. Its Deployment generation advanced
+during adoption.
 
 The live scheduled backup now uses `compute-state-timed-gpu3-20261119` with
 a digest-pinned runner and the gateway image and upstream policy hash recorded
@@ -57,6 +62,6 @@ superseded component retirement remain open.
 
 Evidence is stored in the rollout artifact directories
 `backup-cron-pin-zbeVH2Bo`, `cit-gitops-readback-TffSraGk`,
-`cit-fleet-adoption-2fRN4cn3`, and
+`cit-fleet-adoption-2fRN4cn3`, `gateway-fleet-adoption-oA2VtROX`, and
 `kai-019-render-20261123` under
 `/home/bjoern/artifacts/cps-upstream-sharing-20261116/`.
