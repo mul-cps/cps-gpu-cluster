@@ -247,3 +247,18 @@ with an additional internal module pin. Fleet restored revision
 image pin. The restored gateway exposes the personal reservation route.
 The next batch candidate must preserve the installed route set and be
 tested against the live Hub compatibility contract before promotion.
+
+The production-based GPU batch candidate preserves the installed package
+outside seven batch-related files. Its installed-image suite passed 66
+tests, including CPS and CIT personal GPU compatibility. The registry
+image is pinned at
+`sha256:531ec0539de3ea13a4efedb6e102e0cfc05d071b515a4d52bd18703de32ffb15`.
+
+A disposable route-parity startup fixture used the current protected
+references and a separate empty state directory. After adding the native
+bootstrap init container, both the candidate and the incumbent image
+failed with `Current group approval head changed during configuration`.
+The existing production Pod remained available. This blocks the parity
+test and requires recovery of the approval/bootstrap relationship before
+relying on a fresh gateway start. Evidence is in
+`gateway-source-parity-WQkiJQcn`.
