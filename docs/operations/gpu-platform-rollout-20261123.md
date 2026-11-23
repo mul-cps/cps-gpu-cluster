@@ -237,3 +237,13 @@ listed R620.70.06 for the existing container build inputs, and the tested
 R620.73.04 NGC driver image tags had no manifests. The extracted vendor
 archive is not yet an operator-compatible driver image and has not been
 installed. Evidence is in `gpu4-eviction-source-3CH3TS4Y`.
+
+The disabled-dispatch gateway image was rolled back. Installed OpenAPI
+inspection found that it lacked the production personal GPU reservation
+route. The pod annotation indicated an earlier base source revision, but
+the working image's OCI revision is `cef384b3558eb958c137f6ff25c03733cd18e087`
+with an additional internal module pin. Fleet restored revision
+`1de46bc9dc251d47c558fd998ad9da1f94720b9c`, the original image and backup
+image pin. The restored gateway exposes the personal reservation route.
+The next batch candidate must preserve the installed route set and be
+tested against the live Hub compatibility contract before promotion.
