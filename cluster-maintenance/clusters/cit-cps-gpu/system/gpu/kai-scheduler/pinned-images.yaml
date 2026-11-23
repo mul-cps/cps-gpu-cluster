@@ -1,0 +1,35 @@
+operator:
+  image:
+    tag: v0.19.0@sha256:e9302404914d498db133cf58a1f3b8952fa9fb7d34fa6b81e020a41d3a9aecf4
+binder:
+  image:
+    tag: v0.19.0@sha256:4d2d9f56e325d07ef80d693466246c7bff333ca0743aed36fb3ec1a477500d71
+  resourceReservationImage:
+    tag: v0.19.0@sha256:016ad66a07af241355ee388dfa561520ba1f0c25df64f410ead86e8fe6f6f687
+podgrouper:
+  image:
+    tag: v0.19.0@sha256:85b6c345964105c4fe6be6050faf4156d88e48b8310606c7673f50ef69f408c1
+podgroupcontroller:
+  image:
+    tag: v0.19.0@sha256:d0c60235ce69426484934ccf52bf62671dd362805f5402d4ef28a6dba89881d3
+queuecontroller:
+  image:
+    tag: v0.19.0@sha256:3cfff0ef889eef718f59a04f51b9a62900c6c034e9354987564c3899818bf912
+admission:
+  image:
+    tag: v0.19.0@sha256:0e4257801008f3c88fa30ad9533e6e6d510dd6bb10d38707924250bed2e14c27
+scheduler:
+  image:
+    tag: v0.19.0@sha256:b23b2c273cffa3e337858ddbfa41ccb954ea3267d2866973b241f3be5ae92286
+crdupgrader:
+  image:
+    tag: v0.19.0@sha256:0c05f5aab40f76f45cc4ce8ad710ac0cc4a2027adb6d041257db6e0397a8206f
+topologyMigration:
+  image:
+    tag: v0.19.0@sha256:0c05f5aab40f76f45cc4ce8ad710ac0cc4a2027adb6d041257db6e0397a8206f
+postCleanup:
+  image:
+    tag: v0.19.0@sha256:0c05f5aab40f76f45cc4ce8ad710ac0cc4a2027adb6d041257db6e0397a8206f
+kaiConfigDeployer:
+  image:
+    tag: v0.19.0@sha256:0c05f5aab40f76f45cc4ce8ad710ac0cc4a2027adb6d041257db6e0397a8206f

@@ -6,10 +6,11 @@ labels:
   name: kai-scheduler
 helm:
   chart: oci://ghcr.io/kai-scheduler/kai-scheduler/kai-scheduler
-  version: v0.18.1
+  version: v0.19.0
   valuesFiles:
   - values.yaml
   - upstream-values.yaml
+  - pinned-images.yaml
   takeOwnership: true
 diff:
   comparePatches:
@@ -20,6 +21,6 @@ diff:
     - op: remove
       path: /status
 
-# v0.18.1 supports Config admission.replicas but does not expose it in Helm values.
+# Set Config admission.replicas through the Kustomize overlay.
 kustomize:
   dir: .

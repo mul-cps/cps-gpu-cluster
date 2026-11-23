@@ -1,6 +1,6 @@
 # Upstream KAI overlay; apply only after legacy starts are fenced.
 global:
-  tag: v0.18.1
+  tag: v0.19.0
   registry: ghcr.io/kai-scheduler/kai-scheduler
   gpuSharingMode: NvFractions
   nvFractions:
@@ -11,7 +11,6 @@ binder:
       enabled: false
   image:
     name: binder
-    tag: v0.18.1
   enabled: true
   cdiEnabled: true
 admission:
