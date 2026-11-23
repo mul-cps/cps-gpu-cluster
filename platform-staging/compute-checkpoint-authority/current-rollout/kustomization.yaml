@@ -9,6 +9,6 @@ generatorOptions:
   disableNameSuffixHash: true
   immutable: true
 configMapGenerator:
-  - name: compute-state-backup-schema-ff74438e5529
+  - name: compute-state-backup-schema-075bab2eaba5
     files:
       - backup-state.py
