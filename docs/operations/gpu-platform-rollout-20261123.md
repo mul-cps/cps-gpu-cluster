@@ -102,3 +102,20 @@ continued after two 768 MiB allocations returned CUDA error 2. Both
 workflows succeeded and their pods were removed. The evidence is in
 `gpu-batch-profile-render-y45VXJ4j/near-capacity-WgPyJtEi/receipt.json`.
 The tenant and checkpoint pilot remains open.
+
+## Isolated KAI upgrade and recovery rehearsal
+
+All six KAI 0.19.0 CRDs, its Config and its two default queues passed
+server-side dry run. On a separate Kubernetes 1.34.3 kind cluster, Helm
+installed 0.18.1 and upgraded to 0.19.0. The 0.19.0 admission and scheduler
+Deployments became available and a CPU pod using `kai-scheduler` reached
+Running. This single-node staging cluster omitted the production admission
+anti-affinity and had no NVIDIA hardware.
+
+Plain Helm rollback failed because the original
+`kai-resource-reservation` Namespace was missing. A forward Helm upgrade
+with the pinned 0.18.1 chart recovered the release, admission and scheduler.
+A fresh CPU pod then reached Running through the restored scheduler.
+Production remains on 0.18.1. A production-matched rollback and physical
+GPU staging still require qualification.
+Evidence is in `kai-019-api-validation-7K0ZhOUe`.
