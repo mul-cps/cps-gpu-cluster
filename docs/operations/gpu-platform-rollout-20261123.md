@@ -227,3 +227,13 @@ R620.70.06 and R620.73.04. This does not establish parity of the MPS
 userspace binaries or qualify the newer driver. Re-run the stored
 cross-card witness with matched kernel and userspace versions before
 considering an elastic rollout.
+
+NVIDIA's R620.73.04 Linux production download lists the A100-SXM4-40GB.
+The vendor archive passed its published SHA-256 check. Extraction
+produced CUDA, MPS control, and MPS server binaries whose hashes differ
+from the deployed R620.70.06 copies on GPU4. These artifacts support a
+matched-version retest. NVIDIA's Ubuntu 26.04 CUDA package index still
+listed R620.70.06 for the existing container build inputs, and the tested
+R620.73.04 NGC driver image tags had no manifests. The extracted vendor
+archive is not yet an operator-compatible driver image and has not been
+installed. Evidence is in `gpu4-eviction-source-3CH3TS4Y`.
