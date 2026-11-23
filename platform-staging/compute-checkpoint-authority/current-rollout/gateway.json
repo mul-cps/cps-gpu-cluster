@@ -509,7 +509,7 @@
             "name": "upstream-runtime",
             "secret": {
               "defaultMode": 256,
-              "secretName": "gateway-cit-bjoern-link-20261123"
+              "secretName": "gateway-cps-gottam-link-20261123"
             }
           },
           {
