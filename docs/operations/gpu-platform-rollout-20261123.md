@@ -273,3 +273,14 @@ matched all 50 live route and method entries. The candidate retained all
 were not mounted writable. The restore contains database copies and needs
 a verified writer-lock provisioning step before a real authority starts
 from it. Production stayed on the incumbent image.
+
+Fleet then deployed the route-verified image at revision `809c05f132b6`.
+The authority bundle reported Ready, the gateway Deployment had one ready
+replica, and the live OpenAPI route/method comparison retained all 50
+incumbent routes and added only `/v1/workflows/{key}/checkpoint`. The
+scheduled `compute-state-backup` Job template pins the same image.
+GPU batch dispatch remains disabled in the mounted runtime configuration.
+The live workflow inventory contained 17 succeeded and nine failed
+workflows, with no active workflows. This verifies staged deployment.
+The normal-user and approved-CI pilots remain open. See
+`gateway-source-parity-WQkiJQcn/compatible-live-*.json` for evidence.
