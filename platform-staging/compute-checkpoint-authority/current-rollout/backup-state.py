@@ -13,6 +13,7 @@ import tempfile
 EXPECTED_SCHEMAS = {
     'control.sqlite': {
         '117209e08648798e0366d4407c38d7e490fc477ce5e350e76391926996dad412',
+        '14e53e44a10ee111ee4318b81ad2468e9d60e3da39f5e00426fdfabe943ee90a',
         '1c71ddfca87431eba59b42101a29a5be9e0b93896737492706cd4c7ee2fd3e73',
     },
     'reservations.sqlite': {
