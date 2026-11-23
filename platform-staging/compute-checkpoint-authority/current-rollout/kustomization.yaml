@@ -4,6 +4,7 @@ namespace: cps-compute
 resources:
   - gateway.json
   - backup-cronjob.json
+  - backup-alerts.yaml
 generatorOptions:
   disableNameSuffixHash: true
   immutable: true

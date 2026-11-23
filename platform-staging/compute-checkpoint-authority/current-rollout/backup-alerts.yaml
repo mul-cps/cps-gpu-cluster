@@ -1,0 +1,50 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cps-compute-backup-readiness
+  namespace: cps-compute
+spec:
+  groups:
+    - name: cps.compute.backups
+      rules:
+        - alert: ComputeStateBackupStale
+          expr: time() - max(kube_cronjob_status_last_successful_time{namespace="cps-compute",cronjob="compute-state-backup"}) > 93600
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: Gateway state backup has not succeeded for over 26 hours
+        - alert: ComputeStateBackupMissing
+          expr: absent(kube_cronjob_info{namespace="cps-compute",cronjob="compute-state-backup"})
+          for: 15m
+          labels:
+            severity: critical
+          annotations:
+            summary: Gateway state backup CronJob metrics are missing
+        - alert: ComputeStateBackupNeverSucceeded
+          expr: >-
+            (time() - kube_cronjob_created{namespace="cps-compute",cronjob="compute-state-backup"} > 7200)
+            unless on (namespace, cronjob)
+            kube_cronjob_status_last_successful_time{namespace="cps-compute",cronjob="compute-state-backup"}
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: Gateway state backup has no successful run recorded
+        - alert: ComputeStateBackupSuspended
+          expr: kube_cronjob_spec_suspend{namespace="cps-compute",cronjob="compute-state-backup"} == 1
+          for: 15m
+          labels:
+            severity: warning
+          annotations:
+            summary: Gateway state backup CronJob is suspended
+        - alert: ComputeStateBackupJobFailed
+          expr: >-
+            (kube_job_status_failed{namespace="cps-compute"} > 0)
+            * on (namespace, job_name) group_left (owner_name)
+            kube_job_owner{namespace="cps-compute",owner_kind="CronJob",owner_name="compute-state-backup"}
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: A scheduled gateway state backup Job failed
