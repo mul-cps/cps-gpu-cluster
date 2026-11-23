@@ -94,3 +94,11 @@ pod UID and container ID and records the overlapping CUDA execution times.
 This tests concurrent progress at the 5 GiB profile. The test held
 256 MiB per process, so it does not establish competing near-capacity
 working sets or tenant checkpoint behaviour.
+
+The near-capacity pair `gpu-batch-nearcap-1123094241-a/b` held 4.5 GiB per
+main container on the same GPU for 20.30 overlapping seconds. Each process
+completed 20 synchronized full-buffer writes, checked its readback, and
+continued after two 768 MiB allocations returned CUDA error 2. Both
+workflows succeeded and their pods were removed. The evidence is in
+`gpu-batch-profile-render-y45VXJ4j/near-capacity-WgPyJtEi/receipt.json`.
+The tenant and checkpoint pilot remains open.
