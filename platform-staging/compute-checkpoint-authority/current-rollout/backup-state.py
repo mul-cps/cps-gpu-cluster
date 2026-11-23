@@ -12,7 +12,10 @@ import tempfile
 
 EXPECTED_SCHEMAS = {
     'control.sqlite': '117209e08648798e0366d4407c38d7e490fc477ce5e350e76391926996dad412',
-    'reservations.sqlite': '0de338b8ba6bce77e4c99005027a15b0e2afaab20cb2803e8077b9e8da39dcb9',
+    'reservations.sqlite': {
+        '0de338b8ba6bce77e4c99005027a15b0e2afaab20cb2803e8077b9e8da39dcb9',
+        'e844d75f7f66c2a874e536320adce770cf50e00a412322dbe8b65ca140a78e51',
+    },
     'native-kai-private/custody.sqlite': 'a0f7451cc7b7913b9805642f2ceab1dadb83525521ee57a3ac1751f39752057b',
     'native-kai-runtime-private/custody.sqlite': 'a0f7451cc7b7913b9805642f2ceab1dadb83525521ee57a3ac1751f39752057b',
 }
@@ -48,7 +51,10 @@ def backup(source, destination, image, policy_hash):
                     if writer.execute('PRAGMA integrity_check').fetchone()[0] != 'ok':
                         raise RuntimeError(f'Invalid backup: {name}')
                     schemas[name] = schema_digest(writer)
-                    if schemas[name] != EXPECTED_SCHEMAS[name]:
+                    allowed = EXPECTED_SCHEMAS[name]
+                    if isinstance(allowed, str):
+                        allowed = {allowed}
+                    if schemas[name] not in allowed:
                         raise RuntimeError(f'Unexpected backup schema: {name}')
             hashes[name] = hashlib.sha256((staging / name).read_bytes()).hexdigest()
         stamp = datetime.datetime.now(datetime.timezone.utc).strftime('%Y%m%dT%H%M%S.%fZ')
