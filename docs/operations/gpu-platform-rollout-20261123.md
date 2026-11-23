@@ -363,3 +363,13 @@ That namespace had zero active KAI Pods. The monitor's host backing
 directory `/usr/local/vgpu/containers` was empty on all four workers
 through existing read-only mounts. This accounts for HAMi monitor state.
 The separate custom cap-writer custody remains unverified.
+
+The short GPU4 baseline initialized CUDA, saw exactly one device, and
+matched its assigned UUID. A pod that requested a deliberately absent NRI
+plugin was rejected before container creation while its CPU control ran
+on GPU4. Both passed using the incumbent runtime. The isolated KAI
+0.19.0 cluster has no allocatable NVIDIA device. Production Helm still
+reports KAI 0.18.1, and all four upstream workers remain schedulable
+with two GPUs each. Physical candidate qualification needs GPU capacity
+attached to a separate cluster or a staged production promotion with
+rollback. Evidence is in `kai019-gpu4-preflight-cpFzvNLz`.
