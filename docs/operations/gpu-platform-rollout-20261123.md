@@ -119,3 +119,14 @@ A fresh CPU pod then reached Running through the restored scheduler.
 Production remains on 0.18.1. A production-matched rollback and physical
 GPU staging still require qualification.
 Evidence is in `kai-019-api-validation-7K0ZhOUe`.
+
+A second isolated upgrade rehearsed the production release layout, where
+the reservation Namespace is absent from the installed KAI Helm manifest.
+A production-aware Helm dry run confirmed the candidate leaves that
+existing Namespace outside its release. The second Helm rollback restored
+0.18.1, retained the Namespace UID, and preserved the CPU pod's UID,
+container ID and Running phase. Helm left the BindRequest and Topology
+CRD schemas at 0.19.0. The staging rehearsal restored both baseline specs
+under resource-version checks after verifying their stored versions.
+Readback matched all six baseline CRD version schemas. Hardware
+qualification remains open.
