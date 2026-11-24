@@ -258,7 +258,7 @@ spec:
         - name: MPSD_AUDIT_LOG
           value: 'true'
         - name: SUPPORT_SM_SHARING
-          value: 'false'
+          value: 'true'
         - name: SKIP_GPU_STACK_VERSION_CHECKS
           value: 'false'
         - name: DAEMON_SERVICE_ACCOUNT_NAME
