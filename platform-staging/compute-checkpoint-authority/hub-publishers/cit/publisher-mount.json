@@ -1,0 +1,27 @@
+[
+  {
+    "op": "test",
+    "path": "/spec/template/spec/containers/0/name",
+    "value": "hub"
+  },
+  {
+    "op": "test",
+    "path": "/spec/template/spec/containers/0/image",
+    "value": "ghcr.io/mul-cps/cps-compute@sha256:81ab987781d231c9201e82c3ef413e74f11bad707ad7850cda067e782533094b"
+  },
+  {
+    "op": "test",
+    "path": "/spec/template/spec/volumes/7/name",
+    "value": "cps-native-approval-publisher"
+  },
+  {
+    "op": "test",
+    "path": "/spec/template/spec/volumes/7/configMap/name",
+    "value": "cps-rino-publisher-5d6803af-20261028"
+  },
+  {
+    "op": "replace",
+    "path": "/spec/template/spec/volumes/7/configMap/name",
+    "value": "cps-approval-hub-cit-dca2738839385feb"
+  }
+]
