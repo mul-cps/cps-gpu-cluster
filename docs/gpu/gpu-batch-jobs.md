@@ -1,5 +1,10 @@
 # Running GPU Jobs Without an Interactive Session
 
+> The examples that mount `/run/nvidia/mps` are historical. The standalone
+> daemon has been retired. Submit current tenant workloads through
+> `kubectl cps submit` or the Python SDK with an entitled gateway profile.
+
+
 This covers submitting Kubernetes Jobs directly via `kubectl` -- for
 long-running or unattended GPU work you don't want tied to a live
 JupyterHub notebook session (multi-day training runs, sweeps, anything

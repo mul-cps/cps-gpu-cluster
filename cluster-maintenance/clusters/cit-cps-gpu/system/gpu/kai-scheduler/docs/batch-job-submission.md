@@ -1,20 +1,21 @@
 # Submitting Batch Jobs to KAI
 
+> Historical operator notes. The example that mounts `/run/nvidia/mps`
+> describes the retired standalone daemon. Current tenant submissions use
+> `kubectl cps submit` or the Python SDK with an entitled gateway profile.
+> Follow the current profile catalog for qualified GPU sizes.
+
+
 This covers how to submit workloads to the `batch` queue, when to use
 MPS-sharing vs. a full-exclusive GPU, and the checkpointing requirement
 for batch jobs. See `../kai-policy/README.md` for the general queue/priority
 overview and `../examples/batch-gang-job.yaml` for the manifests referenced
 below.
 
-## Quick start
+## Historical examples
 
-```
-kubectl apply -f ../examples/batch-gang-job.yaml
-```
-
-This creates both example patterns described below in the `default`
-namespace. Delete or rename resources as appropriate before reusing them
-for a real workload.
+The archived patterns below illustrate the original queue conventions.
+Their shared-GPU Job requires the retired standalone MPS socket.
 
 To route a workload to the `batch` queue:
 
