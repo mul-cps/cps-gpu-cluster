@@ -1,0 +1,352 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cit-hub-route-health
+  namespace: cattle-monitoring-system
+spec:
+  schedule: '*/3 * * * *'
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  suspend: false
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  startingDeadlineSeconds: 210
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 65
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 21600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: hub-spawn-health
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 10
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            seccompProfile:
+              type: RuntimeDefault
+          volumes:
+          - name: program
+            configMap:
+              name: hub-spawn-health
+              defaultMode: 292
+          containers:
+          - name: probe
+            image: ghcr.io/mul-cps/cps-compute@sha256:5d92684ceef47ecbeee4d3c25c0deb960fe222037a255ba84216cf2725264a19
+            imagePullPolicy: IfNotPresent
+            command:
+            - python
+            - -u
+            - /opt/hub-probe/hub-spawn-health.py
+            args:
+            - route
+            - --hub
+            - cit
+            volumeMounts:
+            - name: program
+              mountPath: /opt/hub-probe
+              readOnly: true
+            resources:
+              requests:
+                cpu: 25m
+                memory: 48Mi
+              limits:
+                cpu: 250m
+                memory: 160Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                - ALL
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cps-hub-route-health
+  namespace: cattle-monitoring-system
+spec:
+  schedule: '*/3 * * * *'
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  suspend: false
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  startingDeadlineSeconds: 210
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 65
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 21600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: hub-spawn-health
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 10
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            seccompProfile:
+              type: RuntimeDefault
+          volumes:
+          - name: program
+            configMap:
+              name: hub-spawn-health
+              defaultMode: 292
+          containers:
+          - name: probe
+            image: ghcr.io/mul-cps/cps-compute@sha256:5d92684ceef47ecbeee4d3c25c0deb960fe222037a255ba84216cf2725264a19
+            imagePullPolicy: IfNotPresent
+            command:
+            - python
+            - -u
+            - /opt/hub-probe/hub-spawn-health.py
+            args:
+            - route
+            - --hub
+            - cps
+            volumeMounts:
+            - name: program
+              mountPath: /opt/hub-probe
+              readOnly: true
+            resources:
+              requests:
+                cpu: 25m
+                memory: 48Mi
+              limits:
+                cpu: 250m
+                memory: 160Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                - ALL
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cit-hub-spawn-shared
+  namespace: cattle-monitoring-system
+spec:
+  schedule: 4 * * * *
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  suspend: true
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  startingDeadlineSeconds: 210
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 730
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 21600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: hub-spawn-health
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 95
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            seccompProfile:
+              type: RuntimeDefault
+            fsGroup: 65532
+          volumes:
+          - name: program
+            configMap:
+              name: hub-spawn-health
+              defaultMode: 292
+          - name: credentials
+            secret:
+              secretName: cit-hub-spawn-shared-identity
+              defaultMode: 288
+          containers:
+          - name: probe
+            image: ghcr.io/mul-cps/cps-compute@sha256:5d92684ceef47ecbeee4d3c25c0deb960fe222037a255ba84216cf2725264a19
+            imagePullPolicy: IfNotPresent
+            command:
+            - python
+            - -u
+            - /opt/hub-probe/hub-spawn-health.py
+            args:
+            - cit-shared
+            volumeMounts:
+            - name: program
+              mountPath: /opt/hub-probe
+              readOnly: true
+            - name: credentials
+              mountPath: /run/hub-probe
+              readOnly: true
+            resources:
+              requests:
+                cpu: 25m
+                memory: 48Mi
+              limits:
+                cpu: 250m
+                memory: 160Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                - ALL
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cit-hub-spawn-research
+  namespace: cattle-monitoring-system
+spec:
+  schedule: 29 */2 * * *
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  suspend: true
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  startingDeadlineSeconds: 210
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 1460
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 21600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: hub-spawn-health
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 95
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            seccompProfile:
+              type: RuntimeDefault
+            fsGroup: 65532
+          volumes:
+          - name: program
+            configMap:
+              name: hub-spawn-health
+              defaultMode: 292
+          - name: credentials
+            secret:
+              secretName: cit-hub-spawn-research-identity
+              defaultMode: 288
+          containers:
+          - name: probe
+            image: ghcr.io/mul-cps/cps-compute@sha256:5d92684ceef47ecbeee4d3c25c0deb960fe222037a255ba84216cf2725264a19
+            imagePullPolicy: IfNotPresent
+            command:
+            - python
+            - -u
+            - /opt/hub-probe/hub-spawn-health.py
+            args:
+            - cit-research
+            volumeMounts:
+            - name: program
+              mountPath: /opt/hub-probe
+              readOnly: true
+            - name: credentials
+              mountPath: /run/hub-probe
+              readOnly: true
+            resources:
+              requests:
+                cpu: 25m
+                memory: 48Mi
+              limits:
+                cpu: 250m
+                memory: 160Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                - ALL
+---
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: cps-hub-spawn-poweruser
+  namespace: cattle-monitoring-system
+spec:
+  schedule: 29 1-23/2 * * *
+  timeZone: Etc/UTC
+  concurrencyPolicy: Forbid
+  suspend: true
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  startingDeadlineSeconds: 210
+  jobTemplate:
+    spec:
+      activeDeadlineSeconds: 1460
+      backoffLimit: 0
+      ttlSecondsAfterFinished: 21600
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: hub-spawn-health
+        spec:
+          automountServiceAccountToken: false
+          restartPolicy: Never
+          terminationGracePeriodSeconds: 95
+          securityContext:
+            runAsNonRoot: true
+            runAsUser: 65532
+            runAsGroup: 65532
+            seccompProfile:
+              type: RuntimeDefault
+            fsGroup: 65532
+          volumes:
+          - name: program
+            configMap:
+              name: hub-spawn-health
+              defaultMode: 292
+          - name: credentials
+            secret:
+              secretName: cps-hub-spawn-poweruser-identity
+              defaultMode: 288
+          containers:
+          - name: probe
+            image: ghcr.io/mul-cps/cps-compute@sha256:5d92684ceef47ecbeee4d3c25c0deb960fe222037a255ba84216cf2725264a19
+            imagePullPolicy: IfNotPresent
+            command:
+            - python
+            - -u
+            - /opt/hub-probe/hub-spawn-health.py
+            args:
+            - cps-poweruser
+            volumeMounts:
+            - name: program
+              mountPath: /opt/hub-probe
+              readOnly: true
+            - name: credentials
+              mountPath: /run/hub-probe
+              readOnly: true
+            resources:
+              requests:
+                cpu: 25m
+                memory: 48Mi
+              limits:
+                cpu: 250m
+                memory: 160Mi
+            securityContext:
+              allowPrivilegeEscalation: false
+              readOnlyRootFilesystem: true
+              capabilities:
+                drop:
+                - ALL

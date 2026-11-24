@@ -1,0 +1,43 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: jupyterhub-spawn-health
+  namespace: cattle-monitoring-system
+  labels:
+    release: rancher-monitoring
+spec:
+  groups:
+    - name: jupyterhub-probe-freshness
+      rules:
+        - alert: JupyterHubPublicRouteProbeStale
+          expr: |
+            (
+              time() - kube_cronjob_status_last_successful_time{namespace="cattle-monitoring-system",cronjob=~"(cit|cps)-hub-route-health"} > 720
+            ) or (
+              (time() - kube_cronjob_created{namespace="cattle-monitoring-system",cronjob=~"(cit|cps)-hub-route-health"} > 720)
+              unless on (namespace, cronjob) kube_cronjob_status_last_successful_time
+            )
+          for: 3m
+          labels:
+            severity: warning
+          annotations:
+            summary: "JupyterHub public health or federated login route failed"
+            description: "Review the recent Jobs for {{ $labels.cronjob }}."
+        - alert: JupyterHubNotebookLifecycleProbeStale
+          expr: |
+            (
+              (
+                time() - kube_cronjob_status_last_successful_time{namespace="cattle-monitoring-system",cronjob=~"(cit|cps)-hub-spawn-.+"} > 10800
+              ) or (
+                (time() - kube_cronjob_created{namespace="cattle-monitoring-system",cronjob=~"(cit|cps)-hub-spawn-.+"} > 10800)
+                unless on (namespace, cronjob) kube_cronjob_status_last_successful_time
+              )
+            ) and on (namespace, cronjob) (
+              kube_cronjob_spec_suspend{namespace="cattle-monitoring-system",cronjob=~"(cit|cps)-hub-spawn-.+"} == 0
+            )
+          for: 5m
+          labels:
+            severity: warning
+          annotations:
+            summary: "JupyterHub notebook lifecycle probe has no recent success"
+            description: "Review {{ $labels.cronjob }} for failed startup, resource checks, or cleanup."

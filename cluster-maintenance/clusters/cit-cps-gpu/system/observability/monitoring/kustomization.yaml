@@ -19,6 +19,8 @@ resources:
   - gpu-dash-24450-community.yaml
   - jupyterhub-stats-23694.yaml
   - jupyterhub-servicemonitor.yaml
+  - hub-spawn-health-jobs.yaml
+  - hub-spawn-health-alerts.yaml
 
   # SOPS-encrypted secret (decrypted in-cluster by the shared
   # sops-secrets-operator) — the Grafana Helm release itself stays
@@ -28,6 +30,11 @@ resources:
   - grafana-sopssecret.yaml
 
 configMapGenerator:
+  - name: hub-spawn-health
+    namespace: cattle-monitoring-system
+    files:
+      - hub-spawn-health.py
+      - hub-notebook-resources.py
   - name: alertmanager-loki-receiver
     namespace: cattle-monitoring-system
     files:
