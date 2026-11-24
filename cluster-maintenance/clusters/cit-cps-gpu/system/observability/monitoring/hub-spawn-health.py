@@ -1,11 +1,13 @@
 """Read public Hub status or verify a named notebook owned by a probe account."""
 import argparse
 import json
+import re
 import signal
+from html.parser import HTMLParser
 from pathlib import Path
 import sys
 import time
-from urllib.parse import quote, urlencode, urlsplit
+from urllib.parse import quote, urlencode, urljoin, urlsplit
 from uuid import uuid4
 
 import httpx
@@ -15,6 +17,11 @@ import websocket
 HUBS = {
     "cit": "https://jhub.dshl.unileoben.ac.at",
     "cps": "https://jupyterhub.dshl.unileoben.ac.at",
+}
+DEX = "dex.dshl.unileoben.ac.at"
+IDENTITY_PROVIDERS = {
+    "cit": "auth.dshl.unileoben.ac.at",
+    "cps": "auth.cps.unileoben.ac.at",
 }
 PROFILE_CASES = {
     "cit-shared": ("cit", [
@@ -75,17 +82,72 @@ def request(client, method, path, statuses, stage, **options):
     return result
 
 
+def trusted_url(base, location, host, stage):
+    url = urljoin(base, location) if location else ""
+    parts = urlsplit(url)
+    if parts.scheme != "https" or parts.netloc != host:
+        raise ProbeFailure(stage)
+    return url
+
+
 def require_dex_redirect(response):
-    location = urlsplit(response.headers.get("location", ""))
-    if location.scheme != "https" or location.netloc != "dex.dshl.unileoben.ac.at":
-        raise ProbeFailure("federated redirect")
+    return trusted_url("", response.headers.get("location"), DEX, "federated redirect")
 
 
-def check_route(client):
+class DexConnectorLink(HTMLParser):
+    def __init__(self, base, hub):
+        super().__init__()
+        self.base = base
+        self.path = "/auth/" + hub
+        self.href = None
+
+    def handle_starttag(self, tag, attributes):
+        if tag == "a":
+            url = urljoin(self.base, dict(attributes).get("href") or "")
+            parts = urlsplit(url)
+            if (parts.scheme, parts.netloc, parts.path) == ("https", DEX, self.path):
+                self.href = url
+
+
+def check_identity_provider(client, url, hub):
+    host = IDENTITY_PROVIDERS[hub]
+    slug = None
+    # Authentik can redirect through its same-origin default flow dispatcher.
+    for _ in range(4):
+        response = request(client, "GET", url, {200, 302, 303}, "identity provider sign-in")
+        if response.status_code == 200:
+            parts = urlsplit(url)
+            slug = re.fullmatch(r"/if/flow/([a-z0-9_-]+)/", parts.path)
+            break
+        url = trusted_url(url, response.headers.get("location"), host, "identity provider flow redirect")
+    if slug is None:
+        raise ProbeFailure("identity provider sign-in page")
+    endpoint = f"https://{host}/api/v3/flows/executor/{slug[1]}/"
+    challenge = request(client, "GET", endpoint, {200}, "identity provider challenge",
+                        params={"query": parts.query}).json()
+    if not isinstance(challenge, dict) or challenge.get("component") != "ak-stage-identification":
+        raise ProbeFailure("identity provider identification challenge")
+    if hub == "cit" and not any(isinstance(source, dict) and source.get("name") == "Montanuni Login"
+                               for source in challenge.get("sources") or []):
+        raise ProbeFailure("university sign-in option")
+
+
+def check_route(client, hub):
     request(client, "GET", "/hub/health", {200}, "public health")
     request(client, "GET", "/hub/login", {200, 302, 303}, "login page")
     response = request(client, "GET", "/hub/oauth_login", {302, 303}, "OAuth redirect")
-    require_dex_redirect(response)
+    dex = require_dex_redirect(response)
+    choices = request(client, "GET", dex, {200}, "Dex connector menu")
+    link = DexConnectorLink(dex, hub)
+    link.feed(choices.text)
+    if link.href is None:
+        raise ProbeFailure("owning Hub Dex connector")
+    response = request(client, "GET", link.href, {302, 303}, "Dex connector redirect")
+    identity = trusted_url(link.href, response.headers.get("location"), IDENTITY_PROVIDERS[hub],
+                           "identity provider redirect")
+    if urlsplit(identity).path != "/application/o/authorize/":
+        raise ProbeFailure("identity provider authorization path")
+    check_identity_provider(client, identity, hub)
 
 
 def get_server(client, user_api, server_name):
@@ -226,8 +288,9 @@ def main():
     try:
         if args.check == "route":
             with httpx.Client(base_url=HUBS[args.hub], timeout=12, follow_redirects=False) as client:
-                check_route(client)
-            print(json.dumps({"check": "route", "hub": args.hub, "result": "passed"}))
+                check_route(client, args.hub)
+            print(json.dumps({"check": "route", "hub": args.hub, "result": "passed",
+                              "identityChallenge": True}))
         else:
             source, cases = PROFILE_CASES[args.check]
             matching = [row for row in cases if args.case is None or row[0] == args.case]

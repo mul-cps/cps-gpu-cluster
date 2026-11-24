@@ -126,3 +126,47 @@ def test_visibility_report_uses_nvml_without_loading_cuda(monkeypatch, capsys, t
     assert receipt["gpuCheck"] == "visibility"
     assert receipt["visibleGpuUuids"] == [gpu_uuid]
     assert receipt["vramCapMiB"] == 2048
+
+
+@pytest.mark.parametrize("case, error", [
+    ("ok", None),
+    ("wrong-provider", "identity provider redirect"),
+    ("missing-university", "university sign-in option"),
+])
+def test_cit_route_reaches_the_university_sign_in_challenge(case, error):
+    hub_host = "jhub.dshl.unileoben.ac.at"
+    dex_host = "dex.dshl.unileoben.ac.at"
+    idp_host = "auth.dshl.unileoben.ac.at"
+    requests = []
+
+    def respond(request):
+        host, path = request.url.host, request.url.path
+        requests.append((host, path))
+        if host == hub_host and path in {"/hub/health", "/hub/login"}:
+            return monitor.httpx.Response(200)
+        if (host, path) == (hub_host, "/hub/oauth_login"):
+            return monitor.httpx.Response(302, headers={"location": f"https://{dex_host}/auth?state=fixture"})
+        if (host, path) == (dex_host, "/auth"):
+            return monitor.httpx.Response(200, text="<a href='/auth/cit?state=fixture'>CIT</a>")
+        if (host, path) == (dex_host, "/auth/cit"):
+            target = idp_host if case != "wrong-provider" else "untrusted.invalid"
+            return monitor.httpx.Response(302, headers={"location": f"https://{target}/application/o/authorize/"})
+        if (host, path) == (idp_host, "/application/o/authorize/"):
+            return monitor.httpx.Response(302, headers={"location": "/if/flow/default-authentication-flow/?next=fixture"})
+        if (host, path) == (idp_host, "/if/flow/default-authentication-flow/"):
+            return monitor.httpx.Response(200)
+        if (host, path) == (idp_host, "/api/v3/flows/executor/default-authentication-flow/"):
+            assert request.url.params["query"] == "next=fixture"
+            return monitor.httpx.Response(200, json={
+                "component": "ak-stage-identification",
+                "sources": [{"name": "Montanuni Login"}] if case != "missing-university" else [],
+            })
+        pytest.fail("unexpected identity route")
+
+    with monitor.httpx.Client(base_url=f"https://{hub_host}", transport=monitor.httpx.MockTransport(respond)) as client:
+        if error:
+            with pytest.raises(monitor.ProbeFailure, match=error):
+                monitor.check_route(client, "cit")
+        else:
+            monitor.check_route(client, "cit")
+            assert requests[-1] == (idp_host, "/api/v3/flows/executor/default-authentication-flow/")

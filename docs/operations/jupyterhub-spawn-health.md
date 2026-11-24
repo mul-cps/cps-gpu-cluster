@@ -1,6 +1,12 @@
 # JupyterHub notebook lifecycle monitoring
 
-Public route Jobs check the health endpoint, login page, and federated redirect for CPS and CIT every three minutes. The Prometheus freshness alert tracks both routes. Route checks do not create user sessions.
+Public route Jobs check both Hubs every three minutes. Each check loads the
+Hub health endpoint and login page, selects the correct trusted Dex
+connector, and reads the initial challenge from the owning Authentik
+provider. The CIT check also verifies that the challenge offers
+Montanuni Login. These checks stop at the anonymous challenge and do
+not submit credentials, create users, or start notebooks. The
+Prometheus freshness alert tracks both routes.
 
 The profile Jobs cover an ordinary CIT user, a CIT researcher, and a CPS power user. The ordinary CIT check requires the 2 and 5 GiB options. The researcher checks cover each Hub's dedicated 1- and 2-GPU TensorFlow and PyTorch choices. The Jobs stay suspended until their scoped identities and non-preempting launch path are qualified.
 
