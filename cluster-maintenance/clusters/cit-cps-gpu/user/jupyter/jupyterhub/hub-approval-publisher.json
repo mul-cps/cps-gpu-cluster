@@ -1,0 +1,12 @@
+{
+  "apiVersion": "v1",
+  "data": {
+    "publisher.json": "{\"acknowledgment\":{\"name\":\"cps-runtime-ack-hub-cps\",\"namespace\":\"jupyterhub\",\"uid\":\"2941a5a3-322c-4fd2-b643-f2064559158c\"},\"component\":\"hub:cps\",\"driver_epoch\":{\"boot_id\":\"a464df41-e391-4443-b8e8-ad7ecd052318\",\"driver_generation\":\"4ebffc96-e25e-4583-a3b8-0d853fd90efd\",\"gpu_uuid\":\"GPU-16128952-b438-556a-00bb-93039ee24e56\",\"node_uid\":\"3336cdd5-d245-436e-b57c-2f66c6dcaa41\"},\"process\":{\"container\":\"hub\",\"image\":\"ghcr.io/mul-cps/cps-compute@sha256:19f46dd0ff0fd410fae70416d04ff6ce84cad88af1e811a816700c9f4329f44e\",\"kind\":\"Deployment\",\"name\":\"hub\",\"namespace\":\"jupyterhub\",\"service_account\":\"hub\",\"uid\":\"02fb8421-d323-4636-b006-2490cd6f5b63\"},\"ttlSeconds\":60,\"version\":1}"
+  },
+  "immutable": true,
+  "kind": "ConfigMap",
+  "metadata": {
+    "name": "cps-approval-hub-cps-9ddbded631db0fad",
+    "namespace": "jupyterhub"
+  }
+}
