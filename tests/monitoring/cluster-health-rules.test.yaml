@@ -1,0 +1,411 @@
+rule_files:
+- cps-cluster-health.yaml
+- nvidia-gpu-alerts-fleet.yaml
+evaluation_interval: 30s
+tests:
+- name: A missing allocatable resource on a ready worker and exclusions for maintenance
+  interval: 30s
+  input_series:
+  - series: kube_node_status_condition{job="kube-state-metrics",node="k3s-wk-gpu1",condition="Ready",status="true"}
+    values: 1+0x30
+  - series: kube_node_spec_unschedulable{job="kube-state-metrics",node="k3s-wk-gpu1"}
+    values: 0+0x30
+  - series: kube_node_status_condition{job="kube-state-metrics",node="k3s-wk-gpu2",condition="Ready",status="true"}
+    values: 1+0x30
+  - series: kube_node_spec_unschedulable{job="kube-state-metrics",node="k3s-wk-gpu2"}
+    values: 0+0x30
+  - series: kube_node_status_allocatable{job="kube-state-metrics",node="k3s-wk-gpu2",resource="nvidia_com_gpu"}
+    values: 2+0x30
+  - series: kube_node_status_condition{job="kube-state-metrics",node="k3s-wk-gpu3",condition="Ready",status="true"}
+    values: 1+0x30
+  - series: kube_node_spec_unschedulable{job="kube-state-metrics",node="k3s-wk-gpu3"}
+    values: 1+0x30
+  - series: kube_node_status_allocatable{job="kube-state-metrics",node="k3s-wk-gpu3",resource="nvidia_com_gpu"}
+    values: 0+0x30
+  - series: kube_node_status_condition{job="kube-state-metrics",node="k3s-wk-gpu4",condition="Ready",status="true"}
+    values: 0+0x30
+  - series: kube_node_spec_unschedulable{job="kube-state-metrics",node="k3s-wk-gpu4"}
+    values: 0+0x30
+  - series: kube_node_status_allocatable{job="kube-state-metrics",node="k3s-wk-gpu4",resource="nvidia_com_gpu"}
+    values: 1+0x30
+  - series: kube_node_status_condition{job="kube-state-metrics",node="k3s-cp1",condition="Ready",status="true"}
+    values: 1+0x30
+  - series: kube_node_spec_unschedulable{job="kube-state-metrics",node="k3s-cp1"}
+    values: 0+0x30
+  alert_rule_test:
+  - eval_time: 9m30s
+    alertname: CPSGPUAllocatableCapacityLost
+    exp_alerts: []
+  - eval_time: 11m
+    alertname: CPSGPUAllocatableCapacityLost
+    exp_alerts:
+    - exp_labels:
+        component: gpu
+        severity: critical
+        node: k3s-wk-gpu1
+      exp_annotations:
+        summary: GPU capacity lost on k3s-wk-gpu1
+        description: Kubernetes advertises 0 of 2 expected NVIDIA GPUs on this ready, schedulable worker. Check the NVIDIA device plugin, toolkit
+          and driver before admitting GPU work.
+- name: A persistent XID after label churn and exclusion of DCGM sentinel values
+  interval: 30s
+  input_series:
+  - series: DCGM_FI_DEV_XID_ERRORS{Hostname="k3s-wk-gpu1",UUID="GPU-a",gpu="0",pod="old"}
+    values: 79 stale _x6
+  - series: DCGM_FI_DEV_XID_ERRORS{Hostname="k3s-wk-gpu1",UUID="GPU-a",gpu="0",pod="new"}
+    values: _ 79+0x7
+  - series: DCGM_FI_DEV_XID_ERRORS{Hostname="k3s-wk-gpu1",UUID="GPU-b",gpu="1"}
+    values: 0+0x7
+  - series: DCGM_FI_DEV_XID_ERRORS{Hostname="k3s-wk-gpu2",UUID="GPU-c",gpu="0"}
+    values: 9223372036854775807+0x7
+  alert_rule_test:
+  - eval_time: 30s
+    alertname: GPUXIDErrors
+    exp_alerts: []
+  - eval_time: 1m
+    alertname: GPUXIDErrors
+    exp_alerts:
+    - exp_labels:
+        component: gpu
+        severity: critical
+        Hostname: k3s-wk-gpu1
+        UUID: GPU-a
+        gpu: '0'
+      exp_annotations:
+        summary: GPU XID error reported
+        description: GPU 0 (GPU-a) on k3s-wk-gpu1 last reported XID 79. Check the node kernel journal and NVIDIA XID guidance for the code and
+          its timestamp.
+- name: Host pressure requires a sustained full stall and does not follow cache size
+  interval: 30s
+  input_series:
+  - series: node_pressure_memory_stalled_seconds_total{job="node-exporter",instance="stalled"}
+    values: 0+6x40
+  - series: node_pressure_memory_stalled_seconds_total{job="node-exporter",instance="cached"}
+    values: 0+0.2x40
+  - series: node_memory_Cached_bytes{job="node-exporter",instance="cached"}
+    values: 100000000000+0x40
+  alert_rule_test:
+  - eval_time: 10m
+    alertname: CPSNodeMemoryStall
+    exp_alerts: []
+  - eval_time: 20m
+    alertname: CPSNodeMemoryStall
+    exp_alerts:
+    - exp_labels:
+        component: node
+        severity: warning
+        instance: stalled
+      exp_annotations:
+        summary: Sustained full memory stalls on stalled
+        description: All non-idle work is stalled on memory for more than 10% of wall time. Check memory pressure, reclaim and workloads on this
+          host.
+- name: Runtime and image pull failures need a minimum count, ratio and supported operation
+  interval: 30s
+  input_series:
+  - series: kubelet_runtime_operations_total{job="kubelet",node="k3s-wk-gpu1",operation_type="create_container"}
+    values: 0+4x40
+  - series: kubelet_runtime_operations_errors_total{job="kubelet",node="k3s-wk-gpu1",operation_type="create_container"}
+    values: 0+2x40
+  - series: kubelet_runtime_operations_total{job="kubelet",node="k3s-wk-gpu2",operation_type="pull_image"}
+    values: 0+4x40
+  - series: kubelet_runtime_operations_errors_total{job="kubelet",node="k3s-wk-gpu2",operation_type="pull_image"}
+    values: 0+2x40
+  - series: kubelet_runtime_operations_total{job="kubelet",node="k3s-wk-gpu3",operation_type="pull_image"}
+    values: 0+2x40
+  - series: kubelet_runtime_operations_errors_total{job="kubelet",node="k3s-wk-gpu3",operation_type="pull_image"}
+    values: 0+0.2x40
+  - series: kubelet_runtime_operations_total{job="kubelet",node="k3s-wk-gpu4",operation_type="pull_image"}
+    values: 0+0.4x40
+  - series: kubelet_runtime_operations_errors_total{job="kubelet",node="k3s-wk-gpu4",operation_type="pull_image"}
+    values: 0+0.3x40
+  - series: kubelet_runtime_operations_total{job="kubelet",node="k3s-cp1",operation_type="exec_sync"}
+    values: 0+4x40
+  - series: kubelet_runtime_operations_errors_total{job="kubelet",node="k3s-cp1",operation_type="exec_sync"}
+    values: 0+2x40
+  alert_rule_test:
+  - eval_time: 7m
+    alertname: CPSKubeletRuntimeFailures
+    exp_alerts: []
+  - eval_time: 16m
+    alertname: CPSKubeletRuntimeFailures
+    exp_alerts:
+    - exp_labels:
+        component: runtime
+        severity: warning
+        node: k3s-wk-gpu1
+        operation_type: create_container
+      exp_annotations:
+        summary: Kubelet runtime failures on k3s-wk-gpu1
+        description: create_container errors exceeded both 10 errors and 25% of attempts in a 10-minute window. Check kubelet events and the node
+          runtime, image registry or credentials for the failing operation.
+    - exp_labels:
+        component: runtime
+        severity: warning
+        node: k3s-wk-gpu2
+        operation_type: pull_image
+      exp_annotations:
+        summary: Kubelet runtime failures on k3s-wk-gpu2
+        description: pull_image errors exceeded both 10 errors and 25% of attempts in a 10-minute window. Check kubelet events and the node runtime,
+          image registry or credentials for the failing operation.
+- name: Mounted PVC free space is independent of Longhorn health and scratch visibility
+  interval: 30s
+  input_series:
+  - series: node_uname_info{job="node-exporter",instance="host1",nodename="k3s-wk-gpu1"}
+    values: 1+0x70
+  - series: node_uname_info{job="node-exporter",instance="host2",nodename="k3s-wk-gpu2"}
+    values: 1+0x70
+  - series: node_uname_info{job="node-exporter",instance="host3",nodename="k3s-cp1"}
+    values: 1+0x70
+  - series: node_filesystem_size_bytes{job="node-exporter",instance="host2",mountpoint="/mnt/nvme/scratch"}
+    values: 10+0x70
+  - series: node_filesystem_readonly{job="node-exporter",instance="host2",mountpoint="/mnt/nvme/scratch"}
+    values: 1+0x70
+  - series: node_filesystem_readonly{job="node-exporter",instance="host3",mountpoint="/boot"}
+    values: 1+0x70
+  - series: longhorn_volume_robustness{job="longhorn-backend",namespace="longhorn-system",volume="degraded",pvc_namespace="work",pvc="home"}
+    values: 2+0x70
+  - series: longhorn_volume_robustness{job="longhorn-backend",namespace="longhorn-system",volume="faulted",pvc_namespace="work",pvc="data"}
+    values: 3+0x70
+  - series: longhorn_volume_robustness{job="longhorn-backend",namespace="longhorn-system",volume="healthy",pvc_namespace="work",pvc="full"}
+    values: 1+0x70
+  - series: longhorn_volume_robustness{job="longhorn-backend",namespace="longhorn-system",volume="detached",pvc_namespace="work",pvc="archive"}
+    values: 0+0x70
+  - series: kubelet_volume_stats_available_bytes{namespace="work",persistentvolumeclaim="full"}
+    values: 1+0x70
+  - series: kubelet_volume_stats_capacity_bytes{namespace="work",persistentvolumeclaim="full"}
+    values: 100+0x70
+  - series: kubelet_volume_stats_available_bytes{namespace="work",persistentvolumeclaim="home"}
+    values: 80+0x70
+  - series: kubelet_volume_stats_capacity_bytes{namespace="work",persistentvolumeclaim="home"}
+    values: 100+0x70
+  - series: longhorn_disk_status{job="longhorn-backend",namespace="longhorn-system",node="k3s-wk-gpu1",disk="d1",condition="ready",condition_reason="DiskFilesystemChanged"}
+    values: 0+0x70
+  - series: longhorn_disk_status{job="longhorn-backend",namespace="longhorn-system",node="k3s-wk-gpu2",disk="d2",condition="ready"}
+    values: 1+0x70
+  - series: longhorn_disk_status{job="longhorn-backend",namespace="longhorn-system",node="k3s-wk-gpu2",disk="d2",condition="schedulable"}
+    values: 0+0x70
+  - series: longhorn_disk_usage_bytes{job="longhorn-backend",namespace="longhorn-system",node="k3s-wk-gpu2",disk="d2"}
+    values: 89+0x70
+  - series: longhorn_disk_capacity_bytes{job="longhorn-backend",namespace="longhorn-system",node="k3s-wk-gpu2",disk="d2"}
+    values: 100+0x70
+  alert_rule_test:
+  - eval_time: 6m
+    alertname: CPSScratchMountMissing
+    exp_alerts:
+    - exp_labels:
+        component: storage
+        severity: critical
+        nodename: k3s-wk-gpu1
+      exp_annotations:
+        summary: Fast scratch mount missing on k3s-wk-gpu1
+        description: /mnt/nvme/scratch is absent from the host filesystem inventory while node-exporter is reporting. Check the mount before scheduling
+          or provisioning local scratch.
+  - eval_time: 6m
+    alertname: CPSHostFilesystemReadOnly
+    exp_alerts:
+    - exp_labels:
+        component: storage
+        severity: critical
+        instance: host2
+        mountpoint: /mnt/nvme/scratch
+      exp_annotations:
+        summary: Host filesystem is read-only on host2
+        description: /mnt/nvme/scratch is read-only. Check filesystem errors and mount state before returning the node to service.
+  - eval_time: 6m
+    alertname: CPSLonghornVolumeFaulted
+    exp_alerts:
+    - exp_labels:
+        component: storage
+        severity: critical
+        pvc_namespace: work
+        pvc: data
+        volume: faulted
+      exp_annotations:
+        summary: Longhorn volume faulted
+        description: Volume faulted for work/data has lost access to its replicas. Check Longhorn engines and replica health.
+  - eval_time: 11m
+    alertname: CPSLonghornVolumeDegraded
+    exp_alerts:
+    - exp_labels:
+        component: storage
+        severity: warning
+        pvc_namespace: work
+        pvc: home
+        volume: degraded
+      exp_annotations:
+        summary: Longhorn volume lost replica redundancy
+        description: Volume degraded for work/home is degraded. Check replica placement and rebuild status.
+  - eval_time: 11m
+    alertname: CPSLonghornDiskNotReady
+    exp_alerts:
+    - exp_labels:
+        component: storage
+        severity: warning
+        node: k3s-wk-gpu1
+        disk: d1
+      exp_annotations:
+        summary: Longhorn disk is not ready
+        description: Longhorn disk d1 on k3s-wk-gpu1 has been unready for 10 minutes. Inspect the Longhorn disk condition and its host mount.
+  - eval_time: 29m30s
+    alertname: CPSLonghornDiskHeadroomLow
+    exp_alerts: []
+  - eval_time: 31m
+    alertname: CPSLonghornDiskHeadroomLow
+    exp_alerts:
+    - exp_labels:
+        component: storage
+        severity: warning
+        node: k3s-wk-gpu2
+        disk: d2
+      exp_annotations:
+        summary: Longhorn disk is approaching its free-space floor
+        description: Longhorn disk d2 on k3s-wk-gpu2 has less than 12% physical space available. The current scheduler floor is 10%. Check replica
+          placement, snapshots and host disk usage.
+- name: No ready gateway address while endpoint monitoring remains healthy
+  interval: 30s
+  input_series:
+  - series: up{job="kube-state-metrics",namespace="cattle-monitoring-system"}
+    values: 1+0x30
+  - series: kube_endpoint_address{job="kube-state-metrics",namespace="kube-system",endpoint="kube-dns",port_name="dns",ready="true"}
+    values: 1+0x30
+  - series: kube_endpoint_address{job="kube-state-metrics",namespace="ingress-nginx",endpoint="ingress-nginx-controller",port_name="https",ready="true"}
+    values: 1+0x30
+  - series: kube_endpoint_address{job="kube-state-metrics",namespace="cps-compute",endpoint="compute-gateway",port_name="http",ready="false"}
+    values: 1+0x30
+  - series: kube_endpoint_address{job="kube-state-metrics",namespace="cps-compute",endpoint="compute-gateway",port_name="capture",ready="true"}
+    values: 1+0x30
+  alert_rule_test:
+  - eval_time: 4m30s
+    alertname: CPSCriticalServiceNoReadyEndpoints
+    exp_alerts: []
+  - eval_time: 6m
+    alertname: CPSCriticalServiceNoReadyEndpoints
+    exp_alerts:
+    - exp_labels:
+        component: service
+        severity: critical
+        namespace: cps-compute
+        endpoint: compute-gateway
+        port_name: http
+      exp_annotations:
+        summary: Critical service has no ready endpoints
+        description: The cps-compute/compute-gateway service has no ready backend addresses on port http. Check service selectors, pod readiness
+          and recent rollouts.
+- name: Kube-state-metrics outage does not imply a service outage
+  interval: 30s
+  input_series:
+  - series: up{job="kube-state-metrics",namespace="cattle-monitoring-system"}
+    values: 0+0x30
+  alert_rule_test:
+  - eval_time: 6m
+    alertname: CPSCriticalServiceNoReadyEndpoints
+    exp_alerts: []
+- name: Ingress failures require both an error ratio and enough failed requests on a managed route
+  interval: 30s
+  input_series:
+  - series: nginx_ingress_controller_requests{job="ingress-nginx-controller-metrics",namespace="ingress-nginx",exported_namespace="jupyterhub",ingress="jupyterhub",status="200"}
+    values: 0+30x40
+  - series: nginx_ingress_controller_requests{job="ingress-nginx-controller-metrics",namespace="ingress-nginx",exported_namespace="jupyterhub",ingress="jupyterhub",status="502"}
+    values: 0+3x40
+  - series: nginx_ingress_controller_requests{job="ingress-nginx-controller-metrics",namespace="ingress-nginx",exported_namespace="cit-jhub",ingress="jupyterhub",status="200"}
+    values: 0+100x40
+  - series: nginx_ingress_controller_requests{job="ingress-nginx-controller-metrics",namespace="ingress-nginx",exported_namespace="cit-jhub",ingress="jupyterhub",status="502"}
+    values: 0+2x40
+  - series: nginx_ingress_controller_requests{job="ingress-nginx-controller-metrics",namespace="ingress-nginx",exported_namespace="harbor",ingress="harbor-ingress",status="200"}
+    values: 0+1x40
+  - series: nginx_ingress_controller_requests{job="ingress-nginx-controller-metrics",namespace="ingress-nginx",exported_namespace="harbor",ingress="harbor-ingress",status="502"}
+    values: 0+0.5x40
+  - series: nginx_ingress_controller_requests{job="ingress-nginx-controller-metrics",namespace="ingress-nginx",exported_namespace="unmanaged",ingress="jupyterhub",status="200"}
+    values: 0+30x40
+  - series: nginx_ingress_controller_requests{job="ingress-nginx-controller-metrics",namespace="ingress-nginx",exported_namespace="unmanaged",ingress="jupyterhub",status="502"}
+    values: 0+3x40
+  alert_rule_test:
+  - eval_time: 12m
+    alertname: CPSManagedIngressErrorSpike
+    exp_alerts: []
+  - eval_time: 17m
+    alertname: CPSManagedIngressErrorSpike
+    exp_alerts:
+    - exp_labels:
+        component: ingress
+        severity: warning
+        exported_namespace: jupyterhub
+        ingress: jupyterhub
+      exp_annotations:
+        summary: Managed ingress has sustained HTTP 5xx responses
+        description: Ingress jupyterhub/jupyterhub exceeded 5% HTTP 5xx and 25 errors per 10 minutes. Check ingress upstream and backend readiness.
+- name: High DNS cache misses with service delay
+  interval: 30s
+  input_series:
+  - series: coredns_cache_hits_total{job="coredns",namespace="kube-system",type="success"}
+    values: 0+25x40
+  - series: coredns_cache_requests_total{job="coredns",namespace="kube-system"}
+    values: 0+150x40
+  - series: coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system",le="0.1"}
+    values: 0+125x40
+  - series: coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system",le="0.5"}
+    values: 0+150x40
+  - series: coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system",le="+Inf"}
+    values: 0+150x40
+  alert_rule_test:
+  - eval_time: 19m
+    alertname: CPSCoreDNSCacheDegraded
+    exp_alerts:
+    - exp_labels:
+        component: dns
+        severity: warning
+      exp_annotations:
+        summary: High DNS cache misses with slow responses
+        description: CoreDNS p95 exceeded 100 ms while more than 70% of cache requests missed at two or more requests per second. Check upstream
+          DNS latency, request mix and recent CoreDNS restarts.
+- name: High cache misses at healthy DNS latency
+  interval: 30s
+  input_series:
+  - series: coredns_cache_hits_total{job="coredns",namespace="kube-system",type="success"}
+    values: 0+25x40
+  - series: coredns_cache_requests_total{job="coredns",namespace="kube-system"}
+    values: 0+150x40
+  - series: coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system",le="0.1"}
+    values: 0+149x40
+  - series: coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system",le="0.5"}
+    values: 0+150x40
+  - series: coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system",le="+Inf"}
+    values: 0+150x40
+  alert_rule_test:
+  - eval_time: 16m
+    alertname: CPSCoreDNSCacheDegraded
+    exp_alerts: []
+- name: Slow DNS at a healthy cache hit rate
+  interval: 30s
+  input_series:
+  - series: coredns_cache_hits_total{job="coredns",namespace="kube-system",type="success"}
+    values: 0+100x40
+  - series: coredns_cache_requests_total{job="coredns",namespace="kube-system"}
+    values: 0+150x40
+  - series: coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system",le="0.1"}
+    values: 0+125x40
+  - series: coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system",le="0.5"}
+    values: 0+150x40
+  - series: coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system",le="+Inf"}
+    values: 0+150x40
+  alert_rule_test:
+  - eval_time: 16m
+    alertname: CPSCoreDNSCacheDegraded
+    exp_alerts: []
+- name: Low traffic does not warrant a DNS cache alert
+  interval: 30s
+  input_series:
+  - series: coredns_cache_hits_total{job="coredns",namespace="kube-system",type="success"}
+    values: 0+2x40
+  - series: coredns_cache_requests_total{job="coredns",namespace="kube-system"}
+    values: 0+30x40
+  - series: coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system",le="0.1"}
+    values: 0+10x40
+  - series: coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system",le="0.5"}
+    values: 0+30x40
+  - series: coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system",le="+Inf"}
+    values: 0+30x40
+  alert_rule_test:
+  - eval_time: 16m
+    alertname: CPSCoreDNSCacheDegraded
+    exp_alerts: []

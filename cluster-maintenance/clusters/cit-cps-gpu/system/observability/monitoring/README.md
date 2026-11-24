@@ -38,6 +38,9 @@ has an individual receipt. Use `fingerprint` to match the two states. The
 receiver returns success only after Loki accepts the write, so delivery
 failures can be retried by Alertmanager.
 
+The [cluster alert coverage runbook](CLUSTER-ALERT-COVERAGE.md) documents
+the live Rancher coverage, the Fleet alert rules, and how to test them.
+
 ## Prerequisites
 
 1. **GPU Operator**: Must be deployed first with ServiceMonitor enabled

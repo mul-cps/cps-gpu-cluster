@@ -13,6 +13,7 @@ resources:
   - namespace.yaml
   - nvidia-official-dashboard.yaml
   - gpu-alerts.yaml
+  - cluster-health-alerts.yaml
   - alertmanager-receiver.yaml
   - gpu-dash-22515-community.yaml
   - gpu-dash-23382-community.yaml

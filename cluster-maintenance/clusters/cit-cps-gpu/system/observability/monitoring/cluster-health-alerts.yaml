@@ -1,0 +1,212 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: cps-cluster-health
+  namespace: cattle-monitoring-system
+  labels:
+    app: rancher-monitoring
+    prometheus: kube-prometheus
+    role: alert-rules
+spec:
+  groups:
+    - name: cps.cluster.node-runtime
+      rules:
+        - alert: CPSNodeMemoryStall
+          expr: max by (instance) (rate(node_pressure_memory_stalled_seconds_total{job="node-exporter"}[5m])) > 0.10
+          for: 15m
+          labels:
+            component: node
+            severity: warning
+          annotations:
+            summary: 'Sustained full memory stalls on {{ $labels.instance }}'
+            description: All non-idle work is stalled on memory for more than 10% of wall time. Check memory pressure, reclaim and workloads on this host.
+
+        # Keep the four two-device workers aligned with the storage and GPU inventory.
+        - alert: CPSGPUAllocatableCapacityLost
+          expr: |
+            (
+              (
+                max by (node) (kube_node_status_allocatable{job="kube-state-metrics",node=~"k3s-wk-gpu[1-4]",resource="nvidia_com_gpu"})
+                or on (node)
+                (0 * max by (node) (kube_node_status_condition{job="kube-state-metrics",node=~"k3s-wk-gpu[1-4]",condition="Ready",status="true"}))
+              ) < 2
+            )
+            and on (node)
+            (max by (node) (kube_node_status_condition{job="kube-state-metrics",condition="Ready",status="true"}) == 1)
+            and on (node)
+            (max by (node) (kube_node_spec_unschedulable{job="kube-state-metrics"}) == 0)
+          for: 10m
+          labels:
+            component: gpu
+            severity: critical
+          annotations:
+            summary: 'GPU capacity lost on {{ $labels.node }}'
+            description: 'Kubernetes advertises {{ $value }} of 2 expected NVIDIA GPUs on this ready, schedulable worker. Check the NVIDIA device plugin, toolkit and driver before admitting GPU work.'
+
+        - alert: CPSKubeletRuntimeFailures
+          expr: |
+            (
+              sum by (node, operation_type) (
+                increase(kubelet_runtime_operations_errors_total{job="kubelet",node!="",operation_type=~"run_podsandbox|create_container|start_container|pull_image"}[10m])
+              )
+              /
+              (
+                sum by (node, operation_type) (
+                  increase(kubelet_runtime_operations_total{job="kubelet",node!="",operation_type=~"run_podsandbox|create_container|start_container|pull_image"}[10m])
+                ) > 0
+              )
+            ) > 0.25
+            and
+            sum by (node, operation_type) (
+              increase(kubelet_runtime_operations_errors_total{job="kubelet",node!="",operation_type=~"run_podsandbox|create_container|start_container|pull_image"}[10m])
+            ) > 10
+          for: 5m
+          labels:
+            component: runtime
+            severity: warning
+          annotations:
+            summary: 'Kubelet runtime failures on {{ $labels.node }}'
+            description: '{{ $labels.operation_type }} errors exceeded both 10 errors and 25% of attempts in a 10-minute window. Check kubelet events and the node runtime, image registry or credentials for the failing operation.'
+
+    - name: cps.cluster.storage
+      rules:
+        - alert: CPSScratchMountMissing
+          expr: |
+            max by (nodename) (node_uname_info{job="node-exporter",nodename=~"k3s-wk-gpu[1-4]"})
+            unless on (nodename)
+            (
+              max by (instance, nodename) (node_uname_info{job="node-exporter",nodename=~"k3s-wk-gpu[1-4]"})
+              * on (instance) group_left ()
+              (max by (instance) (node_filesystem_size_bytes{job="node-exporter",mountpoint="/mnt/nvme/scratch"}) > 0)
+            )
+          for: 5m
+          labels:
+            component: storage
+            severity: critical
+          annotations:
+            summary: 'Fast scratch mount missing on {{ $labels.nodename }}'
+            description: /mnt/nvme/scratch is absent from the host filesystem inventory while node-exporter is reporting. Check the mount before scheduling or provisioning local scratch.
+
+        - alert: CPSHostFilesystemReadOnly
+          expr: |
+            max by (instance, mountpoint) (
+              node_filesystem_readonly{job="node-exporter",mountpoint=~"/|/mnt/nvme/scratch"}
+            ) == 1
+          for: 5m
+          labels:
+            component: storage
+            severity: critical
+          annotations:
+            summary: 'Host filesystem is read-only on {{ $labels.instance }}'
+            description: '{{ $labels.mountpoint }} is read-only. Check filesystem errors and mount state before returning the node to service.'
+
+        # Longhorn 1.9 reports unknown/healthy/degraded/faulted as 0/1/2/3.
+        - alert: CPSLonghornVolumeFaulted
+          expr: max by (volume, pvc_namespace, pvc) (longhorn_volume_robustness{job="longhorn-backend",namespace="longhorn-system"}) == 3
+          for: 5m
+          labels:
+            component: storage
+            severity: critical
+          annotations:
+            summary: Longhorn volume faulted
+            description: 'Volume {{ $labels.volume }} for {{ $labels.pvc_namespace }}/{{ $labels.pvc }} has lost access to its replicas. Check Longhorn engines and replica health.'
+
+        - alert: CPSLonghornVolumeDegraded
+          expr: max by (volume, pvc_namespace, pvc) (longhorn_volume_robustness{job="longhorn-backend",namespace="longhorn-system"}) == 2
+          for: 10m
+          labels:
+            component: storage
+            severity: warning
+          annotations:
+            summary: Longhorn volume lost replica redundancy
+            description: 'Volume {{ $labels.volume }} for {{ $labels.pvc_namespace }}/{{ $labels.pvc }} is degraded. Check replica placement and rebuild status.'
+
+        - alert: CPSLonghornDiskNotReady
+          expr: max by (node, disk) (longhorn_disk_status{job="longhorn-backend",namespace="longhorn-system",condition="ready"}) == 0
+          for: 10m
+          labels:
+            component: storage
+            severity: warning
+          annotations:
+            summary: Longhorn disk is not ready
+            description: 'Longhorn disk {{ $labels.disk }} on {{ $labels.node }} has been unready for 10 minutes. Inspect the Longhorn disk condition and its host mount.'
+
+        - alert: CPSLonghornDiskHeadroomLow
+          expr: |
+            (
+              max by (node, disk) (longhorn_disk_usage_bytes{job="longhorn-backend",namespace="longhorn-system"})
+              /
+              (max by (node, disk) (longhorn_disk_capacity_bytes{job="longhorn-backend",namespace="longhorn-system"}) > 0)
+            ) > 0.88
+          for: 30m
+          labels:
+            component: storage
+            severity: warning
+          annotations:
+            summary: Longhorn disk is approaching its free-space floor
+            description: 'Longhorn disk {{ $labels.disk }} on {{ $labels.node }} has less than 12% physical space available. The current scheduler floor is 10%. Check replica placement, snapshots and host disk usage.'
+
+    - name: cps.cluster.services
+      rules:
+        - alert: CPSCriticalServiceNoReadyEndpoints
+          expr: |
+            max by (namespace, endpoint, port_name) (
+              absent(kube_endpoint_address{job="kube-state-metrics",namespace="kube-system",endpoint="kube-dns",port_name="dns",ready="true"})
+              or absent(kube_endpoint_address{job="kube-state-metrics",namespace="ingress-nginx",endpoint="ingress-nginx-controller",port_name="https",ready="true"})
+              or absent(kube_endpoint_address{job="kube-state-metrics",namespace="cps-compute",endpoint="compute-gateway",port_name="http",ready="true"})
+            )
+            and on ()
+            (max(up{job="kube-state-metrics",namespace="cattle-monitoring-system"}) == 1)
+          for: 5m
+          labels:
+            component: service
+            severity: critical
+          annotations:
+            summary: Critical service has no ready endpoints
+            description: 'The {{ $labels.namespace }}/{{ $labels.endpoint }} service has no ready backend addresses on port {{ $labels.port_name }}. Check service selectors, pod readiness and recent rollouts.'
+
+        # The scrape's namespace is ingress-nginx. exported_namespace identifies the route.
+        - alert: CPSManagedIngressErrorSpike
+          expr: |
+            (
+              sum by (exported_namespace, ingress) (
+                increase(nginx_ingress_controller_requests{job="ingress-nginx-controller-metrics",exported_namespace=~"jupyterhub|cit-jhub|harbor",ingress=~"jupyterhub|harbor-ingress",status=~"5.."}[10m])
+              )
+              /
+              sum by (exported_namespace, ingress) (
+                increase(nginx_ingress_controller_requests{job="ingress-nginx-controller-metrics",exported_namespace=~"jupyterhub|cit-jhub|harbor",ingress=~"jupyterhub|harbor-ingress"}[10m])
+              )
+            ) > 0.05
+            and
+            sum by (exported_namespace, ingress) (
+              increase(nginx_ingress_controller_requests{job="ingress-nginx-controller-metrics",exported_namespace=~"jupyterhub|cit-jhub|harbor",ingress=~"jupyterhub|harbor-ingress",status=~"5.."}[10m])
+            ) > 25
+          for: 10m
+          labels:
+            component: ingress
+            severity: warning
+          annotations:
+            summary: Managed ingress has sustained HTTP 5xx responses
+            description: 'Ingress {{ $labels.exported_namespace }}/{{ $labels.ingress }} exceeded 5% HTTP 5xx and 25 errors per 10 minutes. Check ingress upstream and backend readiness.'
+
+        - alert: CPSCoreDNSCacheDegraded
+          expr: |
+            (
+              1 - sum(rate(coredns_cache_hits_total{job="coredns",namespace="kube-system"}[10m]))
+              /
+              sum(rate(coredns_cache_requests_total{job="coredns",namespace="kube-system"}[10m]))
+            ) > 0.70
+            and
+            sum(rate(coredns_cache_requests_total{job="coredns",namespace="kube-system"}[10m])) >= 2
+            and
+            histogram_quantile(
+              0.95,
+              sum by (le) (rate(coredns_dns_request_duration_seconds_bucket{job="coredns",namespace="kube-system"}[10m]))
+            ) > 0.10
+          for: 10m
+          labels:
+            component: dns
+            severity: warning
+          annotations:
+            summary: High DNS cache misses with slow responses
+            description: CoreDNS p95 exceeded 100 ms while more than 70% of cache requests missed at two or more requests per second. Check upstream DNS latency, request mix and recent CoreDNS restarts.

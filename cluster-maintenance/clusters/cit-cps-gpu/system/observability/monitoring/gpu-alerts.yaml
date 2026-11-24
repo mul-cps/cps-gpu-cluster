@@ -66,16 +66,19 @@ spec:
         summary: "GPU exporter is down"
         description: "DCGM exporter on instance {{ $labels.exported_instance }} has been down for more than 1 minute"
         
-    # GPU XID Error Alert (if available)
+    # This is the last XID code. Exclude DCGM's out-of-range sentinel values.
     - alert: GPUXIDErrors
-      expr: increase(DCGM_FI_DEV_XID_ERRORS[5m]) > 0
+      expr: |
+        max by (Hostname, UUID, gpu) (
+          DCGM_FI_DEV_XID_ERRORS{Hostname!="",UUID!=""} < 2147483648
+        ) > 0
       for: 1m
       labels:
         severity: critical
         component: gpu
       annotations:
-        summary: "GPU XID errors detected"
-        description: "GPU {{ $labels.gpu }} on instance {{ $labels.exported_instance }} has reported XID errors"
+        summary: "GPU XID error reported"
+        description: "GPU {{ $labels.gpu }} ({{ $labels.UUID }}) on {{ $labels.Hostname }} last reported XID {{ $value }}. Check the node kernel journal and NVIDIA XID guidance for the code and its timestamp."
         
     # Low GPU Utilization (for cost optimization)
     - alert: GPULowUtilization
