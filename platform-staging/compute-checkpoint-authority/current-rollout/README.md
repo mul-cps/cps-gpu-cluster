@@ -14,18 +14,18 @@ one-off qualification job before updating the CronJob.
 and ConfigMap data were compared directly with the live resources. Run that
 comparison again before promoting this package to a GitOps reconciler.
 
-## RC6 staging
+## RC7 staging
 
-The RC6 staging branch pins the gateway and backup provenance to the same
+The RC7 staging branch pins the gateway and backup provenance to the same
 published OCI image. The content-addressed backup schema accepts both the
-incumbent and RC5/RC6 database layouts. The backup runner image, policy hash
+incumbent and RC5 through RC7 database layouts. The backup runner image, policy hash
 and source claim use the current production pins.
 
 The active gateway runtime and the approval publisher use paired immutable
 objects in the `cps-compute` namespace. The staged Secret preserves the
 production runtime configuration and leaves GPU batch dispatch disabled.
 Its gateway publisher declaration and the staged ConfigMap both identify
-the existing Deployment UID and the RC6 image.
+the existing Deployment UID and the RC7 image.
 
 Keep the live Fleet GitRepo pinned until the timed traffic handoff,
 writer fence and rollback are ready. This Deployment uses `Recreate`.

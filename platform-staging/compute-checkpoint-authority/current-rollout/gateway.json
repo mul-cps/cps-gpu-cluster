@@ -160,7 +160,7 @@
                 }
               }
             ],
-            "image": "ghcr.io/mul-cps/cps-compute@sha256:bac0644420179544c0ec46ad159ce3980411899eccd502898b32556cfd9682f6",
+            "image": "ghcr.io/mul-cps/cps-compute@sha256:5d92684ceef47ecbeee4d3c25c0deb960fe222037a255ba84216cf2725264a19",
             "imagePullPolicy": "IfNotPresent",
             "name": "gateway",
             "ports": [
@@ -527,7 +527,7 @@
             "name": "upstream-runtime",
             "secret": {
               "defaultMode": 256,
-              "secretName": "cps-staged-gateway-runtime-8552bdcd87096788"
+              "secretName": "cps-staged-gateway-runtime-58777661fe90ee5f"
             }
           },
           {
@@ -664,7 +664,7 @@
                   "path": "publisher.json"
                 }
               ],
-              "name": "cps-staged-gateway-publisher-e8a098f6a2455e91"
+              "name": "cps-staged-gateway-publisher-14c3d82ed8d7e57c"
             },
             "name": "cps-native-approval-publisher"
           },
