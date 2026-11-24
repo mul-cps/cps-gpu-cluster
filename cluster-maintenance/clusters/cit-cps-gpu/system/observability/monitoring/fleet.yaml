@@ -1,9 +1,9 @@
-# Fleet configuration for NVIDIA monitoring add-ons (dashboards, alerts only)
+# Fleet configuration for cluster monitoring add-ons
 name: nvidia-monitoring-addons
 
 defaultNamespace: cattle-monitoring-system
 
-# Apply only the NVIDIA-specific manifests; monitoring stack is installed manually
+# The Rancher Monitoring Helm release is managed separately
 kustomize:
   dir: .
 

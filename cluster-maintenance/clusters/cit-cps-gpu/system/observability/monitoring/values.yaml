@@ -91,6 +91,10 @@ alertmanager:
   enabled: true
   
   alertmanagerSpec:
+    alertmanagerConfiguration:
+      name: cluster-alert-delivery
+      global:
+        resolveTimeout: 5m
     # Storage for alert history
     storage:
       volumeClaimTemplate:

@@ -1,0 +1,157 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: alertmanager-loki-receiver
+  namespace: cattle-monitoring-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: alertmanager-loki-receiver
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: alertmanager-loki-receiver
+    spec:
+      automountServiceAccountToken: false
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: receiver
+          image: docker.io/library/python@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90
+          command: [python, -B, -u, /receiver/alertmanager_receiver.py]
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities:
+              drop: [ALL]
+          ports:
+            - name: http
+              containerPort: 8080
+          readinessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+          livenessProbe:
+            httpGet:
+              path: /readyz
+              port: http
+            periodSeconds: 15
+            failureThreshold: 4
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+            limits:
+              cpu: 250m
+              memory: 128Mi
+          volumeMounts:
+            - name: program
+              mountPath: /receiver
+              readOnly: true
+      volumes:
+        - name: program
+          configMap:
+            name: alertmanager-loki-receiver
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: alertmanager-loki-receiver
+  namespace: cattle-monitoring-system
+spec:
+  selector:
+    app.kubernetes.io/name: alertmanager-loki-receiver
+  ports:
+    - name: http
+      port: 8080
+      targetPort: http
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: alertmanager-loki-receiver
+  namespace: cattle-monitoring-system
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: alertmanager-loki-receiver
+  policyTypes: [Ingress, Egress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              alertmanager: rancher-monitoring-alertmanager
+      ports:
+        - port: 8080
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: loki
+          podSelector:
+            matchLabels:
+              app.kubernetes.io/name: loki
+              app.kubernetes.io/instance: loki
+              app.kubernetes.io/component: gateway
+      ports:
+        - port: 80
+        - port: 8080
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+      ports:
+        - port: 53
+          protocol: UDP
+        - port: 53
+          protocol: TCP
+---
+apiVersion: monitoring.coreos.com/v1alpha1
+kind: AlertmanagerConfig
+metadata:
+  name: cluster-alert-delivery
+  namespace: cattle-monitoring-system
+spec:
+  route:
+    groupBy: [namespace]
+    groupWait: 30s
+    groupInterval: 5m
+    repeatInterval: 12h
+    receiver: loki
+    routes:
+      - receiver: suppressed
+        matchers:
+          - name: alertname
+            matchType: '=~'
+            value: InfoInhibitor|Watchdog
+  receivers:
+    - name: loki
+      webhookConfigs:
+        - url: http://alertmanager-loki-receiver.cattle-monitoring-system.svc:8080/alerts
+          sendResolved: true
+          timeout: 15s
+    - name: suppressed
+  inhibitRules:
+    - equal: [namespace, alertname]
+      sourceMatch:
+        - {name: severity, matchType: '=', value: critical}
+      targetMatch:
+        - {name: severity, matchType: '=~', value: warning|info}
+    - equal: [namespace, alertname]
+      sourceMatch:
+        - {name: severity, matchType: '=', value: warning}
+      targetMatch:
+        - {name: severity, matchType: '=', value: info}
+    - equal: [namespace, alertname]
+      sourceMatch:
+        - {name: alertname, matchType: '=', value: InfoInhibitor}
+      targetMatch:
+        - {name: severity, matchType: '=', value: info}

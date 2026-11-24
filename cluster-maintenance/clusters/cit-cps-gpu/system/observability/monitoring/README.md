@@ -25,6 +25,19 @@ The monitoring stack includes:
 └─────────────────┘
 ```
 
+## Alert delivery
+
+Fleet deploys the internal Loki receiver and the `cluster-alert-delivery`
+AlertmanagerConfig. The Rancher Monitoring Helm values select it as
+Alertmanager's global configuration. Deploy the Fleet bundle before applying
+those Helm values.
+
+In Grafana Explore, select Loki and query
+`{job="alertmanager-notifications"} | json`. Each firing or resolved alert
+has an individual receipt. Use `fingerprint` to match the two states. The
+receiver returns success only after Loki accepts the write, so delivery
+failures can be retried by Alertmanager.
+
 ## Prerequisites
 
 1. **GPU Operator**: Must be deployed first with ServiceMonitor enabled
