@@ -32,3 +32,28 @@ rollback on the authoritative store.
 The production Service, writer activation, and multi-replica coordination each
 have a separate rollout gate. Mount and validate this configuration through a
 shadow Service first.
+
+### Gateway startup
+
+`gateway_start.py` preloads the installed gateway factory while the candidate
+waits for operator activation. It uses the existing mounted publisher
+declaration and downward Pod identity. The Pod must belong to the reviewed
+Deployment through a ReplicaSet whose template matches the current permitted
+template. The gateway container image, service account, executable
+containers, and mounted volumes are checked before the factory runs.
+
+Keep the incumbent template current during candidate prewarming so its
+approval publisher can continue to renew. After draining direct connections
+and the relays, verify the outgoing writer cgroups and exclusive database
+and native execution locks. The operator changes the desired template and
+adds the Deployment annotation
+`cps.unileoben.ac.at/gateway-start-template` in the same guarded patch. Its
+value is `template_digest` of the exact API-defaulted Pod template. Confirm
+adoption of the prewarmed ReplicaSet before releasing traffic.
+
+Verify the same writer fences before rollback. Restore the incumbent
+template and remove the activation annotation together before thawing the
+incumbent. The gateway service account requires read access to the exact
+controller objects. Keep ownership of the activation annotation with the
+operator. This entrypoint uses the selected gateway image's installed
+approval validation helpers and the existing TLS paths.
