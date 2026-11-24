@@ -3,6 +3,7 @@ kind: Kustomization
 namespace: cps-compute
 resources:
   - gateway.json
+  - gateway-start.json
   - backup-cronjob.json
   - backup-alerts.yaml
 generatorOptions:

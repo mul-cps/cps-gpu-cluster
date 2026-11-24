@@ -38,19 +38,9 @@
         "containers": [
           {
             "command": [
-              "uvicorn",
-              "cps_compute.runtime:create_runtime",
-              "--factory",
-              "--workers",
-              "1",
-              "--host",
-              "0.0.0.0",
-              "--port",
-              "8000",
-              "--ssl-keyfile",
-              "/tls/tls.key",
-              "--ssl-certfile",
-              "/tls/tls.crt"
+              "python",
+              "-u",
+              "/gateway-start/gateway_start.py"
             ],
             "env": [
               {
@@ -75,8 +65,8 @@
                 "name": "GATEWAY_IDENTITY_PUBLISHER_CPS_TOKEN",
                 "valueFrom": {
                   "secretKeyRef": {
-                    "name": "cps-canonical-link-publisher-20261123",
-                    "key": "token"
+                    "key": "token",
+                    "name": "cps-canonical-link-publisher-20261123"
                   }
                 }
               },
@@ -84,8 +74,8 @@
                 "name": "GATEWAY_IDENTITY_PUBLISHER_CIT_TOKEN",
                 "valueFrom": {
                   "secretKeyRef": {
-                    "name": "cit-canonical-link-publisher-20261123",
-                    "key": "token"
+                    "key": "token",
+                    "name": "cit-canonical-link-publisher-20261123"
                   }
                 }
               },
@@ -300,6 +290,11 @@
                 "name": "cps-native-policy-transition-reference",
                 "readOnly": true,
                 "subPath": "reference.json"
+              },
+              {
+                "mountPath": "/gateway-start",
+                "name": "gateway-start",
+                "readOnly": true
               }
             ]
           },
@@ -767,6 +762,13 @@
               "name": "cps-nbi24-4f890b17dd295c3d"
             },
             "name": "cps-native-policy-transition-reference"
+          },
+          {
+            "configMap": {
+              "defaultMode": 420,
+              "name": "compute-gateway-start-cb4344f7837b2cf3"
+            },
+            "name": "gateway-start"
           }
         ]
       }
@@ -774,6 +776,9 @@
   },
   "metadata": {
     "name": "compute-gateway",
-    "namespace": "cps-compute"
+    "namespace": "cps-compute",
+    "annotations": {
+      "cps.unileoben.ac.at/gateway-start-template": "sha256:bb22bbb3a1116a4b459676effbe22029a83a5428bf7fba8339d0170930cd587e"
+    }
   }
 }
