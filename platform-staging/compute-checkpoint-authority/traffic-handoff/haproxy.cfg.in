@@ -1,0 +1,50 @@
+global
+    maxconn 512
+    nbthread 1
+    tune.lua.bool-sample-conversion normal
+    lua-load /handoff-config/hold-writes.lua
+    stats socket /run/handoff/runtime.sock mode 660 level admin
+
+defaults
+    timeout connect 1s
+    timeout client 1h
+    timeout server 1h
+    timeout http-request 10s
+    timeout http-keep-alive 30s
+    timeout tunnel 1h
+    retries 0
+
+frontend gateway_api
+    bind :18443 ssl crt /handoff-tls/server.pem alpn http/1.1
+    mode http
+    maxconn 256
+    http-request lua.wait_for_gateway_writer
+    http-request return status 503 content-type text/plain string "Gateway writer unavailable" hdr Cache-Control no-store unless { var(txn.gateway_writer) -m found }
+    use_backend gateway_incumbent if { var(txn.gateway_writer) -m str incumbent }
+    use_backend gateway_candidate if { var(txn.gateway_writer) -m str candidate }
+
+backend gateway_incumbent
+    mode http
+    option http-server-close
+    http-reuse never
+    server active @INCUMBENT@ ssl verify required ca-file /trust/ca.crt verifyhost compute-gateway.cps-compute.svc.cluster.local sni str(compute-gateway.cps-compute.svc.cluster.local)
+
+backend gateway_candidate
+    mode http
+    option http-server-close
+    http-reuse never
+    server active @CANDIDATE@ ssl verify required ca-file /trust/ca.crt verifyhost compute-gateway.cps-compute.svc.cluster.local sni str(compute-gateway.cps-compute.svc.cluster.local)
+
+frontend approval_capture
+    bind :18444
+    mode tcp
+    default_backend capture_standby
+
+backend capture_standby
+    mode tcp
+    server readonly @CAPTURE@
+
+frontend listener_health
+    bind :18449
+    mode http
+    http-request return status 204
