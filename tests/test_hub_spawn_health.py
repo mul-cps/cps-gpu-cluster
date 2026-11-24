@@ -70,3 +70,59 @@ def test_resource_contract_covers_both_shared_sizes_and_dedicated_hardware():
         assert share["cpu"] == 8
     assert monitor.resource_contract("cit-research", "xlarge-tf", 2)["peer"] is True
     assert monitor.resource_contract("cps-poweruser", "tensorflow-dual", 2)["framework"] == "tensorflow"
+
+
+def test_stop_retries_a_transient_failure_and_confirms_inactive(monkeypatch):
+    user_api = "/hub/api/users/cit-probe"
+    server_name = "spawn-health-2g"
+    named_api = user_api + "/servers/" + server_name
+    calls = []
+
+    def respond(request):
+        calls.append(request.method)
+        if len(calls) == 1:
+            raise monitor.httpx.ReadTimeout("stop response lost", request=request)
+        if request.method == "DELETE":
+            return monitor.httpx.Response(202)
+        return monitor.httpx.Response(200, json={"servers": {}})
+
+    monkeypatch.setattr(monitor.time, "sleep", lambda _: None)
+    with monitor.httpx.Client(base_url="https://probe.invalid",
+                              transport=monitor.httpx.MockTransport(respond)) as client:
+        monitor.stop(client, user_api, named_api, server_name)
+    assert calls == ["DELETE", "DELETE", "GET"]
+
+
+def test_visibility_report_uses_nvml_without_loading_cuda(monkeypatch, capsys, tmp_path):
+    import ctypes
+    import json
+    import runpy
+    import subprocess
+
+    gpu_uuid = "GPU-76a6ca19-0e89-4163-b73a-b5ea121ae342"
+    query = ["nvidia-smi", "--query-gpu=uuid", "--format=csv,noheader"]
+
+    def list_visible_devices(command, **kwargs):
+        assert command == query
+        return gpu_uuid + "\n"
+
+    def reject_cuda(*args, **kwargs):
+        pytest.fail("the visibility probe called the CUDA driver")
+
+    cgroups = {Path("/sys/fs/cgroup/cpu.max"): "max 100000",
+               Path("/sys/fs/cgroup/memory.max"): "1048576"}
+    read_text = Path.read_text
+    monkeypatch.setattr(Path, "read_text", lambda path: cgroups[path] if path in cgroups else read_text(path))
+    monkeypatch.setattr(Path, "home", lambda: tmp_path)
+    monkeypatch.setattr(subprocess, "check_output", list_visible_devices)
+    monkeypatch.setattr(ctypes, "CDLL", reject_cuda)
+    monkeypatch.setenv("NVIDIA_GPU_MEMORY_REQUEST", "2048")
+    monkeypatch.setenv("NVIDIA_GPU_MEMORY_LIMIT", "2048")
+    runpy.run_path(str(monitor.NOTEBOOK_TEST), init_globals={"EXPECTED": {
+        "cpu": 0, "memory": 0, "home": 0, "gpus": 1, "vram_mib": 2048,
+        "framework": "pytorch", "gpu_visibility_only": True,
+    }})
+    receipt = json.loads(capsys.readouterr().out.removeprefix("RESOURCE_RECEIPT "))
+    assert receipt["gpuCheck"] == "visibility"
+    assert receipt["visibleGpuUuids"] == [gpu_uuid]
+    assert receipt["vramCapMiB"] == 2048

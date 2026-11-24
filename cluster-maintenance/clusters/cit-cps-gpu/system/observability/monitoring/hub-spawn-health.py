@@ -58,13 +58,20 @@ class ProbeFailure(RuntimeError):
     """A failed named check with no credentials or response bodies."""
 
 
+class ProbeUnavailable(ProbeFailure):
+    """The request can be retried without changing the probe identity."""
+
+
 def request(client, method, path, statuses, stage, **options):
     try:
         result = client.request(method, path, **options)
+    except httpx.TransportError:
+        raise ProbeUnavailable(stage) from None
     except httpx.HTTPError:
         raise ProbeFailure(stage) from None
     if result.status_code not in statuses:
-        raise ProbeFailure(f"{stage} HTTP {result.status_code}")
+        failure = ProbeUnavailable if result.status_code in {429, 500, 502, 503, 504} else ProbeFailure
+        raise failure(f"{stage} HTTP {result.status_code}")
     return result
 
 
@@ -99,12 +106,21 @@ def wait_ready(client, user_api, server_name, seconds):
 
 
 def stop(client, user_api, named_api, server_name):
-    request(client, "DELETE", named_api, {202, 204, 404}, "stop", json={"remove": False})
     deadline = time.monotonic() + 75
+    send_stop = True
     while time.monotonic() < deadline:
-        state = get_server(client, user_api, server_name)
-        if not state.get("ready") and not state.get("pending"):
+        try:
+            if send_stop:
+                request(client, "DELETE", named_api, {202, 204, 404}, "stop", json={"remove": False})
+                send_stop = False
+            state = get_server(client, user_api, server_name)
+        except ProbeUnavailable:
+            time.sleep(2)
+            continue
+        pending = state.get("pending")
+        if not state.get("ready") and not pending:
             return
+        send_stop = pending != "stop"
         time.sleep(2)
     raise ProbeFailure("stop deadline")
 
@@ -201,7 +217,11 @@ def main():
     parser.add_argument("check", choices=("route", *PROFILE_CASES))
     parser.add_argument("--hub", choices=tuple(HUBS))
     parser.add_argument("--case")
+    parser.add_argument("--visibility-only", action="store_true",
+                        help="Check GPU UUID visibility without creating a CUDA context.")
     args = parser.parse_args()
+    if args.check == "route" and args.visibility_only:
+        parser.error("--visibility-only requires a notebook profile")
     case = args.case
     try:
         if args.check == "route":
@@ -220,8 +240,10 @@ def main():
             with httpx.Client(base_url=HUBS[source], timeout=12, follow_redirects=False,
                               headers={"Authorization": "token " + token}) as client:
                 for case, options, devices in matching:
-                    receipt = run_profile(client, owner, "spawn-health-" + case, options,
-                                          resource_contract(args.check, case, devices), args.check)
+                    expected = resource_contract(args.check, case, devices)
+                    if args.visibility_only:
+                        expected["gpu_visibility_only"] = True
+                    receipt = run_profile(client, owner, "spawn-health-" + case, options, expected, args.check)
                     print(json.dumps({"check": args.check, "hub": source, "case": case,
                                       "result": "passed", "resources": receipt, "serverStopped": True}),
                           flush=True)

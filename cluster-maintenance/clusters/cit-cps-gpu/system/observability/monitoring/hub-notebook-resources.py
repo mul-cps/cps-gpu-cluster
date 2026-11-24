@@ -3,7 +3,86 @@ import ctypes as ct
 import json
 import os
 from pathlib import Path
+import subprocess
 import tempfile
+from uuid import UUID
+
+
+def visible_gpu_uuids():
+    output = subprocess.check_output(
+        ["nvidia-smi", "--query-gpu=uuid", "--format=csv,noheader"],
+        text=True,
+        timeout=10,
+    )
+    devices = [line.strip() for line in output.splitlines()]
+    assert len(set(devices)) == len(devices) == EXPECTED["gpus"], "visible GPU count"
+    for device in devices:
+        prefix, separator, value = device.partition("-")
+        assert prefix == "GPU" and separator and str(UUID(value)) == value, "physical GPU UUID"
+    return devices
+
+
+def check_cuda(memory_cap):
+    cuda = ct.CDLL("libcuda.so.1")
+    assert cuda.cuInit(0) == 0, "CUDA init"
+    device_count = ct.c_int()
+    assert cuda.cuDeviceGetCount(ct.byref(device_count)) == 0
+    assert device_count.value == EXPECTED["gpus"], "GPU count"
+    devices = []
+    vram = []
+    for index in range(device_count.value):
+        device = ct.c_int()
+        assert cuda.cuDeviceGet(ct.byref(device), index) == 0
+        devices.append(device)
+        memory = ct.c_size_t()
+        assert cuda.cuDeviceTotalMem_v2(ct.byref(memory), device) == 0
+        if not memory_cap:
+            assert memory.value >= 40_000_000_000, "whole-device memory"
+        vram.append(memory.value)
+        context = ct.c_void_p()
+        assert cuda.cuCtxCreate_v2(ct.byref(context), 0, device) == 0
+        try:
+            address = ct.c_uint64()
+            sample_bytes = ct.c_size_t(64 << 20)
+            assert cuda.cuMemAlloc_v2(ct.byref(address), sample_bytes) == 0
+            try:
+                assert cuda.cuMemsetD8_v2(address, ct.c_ubyte(19), sample_bytes) == 0
+                assert cuda.cuCtxSynchronize() == 0
+            finally:
+                assert cuda.cuMemFree_v2(address) == 0
+            if memory_cap:
+                excess = cuda.cuMemAlloc_v2(ct.byref(address), ct.c_size_t((memory_cap + 64) << 20))
+                if excess == 0:
+                    cuda.cuMemFree_v2(address)
+                assert excess == 2, "VRAM cap enforcement"
+        finally:
+            assert cuda.cuCtxDestroy_v2(context) == 0
+
+    if EXPECTED.get("peer"):
+        peer = ct.c_int()
+        for source, target in ((0, 1), (1, 0)):
+            assert cuda.cuDeviceCanAccessPeer(ct.byref(peer), devices[source], devices[target]) == 0
+            assert peer.value == 1, "GPU peer access"
+
+    framework = EXPECTED["framework"]
+    if framework == "pytorch":
+        import torch
+        assert torch.cuda.device_count() == device_count.value
+        for index in range(device_count.value):
+            assert torch.ones(32, device=f"cuda:{index}").sum().item() == 32
+    else:
+        import tensorflow as tf
+        physical = tf.config.list_physical_devices("GPU")
+        assert len(physical) == device_count.value
+        for device in physical:
+            tf.config.experimental.set_memory_growth(device, True)
+        for index in range(device_count.value):
+            with tf.device(f"/GPU:{index}"):
+                total = tf.reduce_sum(tf.ones(32))
+            assert float(total.numpy()) == 32 and "GPU" in total.device
+    return {"gpuCheck": "cuda", "cudaDevices": device_count.value,
+            "deviceMemoryBytes": vram, "framework": framework}
+
 
 cgroups = Path("/sys/fs/cgroup")
 quota, period = (cgroups / "cpu.max").read_text().split()
@@ -32,70 +111,17 @@ with tempfile.TemporaryFile(dir=home) as probe_file:
     probe_file.seek(0)
     assert probe_file.read() == content, "home read and write"
 
-cuda = ct.CDLL("libcuda.so.1")
-assert cuda.cuInit(0) == 0, "CUDA init"
-device_count = ct.c_int()
-assert cuda.cuDeviceGetCount(ct.byref(device_count)) == 0
-assert device_count.value == EXPECTED["gpus"], "GPU count"
 memory_cap = EXPECTED.get("vram_mib")
 if memory_cap:
     assert int(os.environ["NVIDIA_GPU_MEMORY_REQUEST"]) == memory_cap, "VRAM request"
     assert int(os.environ["NVIDIA_GPU_MEMORY_LIMIT"]) == memory_cap, "VRAM limit"
-devices = []
-vram = []
-for index in range(device_count.value):
-    device = ct.c_int()
-    assert cuda.cuDeviceGet(ct.byref(device), index) == 0
-    devices.append(device)
-    memory = ct.c_size_t()
-    assert cuda.cuDeviceTotalMem_v2(ct.byref(memory), device) == 0
-    if not memory_cap:
-        assert memory.value >= 40_000_000_000, "whole-device memory"
-    vram.append(memory.value)
-    context = ct.c_void_p()
-    assert cuda.cuCtxCreate_v2(ct.byref(context), 0, device) == 0
-    try:
-        address = ct.c_uint64()
-        sample_bytes = ct.c_size_t(64 << 20)
-        assert cuda.cuMemAlloc_v2(ct.byref(address), sample_bytes) == 0
-        try:
-            assert cuda.cuMemsetD8_v2(address, ct.c_ubyte(19), sample_bytes) == 0
-            assert cuda.cuCtxSynchronize() == 0
-        finally:
-            assert cuda.cuMemFree_v2(address) == 0
-        if memory_cap:
-            excess = cuda.cuMemAlloc_v2(ct.byref(address), ct.c_size_t((memory_cap + 64) << 20))
-            if excess == 0:
-                cuda.cuMemFree_v2(address)
-            assert excess == 2, "VRAM cap enforcement"
-    finally:
-        assert cuda.cuCtxDestroy_v2(context) == 0
 
-if EXPECTED.get("peer"):
-    peer = ct.c_int()
-    for source, target in ((0, 1), (1, 0)):
-        assert cuda.cuDeviceCanAccessPeer(ct.byref(peer), devices[source], devices[target]) == 0
-        assert peer.value == 1, "GPU peer access"
-
-framework = EXPECTED["framework"]
-if framework == "pytorch":
-    import torch
-    assert torch.cuda.device_count() == device_count.value
-    for index in range(device_count.value):
-        assert torch.ones(32, device=f"cuda:{index}").sum().item() == 32
+if EXPECTED.get("gpu_visibility_only"):
+    gpu_receipt = {"gpuCheck": "visibility", "visibleGpuUuids": visible_gpu_uuids()}
 else:
-    import tensorflow as tf
-    physical = tf.config.list_physical_devices("GPU")
-    assert len(physical) == device_count.value
-    for device in physical:
-        tf.config.experimental.set_memory_growth(device, True)
-    for index in range(device_count.value):
-        with tf.device(f"/GPU:{index}"):
-            total = tf.reduce_sum(tf.ones(32))
-        assert float(total.numpy()) == 32 and "GPU" in total.device
+    gpu_receipt = check_cuda(memory_cap)
 
 print("RESOURCE_RECEIPT " + json.dumps({
     "cpuCapacity": cpus, "memoryBytes": memory_limit, "homeFreeBytes": home_available,
-    "cudaDevices": device_count.value, "deviceMemoryBytes": vram, "vramCapMiB": memory_cap,
-    "homeWritable": True, "framework": framework,
+    "vramCapMiB": memory_cap, "homeWritable": True, **gpu_receipt,
 }))
