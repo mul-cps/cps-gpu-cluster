@@ -160,7 +160,7 @@
                 }
               }
             ],
-            "image": "ghcr.io/mul-cps/cps-compute@sha256:d3b4fa252778d95968dc3fe609d0c17f80ecb11453a963cf60bedab6ddb415e6",
+            "image": "ghcr.io/mul-cps/cps-compute@sha256:01e8b650a12ad9d64ec609aa7db58cb497e53027b94ee5212377cd6a42d9d3ee",
             "imagePullPolicy": "IfNotPresent",
             "name": "gateway",
             "ports": [
@@ -527,7 +527,7 @@
             "name": "upstream-runtime",
             "secret": {
               "defaultMode": 256,
-              "secretName": "gateway-cps-poweruser-group-20261123"
+              "secretName": "cps-staged-gateway-runtime-083422a8f7297b8a"
             }
           },
           {
@@ -664,7 +664,7 @@
                   "path": "publisher.json"
                 }
               ],
-              "name": "cps-selected-publisher-dca8222730087f2b"
+              "name": "cps-staged-gateway-publisher-f0f9eb8192f28f3b"
             },
             "name": "cps-native-approval-publisher"
           },
