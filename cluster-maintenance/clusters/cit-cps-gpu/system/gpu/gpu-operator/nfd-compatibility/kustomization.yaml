@@ -1,0 +1,35 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+patches:
+  - target:
+      group: apps
+      version: v1
+      kind: DaemonSet
+      name: gpu-operator-node-feature-discovery-worker
+    patch: |
+      - op: test
+        path: /spec/template/spec/containers/0/name
+        value: worker
+      - op: test
+        path: /spec/template/spec/containers/0/args
+        value: ["-owner-refs=pod,ds", "-port=8080"]
+      - op: replace
+        path: /spec/template/spec/containers/0/args
+        value: ["-feature-gates=NodeFeatureGroupAPI=false", "-port=8080"]
+  # Preserve the operand label that previously won the chart's duplicate key.
+  # Apply it after Helm renders so the input is valid for Kustomize.
+  - target:
+      group: nvidia.com
+      version: v1
+      kind: ClusterPolicy
+      name: cluster-policy
+    patch: |
+      - op: test
+        path: /spec/daemonsets/labels/app.kubernetes.io~1managed-by
+        value: gpu-operator
+      - op: test
+        path: /spec/daemonsets/labels/helm.sh~1chart
+        value: gpu-operator-v26.7.1
+      - op: replace
+        path: /spec/daemonsets/labels/helm.sh~1chart
+        value: gpu-operator-v25.10.0

@@ -26,6 +26,6 @@ spec:
         - -c
         - |
           sysctl -w fs.inotify.max_user_watches=524288
-          sysctl -w fs.inotify.max_user_instances=512
+          sysctl -w fs.inotify.max_user_instances=1024
           echo "Tuning applied. Sleeping..."
           sleep infinity

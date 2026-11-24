@@ -1,5 +1,8 @@
 name: gpu-operator
 defaultNamespace: gpu-operator
+# The pinned v0.18.2 worker requires v0.18.2 arguments.
+kustomize:
+  dir: nfd-compatibility
 helm:
   chart: gpu-operator
   repo: https://nvidia.github.io/gpu-operator

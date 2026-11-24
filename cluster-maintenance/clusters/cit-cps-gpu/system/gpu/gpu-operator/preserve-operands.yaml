@@ -216,9 +216,6 @@ vgpuManager:
   image: vgpu-manager
   imagePullPolicy: IfNotPresent
 daemonsets:
-  labels:
-    app.kubernetes.io/managed-by: gpu-operator
-    helm.sh/chart: gpu-operator-v25.10.0
   priorityClassName: system-node-critical
   rollingUpdate:
     maxUnavailable: '1'
