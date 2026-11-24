@@ -11,3 +11,25 @@ These are guarded operator tools for the reviewed 2026-11-18 planned handoff. Th
 Run observer/phase tests in this directory: `python3 -m unittest discover -p 'test_*.py' -v` (25). Run DATA tests in `data-adapter/`: `python3 -m unittest -v test_data_adapter` (12). Fixture-only SQLite resource warnings on local Python3.13 do not originate in the production protocol, which explicitly closes its native database connections.
 
 See `docs/operations/evidence/upstream-sharing-20261116/controller-cutover-tools-prequalification-20261118.json` for exact proof limits. Fresh helpers, worker staging, the genuine process/caller proof collector, integration review and the actual planned handoff remain required. No old-store failback is automatic after possible target writes.
+
+## Restore Recreate after a prewarmed gateway handoff
+
+Generate one unique promotion ID when preparing the candidate. Call
+`stamp_candidate_template` before creating its parked ReplicaSet. Keep the
+same stamped template in the activation patch and the desired GitOps
+Deployment. A fresh candidate after a rollback gets a fresh ID. Kubernetes
+chooses the oldest ReplicaSet when multiple sets match the desired template.
+
+After attachment, call `require_candidate_selection` with the live paused
+Deployment and all ReplicaSets in its namespace. Pass the expected candidate
+ReplicaSet UID. Complete this check before retiring the incumbent. It also
+detects an orphan that the Deployment can claim.
+
+After the incumbent exits, call `check_finalization` with a fresh Deployment,
+ReplicaSet list, Pod list, and the expected candidate ReplicaSet and Pod
+UIDs. Use the returned Deployment UID and generation in the existing
+compare-and-set patch that restores `Recreate`. Keep the existing writer
+fences, acknowledgment checks, and Service checks. A failed preflight leaves
+the Deployment paused for reconciliation. After applying the strategy
+change, verify the Ready endpoint still points to the original candidate
+Pod UID before retiring the handoff relay.
