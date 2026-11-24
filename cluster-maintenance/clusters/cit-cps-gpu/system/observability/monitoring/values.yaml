@@ -95,6 +95,14 @@ alertmanager:
       name: cluster-alert-delivery
       global:
         resolveTimeout: 5m
+    alertmanagerConfigMatcherStrategy:
+      type: OnNamespaceExceptForAlertmanagerNamespace
+    alertmanagerConfigSelector:
+      matchLabels:
+        cps.unileoben.ac.at/alertmanager-route: admin-email
+    alertmanagerConfigNamespaceSelector:
+      matchLabels:
+        kubernetes.io/metadata.name: cattle-monitoring-system
     # Storage for alert history
     storage:
       volumeClaimTemplate:

@@ -132,6 +132,8 @@ spec:
           - name: alertname
             matchType: '=~'
             value: InfoInhibitor|Watchdog
+      # Additional routes can continue to this explicit internal receiver.
+      - receiver: loki
   receivers:
     - name: loki
       webhookConfigs:
