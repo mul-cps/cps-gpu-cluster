@@ -323,8 +323,7 @@
           name: harica-ca
         name: harica-ca
       - name: pvc
-        persistentVolumeClaim:
-          claimName: hub-db-dir
+        emptyDir: {}
       - configMap:
           defaultMode: 420
           name: cps-nbi24-ed3c9e7c5564e828
@@ -348,7 +347,7 @@
           items:
           - key: publisher.json
             path: publisher.json
-          name: cps-fixed-launch-publisher-16fa767-20261028
+          name: cps-approval-hub-cps-9ddbded631db0fad
         name: cps-native-approval-publisher
       - configMap:
           defaultMode: 292

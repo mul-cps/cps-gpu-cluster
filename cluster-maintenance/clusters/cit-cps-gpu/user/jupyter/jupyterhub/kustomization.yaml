@@ -12,6 +12,7 @@ resources:
   - postgresql.yaml
   - harica-ca-configmap.yaml
   - user-docs-configmap.yaml
+  - hub-approval-publisher.json
 
   - dask-rbac.yaml
 
