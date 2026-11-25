@@ -1,0 +1,13 @@
+grafana:
+  grafana.ini:
+    dashboards:
+      default_home_dashboard_path: /tmp/dashboards/00 Cluster Operations/cps-cluster-overview.json
+  sidecar:
+    dashboards:
+      folderAnnotation: k8s-sidecar-target-directory
+      provider:
+        foldersFromFilesStructure: true
+defaultRules:
+  disabled:
+    KubeHpaMaxedOut: true
+    KubeJobFailed: true

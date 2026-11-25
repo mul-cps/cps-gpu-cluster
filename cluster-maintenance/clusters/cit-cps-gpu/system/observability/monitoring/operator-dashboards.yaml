@@ -1,0 +1,2917 @@
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cps-cluster-overview
+  namespace: cattle-dashboards
+  labels:
+    grafana_dashboard: '1'
+  annotations:
+    k8s-sidecar-target-directory: 00 Cluster Operations
+data:
+  cps-cluster-overview.json: |
+    {
+      "uid": "cps-cluster-overview",
+      "title": "Cluster overview",
+      "description": "Operational entry point for the CPS/CIT GPU cluster. Start with service impact and saturation, then follow the detailed dashboards.",
+      "tags": [
+        "cps-ops",
+        "cluster",
+        "overview"
+      ],
+      "schemaVersion": 41,
+      "version": 1,
+      "editable": false,
+      "timezone": "browser",
+      "time": {
+        "from": "now-24h",
+        "to": "now"
+      },
+      "refresh": "1m",
+      "links": [
+        {
+          "type": "link",
+          "title": "GPU workers",
+          "url": "d/cps-worker-health",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "Storage and backups",
+          "url": "d/cps-storage-capacity",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "Services and teaching",
+          "url": "d/cps-service-reliability",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "Alerts and Fleet",
+          "url": "d/cps-alert-operations",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        }
+      ],
+      "panels": [
+        {
+          "id": 1,
+          "title": "Critical alerts",
+          "description": "Current firing critical alerts.",
+          "type": "stat",
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 4,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 1
+                  },
+                  {
+                    "color": "red",
+                    "value": 3
+                  }
+                ]
+              },
+              "links": [
+                {
+                  "type": "link",
+                  "title": "Alerts and Fleet",
+                  "url": "d/cps-alert-operations",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "count(ALERTS{alertstate=\"firing\",severity=\"critical\"}) or vector(0)",
+              "legendFormat": "",
+              "instant": true,
+              "range": false,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Nodes Ready",
+          "description": "Expected cluster inventory is seven nodes.",
+          "type": "stat",
+          "gridPos": {
+            "x": 4,
+            "y": 0,
+            "w": 4,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 6
+                  },
+                  {
+                    "color": "green",
+                    "value": 7
+                  }
+                ]
+              },
+              "links": [
+                {
+                  "type": "link",
+                  "title": "GPU workers",
+                  "url": "d/cps-worker-health",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "sum(max by(node) (kube_node_status_condition{condition=\"Ready\",status=\"true\"}))",
+              "legendFormat": "",
+              "instant": true,
+              "range": false,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "Allocatable GPUs",
+          "description": "Advertised whole GPU count, independent of VRAM and fractional reservations.",
+          "type": "stat",
+          "gridPos": {
+            "x": 8,
+            "y": 0,
+            "w": 4,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 6
+                  },
+                  {
+                    "color": "green",
+                    "value": 8
+                  }
+                ]
+              },
+              "links": [
+                {
+                  "type": "link",
+                  "title": "GPU workers",
+                  "url": "d/cps-worker-health",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "sum(max by(node) (kube_node_status_allocatable{resource=\"nvidia_com_gpu\"}))",
+              "legendFormat": "",
+              "instant": true,
+              "range": false,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "title": "Gateway ready endpoints",
+          "description": "Ready HTTP endpoints. Missing kube-state-metrics leaves a gap.",
+          "type": "stat",
+          "gridPos": {
+            "x": 12,
+            "y": 0,
+            "w": 4,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "green",
+                    "value": 1
+                  }
+                ]
+              },
+              "links": [
+                {
+                  "type": "link",
+                  "title": "Services and teaching",
+                  "url": "d/cps-service-reliability",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "count(kube_endpoint_address{job=\"kube-state-metrics\",namespace=\"cps-compute\",endpoint=\"compute-gateway\",port_name=\"http\",ready=\"true\"}) or (0 * max(up{job=\"kube-state-metrics\"}))",
+              "legendFormat": "",
+              "instant": true,
+              "range": false,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "title": "Lowest root free %",
+          "description": "Lowest observed root free space among the guest filesystems.",
+          "type": "stat",
+          "gridPos": {
+            "x": 16,
+            "y": 0,
+            "w": 4,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 10
+                  },
+                  {
+                    "color": "green",
+                    "value": 20
+                  }
+                ]
+              },
+              "links": [
+                {
+                  "type": "link",
+                  "title": "Storage and backups",
+                  "url": "d/cps-storage-capacity",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "min(100*cps:filesystem_free_ratio{mountpoint=\"/\"})",
+              "legendFormat": "",
+              "instant": true,
+              "range": false,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "title": "Lowest replica headroom",
+          "description": "Minimum Longhorn scheduling headroom, displayed in GiB.",
+          "type": "stat",
+          "gridPos": {
+            "x": 20,
+            "y": 0,
+            "w": 4,
+            "h": 4
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "noValue": "No data",
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "red",
+                    "value": null
+                  },
+                  {
+                    "color": "orange",
+                    "value": 0
+                  },
+                  {
+                    "color": "green",
+                    "value": 26843545600
+                  }
+                ]
+              },
+              "links": [
+                {
+                  "type": "link",
+                  "title": "Storage and backups",
+                  "url": "d/cps-storage-capacity",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {
+            "colorMode": "background",
+            "graphMode": "none",
+            "textMode": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            }
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "min(cps_longhorn_disk_schedulable_bytes and cps_longhorn_disk_replicas>0)",
+              "legendFormat": "",
+              "instant": true,
+              "range": false,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "title": "Firing alerts by severity",
+          "description": "Firing alert instances. Open Alerts and Fleet to investigate.",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 4,
+            "w": 8,
+            "h": 7
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data",
+              "links": [
+                {
+                  "type": "link",
+                  "title": "Alerts and Fleet",
+                  "url": "d/cps-alert-operations",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "count by(severity) (ALERTS{alertstate=\"firing\",severity=~\"critical|warning\"})",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "title": "Root and scratch free space",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 8,
+            "y": 4,
+            "w": 8,
+            "h": 7
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data",
+              "links": [
+                {
+                  "type": "link",
+                  "title": "Storage and backups",
+                  "url": "d/cps-storage-capacity",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "100*cps:filesystem_free_ratio{mountpoint=\"/\"}",
+              "legendFormat": "{{nodename}} root",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            },
+            {
+              "refId": "B",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "100*cps:filesystem_free_ratio{mountpoint=\"/mnt/nvme/scratch\"}",
+              "legendFormat": "{{nodename}} scratch",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "title": "Hub probe and gateway readiness",
+          "description": "Hub probes reach the public identity challenge. Authenticated sign-in coverage is shown on Services and Teaching.",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 16,
+            "y": 4,
+            "w": 8,
+            "h": 7
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data",
+              "links": [
+                {
+                  "type": "link",
+                  "title": "Services and teaching",
+                  "url": "d/cps-service-reliability",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "max by(namespace,cronjob) (kube_cronjob_status_last_successful_time{cronjob=~\"(cps|cit)-hub-route-health\"}) > bool (time()-900)",
+              "legendFormat": "{{cronjob}} recent success",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            },
+            {
+              "refId": "B",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "count(kube_endpoint_address{job=\"kube-state-metrics\",namespace=\"cps-compute\",endpoint=\"compute-gateway\",port_name=\"http\",ready=\"true\"}) or (0*max(up{job=\"kube-state-metrics\"}))",
+              "legendFormat": "Gateway ready backends",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "title": "Worker CPU busy",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 11,
+            "w": 8,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data",
+              "links": [
+                {
+                  "type": "link",
+                  "title": "GPU workers",
+                  "url": "d/cps-worker-health",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "100*(1-avg by(instance)(rate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "title": "Worker memory used",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 8,
+            "y": 11,
+            "w": 8,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data",
+              "links": [
+                {
+                  "type": "link",
+                  "title": "GPU workers",
+                  "url": "d/cps-worker-health",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "100*(1-node_memory_MemAvailable_bytes{job=\"node-exporter\"}/node_memory_MemTotal_bytes{job=\"node-exporter\"})",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "title": "GPU utilization",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 16,
+            "y": 11,
+            "w": 8,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data",
+              "links": [
+                {
+                  "type": "link",
+                  "title": "GPU workers",
+                  "url": "d/cps-worker-health",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "DCGM_FI_DEV_GPU_UTIL{job=\"nvidia-dcgm-exporter\"}",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "title": "Ingress errors by service",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 19,
+            "w": 8,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps",
+              "noValue": "No data",
+              "links": [
+                {
+                  "type": "link",
+                  "title": "Services and teaching",
+                  "url": "d/cps-service-reliability",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "sum by(exported_namespace,ingress) (rate(nginx_ingress_controller_requests{exported_namespace=~\"jupyterhub|cit-jhub|dex|cit-auth|harbor\",status=~\"5..\"}[5m]))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "title": "Backup age by job",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 8,
+            "y": 19,
+            "w": 8,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "h",
+              "noValue": "No data",
+              "links": [
+                {
+                  "type": "link",
+                  "title": "Storage and backups",
+                  "url": "d/cps-storage-capacity",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "(time()-max by(namespace,cronjob) (kube_cronjob_status_last_successful_time{cronjob=~\"(cps|cit)-hub-postgresql-backup|compute-state-backup|cps-admin-backup|cit-admin-backup|backup-all|system-backup\"}))/3600",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 15,
+          "title": "Fleet resources needing attention",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 16,
+            "y": 19,
+            "w": 8,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data",
+              "links": [
+                {
+                  "type": "link",
+                  "title": "Alerts and Fleet",
+                  "url": "d/cps-alert-operations",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "fleet_gitrepo_resources_modified + fleet_gitrepo_resources_not_ready + fleet_gitrepo_resources_missing",
+              "legendFormat": "{{name}} / {{namespace}}",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 16,
+          "title": "Current critical and warning alerts",
+          "description": "",
+          "type": "table",
+          "gridPos": {
+            "x": 0,
+            "y": 27,
+            "w": 24,
+            "h": 9
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data",
+              "links": [
+                {
+                  "type": "link",
+                  "title": "Alerts and Fleet",
+                  "url": "d/cps-alert-operations",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {
+            "showHeader": true
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "count by(alertname,severity,namespace) (ALERTS{alertstate=\"firing\",severity=~\"warning|critical\"})",
+              "legendFormat": "",
+              "instant": true,
+              "range": false,
+              "format": "table"
+            }
+          ],
+          "transformations": [
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "pattern": "^(?!Time$|Value$|__name__$|alertstate$).+"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cps-storage-capacity
+  namespace: cattle-dashboards
+  labels:
+    grafana_dashboard: '1'
+  annotations:
+    k8s-sidecar-target-directory: 30 Storage and Backups
+data:
+  cps-storage-capacity.json: |
+    {
+      "uid": "cps-storage-capacity",
+      "title": "Storage and backups",
+      "description": "Guest space, Longhorn scheduling and physical floors, mounted PVC growth, backup age, and backing-storage coverage.",
+      "tags": [
+        "cps-ops",
+        "storage",
+        "longhorn",
+        "backups"
+      ],
+      "schemaVersion": 41,
+      "version": 1,
+      "editable": false,
+      "timezone": "browser",
+      "time": {
+        "from": "now-24h",
+        "to": "now"
+      },
+      "refresh": "1m",
+      "links": [
+        {
+          "type": "link",
+          "title": "Cluster overview",
+          "url": "d/cps-cluster-overview",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "Services and teaching",
+          "url": "d/cps-service-reliability",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "Alerts and Fleet",
+          "url": "d/cps-alert-operations",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        }
+      ],
+      "panels": [
+        {
+          "id": 1,
+          "title": "Guest roots available",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "100*cps:filesystem_free_ratio{mountpoint=\"/\"}",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Guest scratch available",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 0,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "100*cps:filesystem_free_ratio{mountpoint=\"/mnt/nvme/scratch\"}",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "Filesystem inodes available",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 8,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "100*cps:filesystem_inode_free_ratio",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "title": "Read-only mounts",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 8,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "cps:filesystem_readonly",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "title": "Longhorn scheduled and reserved bytes",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 16,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "cps_longhorn_disk_scheduled_bytes",
+              "legendFormat": "{{node}} {{disk}} scheduled",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            },
+            {
+              "refId": "B",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "cps_longhorn_disk_reserved_bytes",
+              "legendFormat": "{{node}} {{disk}} reserved",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "title": "Longhorn ready-to-schedule bytes",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 16,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "cps_longhorn_disk_schedulable_bytes",
+              "legendFormat": "{{node}} {{disk}} allocated",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            },
+            {
+              "refId": "B",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "cps_longhorn_disk_physical_headroom_bytes",
+              "legendFormat": "{{node}} {{disk}} above physical floor",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "title": "Lowest mounted PVC free space",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 24,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "bottomk(15,100*cps:pvc_free_ratio)",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "title": "Fastest PVC growth over 24 hours",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 24,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "bytes",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "topk(15, max by(namespace,persistentvolumeclaim) (clamp_min(deriv(kubelet_volume_stats_used_bytes{job=\"kubelet\"}[24h])*86400,0)))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "title": "Volume backup age",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 32,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "h",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "topk(20,(time()-cps_longhorn_last_backup_timestamp_seconds)/3600 and cps_longhorn_last_backup_timestamp_seconds>0)",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "title": "Degraded and faulted volumes",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 32,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "count by (pvc_namespace,robustness) (label_replace(longhorn_volume_robustness>=2, \"robustness\", \"reported state\", \"job\", \".*\"))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 11,
+          "title": "Proxmox datastore usage",
+          "description": "External source required. Missing telemetry remains No data.",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 40,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "cps_proxmox_datastore_usage_ratio*100",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 12,
+          "title": "University backup export quota usage",
+          "description": "External source required. Missing telemetry remains No data.",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 40,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "cps_ict_backup_export_usage_ratio*100",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 13,
+          "title": "Replica rebuild progress",
+          "description": "No data is expected when no replica is rebuilding.",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 48,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "longhorn_engine_rebuild_progress",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 14,
+          "title": "Proxmox thin-pool data and metadata",
+          "description": "Requires an independently verified host-side collector.",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 48,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "cps_proxmox_thin_pool_data_ratio*100",
+              "legendFormat": "{{host}} {{pool}} data",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            },
+            {
+              "refId": "B",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "cps_proxmox_thin_pool_metadata_ratio*100",
+              "legendFormat": "{{host}} {{pool}} metadata",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        }
+      ]
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cps-service-reliability
+  namespace: cattle-dashboards
+  labels:
+    grafana_dashboard: '1'
+  annotations:
+    k8s-sidecar-target-directory: 40 Services and Teaching
+data:
+  cps-service-reliability.json: |
+    {
+      "uid": "cps-service-reliability",
+      "title": "Services and teaching",
+      "description": "Request rate, latency and errors, public identity-route checks, authenticated probe coverage and notebook spawn outcomes.",
+      "tags": [
+        "cps-ops",
+        "hub",
+        "gateway",
+        "kubernetes"
+      ],
+      "schemaVersion": 41,
+      "version": 1,
+      "editable": false,
+      "timezone": "browser",
+      "time": {
+        "from": "now-24h",
+        "to": "now"
+      },
+      "refresh": "1m",
+      "links": [
+        {
+          "type": "link",
+          "title": "Cluster overview",
+          "url": "d/cps-cluster-overview",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "Alerts and Fleet",
+          "url": "d/cps-alert-operations",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "Storage and backups",
+          "url": "d/cps-storage-capacity",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        }
+      ],
+      "panels": [
+        {
+          "id": 1,
+          "title": "Ready service endpoints",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "count by(namespace,endpoint) (kube_endpoint_address{job=\"kube-state-metrics\",ready=\"true\",port_name=~\"http|https-webhook\",endpoint=~\"compute-gateway|webhook\",namespace=~\"cps-compute|knative-serving\"})",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "HTTP requests",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 0,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "sum by(exported_namespace,ingress) (rate(nginx_ingress_controller_requests{exported_namespace=~\"jupyterhub|cit-jhub|dex|cit-auth|harbor\"}[5m]))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "HTTP 5xx rate",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 8,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "sum by(exported_namespace,ingress) (rate(nginx_ingress_controller_requests{exported_namespace=~\"jupyterhub|cit-jhub|dex|cit-auth|harbor\",status=~\"5..\"}[5m]))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "title": "HTTP request latency p95",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 8,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "histogram_quantile(.95,sum by(le,exported_namespace,ingress)(rate(nginx_ingress_controller_request_duration_seconds_bucket{exported_namespace=~\"jupyterhub|cit-jhub|dex|cit-auth|harbor\"}[5m])))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "title": "Notebook starts by result",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 16,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "sum by(namespace,status) (increase(jupyterhub_server_spawn_duration_seconds_count{namespace=~\"jupyterhub|cit-jhub\",status=~\"success|failure\"}[1h]))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "title": "Successful notebook starts p95",
+          "description": "Requires one or more successful starts in the display window. No starts yield no latency estimate.",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 16,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "s",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "histogram_quantile(.95,sum by(namespace,le)(rate(jupyterhub_server_spawn_duration_seconds_bucket{namespace=~\"jupyterhub|cit-jhub\",status=\"success\"}[1h])))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "title": "Public routes and provisioned probe coverage",
+          "description": "1 means suspended. A public identity-route check is an anonymous probe. A successful fresh authenticated spawn requires its own enabled probe and credentials.",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 24,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "kube_cronjob_spec_suspend{cronjob=~\".*hub-(route-health|spawn-.*)\"}",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "title": "Last successful Hub probe age",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 24,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "h",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "(time()-kube_cronjob_status_last_successful_time{cronjob=~\".*hub-(route-health|spawn-.*)\"})/3600",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "title": "Gateway metrics scrape health",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 32,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "up{job=\"compute-gateway\"}",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "title": "Gateway 5xx rate",
+          "description": "Application HTTP status counters are currently unverified. No data is a coverage gap; see endpoint counts and gateway logs.",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 32,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "reqps",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "sum by(service) (rate(cps_gateway_http_requests_total{status=~\"5..\"}[5m]))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        }
+      ]
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cps-alert-operations
+  namespace: cattle-dashboards
+  labels:
+    grafana_dashboard: '1'
+  annotations:
+    k8s-sidecar-target-directory: 50 Monitoring and Delivery
+data:
+  cps-alert-operations.json: |
+    {
+      "uid": "cps-alert-operations",
+      "title": "Alerts and Fleet",
+      "description": "Alert volume and delivery, scrape coverage, rule evaluation and Fleet drift.",
+      "tags": [
+        "cps-ops",
+        "alerts",
+        "fleet",
+        "monitoring"
+      ],
+      "schemaVersion": 41,
+      "version": 1,
+      "editable": false,
+      "timezone": "browser",
+      "time": {
+        "from": "now-24h",
+        "to": "now"
+      },
+      "refresh": "1m",
+      "links": [
+        {
+          "type": "link",
+          "title": "Cluster overview",
+          "url": "d/cps-cluster-overview",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "Services and teaching",
+          "url": "d/cps-service-reliability",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "Storage and backups",
+          "url": "d/cps-storage-capacity",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        }
+      ],
+      "panels": [
+        {
+          "id": 1,
+          "title": "Alert volume by severity",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "count by(severity) (ALERTS{severity=~\"warning|critical|info\",alertstate=\"firing\"})",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Most frequent firing alert series",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 0,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "topk(15,sum by(alertname)(max_over_time(ALERTS{alertstate=\"firing\",severity=~\"warning|critical\"}[24h])))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "Alertmanager attempted and failed deliveries",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 8,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "sum by(integration)(increase(alertmanager_notifications_total[1h]))",
+              "legendFormat": "{{integration}} attempted",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            },
+            {
+              "refId": "B",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "sum by(integration)(increase(alertmanager_notifications_failed_total[1h]))",
+              "legendFormat": "{{integration}} failed",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "title": "Prometheus unhealthy scrape targets",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 8,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "count by(job)(up==0)",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "title": "Rule evaluation failures",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 16,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "sum by(rule_group)(increase(prometheus_rule_evaluation_failures_total[1h]))>0",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "title": "Fleet resource drift",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 16,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "fleet_gitrepo_resources_modified + fleet_gitrepo_resources_not_ready + fleet_gitrepo_resources_missing",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "title": "Firing alert groups",
+          "description": "",
+          "type": "table",
+          "gridPos": {
+            "x": 0,
+            "y": 24,
+            "w": 24,
+            "h": 10
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {
+            "showHeader": true
+          },
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "count by(alertname,severity,namespace) (ALERTS{alertstate=\"firing\",severity=~\"warning|critical\"})",
+              "legendFormat": "",
+              "instant": true,
+              "range": false,
+              "format": "table"
+            }
+          ],
+          "transformations": [
+            {
+              "id": "filterFieldsByName",
+              "options": {
+                "include": {
+                  "pattern": "^(?!Time$|Value$|__name__$|alertstate$).+"
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cps-worker-health
+  namespace: cattle-dashboards
+  labels:
+    grafana_dashboard: '1'
+  annotations:
+    k8s-sidecar-target-directory: 20 GPU and Scheduling
+data:
+  cps-worker-health.json: |
+    {
+      "uid": "cps-worker-health",
+      "title": "GPU workers",
+      "description": "Nodes, GPUs, Kubernetes pressure and workload scheduling. GPU utilization comes from DCGM.",
+      "tags": [
+        "cps-ops",
+        "gpu",
+        "nodes",
+        "scheduling"
+      ],
+      "schemaVersion": 41,
+      "version": 1,
+      "editable": false,
+      "timezone": "browser",
+      "time": {
+        "from": "now-24h",
+        "to": "now"
+      },
+      "refresh": "1m",
+      "links": [
+        {
+          "type": "link",
+          "title": "Cluster overview",
+          "url": "d/cps-cluster-overview",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "Storage and backups",
+          "url": "d/cps-storage-capacity",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "Alerts and Fleet",
+          "url": "d/cps-alert-operations",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "GPU packing",
+          "url": "d/cps-gpu-packing",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "KAI scheduling",
+          "url": "d/cps-kai-fairness",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "NVIDIA DCGM",
+          "url": "d/nvidia-official-dcgm",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        }
+      ],
+      "panels": [
+        {
+          "id": 1,
+          "title": "CPU busy per node",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 0,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "100*(1-avg by(instance)(rate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 2,
+          "title": "Memory used per node",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 0,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "100*(1-node_memory_MemAvailable_bytes{job=\"node-exporter\"}/node_memory_MemTotal_bytes{job=\"node-exporter\"})",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 3,
+          "title": "GPU utilization",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 8,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "DCGM_FI_DEV_GPU_UTIL",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 4,
+          "title": "GPU memory used",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 8,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "100*DCGM_FI_DEV_FB_USED/(DCGM_FI_DEV_FB_USED+DCGM_FI_DEV_FB_FREE)",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 5,
+          "title": "GPU temperatures",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 16,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "celsius",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "DCGM_FI_DEV_GPU_TEMP{job=\"nvidia-dcgm-exporter\"}",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 6,
+          "title": "Allocatable GPUs per node",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 16,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "max by(node) (kube_node_status_allocatable{resource=\"nvidia_com_gpu\"})",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 7,
+          "title": "Memory stall pressure",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 24,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "percent",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "100*rate(node_pressure_memory_stalled_seconds_total[5m])",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 8,
+          "title": "Pending Pods per namespace",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 24,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "sum by(namespace) (kube_pod_status_phase{phase=\"Pending\"}==1)",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 9,
+          "title": "Disk pressure per node",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 32,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "max by(node) (kube_node_status_condition{condition=\"DiskPressure\",status=\"true\"})",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 10,
+          "title": "Kubelet runtime errors",
+          "description": "",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 12,
+            "y": 32,
+            "w": 12,
+            "h": 8
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "ops",
+              "noValue": "No data"
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "sum by (node,operation_type) (rate(kubelet_runtime_operations_errors_total[5m]))",
+              "legendFormat": "",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        }
+      ]
+    }

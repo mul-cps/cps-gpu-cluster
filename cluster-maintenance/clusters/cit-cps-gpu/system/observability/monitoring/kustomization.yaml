@@ -11,6 +11,10 @@ kind: Kustomization
 # locally. Confirmed live 2026-07-07 -- see docs/troubleshooting.md.
 resources:
   - namespace.yaml
+  - storage-monitoring.yaml
+  - storage-alerts.yaml
+  - warning-digest.yaml
+  - operator-dashboards.yaml
   - nvidia-official-dashboard.yaml
   - gpu-alerts.yaml
   - cluster-health-alerts.yaml
@@ -22,6 +26,7 @@ resources:
   - jupyterhub-servicemonitor.yaml
   - hub-spawn-health-jobs.yaml
   - hub-spawn-health-alerts.yaml
+  - hub-backup-alerts.yaml
 
   # SOPS-encrypted secret (decrypted in-cluster by the shared
   # sops-secrets-operator) — the Grafana Helm release itself stays
@@ -40,3 +45,8 @@ configMapGenerator:
     namespace: cattle-monitoring-system
     files:
       - alertmanager_receiver.py
+  - name: cps-storage-monitor-program
+    namespace: cattle-monitoring-system
+    files:
+      - storage_exporter.py
+      - warning_digest.py

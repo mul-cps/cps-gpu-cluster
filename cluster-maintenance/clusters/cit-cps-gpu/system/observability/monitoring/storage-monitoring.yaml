@@ -1,0 +1,123 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: cps-storage-monitor
+  namespace: cattle-monitoring-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cps-storage-monitor
+  namespace: longhorn-system
+rules:
+  - apiGroups: [longhorn.io]
+    resources: [nodes, volumes, backups, backuptargets]
+    verbs: [list]
+  - apiGroups: [longhorn.io]
+    resources: [settings]
+    resourceNames: [storage-over-provisioning-percentage, storage-minimal-available-percentage]
+    verbs: [get]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cps-storage-monitor
+  namespace: longhorn-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cps-storage-monitor
+subjects:
+  - kind: ServiceAccount
+    name: cps-storage-monitor
+    namespace: cattle-monitoring-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cps-storage-monitor
+  namespace: cattle-monitoring-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cps-storage-monitor
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: cps-storage-monitor
+    spec:
+      serviceAccountName: cps-storage-monitor
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 65532
+        runAsGroup: 65532
+        seccompProfile:
+          type: RuntimeDefault
+      containers:
+        - name: exporter
+          image: docker.io/library/python@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90
+          command: [python, -B, -u, /app/storage_exporter.py]
+          ports:
+            - name: metrics
+              containerPort: 8080
+          readinessProbe:
+            httpGet: {path: /readyz, port: metrics}
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+            capabilities: {drop: [ALL]}
+          resources:
+            requests: {cpu: 25m, memory: 32Mi}
+            limits: {cpu: 250m, memory: 128Mi}
+          volumeMounts:
+            - {name: program, mountPath: /app, readOnly: true}
+      volumes:
+        - name: program
+          configMap:
+            name: cps-storage-monitor-program
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: cps-storage-monitor
+  namespace: cattle-monitoring-system
+  labels:
+    app.kubernetes.io/name: cps-storage-monitor
+spec:
+  selector:
+    app.kubernetes.io/name: cps-storage-monitor
+  ports:
+    - {name: metrics, port: 8080, targetPort: metrics}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: cps-storage-monitor
+  namespace: cattle-monitoring-system
+spec:
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: cps-storage-monitor
+  endpoints:
+    - port: metrics
+      interval: 60s
+      scrapeTimeout: 30s
+---
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: cps-storage-monitor
+  namespace: cattle-monitoring-system
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: cps-storage-monitor
+  policyTypes: [Ingress]
+  ingress:
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: prometheus
+      ports:
+        - {port: 8080, protocol: TCP}

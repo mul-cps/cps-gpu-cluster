@@ -69,14 +69,20 @@ grafana:
       memory: "1Gi"
       cpu: "500m"
   
+  grafana.ini:
+    dashboards:
+      default_home_dashboard_path: /tmp/dashboards/00 Cluster Operations/cps-cluster-overview.json
+
   # Import default dashboards
   sidecar:
     dashboards:
       enabled: true
       # Search for dashboards in cattle-dashboards namespace
       searchNamespace: "cattle-dashboards"
+      folderAnnotation: k8s-sidecar-target-directory
       provider:
         allowUiUpdates: true
+        foldersFromFilesStructure: true
     
     datasources:
       enabled: true
@@ -133,6 +139,9 @@ kubeStateMetrics:
 # Enable default Prometheus rules
 defaultRules:
   create: true
+  disabled:
+    KubeHpaMaxedOut: true
+    KubeJobFailed: true
   rules:
     alertmanager: true
     etcd: true
