@@ -68,7 +68,7 @@ Subtract `storageScheduled` for allocation headroom. The available bytes must
 also exceed the disk's minimum free floor. Existing replica placement decides
 which disks must pass the expansion gate.
 
-For Gottam's active home, request 10–20 GiB of owner-selected inactive output
+For the active home nearing capacity, request 10–20 GiB of owner-selected inactive output
 be copied to an approved project allocation. Verify the copy and permissions
 before removing the originals. Retain the 100 GiB claim until both replica
 disks have at least 25 GiB in allocation headroom and healthy physical floors.
@@ -115,8 +115,9 @@ bytes.
 Ollama remains a service dependency while revisions reference its PVC. Test
 a smaller isolated copy with content checks and a cold start before considering
 a switchover. Keep the recent A100 workspace available. For Released BuildKit
-PVs, verify their exact host paths are absent and archive their records. These
-records contribute zero reclaimed physical GiB.
+PVs, archive the records and recheck the exact host paths. Inspect ownership
+and active use for any remaining data. Count reclaimed physical GiB after a
+verified release.
 
 ### Test Jobs
 
