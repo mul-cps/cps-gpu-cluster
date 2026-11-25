@@ -1,0 +1,67 @@
+rule_files:
+- storage.yaml
+evaluation_interval: 1m
+tests:
+- name: Root thresholds, minimum duration and alert recovery
+  interval: 1m
+  input_series:
+  - series: node_filesystem_avail_bytes{job="node-exporter",instance="root:9796",mountpoint="/"}
+    values: 19x10 9x35
+  - series: node_filesystem_size_bytes{job="node-exporter",instance="root:9796",mountpoint="/"}
+    values: 100x50
+  - series: node_uname_info{job="node-exporter",instance="root:9796",nodename="k3s-wk-gpu1"}
+    values: 1x50
+  promql_expr_test:
+  - expr: cps:filesystem_free_ratio
+    eval_time: 5m
+    exp_samples:
+    - labels: cps:filesystem_free_ratio{mountpoint="/",nodename="k3s-wk-gpu1"}
+      value: 0.19
+  alert_rule_test:
+  - eval_time: 20m
+    alertname: CPSRootSpaceWarning
+    exp_alerts: []
+  - eval_time: 30m
+    alertname: CPSRootSpaceCritical
+    exp_alerts:
+    - exp_labels:
+        component: storage
+        severity: critical
+        owner: cluster-operations
+        nodename: k3s-wk-gpu1
+        mountpoint: /
+      exp_annotations:
+        summary: Root filesystem free space is low on k3s-wk-gpu1
+        description: Free space has been below 10% for 15m. Review storage growth
+          and verify recovery.
+        dashboard_uid: cps-storage-capacity
+- name: Fixed-capacity Knative HPA stays quiet
+  interval: 1m
+  input_series:
+  - series: kube_horizontalpodautoscaler_status_current_replicas{job="kube-state-metrics",namespace="knative-serving",horizontalpodautoscaler="fixed"}
+    values: 1x50
+  - series: kube_horizontalpodautoscaler_spec_min_replicas{job="kube-state-metrics",namespace="knative-serving",horizontalpodautoscaler="fixed"}
+    values: 1x50
+  - series: kube_horizontalpodautoscaler_spec_max_replicas{job="kube-state-metrics",namespace="knative-serving",horizontalpodautoscaler="fixed"}
+    values: 1x50
+  - series: kube_horizontalpodautoscaler_status_current_replicas{job="kube-state-metrics",namespace="knative-serving",horizontalpodautoscaler="elastic"}
+    values: 1x50
+  - series: kube_horizontalpodautoscaler_spec_min_replicas{job="kube-state-metrics",namespace="knative-serving",horizontalpodautoscaler="elastic"}
+    values: '0x50'
+  - series: kube_horizontalpodautoscaler_spec_max_replicas{job="kube-state-metrics",namespace="knative-serving",horizontalpodautoscaler="elastic"}
+    values: 1x50
+  alert_rule_test:
+  - eval_time: 30m
+    alertname: CPSHpaAtMaximum
+    exp_alerts:
+    - exp_labels:
+        job: kube-state-metrics
+        horizontalpodautoscaler: elastic
+        namespace: knative-serving
+        component: operations
+        severity: warning
+        owner: cluster-operations
+      exp_annotations:
+        summary: Autoscaler elastic at maximum
+        description: Review service traffic and scaling limits before raising capacity.
+        dashboard_uid: cps-service-reliability

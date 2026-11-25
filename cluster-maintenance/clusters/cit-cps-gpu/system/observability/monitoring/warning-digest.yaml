@@ -60,6 +60,9 @@ spec:
             - name: digest
               image: docker.io/library/python@sha256:e48f59cdba69a3cbd9ed2cf0f348d90d45a8d350d98134cf1070bc106ee9ed90
               command: [python, -B, -u, /app/warning_digest.py]
+              env:
+                - name: DASHBOARD_URL
+                  value: https://rancher.dshl.unileoben.ac.at/k8s/clusters/local/api/v1/namespaces/cattle-monitoring-system/services/http:rancher-monitoring-grafana:80/proxy/d/cps-cluster-overview/cluster-overview
               securityContext:
                 allowPrivilegeEscalation: false
                 readOnlyRootFilesystem: true

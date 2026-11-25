@@ -24,6 +24,7 @@ resources:
   - gpu-dash-24450-community.yaml
   - jupyterhub-stats-23694.yaml
   - jupyterhub-servicemonitor.yaml
+  - gateway-servicemonitors.yaml
   - hub-spawn-health-jobs.yaml
   - hub-spawn-health-alerts.yaml
   - hub-backup-alerts.yaml

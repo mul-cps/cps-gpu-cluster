@@ -302,3 +302,112 @@ spec:
         summary: Longhorn {{ $labels.cronjob }} backup CronJob stale
         description: Check schedule and recent results, then verify a current backup exists.
         dashboard_uid: cps-service-reliability
+  - name: cps-backing-storage
+    rules:
+    - alert: CPSProxmoxDatastoreWarning
+      expr: cps_proxmox_datastore_usage_ratio >= 0.8 and cps_proxmox_datastore_usage_ratio < 0.9
+      for: 30m
+      labels:
+        severity: warning
+        owner: cluster-operations
+        component: backing-storage
+      annotations:
+        summary: Proxmox datastore {{ $labels.datastore }} usage high
+        description: Measured backing usage has reached 80%. Verify physical pool allocation with the storage
+          owner.
+        dashboard_uid: cps-storage-capacity
+    - alert: CPSProxmoxDatastoreCritical
+      expr: cps_proxmox_datastore_usage_ratio >= 0.9
+      for: 15m
+      labels:
+        severity: critical
+        owner: cluster-operations
+        component: backing-storage
+      annotations:
+        summary: Proxmox datastore {{ $labels.datastore }} usage high
+        description: Measured backing usage has reached 90%. Verify physical pool allocation with the storage
+          owner.
+        dashboard_uid: cps-storage-capacity
+    - alert: CPSProxmoxThinPoolDataWarning
+      expr: cps_proxmox_thin_pool_data_ratio >= 0.8 and cps_proxmox_thin_pool_data_ratio < 0.9
+      for: 30m
+      labels:
+        severity: warning
+        owner: cluster-operations
+        component: backing-storage
+      annotations:
+        summary: Proxmox thin-pool data {{ $labels.pool }} usage high
+        description: Measured backing usage has reached 80%. Verify physical pool allocation with the storage
+          owner.
+        dashboard_uid: cps-storage-capacity
+    - alert: CPSProxmoxThinPoolDataCritical
+      expr: cps_proxmox_thin_pool_data_ratio >= 0.9
+      for: 15m
+      labels:
+        severity: critical
+        owner: cluster-operations
+        component: backing-storage
+      annotations:
+        summary: Proxmox thin-pool data {{ $labels.pool }} usage high
+        description: Measured backing usage has reached 90%. Verify physical pool allocation with the storage
+          owner.
+        dashboard_uid: cps-storage-capacity
+    - alert: CPSProxmoxThinPoolMetadataWarning
+      expr: cps_proxmox_thin_pool_metadata_ratio >= 0.7 and cps_proxmox_thin_pool_metadata_ratio < 0.85
+      for: 30m
+      labels:
+        severity: warning
+        owner: cluster-operations
+        component: backing-storage
+      annotations:
+        summary: Proxmox thin-pool metadata {{ $labels.pool }} usage high
+        description: Measured backing usage has reached 70%. Verify physical pool allocation with the storage
+          owner.
+        dashboard_uid: cps-storage-capacity
+    - alert: CPSProxmoxThinPoolMetadataCritical
+      expr: cps_proxmox_thin_pool_metadata_ratio >= 0.85
+      for: 15m
+      labels:
+        severity: critical
+        owner: cluster-operations
+        component: backing-storage
+      annotations:
+        summary: Proxmox thin-pool metadata {{ $labels.pool }} usage high
+        description: Measured backing usage has reached 85%. Verify physical pool allocation with the storage
+          owner.
+        dashboard_uid: cps-storage-capacity
+    - alert: CPSUniversityBackupExportWarning
+      expr: cps_ict_backup_export_usage_ratio >= 0.8 and cps_ict_backup_export_usage_ratio < 0.9
+      for: 30m
+      labels:
+        severity: warning
+        owner: cluster-operations
+        component: backing-storage
+      annotations:
+        summary: University backup export {{ $labels.export }} usage high
+        description: Measured backing usage has reached 80%. Verify physical pool allocation with the storage
+          owner.
+        dashboard_uid: cps-storage-capacity
+    - alert: CPSUniversityBackupExportCritical
+      expr: cps_ict_backup_export_usage_ratio >= 0.9
+      for: 15m
+      labels:
+        severity: critical
+        owner: cluster-operations
+        component: backing-storage
+      annotations:
+        summary: University backup export {{ $labels.export }} usage high
+        description: Measured backing usage has reached 90%. Verify physical pool allocation with the storage
+          owner.
+        dashboard_uid: cps-storage-capacity
+    - alert: CPSProxmoxDriveUnhealthy
+      expr: cps_proxmox_drive_healthy == 0
+      for: 10m
+      labels:
+        severity: critical
+        owner: cluster-operations
+        component: backing-storage
+      annotations:
+        summary: Proxmox drive {{ $labels.drive }} reports health failure
+        description: Confirm the host-side health result and mirror redundancy before touching the drive.
+        dashboard_uid: cps-storage-capacity

@@ -117,7 +117,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -192,7 +192,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "exemplar": true,
@@ -211,7 +211,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -286,7 +286,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "exemplar": true,
@@ -305,7 +305,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -380,7 +380,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "exemplar": true,
@@ -399,12 +399,12 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "${DS_PROMETHEUS}"
           },
           "fieldConfig": {
             "defaults": {
               "color": {
-                "mode": "continuous-GrYlRd"
+                "mode": "thresholds"
               },
               "fieldMinMax": false,
               "mappings": [
@@ -420,27 +420,25 @@ data:
               ],
               "min": 0,
               "thresholds": {
-                "mode": "percentage",
+                "mode": "absolute",
                 "steps": [
                   {
                     "color": "green",
                     "value": null
                   },
                   {
-                    "color": "#EAB839",
-                    "value": 60
-                  },
-                  {
-                    "color": "#EF843C",
+                    "color": "orange",
                     "value": 80
                   },
                   {
-                    "color": "#E24D42",
-                    "value": 90
+                    "color": "red",
+                    "value": 95
                   }
                 ]
               },
-              "unit": "decmbytes"
+              "unit": "percent",
+              "max": 100,
+              "decimals": 2
             },
             "overrides": []
           },
@@ -473,11 +471,11 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
               "exemplar": true,
-              "expr": "sum (DCGM_FI_DEV_FB_USED{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"})\n",
+              "expr": "100 * sum (DCGM_FI_DEV_FB_USED{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"}) / ((sum (DCGM_FI_DEV_FB_USED{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"}) + sum (DCGM_FI_DEV_FB_FREE{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"})) > 0)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
@@ -488,7 +486,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "editorMode": "code",
               "expr": "sum (DCGM_FI_DEV_FB_USED{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"}) + sum (DCGM_FI_DEV_FB_FREE{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"})",
@@ -499,7 +497,7 @@ data:
               "refId": "B"
             }
           ],
-          "title": "GPU Memory Usage",
+          "title": "GPU VRAM used (%)",
           "transformations": [
             {
               "id": "configFromData",
@@ -514,7 +512,8 @@ data:
               }
             }
           ],
-          "type": "gauge"
+          "type": "gauge",
+          "description": "DCGM framebuffer use as a share of used plus free capacity. The scale is fixed at 0–100%. Amber starts at 80% and red at 95%."
         },
         {
           "collapsed": true,
@@ -532,7 +531,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -615,7 +614,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -639,7 +638,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -722,7 +721,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -746,7 +745,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -832,7 +831,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "exemplar": false,
@@ -846,7 +845,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "expr": "sum(increase(DCGM_FI_DEV_TOTAL_ENERGY_CONSUMPTION{Hostname=~\"$Hostname\", gpu=~\"$gpu\"}[24h]) / 3600000)",
@@ -863,7 +862,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -922,7 +921,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -946,7 +945,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1005,7 +1004,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -1029,7 +1028,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1112,7 +1111,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -1136,7 +1135,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1219,7 +1218,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "builder",
@@ -1243,7 +1242,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1291,7 +1290,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -1324,7 +1323,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1407,7 +1406,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -1431,12 +1430,12 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "${DS_PROMETHEUS}"
           },
           "fieldConfig": {
             "defaults": {
               "color": {
-                "mode": "continuous-GrYlRd"
+                "mode": "thresholds"
               },
               "mappings": [],
               "thresholds": {
@@ -1447,39 +1446,21 @@ data:
                     "value": null
                   },
                   {
-                    "color": "red",
+                    "color": "orange",
                     "value": 80
+                  },
+                  {
+                    "color": "red",
+                    "value": 95
                   }
                 ]
               },
-              "unit": "decmbytes"
+              "unit": "percent",
+              "min": 0,
+              "max": 100,
+              "decimals": 2
             },
-            "overrides": [
-              {
-                "matcher": {
-                  "id": "byRegexp",
-                  "options": ".*.20gb.*"
-                },
-                "properties": [
-                  {
-                    "id": "max",
-                    "value": 20480
-                  }
-                ]
-              },
-              {
-                "matcher": {
-                  "id": "byRegexp",
-                  "options": ".*.10gb.*"
-                },
-                "properties": [
-                  {
-                    "id": "max",
-                    "value": 10240
-                  }
-                ]
-              }
-            ]
+            "overrides": []
           },
           "gridPos": {
             "h": 9,
@@ -1511,31 +1492,32 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "${DS_PROMETHEUS}"
               },
               "disableTextWrap": false,
               "editorMode": "code",
               "exemplar": true,
-              "expr": "avg by(GPU_I_ID, Hostname, gpu, GPU_I_PROFILE) (DCGM_FI_DEV_FB_USED{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"})",
+              "expr": "100 * avg by(GPU_I_ID, Hostname, gpu, GPU_I_PROFILE) (DCGM_FI_DEV_FB_USED{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"}) / ((avg by(GPU_I_ID, Hostname, gpu, GPU_I_PROFILE) (DCGM_FI_DEV_FB_USED{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"}) + avg by(GPU_I_ID, Hostname, gpu, GPU_I_PROFILE) (DCGM_FI_DEV_FB_FREE{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"})) > 0)",
               "format": "time_series",
               "fullMetaSearch": false,
               "hide": false,
               "includeNullMetadata": true,
               "interval": "",
               "intervalFactor": 1,
-              "legendFormat": "{{Hostname}}  GPU:{{gpu}}  MIG:{{GPU_I_PROFILE}}  ID:{{GPU_I_ID}}",
+              "legendFormat": "{{Hostname}} GPU {{gpu}} {{GPU_I_PROFILE}} {{GPU_I_ID}}",
               "range": true,
               "refId": "A",
               "useBackend": false
             }
           ],
-          "title": "Memory Usage",
-          "type": "bargauge"
+          "title": "VRAM used per GPU / MIG instance (%)",
+          "type": "bargauge",
+          "description": "DCGM framebuffer use as a share of used plus free capacity. The scale is fixed at 0–100%. Amber starts at 80% and red at 95%."
         },
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1619,7 +1601,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "editorMode": "code",
               "exemplar": false,
@@ -1638,7 +1620,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1722,7 +1704,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -1746,7 +1728,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1830,7 +1812,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -1854,7 +1836,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1998,7 +1980,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "builder",
@@ -2070,7 +2052,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -2152,7 +2134,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -2176,7 +2158,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "type": "prometheus", "uid": "prometheus"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -2258,7 +2240,7 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "type": "prometheus", "uid": "prometheus"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
@@ -2294,7 +2276,7 @@ data:
             "current": {},
             "datasource": {
               "type": "prometheus",
-              "type": "prometheus", "uid": "prometheus"
+              "uid": "prometheus"
             },
             "definition": "label_values(DCGM_FI_DEV_FB_FREE,Hostname)",
             "hide": 0,
@@ -2319,7 +2301,7 @@ data:
             "current": {},
             "datasource": {
               "type": "prometheus",
-              "type": "prometheus", "uid": "prometheus"
+              "uid": "prometheus"
             },
             "definition": "label_values(DCGM_FI_DEV_FB_FREE,gpu)",
             "hide": 0,
@@ -2344,7 +2326,7 @@ data:
             "current": {},
             "datasource": {
               "type": "prometheus",
-              "type": "prometheus", "uid": "prometheus"
+              "uid": "prometheus"
             },
             "definition": "label_values(DCGM_FI_DEV_FB_FREE,GPU_I_PROFILE)",
             "hide": 0,
@@ -2396,6 +2378,6 @@ data:
       "timezone": "",
       "title": "NVIDIA DCGM Dashboard for Kubernetes (MIG & Non-MIG GPUs)",
       "uid": "nvidia-official-dcgm",
-      "version": 35,
+      "version": 36,
       "weekStart": ""
     }

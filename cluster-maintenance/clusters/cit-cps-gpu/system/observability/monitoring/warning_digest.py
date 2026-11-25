@@ -61,15 +61,17 @@ def summarize(warnings, start, end):
     return "\n".join(lines)
 
 
-def send(body, end):
+def send(body, end, *, test=False):
     receiver = next(receiver for receiver in api_get(MAIL_CONFIG)["spec"]["receivers"]
                     if receiver["name"] == "admin-mail")
     settings = receiver["emailConfigs"][0]
     host, port = settings["smarthost"].rsplit(":", 1)
     message = EmailMessage()
     message["From"], message["To"] = settings["from"], settings["to"]
-    message["Subject"] = f"[CPS/CIT] Warning digest · {end:%Y-%m-%d}"
-    message["Message-ID"] = f"<cps-warning-digest-{end:%Y%m%d}@cps.unileoben.ac.at>"
+    purpose = "controlled test" if test else "warning digest"
+    message["Subject"] = f"[CPS/CIT] {purpose} · {end:%Y-%m-%d}"
+    test_suffix = "-test" if test else ""
+    message["Message-ID"] = f"<cps-warning-digest-{end:%Y%m%d}{test_suffix}@cps.unileoben.ac.at>"
     message.set_content(body)
     password = Path("/smtp/password").read_text().strip()
     with smtplib.SMTP_SSL(host, int(port), timeout=20, context=ssl.create_default_context()) as server:
@@ -90,7 +92,7 @@ def main():
     if args.preview:
         print(body)
     elif args.test_delivery:
-        send("Controlled delivery test.\n\n" + body, end)
+        send("Controlled delivery test.\n\n" + body, end, test=True)
         print("SMTP accepted the test warning digest")
     elif warnings:
         send(body, end)

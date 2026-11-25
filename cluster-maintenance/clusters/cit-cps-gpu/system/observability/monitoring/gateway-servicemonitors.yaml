@@ -1,0 +1,75 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: compute-metrics-cit
+  namespace: cps-compute
+  labels:
+    release: rancher-monitoring
+spec:
+  endpoints:
+  - authorization:
+      credentials:
+        key: cit
+        name: cps-compute-metrics
+      type: Bearer
+    interval: 30s
+    path: /internal/v1/metrics
+    port: http
+    scheme: https
+    tlsConfig:
+      ca:
+        configMap:
+          key: ca.crt
+          name: cps-compute-gateway-ca
+      insecureSkipVerify: false
+      serverName: compute-gateway.cps-compute.svc.cluster.local
+    relabelings:
+    - action: keep
+      sourceLabels:
+      - __meta_kubernetes_endpoint_ready
+      - __meta_kubernetes_endpointslice_endpoint_conditions_ready
+      regex: true;|;true|true;true
+  namespaceSelector:
+    matchNames:
+    - cps-compute
+  selector:
+    matchLabels:
+      app: compute-gateway
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: compute-metrics-cps
+  namespace: cps-compute
+  labels:
+    release: rancher-monitoring
+spec:
+  endpoints:
+  - authorization:
+      credentials:
+        key: cps
+        name: cps-compute-metrics
+      type: Bearer
+    interval: 30s
+    path: /internal/v1/metrics
+    port: http
+    scheme: https
+    tlsConfig:
+      ca:
+        configMap:
+          key: ca.crt
+          name: cps-compute-gateway-ca
+      insecureSkipVerify: false
+      serverName: compute-gateway.cps-compute.svc.cluster.local
+    relabelings:
+    - action: keep
+      sourceLabels:
+      - __meta_kubernetes_endpoint_ready
+      - __meta_kubernetes_endpointslice_endpoint_conditions_ready
+      regex: true;|;true|true;true
+  namespaceSelector:
+    matchNames:
+    - cps-compute
+  selector:
+    matchLabels:
+      app: compute-gateway
