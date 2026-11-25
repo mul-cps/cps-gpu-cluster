@@ -150,7 +150,7 @@
                 }
               }
             ],
-            "image": "ghcr.io/mul-cps/cps-compute@sha256:5d92684ceef47ecbeee4d3c25c0deb960fe222037a255ba84216cf2725264a19",
+            "image": "ghcr.io/mul-cps/cps-compute@sha256:d6f431ddcba066b82f6eac3c934068386ac33f94e7e6eb988e60140590836d87",
             "imagePullPolicy": "IfNotPresent",
             "name": "gateway",
             "ports": [
@@ -522,7 +522,7 @@
             "name": "upstream-runtime",
             "secret": {
               "defaultMode": 256,
-              "secretName": "cps-staged-gateway-runtime-58777661fe90ee5f"
+              "secretName": "cit-shared-24h-gw-transition-fcec2216a974"
             }
           },
           {
@@ -659,7 +659,7 @@
                   "path": "publisher.json"
                 }
               ],
-              "name": "cps-staged-gateway-publisher-14c3d82ed8d7e57c"
+              "name": "cps-cit-shared-24h-publisher-6fba85d46fb2"
             },
             "name": "cps-native-approval-publisher"
           },
@@ -778,7 +778,7 @@
     "name": "compute-gateway",
     "namespace": "cps-compute",
     "annotations": {
-      "cps.unileoben.ac.at/gateway-start-template": "sha256:bb22bbb3a1116a4b459676effbe22029a83a5428bf7fba8339d0170930cd587e"
+      "cps.unileoben.ac.at/gateway-start-template": "sha256:0f5bbf52316db291e20876a4fdd30a94dc072ddc3d6ccb4c7013a7b54d9158a0"
     }
   }
 }
