@@ -137,3 +137,17 @@ spec:
         - name: test
           image: registry.k8s.io/pause:3.10
 ```
+
+## Workload allocations
+
+Use **Workload allocations** from the Cluster overview for side-by-side
+CIT JupyterHub, CPS JupyterHub and compute workloads. Each section shows
+running, bound and unbound Pods, NVIDIA device slots, declared fractional MiB,
+CPU and RAM requests, and the appropriate PVC scope. Compute includes
+CPS Argo Workflows and non-CronJob Kubernetes Jobs in `cps-workflows` and
+`cps-compute`. That includes historical standalone Jobs that remain in Kubernetes.
+
+Notebook home allocations include detached `claim-*` PVCs. Compute storage
+counts distinct claims currently referenced by bound compute Pods. GPU
+requests and limits come from admitted Pod declarations. Runtime-only
+allocations must be verified through the scheduler and GPU telemetry.

@@ -1,0 +1,119 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cps-workload-allocations
+  namespace: cit-jhub
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - pods
+  verbs:
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cps-workload-allocations
+  namespace: cit-jhub
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cps-workload-allocations
+subjects:
+- kind: ServiceAccount
+  name: cps-storage-monitor
+  namespace: cattle-monitoring-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cps-workload-allocations
+  namespace: jupyterhub
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - pods
+  verbs:
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cps-workload-allocations
+  namespace: jupyterhub
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cps-workload-allocations
+subjects:
+- kind: ServiceAccount
+  name: cps-storage-monitor
+  namespace: cattle-monitoring-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cps-workload-allocations
+  namespace: cps-compute
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - pods
+  verbs:
+  - list
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cps-workload-allocations
+  namespace: cps-compute
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cps-workload-allocations
+subjects:
+- kind: ServiceAccount
+  name: cps-storage-monitor
+  namespace: cattle-monitoring-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: cps-workload-allocations
+  namespace: cps-workflows
+rules:
+- apiGroups:
+  - ''
+  resources:
+  - pods
+  verbs:
+  - list
+- apiGroups:
+  - batch
+  resources:
+  - jobs
+  verbs:
+  - list
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: cps-workload-allocations
+  namespace: cps-workflows
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: cps-workload-allocations
+subjects:
+- kind: ServiceAccount
+  name: cps-storage-monitor
+  namespace: cattle-monitoring-system

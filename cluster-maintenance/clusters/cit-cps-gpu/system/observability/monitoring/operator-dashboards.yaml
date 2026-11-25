@@ -20,7 +20,7 @@ data:
         "overview"
       ],
       "schemaVersion": 41,
-      "version": 1,
+      "version": 2,
       "editable": false,
       "timezone": "browser",
       "time": {
@@ -57,6 +57,14 @@ data:
           "type": "link",
           "title": "Alerts and Fleet",
           "url": "d/cps-alert-operations",
+          "includeVars": false,
+          "keepTime": true,
+          "targetBlank": false
+        },
+        {
+          "type": "link",
+          "title": "Workload allocations",
+          "url": "d/cps-workload-allocations",
           "includeVars": false,
           "keepTime": true,
           "targetBlank": false
@@ -2915,3 +2923,395 @@ data:
         }
       ]
     }
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: cps-workload-allocations
+  namespace: cattle-dashboards
+  labels:
+    grafana_dashboard: '1'
+  annotations:
+    k8s-sidecar-target-directory: 00 Cluster Operations
+data:
+  cps-workload-allocations.json: "{\n  \"uid\": \"cps-workload-allocations\",\n  \"title\": \"Workload\
+    \ allocations\",\n  \"description\": \"CIT and CPS notebook servers and submitted compute workloads.\
+    \ Placement and declared requests come from Kubernetes. Device slots and fractional VRAM are separate,\
+    \ and neither is measured GPU use.\",\n  \"tags\": [\n    \"cps-ops\",\n    \"allocations\",\n   \
+    \ \"jupyterhub\",\n    \"compute\"\n  ],\n  \"schemaVersion\": 41,\n  \"version\": 1,\n  \"editable\"\
+    : false,\n  \"timezone\": \"browser\",\n  \"time\": {\n    \"from\": \"now-24h\",\n    \"to\": \"\
+    now\"\n  },\n  \"refresh\": \"1m\",\n  \"links\": [\n    {\n      \"type\": \"link\",\n      \"title\"\
+    : \"Cluster overview\",\n      \"url\": \"d/cps-cluster-overview\",\n      \"includeVars\": false,\n\
+    \      \"keepTime\": true,\n      \"targetBlank\": false\n    },\n    {\n      \"type\": \"link\"\
+    ,\n      \"title\": \"GPU workers\",\n      \"url\": \"d/cps-worker-health\",\n      \"includeVars\"\
+    : false,\n      \"keepTime\": true,\n      \"targetBlank\": false\n    },\n    {\n      \"type\":\
+    \ \"link\",\n      \"title\": \"Services and teaching\",\n      \"url\": \"d/cps-service-reliability\"\
+    ,\n      \"includeVars\": false,\n      \"keepTime\": true,\n      \"targetBlank\": false\n    },\n\
+    \    {\n      \"type\": \"link\",\n      \"title\": \"Storage and backups\",\n      \"url\": \"d/cps-storage-capacity\"\
+    ,\n      \"includeVars\": false,\n      \"keepTime\": true,\n      \"targetBlank\": false\n    }\n\
+    \  ],\n  \"panels\": [\n    {\n      \"id\": 1,\n      \"title\": \"CIT JupyterHub \xB7 Running\"\
+    ,\n      \"description\": \"Running workload Pods. Queued and bound Pods are charted below.\",\n \
+    \     \"type\": \"stat\",\n      \"gridPos\": {\n        \"x\": 0,\n        \"y\": 0,\n        \"\
+    w\": 8,\n        \"h\": 4\n      },\n      \"datasource\": {\n        \"type\": \"prometheus\",\n\
+    \        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n  \
+    \        \"unit\": \"short\",\n          \"noValue\": \"No data\",\n          \"thresholds\": {\n\
+    \            \"mode\": \"absolute\",\n            \"steps\": [\n              {\n                \"\
+    color\": \"blue\",\n                \"value\": null\n              }\n            ]\n          }\n\
+    \        },\n        \"overrides\": []\n      },\n      \"options\": {\n        \"colorMode\": \"\
+    background\",\n        \"graphMode\": \"none\",\n        \"textMode\": \"auto\",\n        \"reduceOptions\"\
+    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\"\
+    ,\n          \"values\": false\n        }\n      },\n      \"targets\": [\n        {\n          \"\
+    refId\": \"A\",\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"\
+    uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_pods_running{scope=\\\"cit-jhub\\\
+    \"}\",\n          \"legendFormat\": \"\",\n          \"instant\": true,\n          \"range\": false,\n\
+    \          \"format\": \"time_series\"\n        }\n      ]\n    },\n    {\n      \"id\": 2,\n    \
+    \  \"title\": \"CPS JupyterHub \xB7 Running\",\n      \"description\": \"Running workload Pods. Queued\
+    \ and bound Pods are charted below.\",\n      \"type\": \"stat\",\n      \"gridPos\": {\n        \"\
+    x\": 8,\n        \"y\": 0,\n        \"w\": 8,\n        \"h\": 4\n      },\n      \"datasource\": {\n\
+    \        \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\"\
+    : {\n        \"defaults\": {\n          \"unit\": \"short\",\n          \"noValue\": \"No data\",\n\
+    \          \"thresholds\": {\n            \"mode\": \"absolute\",\n            \"steps\": [\n    \
+    \          {\n                \"color\": \"blue\",\n                \"value\": null\n            \
+    \  }\n            ]\n          }\n        },\n        \"overrides\": []\n      },\n      \"options\"\
+    : {\n        \"colorMode\": \"background\",\n        \"graphMode\": \"none\",\n        \"textMode\"\
+    : \"auto\",\n        \"reduceOptions\": {\n          \"calcs\": [\n            \"lastNotNull\"\n \
+    \         ],\n          \"fields\": \"\",\n          \"values\": false\n        }\n      },\n    \
+    \  \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"datasource\": {\n         \
+    \   \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\"\
+    : \"cps_workload_pods_running{scope=\\\"cps-jhub\\\"}\",\n          \"legendFormat\": \"\",\n    \
+    \      \"instant\": true,\n          \"range\": false,\n          \"format\": \"time_series\"\n  \
+    \      }\n      ]\n    },\n    {\n      \"id\": 3,\n      \"title\": \"Compute jobs \xB7 Running\"\
+    ,\n      \"description\": \"Running workload Pods. Queued and bound Pods are charted below.\",\n \
+    \     \"type\": \"stat\",\n      \"gridPos\": {\n        \"x\": 16,\n        \"y\": 0,\n        \"\
+    w\": 8,\n        \"h\": 4\n      },\n      \"datasource\": {\n        \"type\": \"prometheus\",\n\
+    \        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n  \
+    \        \"unit\": \"short\",\n          \"noValue\": \"No data\",\n          \"thresholds\": {\n\
+    \            \"mode\": \"absolute\",\n            \"steps\": [\n              {\n                \"\
+    color\": \"blue\",\n                \"value\": null\n              }\n            ]\n          }\n\
+    \        },\n        \"overrides\": []\n      },\n      \"options\": {\n        \"colorMode\": \"\
+    background\",\n        \"graphMode\": \"none\",\n        \"textMode\": \"auto\",\n        \"reduceOptions\"\
+    : {\n          \"calcs\": [\n            \"lastNotNull\"\n          ],\n          \"fields\": \"\"\
+    ,\n          \"values\": false\n        }\n      },\n      \"targets\": [\n        {\n          \"\
+    refId\": \"A\",\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"\
+    uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_pods_running{scope=\\\"compute-jobs\\\
+    \"}\",\n          \"legendFormat\": \"\",\n          \"instant\": true,\n          \"range\": false,\n\
+    \          \"format\": \"time_series\"\n        }\n      ]\n    },\n    {\n      \"id\": 4,\n    \
+    \  \"type\": \"row\",\n      \"title\": \"CIT JupyterHub\",\n      \"collapsed\": false,\n      \"\
+    gridPos\": {\n        \"x\": 0,\n        \"y\": 4,\n        \"w\": 24,\n        \"h\": 1\n      },\n\
+    \      \"panels\": []\n    },\n    {\n      \"id\": 5,\n      \"title\": \"Workload Pods\",\n    \
+    \  \"description\": \"Pods waiting for a node are unbound. A bound Pod may still be starting.\",\n\
+    \      \"type\": \"timeseries\",\n      \"gridPos\": {\n        \"x\": 0,\n        \"y\": 5,\n   \
+    \     \"w\": 8,\n        \"h\": 8\n      },\n      \"datasource\": {\n        \"type\": \"prometheus\"\
+    ,\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n\
+    \          \"unit\": \"short\",\n          \"noValue\": \"No data\"\n        },\n        \"overrides\"\
+    : []\n      },\n      \"options\": {},\n      \"targets\": [\n        {\n          \"refId\": \"A\"\
+    ,\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\
+    \n          },\n          \"expr\": \"cps_workload_pods_running{scope=\\\"cit-jhub\\\"}\",\n     \
+    \     \"legendFormat\": \"Running\",\n          \"instant\": false,\n          \"range\": true,\n\
+    \          \"format\": \"time_series\"\n        },\n        {\n          \"refId\": \"B\",\n     \
+    \     \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\
+    \n          },\n          \"expr\": \"cps_workload_pods_bound{scope=\\\"cit-jhub\\\"}\",\n       \
+    \   \"legendFormat\": \"Bound to a node\",\n          \"instant\": false,\n          \"range\": true,\n\
+    \          \"format\": \"time_series\"\n        },\n        {\n          \"refId\": \"C\",\n     \
+    \     \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\
+    \n          },\n          \"expr\": \"cps_workload_pods_unbound{scope=\\\"cit-jhub\\\"}\",\n     \
+    \     \"legendFormat\": \"Unbound\",\n          \"instant\": false,\n          \"range\": true,\n\
+    \          \"format\": \"time_series\"\n        }\n      ]\n    },\n    {\n      \"id\": 6,\n    \
+    \  \"title\": \"GPU device requests\",\n      \"description\": \"Device-slot declarations include\
+    \ Pods with fractional GPU requests. Physical usage is on GPU workers.\",\n      \"type\": \"timeseries\"\
+    ,\n      \"gridPos\": {\n        \"x\": 8,\n        \"y\": 5,\n        \"w\": 8,\n        \"h\": 8\n\
+    \      },\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\
+    \n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\": \"short\",\n  \
+    \        \"noValue\": \"No data\"\n        },\n        \"overrides\": []\n      },\n      \"options\"\
+    : {},\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"datasource\": {\n\
+    \            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n      \
+    \    \"expr\": \"cps_workload_gpu_device_slots{scope=\\\"cit-jhub\\\",placement=\\\"bound\\\"}\",\n\
+    \          \"legendFormat\": \"Bound NVIDIA slots\",\n          \"instant\": false,\n          \"\
+    range\": true,\n          \"format\": \"time_series\"\n        },\n        {\n          \"refId\"\
+    : \"B\",\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\"\
+    : \"prometheus\"\n          },\n          \"expr\": \"cps_workload_gpu_device_slots{scope=\\\"cit-jhub\\\
+    \",placement=\\\"unbound\\\"}\",\n          \"legendFormat\": \"Unbound NVIDIA slots\",\n        \
+    \  \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\n      \
+    \  },\n        {\n          \"refId\": \"C\",\n          \"datasource\": {\n            \"type\":\
+    \ \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_gpu_nonfractional_slots{scope=\\\
+    \"cit-jhub\\\",placement=\\\"bound\\\"}\",\n          \"legendFormat\": \"Bound slots without fractional\
+    \ VRAM declaration\",\n          \"instant\": false,\n          \"range\": true,\n          \"format\"\
+    : \"time_series\"\n        }\n      ]\n    },\n    {\n      \"id\": 7,\n      \"title\": \"Declared\
+    \ fractional VRAM\",\n      \"description\": \"Explicit NVIDIA_GPU_MEMORY_REQUEST/LIMIT in MiB. Values\
+    \ injected only at runtime are outside this view.\",\n      \"type\": \"timeseries\",\n      \"gridPos\"\
+    : {\n        \"x\": 16,\n        \"y\": 5,\n        \"w\": 8,\n        \"h\": 8\n      },\n      \"\
+    datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\n      },\n  \
+    \    \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\": \"bytes\",\n          \"noValue\"\
+    : \"No data\"\n        },\n        \"overrides\": []\n      },\n      \"options\": {},\n      \"targets\"\
+    : [\n        {\n          \"refId\": \"A\",\n          \"datasource\": {\n            \"type\": \"\
+    prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_fractional_vram_request_bytes{scope=\\\
+    \"cit-jhub\\\",placement=\\\"bound\\\"}\",\n          \"legendFormat\": \"Bound requested\",\n   \
+    \       \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\n \
+    \       },\n        {\n          \"refId\": \"B\",\n          \"datasource\": {\n            \"type\"\
+    : \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_fractional_vram_limit_bytes{scope=\\\
+    \"cit-jhub\\\",placement=\\\"bound\\\"}\",\n          \"legendFormat\": \"Bound limit\",\n       \
+    \   \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\n     \
+    \   },\n        {\n          \"refId\": \"C\",\n          \"datasource\": {\n            \"type\"\
+    : \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_fractional_vram_request_bytes{scope=\\\
+    \"cit-jhub\\\",placement=\\\"unbound\\\"}\",\n          \"legendFormat\": \"Unbound requested\",\n\
+    \          \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\n\
+    \        }\n      ]\n    },\n    {\n      \"id\": 8,\n      \"title\": \"CPU requested by bound Pods\"\
+    ,\n      \"description\": \"Sum of regular container CPU requests. Init container scheduling requirements\
+    \ and overhead are outside this aggregate.\",\n      \"type\": \"timeseries\",\n      \"gridPos\"\
+    : {\n        \"x\": 0,\n        \"y\": 13,\n        \"w\": 8,\n        \"h\": 8\n      },\n      \"\
+    datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\n      },\n  \
+    \    \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\": \"cores\",\n          \"noValue\"\
+    : \"No data\"\n        },\n        \"overrides\": []\n      },\n      \"options\": {},\n      \"targets\"\
+    : [\n        {\n          \"refId\": \"A\",\n          \"datasource\": {\n            \"type\": \"\
+    prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps:workload_cpu_requests{scope=\\\
+    \"cit-jhub\\\"}\",\n          \"legendFormat\": \"\",\n          \"instant\": false,\n          \"\
+    range\": true,\n          \"format\": \"time_series\"\n        }\n      ]\n    },\n    {\n      \"\
+    id\": 9,\n      \"title\": \"Memory requested by bound Pods\",\n      \"description\": \"Sum of regular\
+    \ container memory requests.\",\n      \"type\": \"timeseries\",\n      \"gridPos\": {\n        \"\
+    x\": 8,\n        \"y\": 13,\n        \"w\": 8,\n        \"h\": 8\n      },\n      \"datasource\":\
+    \ {\n        \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\"\
+    : {\n        \"defaults\": {\n          \"unit\": \"bytes\",\n          \"noValue\": \"No data\"\n\
+    \        },\n        \"overrides\": []\n      },\n      \"options\": {},\n      \"targets\": [\n \
+    \       {\n          \"refId\": \"A\",\n          \"datasource\": {\n            \"type\": \"prometheus\"\
+    ,\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps:workload_memory_requests_bytes{scope=\\\
+    \"cit-jhub\\\"}\",\n          \"legendFormat\": \"\",\n          \"instant\": false,\n          \"\
+    range\": true,\n          \"format\": \"time_series\"\n        }\n      ]\n    },\n    {\n      \"\
+    id\": 10,\n      \"title\": \"Notebook home allocations\",\n      \"description\": \"Requested storage\
+    \ for all claim-* home PVCs, including homes whose notebooks have stopped.\",\n      \"type\": \"\
+    timeseries\",\n      \"gridPos\": {\n        \"x\": 16,\n        \"y\": 13,\n        \"w\": 8,\n \
+    \       \"h\": 8\n      },\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"\
+    uid\": \"prometheus\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\"\
+    : \"bytes\",\n          \"noValue\": \"No data\"\n        },\n        \"overrides\": []\n      },\n\
+    \      \"options\": {},\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"\
+    datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\n    \
+    \      },\n          \"expr\": \"sum(max by(namespace,persistentvolumeclaim)(kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=\\\
+    \"cit-jhub\\\",persistentvolumeclaim=~\\\"claim-.+\\\"}))\",\n          \"legendFormat\": \"\",\n\
+    \          \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\n\
+    \        }\n      ]\n    },\n    {\n      \"id\": 11,\n      \"title\": \"Lowest mounted home free\
+    \ space\",\n      \"description\": \"Kubelet filesystem telemetry for mounted homes only.\",\n   \
+    \   \"type\": \"timeseries\",\n      \"gridPos\": {\n        \"x\": 0,\n        \"y\": 21,\n     \
+    \   \"w\": 24,\n        \"h\": 9\n      },\n      \"datasource\": {\n        \"type\": \"prometheus\"\
+    ,\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n\
+    \          \"unit\": \"percent\",\n          \"noValue\": \"No data\"\n        },\n        \"overrides\"\
+    : []\n      },\n      \"options\": {},\n      \"targets\": [\n        {\n          \"refId\": \"A\"\
+    ,\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\
+    \n          },\n          \"expr\": \"bottomk(12,100*cps:pvc_free_ratio{namespace=\\\"cit-jhub\\\"\
+    ,persistentvolumeclaim=~\\\"claim-.+\\\"})\",\n          \"legendFormat\": \"\",\n          \"instant\"\
+    : false,\n          \"range\": true,\n          \"format\": \"time_series\"\n        }\n      ]\n\
+    \    },\n    {\n      \"id\": 12,\n      \"type\": \"row\",\n      \"title\": \"CPS JupyterHub\",\n\
+    \      \"collapsed\": false,\n      \"gridPos\": {\n        \"x\": 0,\n        \"y\": 30,\n      \
+    \  \"w\": 24,\n        \"h\": 1\n      },\n      \"panels\": []\n    },\n    {\n      \"id\": 13,\n\
+    \      \"title\": \"Workload Pods\",\n      \"description\": \"Pods waiting for a node are unbound.\
+    \ A bound Pod may still be starting.\",\n      \"type\": \"timeseries\",\n      \"gridPos\": {\n \
+    \       \"x\": 0,\n        \"y\": 31,\n        \"w\": 8,\n        \"h\": 8\n      },\n      \"datasource\"\
+    : {\n        \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\"\
+    : {\n        \"defaults\": {\n          \"unit\": \"short\",\n          \"noValue\": \"No data\"\n\
+    \        },\n        \"overrides\": []\n      },\n      \"options\": {},\n      \"targets\": [\n \
+    \       {\n          \"refId\": \"A\",\n          \"datasource\": {\n            \"type\": \"prometheus\"\
+    ,\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_pods_running{scope=\\\
+    \"cps-jhub\\\"}\",\n          \"legendFormat\": \"Running\",\n          \"instant\": false,\n    \
+    \      \"range\": true,\n          \"format\": \"time_series\"\n        },\n        {\n          \"\
+    refId\": \"B\",\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"\
+    uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_pods_bound{scope=\\\"cps-jhub\\\
+    \"}\",\n          \"legendFormat\": \"Bound to a node\",\n          \"instant\": false,\n        \
+    \  \"range\": true,\n          \"format\": \"time_series\"\n        },\n        {\n          \"refId\"\
+    : \"C\",\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\"\
+    : \"prometheus\"\n          },\n          \"expr\": \"cps_workload_pods_unbound{scope=\\\"cps-jhub\\\
+    \"}\",\n          \"legendFormat\": \"Unbound\",\n          \"instant\": false,\n          \"range\"\
+    : true,\n          \"format\": \"time_series\"\n        }\n      ]\n    },\n    {\n      \"id\": 14,\n\
+    \      \"title\": \"GPU device requests\",\n      \"description\": \"Device-slot declarations include\
+    \ Pods with fractional GPU requests. Physical usage is on GPU workers.\",\n      \"type\": \"timeseries\"\
+    ,\n      \"gridPos\": {\n        \"x\": 8,\n        \"y\": 31,\n        \"w\": 8,\n        \"h\":\
+    \ 8\n      },\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\
+    \n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\": \"short\",\n  \
+    \        \"noValue\": \"No data\"\n        },\n        \"overrides\": []\n      },\n      \"options\"\
+    : {},\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"datasource\": {\n\
+    \            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n      \
+    \    \"expr\": \"cps_workload_gpu_device_slots{scope=\\\"cps-jhub\\\",placement=\\\"bound\\\"}\",\n\
+    \          \"legendFormat\": \"Bound NVIDIA slots\",\n          \"instant\": false,\n          \"\
+    range\": true,\n          \"format\": \"time_series\"\n        },\n        {\n          \"refId\"\
+    : \"B\",\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\"\
+    : \"prometheus\"\n          },\n          \"expr\": \"cps_workload_gpu_device_slots{scope=\\\"cps-jhub\\\
+    \",placement=\\\"unbound\\\"}\",\n          \"legendFormat\": \"Unbound NVIDIA slots\",\n        \
+    \  \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\n      \
+    \  },\n        {\n          \"refId\": \"C\",\n          \"datasource\": {\n            \"type\":\
+    \ \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_gpu_nonfractional_slots{scope=\\\
+    \"cps-jhub\\\",placement=\\\"bound\\\"}\",\n          \"legendFormat\": \"Bound slots without fractional\
+    \ VRAM declaration\",\n          \"instant\": false,\n          \"range\": true,\n          \"format\"\
+    : \"time_series\"\n        }\n      ]\n    },\n    {\n      \"id\": 15,\n      \"title\": \"Declared\
+    \ fractional VRAM\",\n      \"description\": \"Explicit NVIDIA_GPU_MEMORY_REQUEST/LIMIT in MiB. Values\
+    \ injected only at runtime are outside this view.\",\n      \"type\": \"timeseries\",\n      \"gridPos\"\
+    : {\n        \"x\": 16,\n        \"y\": 31,\n        \"w\": 8,\n        \"h\": 8\n      },\n     \
+    \ \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\n      },\n\
+    \      \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\": \"bytes\",\n          \"noValue\"\
+    : \"No data\"\n        },\n        \"overrides\": []\n      },\n      \"options\": {},\n      \"targets\"\
+    : [\n        {\n          \"refId\": \"A\",\n          \"datasource\": {\n            \"type\": \"\
+    prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_fractional_vram_request_bytes{scope=\\\
+    \"cps-jhub\\\",placement=\\\"bound\\\"}\",\n          \"legendFormat\": \"Bound requested\",\n   \
+    \       \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\n \
+    \       },\n        {\n          \"refId\": \"B\",\n          \"datasource\": {\n            \"type\"\
+    : \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_fractional_vram_limit_bytes{scope=\\\
+    \"cps-jhub\\\",placement=\\\"bound\\\"}\",\n          \"legendFormat\": \"Bound limit\",\n       \
+    \   \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\n     \
+    \   },\n        {\n          \"refId\": \"C\",\n          \"datasource\": {\n            \"type\"\
+    : \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_fractional_vram_request_bytes{scope=\\\
+    \"cps-jhub\\\",placement=\\\"unbound\\\"}\",\n          \"legendFormat\": \"Unbound requested\",\n\
+    \          \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\n\
+    \        }\n      ]\n    },\n    {\n      \"id\": 16,\n      \"title\": \"CPU requested by bound Pods\"\
+    ,\n      \"description\": \"Sum of regular container CPU requests. Init container scheduling requirements\
+    \ and overhead are outside this aggregate.\",\n      \"type\": \"timeseries\",\n      \"gridPos\"\
+    : {\n        \"x\": 0,\n        \"y\": 39,\n        \"w\": 8,\n        \"h\": 8\n      },\n      \"\
+    datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\n      },\n  \
+    \    \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\": \"cores\",\n          \"noValue\"\
+    : \"No data\"\n        },\n        \"overrides\": []\n      },\n      \"options\": {},\n      \"targets\"\
+    : [\n        {\n          \"refId\": \"A\",\n          \"datasource\": {\n            \"type\": \"\
+    prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps:workload_cpu_requests{scope=\\\
+    \"cps-jhub\\\"}\",\n          \"legendFormat\": \"\",\n          \"instant\": false,\n          \"\
+    range\": true,\n          \"format\": \"time_series\"\n        }\n      ]\n    },\n    {\n      \"\
+    id\": 17,\n      \"title\": \"Memory requested by bound Pods\",\n      \"description\": \"Sum of regular\
+    \ container memory requests.\",\n      \"type\": \"timeseries\",\n      \"gridPos\": {\n        \"\
+    x\": 8,\n        \"y\": 39,\n        \"w\": 8,\n        \"h\": 8\n      },\n      \"datasource\":\
+    \ {\n        \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\"\
+    : {\n        \"defaults\": {\n          \"unit\": \"bytes\",\n          \"noValue\": \"No data\"\n\
+    \        },\n        \"overrides\": []\n      },\n      \"options\": {},\n      \"targets\": [\n \
+    \       {\n          \"refId\": \"A\",\n          \"datasource\": {\n            \"type\": \"prometheus\"\
+    ,\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps:workload_memory_requests_bytes{scope=\\\
+    \"cps-jhub\\\"}\",\n          \"legendFormat\": \"\",\n          \"instant\": false,\n          \"\
+    range\": true,\n          \"format\": \"time_series\"\n        }\n      ]\n    },\n    {\n      \"\
+    id\": 18,\n      \"title\": \"Notebook home allocations\",\n      \"description\": \"Requested storage\
+    \ for all claim-* home PVCs, including homes whose notebooks have stopped.\",\n      \"type\": \"\
+    timeseries\",\n      \"gridPos\": {\n        \"x\": 16,\n        \"y\": 39,\n        \"w\": 8,\n \
+    \       \"h\": 8\n      },\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"\
+    uid\": \"prometheus\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\"\
+    : \"bytes\",\n          \"noValue\": \"No data\"\n        },\n        \"overrides\": []\n      },\n\
+    \      \"options\": {},\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"\
+    datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\n    \
+    \      },\n          \"expr\": \"sum(max by(namespace,persistentvolumeclaim)(kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace=\\\
+    \"jupyterhub\\\",persistentvolumeclaim=~\\\"claim-.+\\\"}))\",\n          \"legendFormat\": \"\",\n\
+    \          \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\n\
+    \        }\n      ]\n    },\n    {\n      \"id\": 19,\n      \"title\": \"Lowest mounted home free\
+    \ space\",\n      \"description\": \"Kubelet filesystem telemetry for mounted homes only.\",\n   \
+    \   \"type\": \"timeseries\",\n      \"gridPos\": {\n        \"x\": 0,\n        \"y\": 47,\n     \
+    \   \"w\": 24,\n        \"h\": 9\n      },\n      \"datasource\": {\n        \"type\": \"prometheus\"\
+    ,\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n\
+    \          \"unit\": \"percent\",\n          \"noValue\": \"No data\"\n        },\n        \"overrides\"\
+    : []\n      },\n      \"options\": {},\n      \"targets\": [\n        {\n          \"refId\": \"A\"\
+    ,\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\
+    \n          },\n          \"expr\": \"bottomk(12,100*cps:pvc_free_ratio{namespace=\\\"jupyterhub\\\
+    \",persistentvolumeclaim=~\\\"claim-.+\\\"})\",\n          \"legendFormat\": \"\",\n          \"instant\"\
+    : false,\n          \"range\": true,\n          \"format\": \"time_series\"\n        }\n      ]\n\
+    \    },\n    {\n      \"id\": 20,\n      \"type\": \"row\",\n      \"title\": \"Compute jobs\",\n\
+    \      \"collapsed\": false,\n      \"gridPos\": {\n        \"x\": 0,\n        \"y\": 56,\n      \
+    \  \"w\": 24,\n        \"h\": 1\n      },\n      \"panels\": []\n    },\n    {\n      \"id\": 21,\n\
+    \      \"title\": \"Workload Pods\",\n      \"description\": \"Pods waiting for a node are unbound.\
+    \ A bound Pod may still be starting.\",\n      \"type\": \"timeseries\",\n      \"gridPos\": {\n \
+    \       \"x\": 0,\n        \"y\": 57,\n        \"w\": 8,\n        \"h\": 8\n      },\n      \"datasource\"\
+    : {\n        \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\"\
+    : {\n        \"defaults\": {\n          \"unit\": \"short\",\n          \"noValue\": \"No data\"\n\
+    \        },\n        \"overrides\": []\n      },\n      \"options\": {},\n      \"targets\": [\n \
+    \       {\n          \"refId\": \"A\",\n          \"datasource\": {\n            \"type\": \"prometheus\"\
+    ,\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_pods_running{scope=\\\
+    \"compute-jobs\\\"}\",\n          \"legendFormat\": \"Running\",\n          \"instant\": false,\n\
+    \          \"range\": true,\n          \"format\": \"time_series\"\n        },\n        {\n      \
+    \    \"refId\": \"B\",\n          \"datasource\": {\n            \"type\": \"prometheus\",\n     \
+    \       \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_pods_bound{scope=\\\
+    \"compute-jobs\\\"}\",\n          \"legendFormat\": \"Bound to a node\",\n          \"instant\": false,\n\
+    \          \"range\": true,\n          \"format\": \"time_series\"\n        },\n        {\n      \
+    \    \"refId\": \"C\",\n          \"datasource\": {\n            \"type\": \"prometheus\",\n     \
+    \       \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_pods_unbound{scope=\\\
+    \"compute-jobs\\\"}\",\n          \"legendFormat\": \"Unbound\",\n          \"instant\": false,\n\
+    \          \"range\": true,\n          \"format\": \"time_series\"\n        }\n      ]\n    },\n \
+    \   {\n      \"id\": 22,\n      \"title\": \"GPU device requests\",\n      \"description\": \"Device-slot\
+    \ declarations include Pods with fractional GPU requests. Physical usage is on GPU workers.\",\n \
+    \     \"type\": \"timeseries\",\n      \"gridPos\": {\n        \"x\": 8,\n        \"y\": 57,\n   \
+    \     \"w\": 8,\n        \"h\": 8\n      },\n      \"datasource\": {\n        \"type\": \"prometheus\"\
+    ,\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n\
+    \          \"unit\": \"short\",\n          \"noValue\": \"No data\"\n        },\n        \"overrides\"\
+    : []\n      },\n      \"options\": {},\n      \"targets\": [\n        {\n          \"refId\": \"A\"\
+    ,\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\
+    \n          },\n          \"expr\": \"cps_workload_gpu_device_slots{scope=\\\"compute-jobs\\\",placement=\\\
+    \"bound\\\"}\",\n          \"legendFormat\": \"Bound NVIDIA slots\",\n          \"instant\": false,\n\
+    \          \"range\": true,\n          \"format\": \"time_series\"\n        },\n        {\n      \
+    \    \"refId\": \"B\",\n          \"datasource\": {\n            \"type\": \"prometheus\",\n     \
+    \       \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_gpu_device_slots{scope=\\\
+    \"compute-jobs\\\",placement=\\\"unbound\\\"}\",\n          \"legendFormat\": \"Unbound NVIDIA slots\"\
+    ,\n          \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\
+    \n        },\n        {\n          \"refId\": \"C\",\n          \"datasource\": {\n            \"\
+    type\": \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"\
+    cps_workload_gpu_nonfractional_slots{scope=\\\"compute-jobs\\\",placement=\\\"bound\\\"}\",\n    \
+    \      \"legendFormat\": \"Bound slots without fractional VRAM declaration\",\n          \"instant\"\
+    : false,\n          \"range\": true,\n          \"format\": \"time_series\"\n        }\n      ]\n\
+    \    },\n    {\n      \"id\": 23,\n      \"title\": \"Declared fractional VRAM\",\n      \"description\"\
+    : \"Explicit NVIDIA_GPU_MEMORY_REQUEST/LIMIT in MiB. Values injected only at runtime are outside this\
+    \ view.\",\n      \"type\": \"timeseries\",\n      \"gridPos\": {\n        \"x\": 16,\n        \"\
+    y\": 57,\n        \"w\": 8,\n        \"h\": 8\n      },\n      \"datasource\": {\n        \"type\"\
+    : \"prometheus\",\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\": {\n        \"\
+    defaults\": {\n          \"unit\": \"bytes\",\n          \"noValue\": \"No data\"\n        },\n  \
+    \      \"overrides\": []\n      },\n      \"options\": {},\n      \"targets\": [\n        {\n    \
+    \      \"refId\": \"A\",\n          \"datasource\": {\n            \"type\": \"prometheus\",\n   \
+    \         \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_fractional_vram_request_bytes{scope=\\\
+    \"compute-jobs\\\",placement=\\\"bound\\\"}\",\n          \"legendFormat\": \"Bound requested\",\n\
+    \          \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\n\
+    \        },\n        {\n          \"refId\": \"B\",\n          \"datasource\": {\n            \"type\"\
+    : \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_fractional_vram_limit_bytes{scope=\\\
+    \"compute-jobs\\\",placement=\\\"bound\\\"}\",\n          \"legendFormat\": \"Bound limit\",\n   \
+    \       \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\n \
+    \       },\n        {\n          \"refId\": \"C\",\n          \"datasource\": {\n            \"type\"\
+    : \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"cps_workload_fractional_vram_request_bytes{scope=\\\
+    \"compute-jobs\\\",placement=\\\"unbound\\\"}\",\n          \"legendFormat\": \"Unbound requested\"\
+    ,\n          \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\
+    \n        }\n      ]\n    },\n    {\n      \"id\": 24,\n      \"title\": \"CPU requested by bound\
+    \ Pods\",\n      \"description\": \"Sum of regular container CPU requests. Init container scheduling\
+    \ requirements and overhead are outside this aggregate.\",\n      \"type\": \"timeseries\",\n    \
+    \  \"gridPos\": {\n        \"x\": 0,\n        \"y\": 65,\n        \"w\": 8,\n        \"h\": 8\n  \
+    \    },\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\
+    \n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\": \"cores\",\n  \
+    \        \"noValue\": \"No data\"\n        },\n        \"overrides\": []\n      },\n      \"options\"\
+    : {},\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"datasource\": {\n\
+    \            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\n          },\n      \
+    \    \"expr\": \"cps:workload_cpu_requests{scope=\\\"compute-jobs\\\"}\",\n          \"legendFormat\"\
+    : \"\",\n          \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\
+    \n        }\n      ]\n    },\n    {\n      \"id\": 25,\n      \"title\": \"Memory requested by bound\
+    \ Pods\",\n      \"description\": \"Sum of regular container memory requests.\",\n      \"type\":\
+    \ \"timeseries\",\n      \"gridPos\": {\n        \"x\": 8,\n        \"y\": 65,\n        \"w\": 8,\n\
+    \        \"h\": 8\n      },\n      \"datasource\": {\n        \"type\": \"prometheus\",\n        \"\
+    uid\": \"prometheus\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n          \"unit\"\
+    : \"bytes\",\n          \"noValue\": \"No data\"\n        },\n        \"overrides\": []\n      },\n\
+    \      \"options\": {},\n      \"targets\": [\n        {\n          \"refId\": \"A\",\n          \"\
+    datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\n    \
+    \      },\n          \"expr\": \"cps:workload_memory_requests_bytes{scope=\\\"compute-jobs\\\"}\"\
+    ,\n          \"legendFormat\": \"\",\n          \"instant\": false,\n          \"range\": true,\n\
+    \          \"format\": \"time_series\"\n        }\n      ]\n    },\n    {\n      \"id\": 26,\n   \
+    \   \"title\": \"Active compute Pod PVC requests\",\n      \"description\": \"Distinct claims referenced\
+    \ by bound compute Pods. Service databases, backup claims and detached PVCs are outside this aggregate.\"\
+    ,\n      \"type\": \"timeseries\",\n      \"gridPos\": {\n        \"x\": 16,\n        \"y\": 65,\n\
+    \        \"w\": 8,\n        \"h\": 8\n      },\n      \"datasource\": {\n        \"type\": \"prometheus\"\
+    ,\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n\
+    \          \"unit\": \"bytes\",\n          \"noValue\": \"No data\"\n        },\n        \"overrides\"\
+    : []\n      },\n      \"options\": {},\n      \"targets\": [\n        {\n          \"refId\": \"A\"\
+    ,\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\
+    \n          },\n          \"expr\": \"cps:workload_bound_pvc_requests_bytes{scope=\\\"compute-jobs\\\
+    \"}\",\n          \"legendFormat\": \"\",\n          \"instant\": false,\n          \"range\": true,\n\
+    \          \"format\": \"time_series\"\n        }\n      ]\n    },\n    {\n      \"id\": 27,\n   \
+    \   \"title\": \"Kubernetes compute Jobs\",\n      \"description\": \"Jobs in cps-compute and cps-workflows\
+    \ excluding CronJob-owned maintenance and backups. Terminal objects are retained history.\",\n   \
+    \   \"type\": \"timeseries\",\n      \"gridPos\": {\n        \"x\": 0,\n        \"y\": 73,\n     \
+    \   \"w\": 12,\n        \"h\": 9\n      },\n      \"datasource\": {\n        \"type\": \"prometheus\"\
+    ,\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\": {\n        \"defaults\": {\n\
+    \          \"unit\": \"short\",\n          \"noValue\": \"No data\"\n        },\n        \"overrides\"\
+    : []\n      },\n      \"options\": {},\n      \"targets\": [\n        {\n          \"refId\": \"A\"\
+    ,\n          \"datasource\": {\n            \"type\": \"prometheus\",\n            \"uid\": \"prometheus\"\
+    \n          },\n          \"expr\": \"cps_workload_batch_jobs\",\n          \"legendFormat\": \"{{phase}}\"\
+    ,\n          \"instant\": false,\n          \"range\": true,\n          \"format\": \"time_series\"\
+    \n        }\n      ]\n    },\n    {\n      \"id\": 28,\n      \"title\": \"Argo Workflows\",\n   \
+    \   \"description\": \"Counts from the CPS Argo controller. Retained terminal runs appear here with\
+    \ active workflows.\",\n      \"type\": \"timeseries\",\n      \"gridPos\": {\n        \"x\": 12,\n\
+    \        \"y\": 73,\n        \"w\": 12,\n        \"h\": 9\n      },\n      \"datasource\": {\n   \
+    \     \"type\": \"prometheus\",\n        \"uid\": \"prometheus\"\n      },\n      \"fieldConfig\"\
+    : {\n        \"defaults\": {\n          \"unit\": \"short\",\n          \"noValue\": \"No data\"\n\
+    \        },\n        \"overrides\": []\n      },\n      \"options\": {},\n      \"targets\": [\n \
+    \       {\n          \"refId\": \"A\",\n          \"datasource\": {\n            \"type\": \"prometheus\"\
+    ,\n            \"uid\": \"prometheus\"\n          },\n          \"expr\": \"max by(status) (argo_workflows_gauge{namespace=\\\
+    \"cps-argo\\\"})\",\n          \"legendFormat\": \"{{status}}\",\n          \"instant\": false,\n\
+    \          \"range\": true,\n          \"format\": \"time_series\"\n        }\n      ]\n    }\n  ]\n\
+    }\n"

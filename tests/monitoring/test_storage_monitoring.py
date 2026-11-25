@@ -32,3 +32,25 @@ def test_digest_window_includes_weekend_and_handles_dst(monkeypatch):
     assert start.isoformat() == "2026-03-27T09:00:00+01:00"
     assert end.isoformat() == "2026-03-30T09:00:00+02:00"
     assert end.timestamp() - start.timestamp() == 71 * 3600
+
+
+def test_allocation_classification_excludes_services_and_cronjobs(monkeypatch):
+    monkeypatch.syspath_prepend(str(MONITORING))
+    workloads = load("workload_allocations")
+    personal = {"metadata": {"labels": {"component": "singleuser-server"}}}
+    service = {"metadata": {"labels": {"component": "hub"}}}
+    compute = {"metadata": {"ownerReferences": [{"kind": "Job", "uid": "user-job"}]}}
+    assert workloads.scope_for("cit-jhub", personal, set()) == "cit-jhub"
+    assert workloads.scope_for("jupyterhub", personal, set()) == "cps-jhub"
+    assert workloads.scope_for("jupyterhub", service, set()) is None
+    assert workloads.scope_for("cps-compute", compute, {"user-job"}) == "compute-jobs"
+    assert workloads.scope_for("cps-compute", compute, set()) is None
+
+
+def test_fractional_claim_uses_requested_mib_separately_from_device_slot(monkeypatch):
+    monkeypatch.syspath_prepend(str(MONITORING))
+    workloads = load("workload_allocations")
+    container = {"resources": {"limits": {"nvidia.com/gpu": "1"}},
+                 "env": [{"name": "NVIDIA_GPU_MEMORY_REQUEST", "value": "2048"},
+                         {"name": "NVIDIA_GPU_MEMORY_LIMIT", "value": "5120"}]}
+    assert workloads.gpu_claim(container) == (1, 2*1024**3, 5*1024**3)

@@ -12,6 +12,7 @@ kind: Kustomization
 resources:
   - namespace.yaml
   - storage-monitoring.yaml
+  - workload-access.yaml
   - storage-alerts.yaml
   - warning-digest.yaml
   - operator-dashboards.yaml
@@ -50,4 +51,5 @@ configMapGenerator:
     namespace: cattle-monitoring-system
     files:
       - storage_exporter.py
+      - workload_allocations.py
       - warning_digest.py

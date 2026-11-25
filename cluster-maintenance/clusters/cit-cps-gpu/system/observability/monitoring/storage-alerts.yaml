@@ -146,7 +146,7 @@ spec:
         description: The disk {{ $labels.disk }} is at or below the configured minimum available space.
         dashboard_uid: cps-storage-capacity
     - alert: CPSStorageExporterUnavailable
-      expr: absent(up{job="cps-storage-monitor"} == 1)
+      expr: absent(up{job="cps-storage-monitor",telemetry="storage"} == 1)
       for: 5m
       labels:
         severity: warning
@@ -411,3 +411,40 @@ spec:
         summary: Proxmox drive {{ $labels.drive }} reports health failure
         description: Confirm the host-side health result and mirror redundancy before touching the drive.
         dashboard_uid: cps-storage-capacity
+  - name: cps-workload-allocations
+    rules:
+    - record: cps:workload_cpu_requests
+      expr: |-
+        sum by(scope) (
+          max by(namespace,pod,container) (kube_pod_container_resource_requests{resource="cpu"})
+          * on(namespace,pod) group_left(scope)
+          max by(namespace,pod,scope) (cps_workload_pod{placement="bound"})
+        )
+        or on(scope) (0 * max by(scope) (cps_workload_pods_bound))
+    - record: cps:workload_memory_requests_bytes
+      expr: |-
+        sum by(scope) (
+          max by(namespace,pod,container) (kube_pod_container_resource_requests{resource="memory"})
+          * on(namespace,pod) group_left(scope)
+          max by(namespace,pod,scope) (cps_workload_pod{placement="bound"})
+        )
+        or on(scope) (0 * max by(scope) (cps_workload_pods_bound))
+    - record: cps:workload_bound_pvc_requests_bytes
+      expr: |-
+        sum by(scope) (
+          max by(namespace,persistentvolumeclaim) (kube_persistentvolumeclaim_resource_requests_storage_bytes)
+          * on(namespace,persistentvolumeclaim) group_left(scope)
+          max by(namespace,persistentvolumeclaim,scope) (cps_workload_bound_claim)
+        )
+        or on(scope) (0 * max by(scope) (cps_workload_pods_bound))
+    - alert: CPSWorkloadAllocationTelemetryUnavailable
+      expr: absent(up{job="cps-storage-monitor",telemetry="workload-allocation"} == 1)
+      for: 10m
+      labels:
+        severity: warning
+        owner: cluster-operations
+        component: monitoring
+      annotations:
+        summary: Notebook and compute allocation telemetry unavailable
+        description: Check the scoped Pod and Job API permissions, ServiceMonitor target, and allocation exporter.
+        dashboard_uid: cps-workload-allocations

@@ -103,6 +103,14 @@ spec:
     - port: metrics
       interval: 60s
       scrapeTimeout: 30s
+      relabelings:
+        - {targetLabel: telemetry, replacement: storage}
+    - port: metrics
+      path: /workloads
+      interval: 60s
+      scrapeTimeout: 30s
+      relabelings:
+        - {targetLabel: telemetry, replacement: workload-allocation}
 ---
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy

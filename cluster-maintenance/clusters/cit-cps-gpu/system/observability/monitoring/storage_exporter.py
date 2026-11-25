@@ -20,15 +20,19 @@ def api_get(path):
         return json.load(response)
 
 
-def list_objects(resource):
+def api_list(path):
     continuation = ""
     while True:
         query = {"limit": 250, "continue": continuation}
-        page = api_get(LONGHORN + resource + "?" + urlencode(query))
+        page = api_get(path + "?" + urlencode(query))
         yield from page["items"]
         continuation = page["metadata"].get("continue")
         if not continuation:
             break
+
+
+def list_objects(resource):
+    return api_list(LONGHORN + resource)
 
 
 def scheduled_headroom(maximum, reserved, scheduled, overprovisioning):
@@ -39,10 +43,10 @@ def physical_headroom(maximum, available, minimum_percent):
     return available - int(float(maximum) * minimum_percent / 100)
 
 
-def sample(metric, value, **labels):
+def sample(metric, value, *, prefix="cps_longhorn_", **labels):
     suffix = ",".join(key + "=" + json.dumps(str(label), ensure_ascii=False)
                       for key, label in labels.items())
-    return "cps_longhorn_" + metric + ("{" + suffix + "}" if suffix else "") + f" {value}"
+    return prefix + metric + ("{" + suffix + "}" if suffix else "") + f" {value}"
 
 
 def epoch(value):
@@ -113,12 +117,16 @@ class Handler(BaseHTTPRequestHandler):
     def do_GET(self):
         if self.path == "/readyz":
             status, body = 200, b"ok\n"
-        elif self.path == "/metrics":
+        elif self.path in {"/metrics", "/workloads"}:
+            collector = collect
+            if self.path == "/workloads":
+                from workload_allocations import collect as collect_workloads
+                collector = collect_workloads
             try:
-                status, body = 200, ("\n".join(collect()) + "\n").encode()
+                status, body = 200, ("\n".join(collector()) + "\n").encode()
             except (OSError, ValueError, KeyError) as error:
-                status, body = 503, b"Longhorn metrics unavailable\n"
-                print("Longhorn scrape failed:", type(error).__name__, flush=True)
+                status, body = 503, b"Metrics unavailable\n"
+                print(self.path, "scrape failed:", type(error).__name__, flush=True)
         else:
             status, body = 404, b"not found\n"
         self.send_response(status)
