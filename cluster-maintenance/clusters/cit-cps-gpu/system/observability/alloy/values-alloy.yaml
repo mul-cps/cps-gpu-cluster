@@ -1,6 +1,10 @@
 controller:
   type: daemonset
 
+# Keep the running version when Fleet reconciles the chart.
+image:
+  tag: v1.17.0
+
 alloy:
   configMap:
     create: true
@@ -11,10 +15,82 @@ alloy:
 
       discovery.kubernetes "pods" {
         role = "pod"
+        selectors {
+          role  = "pod"
+          field = "spec.nodeName=" + sys.env("K8S_NODE_NAME")
+        }
+      }
+
+      discovery.relabel "pods" {
+        targets = discovery.kubernetes.pods.targets
+        rule {
+          source_labels = ["__meta_kubernetes_namespace"]
+          target_label  = "namespace"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_name"]
+          target_label  = "pod"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "container"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "component"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_component"]
+          regex         = "(.+)"
+          target_label  = "component"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_container_name"]
+          target_label  = "service"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app"]
+          regex         = "(.+)"
+          target_label  = "service"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_app_kubernetes_io_name"]
+          regex         = "(.+)"
+          target_label  = "service"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_pod_template_hash"]
+          regex         = "(.+)"
+          target_label  = "deployment_revision"
+        }
+        rule {
+          source_labels = ["__meta_kubernetes_pod_label_serving_knative_dev_revision"]
+          regex         = "(.+)"
+          target_label  = "deployment_revision"
+        }
       }
 
       loki.source.kubernetes "pods" {
-        targets    = discovery.kubernetes.pods.targets
+        targets    = discovery.relabel.pods.output
+        forward_to = [loki.process.correlation.receiver]
+      }
+
+      loki.process "correlation" {
+        stage.match {
+          selector = "{namespace=~\"cps-compute|jupyterhub|cit-jhub\"}"
+          stage.json {
+            expressions = {
+              request_id = "request_id || requestId",
+              attempt_id = "attempt_id || attemptId",
+            }
+          }
+          stage.structured_metadata {
+            values = {
+              request_id = "",
+              attempt_id = "",
+            }
+          }
+        }
         forward_to = [loki.write.default.receiver]
       }
 
