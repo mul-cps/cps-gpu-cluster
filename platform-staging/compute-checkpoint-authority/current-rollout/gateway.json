@@ -522,7 +522,7 @@
             "name": "upstream-runtime",
             "secret": {
               "defaultMode": 256,
-              "secretName": "cit-shared-24h-gw-transition-fcec2216a974"
+              "secretName": "cit-shared-24h-gw-final-cbcf3a5e2b1a"
             }
           },
           {
@@ -778,7 +778,7 @@
     "name": "compute-gateway",
     "namespace": "cps-compute",
     "annotations": {
-      "cps.unileoben.ac.at/gateway-start-template": "sha256:0f5bbf52316db291e20876a4fdd30a94dc072ddc3d6ccb4c7013a7b54d9158a0"
+      "cps.unileoben.ac.at/gateway-start-template": "sha256:cf26f45728e827a299b1536618550ad8deb80e41184d3c6bb5d73574b00f73c9"
     }
   }
 }
