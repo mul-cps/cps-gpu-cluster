@@ -31,20 +31,19 @@ spec:
       {{- if .Values.runtimeClassName }}
       runtimeClassName: {{ .Values.runtimeClassName | quote }}
       {{- end }}
-      {{- if .Values.terminationGracePeriodSeconds }}
-      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
-      {{- end }}
       {{- with .Values.initContainers }}
       initContainers:
         {{- tpl (toYaml . ) $ | nindent 8 }}
       {{- end }}
       containers:
-        - image: "{{ .Values.image.repository }}:{{ .Values.image.tag |  default (ternary (printf "%s-rocm" .Chart.AppVersion) (.Chart.AppVersion) (and (.Values.ollama.gpu.enabled) (eq .Values.ollama.gpu.type "amd"))) }}"
+        - name: user-container
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag |  default (ternary (printf "%s-rocm" .Chart.AppVersion) (.Chart.AppVersion) (and (.Values.ollama.gpu.enabled) (eq .Values.ollama.gpu.type "amd"))) }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           ports:
             - containerPort: {{ .Values.ollama.port }}
+              protocol: TCP
           env:
             - name: OLLAMA_HOST
               value: "0.0.0.0:{{ .Values.ollama.port }}"
@@ -68,11 +67,11 @@ spec:
             {{- $limits := default dict .Values.resources.limits }}
             {{- if .Values.ollama.gpu.enabled }}
               {{- if or (eq .Values.ollama.gpu.type "nvidia") (not .Values.ollama.gpu.type) }}
-                {{- $gpuLimit := dict (.Values.ollama.gpu.nvidiaResource | default "nvidia.com/gpu") (.Values.ollama.gpu.number | default 1) }}
+                {{- $gpuLimit := dict (.Values.ollama.gpu.nvidiaResource | default "nvidia.com/gpu") (.Values.ollama.gpu.number | default 1 | toString) }}
                 {{- $limits = merge $limits $gpuLimit }}
               {{- end }}
               {{- if eq .Values.ollama.gpu.type "amd" }}
-                {{- $gpuLimit := dict "amd.com/gpu" (.Values.ollama.gpu.number | default 1) }}
+                {{- $gpuLimit := dict "amd.com/gpu" (.Values.ollama.gpu.number | default 1 | toString) }}
                 {{- $limits = merge $limits $gpuLimit }}
               {{- end }}
             {{- end }}
@@ -116,48 +115,7 @@ spec:
             successThreshold: {{ .Values.readinessProbe.successThreshold }}
             failureThreshold: {{ .Values.readinessProbe.failureThreshold }}
           {{- end }}
-          {{- with .Values.lifecycle}}
-          lifecycle:
-            {{- toYaml . | nindent 12 }}
-          {{- else }}
-          {{- if or .Values.ollama.models.pull .Values.ollama.models.run .Values.ollama.models.create }}
-          lifecycle:
-            postStart:
-              exec:
-                command:
-                  - /bin/sh
-                  - -c
-                  - |
-                    while ! /bin/ollama ps > /dev/null 2>&1; do
-                      sleep 5
-                    done
-                    {{- if .Values.ollama.models.pull }}
-                    {{- range .Values.ollama.models.pull }}
-                    /bin/ollama pull {{ternary "--insecure" "" $.Values.ollama.insecure | toString }} {{ . }}
-                    {{- end }}
-                    {{- end }}
-
-                    {{- if .Values.ollama.models.create }}
-                    {{- range .Values.ollama.models.create }}
-                    {{- if .template }}
-                    cat <<EOF > {{ include "ollama.modelsMountPath" $ }}/{{ .name }}
-                    {{- .template | nindent 20 }}
-                    EOF
-                    /bin/ollama create {{ .name }} -f {{ include "ollama.modelsMountPath" . }}/{{ .name }}
-                    {{- end }}
-                    {{- if .configMapRef }}
-                    /bin/ollama create {{ .name }} -f /models/{{ .name }}
-                    {{- end }}
-                    {{- end }}
-                    {{- end }}
-
-                    {{- if .Values.ollama.models.run }}
-                    {{- range .Values.ollama.models.run }}
-                    /bin/ollama run {{ . }}
-                    {{- end }}
-                    {{- end }}
-          {{- end }}
-          {{- end }}
+          {{- /* Knative omits Pod lifecycle hooks. Prepare model data on the persistent volume. */}}
       volumes:
         - name: ollama-data
           {{- if .Values.persistentVolume.enabled }}
