@@ -9,7 +9,7 @@ metadata:
     grafana_dashboard: "1"
     app: "rancher-monitoring"
 data:
-  nvidia-dcgm-official.json: |
+  nvidia-dcgm-vram-capacity.json: |
     {
       "__inputs": [
         {
@@ -399,7 +399,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -471,17 +471,18 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "editorMode": "code",
-              "exemplar": true,
+              "exemplar": false,
               "expr": "100 * sum (DCGM_FI_DEV_FB_USED{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"}) / ((sum (DCGM_FI_DEV_FB_USED{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"}) + sum (DCGM_FI_DEV_FB_FREE{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"})) > 0)",
               "format": "time_series",
               "interval": "",
               "intervalFactor": 1,
               "legendFormat": "",
-              "range": true,
-              "refId": "A"
+              "range": false,
+              "refId": "A",
+              "instant": true
             },
             {
               "datasource": {
@@ -1430,7 +1431,7 @@ data:
         {
           "datasource": {
             "type": "prometheus",
-            "uid": "${DS_PROMETHEUS}"
+            "uid": "prometheus"
           },
           "fieldConfig": {
             "defaults": {
@@ -1492,11 +1493,11 @@ data:
             {
               "datasource": {
                 "type": "prometheus",
-                "uid": "${DS_PROMETHEUS}"
+                "uid": "prometheus"
               },
               "disableTextWrap": false,
               "editorMode": "code",
-              "exemplar": true,
+              "exemplar": false,
               "expr": "100 * avg by(GPU_I_ID, Hostname, gpu, GPU_I_PROFILE) (DCGM_FI_DEV_FB_USED{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"}) / ((avg by(GPU_I_ID, Hostname, gpu, GPU_I_PROFILE) (DCGM_FI_DEV_FB_USED{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"}) + avg by(GPU_I_ID, Hostname, gpu, GPU_I_PROFILE) (DCGM_FI_DEV_FB_FREE{Hostname=~\"$Hostname\", gpu=~\"$gpu\", GPU_I_PROFILE=~\"$mig\"})) > 0)",
               "format": "time_series",
               "fullMetaSearch": false,
@@ -1505,9 +1506,10 @@ data:
               "interval": "",
               "intervalFactor": 1,
               "legendFormat": "{{Hostname}} GPU {{gpu}} {{GPU_I_PROFILE}} {{GPU_I_ID}}",
-              "range": true,
+              "range": false,
               "refId": "A",
-              "useBackend": false
+              "useBackend": false,
+              "instant": true
             }
           ],
           "title": "VRAM used per GPU / MIG instance (%)",
@@ -2378,6 +2380,6 @@ data:
       "timezone": "",
       "title": "NVIDIA DCGM Dashboard for Kubernetes (MIG & Non-MIG GPUs)",
       "uid": "nvidia-official-dcgm",
-      "version": 36,
+      "version": 37,
       "weekStart": ""
     }

@@ -20,7 +20,7 @@ data:
         "overview"
       ],
       "schemaVersion": 41,
-      "version": 2,
+      "version": 3,
       "editable": false,
       "timezone": "browser",
       "time": {
@@ -439,7 +439,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "min(100*cps:filesystem_free_ratio{mountpoint=\"/\"})",
+              "expr": "min(max by(nodename) ((100*node_filesystem_avail_bytes{job=\"node-exporter\",mountpoint=\"/\"}/(node_filesystem_size_bytes{job=\"node-exporter\",mountpoint=\"/\"}>0)) * on(instance) group_left(nodename) max by(instance,nodename) (node_uname_info{job=\"node-exporter\"})))",
               "legendFormat": "",
               "instant": true,
               "range": false,
@@ -611,7 +611,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "100*cps:filesystem_free_ratio{mountpoint=\"/\"}",
+              "expr": "max by(nodename) ((100*node_filesystem_avail_bytes{job=\"node-exporter\",mountpoint=\"/\"}/(node_filesystem_size_bytes{job=\"node-exporter\",mountpoint=\"/\"}>0)) * on(instance) group_left(nodename) max by(instance,nodename) (node_uname_info{job=\"node-exporter\"}))",
               "legendFormat": "{{nodename}} root",
               "instant": false,
               "range": true,
@@ -623,7 +623,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "100*cps:filesystem_free_ratio{mountpoint=\"/mnt/nvme/scratch\"}",
+              "expr": "max by(nodename) ((100*node_filesystem_avail_bytes{job=\"node-exporter\",mountpoint=\"/mnt/nvme/scratch\"}/(node_filesystem_size_bytes{job=\"node-exporter\",mountpoint=\"/mnt/nvme/scratch\"}>0)) * on(instance) group_left(nodename) max by(instance,nodename) (node_uname_info{job=\"node-exporter\"}))",
               "legendFormat": "{{nodename}} scratch",
               "instant": false,
               "range": true,
@@ -731,8 +731,8 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "100*(1-avg by(instance)(rate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])))",
-              "legendFormat": "",
+              "expr": "max by(nodename) ((100*(1-avg by(instance)(rate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])))) * on(instance) group_left(nodename) max by(instance,nodename) (node_uname_info{job=\"node-exporter\",nodename=~\"k3s-wk-gpu[1-4]\"}))",
+              "legendFormat": "{{nodename}}",
               "instant": false,
               "range": true,
               "format": "time_series"
@@ -779,8 +779,8 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "100*(1-node_memory_MemAvailable_bytes{job=\"node-exporter\"}/node_memory_MemTotal_bytes{job=\"node-exporter\"})",
-              "legendFormat": "",
+              "expr": "max by(nodename) ((100*(1-node_memory_MemAvailable_bytes{job=\"node-exporter\"}/node_memory_MemTotal_bytes{job=\"node-exporter\"})) * on(instance) group_left(nodename) max by(instance,nodename) (node_uname_info{job=\"node-exporter\",nodename=~\"k3s-wk-gpu[1-4]\"}))",
+              "legendFormat": "{{nodename}}",
               "instant": false,
               "range": true,
               "format": "time_series"
@@ -827,8 +827,8 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "DCGM_FI_DEV_GPU_UTIL{job=\"nvidia-dcgm-exporter\"}",
-              "legendFormat": "",
+              "expr": "max by(Hostname,gpu) (DCGM_FI_DEV_GPU_UTIL{job=\"nvidia-dcgm-exporter\"})",
+              "legendFormat": "{{Hostname}} GPU {{gpu}}",
               "instant": false,
               "range": true,
               "format": "time_series"
@@ -981,12 +981,84 @@ data:
         },
         {
           "id": 16,
+          "title": "Running notebooks and compute Pods",
+          "description": "Declared allocation and queue detail is available in Workload allocations.",
+          "type": "timeseries",
+          "gridPos": {
+            "x": 0,
+            "y": 27,
+            "w": 24,
+            "h": 6
+          },
+          "datasource": {
+            "type": "prometheus",
+            "uid": "prometheus"
+          },
+          "fieldConfig": {
+            "defaults": {
+              "unit": "short",
+              "noValue": "No data",
+              "links": [
+                {
+                  "type": "link",
+                  "title": "Workload allocations",
+                  "url": "d/cps-workload-allocations",
+                  "includeVars": false,
+                  "keepTime": true,
+                  "targetBlank": false
+                }
+              ]
+            },
+            "overrides": []
+          },
+          "options": {},
+          "targets": [
+            {
+              "refId": "A",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "cps_workload_pods_running{scope=\"cit-jhub\"}",
+              "legendFormat": "CIT JupyterHub",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            },
+            {
+              "refId": "B",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "cps_workload_pods_running{scope=\"cps-jhub\"}",
+              "legendFormat": "CPS JupyterHub",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            },
+            {
+              "refId": "C",
+              "datasource": {
+                "type": "prometheus",
+                "uid": "prometheus"
+              },
+              "expr": "cps_workload_pods_running{scope=\"compute-jobs\"}",
+              "legendFormat": "Compute jobs",
+              "instant": false,
+              "range": true,
+              "format": "time_series"
+            }
+          ]
+        },
+        {
+          "id": 17,
           "title": "Current critical and warning alerts",
           "description": "",
           "type": "table",
           "gridPos": {
             "x": 0,
-            "y": 27,
+            "y": 33,
             "w": 24,
             "h": 9
           },
@@ -1129,7 +1201,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "100*cps:filesystem_free_ratio{mountpoint=\"/\"}",
+              "expr": "max by(nodename) ((100*node_filesystem_avail_bytes{job=\"node-exporter\",mountpoint=\"/\"}/(node_filesystem_size_bytes{job=\"node-exporter\",mountpoint=\"/\"}>0)) * on(instance) group_left(nodename) max by(instance,nodename) (node_uname_info{job=\"node-exporter\"}))",
               "legendFormat": "",
               "instant": false,
               "range": true,
@@ -1167,7 +1239,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "100*cps:filesystem_free_ratio{mountpoint=\"/mnt/nvme/scratch\"}",
+              "expr": "max by(nodename) ((100*node_filesystem_avail_bytes{job=\"node-exporter\",mountpoint=\"/mnt/nvme/scratch\"}/(node_filesystem_size_bytes{job=\"node-exporter\",mountpoint=\"/mnt/nvme/scratch\"}>0)) * on(instance) group_left(nodename) max by(instance,nodename) (node_uname_info{job=\"node-exporter\"}))",
               "legendFormat": "",
               "instant": false,
               "range": true,
@@ -2136,7 +2208,7 @@ data:
       "editable": false,
       "timezone": "browser",
       "time": {
-        "from": "now-24h",
+        "from": "now-7d",
         "to": "now"
       },
       "refresh": "1m",
@@ -2571,7 +2643,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "100*(1-avg by(instance)(rate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])))",
+              "expr": "max by(nodename) ((100*(1-avg by(instance)(rate(node_cpu_seconds_total{job=\"node-exporter\",mode=\"idle\"}[5m])))) * on(instance) group_left(nodename) max by(instance,nodename) (node_uname_info{job=\"node-exporter\",nodename=~\"k3s-wk-gpu[1-4]\"}))",
               "legendFormat": "",
               "instant": false,
               "range": true,
@@ -2609,7 +2681,7 @@ data:
                 "type": "prometheus",
                 "uid": "prometheus"
               },
-              "expr": "100*(1-node_memory_MemAvailable_bytes{job=\"node-exporter\"}/node_memory_MemTotal_bytes{job=\"node-exporter\"})",
+              "expr": "max by(nodename) ((100*(1-node_memory_MemAvailable_bytes{job=\"node-exporter\"}/node_memory_MemTotal_bytes{job=\"node-exporter\"})) * on(instance) group_left(nodename) max by(instance,nodename) (node_uname_info{job=\"node-exporter\",nodename=~\"k3s-wk-gpu[1-4]\"}))",
               "legendFormat": "",
               "instant": false,
               "range": true,

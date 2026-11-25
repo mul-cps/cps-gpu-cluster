@@ -54,3 +54,18 @@ def test_fractional_claim_uses_requested_mib_separately_from_device_slot(monkeyp
                  "env": [{"name": "NVIDIA_GPU_MEMORY_REQUEST", "value": "2048"},
                          {"name": "NVIDIA_GPU_MEMORY_LIMIT", "value": "5120"}]}
     assert workloads.gpu_claim(container) == (1, 2*1024**3, 5*1024**3)
+
+
+def test_provisioned_vram_gauges_use_cluster_prometheus():
+    import json
+    import yaml
+
+    manifest = yaml.safe_load((MONITORING / "nvidia-official-dashboard.yaml").read_text())
+    dashboard = json.loads(next(iter(manifest["data"].values())))
+    gauges = [panel for panel in dashboard["panels"] if panel["id"] in {23, 38}]
+    assert len(gauges) == 2
+    for gauge in gauges:
+        field = gauge["fieldConfig"]["defaults"]
+        assert (field["min"], field["max"], field["unit"]) == (0, 100, "percent")
+        assert gauge["datasource"]["uid"] == "prometheus"
+        assert gauge["targets"][0]["datasource"]["uid"] == "prometheus"

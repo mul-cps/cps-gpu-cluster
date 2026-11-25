@@ -37,7 +37,8 @@ def business_window(now):
 def fetch_warnings(start, end):
     span = int(end.timestamp() - start.timestamp())
     expr = ('max_over_time(ALERTS{severity="warning",alertstate="firing",'
-            'alertname!~"InfoInhibitor|Watchdog|AlertmanagerAdminEmailProbe"}'
+            # CPSLatestBackupJobFailed supersedes the legacy compute alert until its held bundle can roll.
+            'alertname!~"InfoInhibitor|Watchdog|AlertmanagerAdminEmailProbe|ComputeStateBackupJobFailed"}'
             f'[{span}s])')
     url = PROMETHEUS + "?" + urlencode({"query": expr, "time": end.timestamp()})
     with urlopen(url, timeout=30) as response:
