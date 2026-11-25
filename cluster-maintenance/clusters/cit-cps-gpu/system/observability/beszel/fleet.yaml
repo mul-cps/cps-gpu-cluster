@@ -8,3 +8,6 @@ dependsOn:
   - selector:
       matchLabels:
         name: ingress-nginx
+helm:
+  # These manifests match the existing Beszel resources, including the bound data PVC.
+  takeOwnership: true
