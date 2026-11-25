@@ -83,7 +83,8 @@ def collect():
                 pvc = volume.get("persistentVolumeClaim")
                 if pvc and binding == "bound":
                     claims.add((scope, namespace, pvc["claimName"]))
-            yield METRIC("pod", 1, scope=scope, namespace=namespace, pod=meta["name"], placement=binding)
+            yield METRIC("pod", 1, scope=scope, workload_namespace=namespace,
+                         workload_pod=meta["name"], placement=binding)
     for scope, count in totals.items():
         for name in ("pods_running", "pods_bound", "pods_unbound"):
             yield METRIC(name, count[name], scope=scope)
@@ -94,4 +95,4 @@ def collect():
     for phase in ("active", "waiting", "complete", "failed", "suspended"):
         yield METRIC("batch_jobs", jobs_by_phase[phase], phase=phase)
     for scope, namespace, name in sorted(claims):
-        yield METRIC("bound_claim", 1, scope=scope, namespace=namespace, persistentvolumeclaim=name)
+        yield METRIC("bound_claim", 1, scope=scope, workload_namespace=namespace, persistentvolumeclaim=name)

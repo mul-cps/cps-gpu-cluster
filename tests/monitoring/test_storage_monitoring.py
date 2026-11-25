@@ -69,3 +69,15 @@ def test_provisioned_vram_gauges_use_cluster_prometheus():
         assert (field["min"], field["max"], field["unit"]) == (0, 100, "percent")
         assert gauge["datasource"]["uid"] == "prometheus"
         assert gauge["targets"][0]["datasource"]["uid"] == "prometheus"
+
+
+def test_digest_can_replay_an_explicit_business_date(monkeypatch):
+    from datetime import date, datetime
+    from zoneinfo import ZoneInfo
+
+    monkeypatch.syspath_prepend(str(MONITORING))
+    digest = load("warning_digest")
+    now = datetime(2026, 4, 1, 11, tzinfo=ZoneInfo("Europe/Vienna"))
+    start, end = digest.business_window(now, date(2026, 3, 30))
+    assert start.day == 27
+    assert end.day == 30

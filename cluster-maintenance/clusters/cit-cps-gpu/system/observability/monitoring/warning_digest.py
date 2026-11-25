@@ -1,13 +1,14 @@
 """Send one weekday warning summary from Prometheus alert history."""
 import argparse
 from collections import Counter
-from datetime import datetime, time, timedelta
+from datetime import date, datetime, time, timedelta
 from email.message import EmailMessage
 import json
 import os
 from pathlib import Path
 import smtplib
 import ssl
+from time import sleep
 from urllib.parse import urlencode
 from urllib.request import urlopen
 from zoneinfo import ZoneInfo
@@ -22,16 +23,29 @@ MAIL_CONFIG = (
 )
 
 
-def business_window(now):
+def business_window(now, replay_date=None):
     last_day = now.date()
     if now.time() < time(9):
         last_day -= timedelta(days=1)
     while last_day.weekday() >= 5:
         last_day -= timedelta(days=1)
+    if replay_date is not None:
+        if replay_date.weekday() >= 5 or not last_day - timedelta(days=10) <= replay_date <= last_day:
+            raise ValueError("Choose a completed business date within the last ten days")
+        last_day = replay_date
     first_day = last_day - timedelta(days=1)
     while first_day.weekday() >= 5:
         first_day -= timedelta(days=1)
     return datetime.combine(first_day, time(9), ZONE), datetime.combine(last_day, time(9), ZONE)
+
+
+def retry_before_delivery(operation):
+    for delay in (2, 5):
+        try:
+            return operation()
+        except (OSError, smtplib.SMTPException):
+            sleep(delay)
+    return operation()
 
 
 def fetch_warnings(start, end):
@@ -41,8 +55,11 @@ def fetch_warnings(start, end):
             'alertname!~"InfoInhibitor|Watchdog|AlertmanagerAdminEmailProbe|ComputeStateBackupJobFailed"}'
             f'[{span}s])')
     url = PROMETHEUS + "?" + urlencode({"query": expr, "time": end.timestamp()})
-    with urlopen(url, timeout=30) as response:
-        result = json.load(response)
+    def query():
+        with urlopen(url, timeout=20) as response:
+            return json.load(response)
+
+    result = retry_before_delivery(query)
     if result["status"] != "success":
         raise RuntimeError("Prometheus did not return warning history")
     return [item["metric"] for item in result["data"]["result"]]
@@ -63,7 +80,7 @@ def summarize(warnings, start, end):
 
 
 def send(body, end, *, test=False):
-    receiver = next(receiver for receiver in api_get(MAIL_CONFIG)["spec"]["receivers"]
+    receiver = next(receiver for receiver in retry_before_delivery(lambda: api_get(MAIL_CONFIG))["spec"]["receivers"]
                     if receiver["name"] == "admin-mail")
     settings = receiver["emailConfigs"][0]
     host, port = settings["smarthost"].rsplit(":", 1)
@@ -75,19 +92,34 @@ def send(body, end, *, test=False):
     message["Message-ID"] = f"<cps-warning-digest-{end:%Y%m%d}{test_suffix}@cps.unileoben.ac.at>"
     message.set_content(body)
     password = Path("/smtp/password").read_text().strip()
-    with smtplib.SMTP_SSL(host, int(port), timeout=20, context=ssl.create_default_context()) as server:
-        server.login(settings["authUsername"], password)
+    def connect():
+        server = smtplib.SMTP_SSL(host, int(port), timeout=15, context=ssl.create_default_context())
+        try:
+            server.login(settings["authUsername"], password)
+        except (OSError, smtplib.SMTPException):
+            server.close()
+            raise
+        return server
+
+    server = retry_before_delivery(connect)
+    try:
         refused = server.send_message(message)
         if refused:
             raise RuntimeError("SMTP refused some digest recipients")
+    finally:
+        server.close()
 
 
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--preview", action="store_true")
     parser.add_argument("--test-delivery", action="store_true")
+    parser.add_argument("--business-date", type=date.fromisoformat)
     args = parser.parse_args()
-    start, end = business_window(datetime.now(ZONE))
+    try:
+        start, end = business_window(datetime.now(ZONE), args.business_date)
+    except ValueError as error:
+        parser.error(str(error))
     warnings = fetch_warnings(start, end)
     body = summarize(warnings, start, end)
     if args.preview:

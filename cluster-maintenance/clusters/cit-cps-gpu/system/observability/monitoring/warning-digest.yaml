@@ -38,13 +38,13 @@ spec:
   schedule: "0 9 * * 1-5"
   timeZone: Europe/Vienna
   concurrencyPolicy: Forbid
-  startingDeadlineSeconds: 3600
+  startingDeadlineSeconds: 14400
   successfulJobsHistoryLimit: 3
   failedJobsHistoryLimit: 3
   jobTemplate:
     spec:
       backoffLimit: 0
-      activeDeadlineSeconds: 120
+      activeDeadlineSeconds: 180
       ttlSecondsAfterFinished: 604800
       template:
         spec:

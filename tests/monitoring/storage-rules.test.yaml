@@ -65,3 +65,33 @@ tests:
         summary: Autoscaler elastic at maximum
         description: Review service traffic and scaling limits before raising capacity.
         dashboard_uid: cps-service-reliability
+- name: Workload joins use pod identity independently of scrape target labels
+  interval: 1m
+  input_series:
+  - series: 'kube_pod_container_resource_requests{namespace="jupyterhub",pod="notebook",container="singleuser",resource="cpu"}'
+    values: 2x4
+  - series: 'kube_pod_container_resource_requests{namespace="cps-compute",pod="workflow",container="main",resource="cpu"}'
+    values: 3x4
+  - series: 'kube_pod_container_resource_requests{namespace="cattle-monitoring-system",pod="exporter",container="exporter",resource="cpu"}'
+    values: 0.025x4
+  - series: 'cps_workload_pod{namespace="cattle-monitoring-system",pod="exporter",workload_namespace="jupyterhub",workload_pod="notebook",scope="cps-jhub",placement="bound"}'
+    values: 1x4
+  - series: 'cps_workload_pod{namespace="cattle-monitoring-system",pod="exporter",workload_namespace="cps-compute",workload_pod="workflow",scope="compute-jobs",placement="bound"}'
+    values: 1x4
+  - series: 'cps_workload_bound_claim{namespace="cattle-monitoring-system",pod="exporter",workload_namespace="cps-compute",persistentvolumeclaim="checkpoint",scope="compute-jobs"}'
+    values: 1x4
+  - series: 'kube_persistentvolumeclaim_resource_requests_storage_bytes{namespace="cps-compute",persistentvolumeclaim="checkpoint"}'
+    values: 1073741824x4
+  promql_expr_test:
+  - expr: cps:workload_cpu_requests
+    eval_time: 2m
+    exp_samples:
+    - labels: 'cps:workload_cpu_requests{scope="cps-jhub"}'
+      value: 2
+    - labels: 'cps:workload_cpu_requests{scope="compute-jobs"}'
+      value: 3
+  - expr: cps:workload_bound_pvc_requests_bytes
+    eval_time: 2m
+    exp_samples:
+    - labels: 'cps:workload_bound_pvc_requests_bytes{scope="compute-jobs"}'
+      value: 1073741824

@@ -37,7 +37,10 @@ window remains in the digest. The digest counts distinct firing time series,
 which can represent the same incident. Record holidays separately in the staffed
 hours calendar. To validate delivery, create an explicitly named one-off Job from
 `cps-warning-digest` and set its argument to `--test-delivery`. For a read-only
-review use `--preview`. Review alert counts and repeated rule names over seven
+review use `--preview`. A missed scheduled run appears in Alerts and Fleet.
+After checking the mail and Prometheus paths, preview the exact window with
+`--preview --business-date YYYY-MM-DD`, then run a one-off digest Job with that
+date. Confirm SMTP outcome before replaying an ambiguous delivery. Review alert counts and repeated rule names over seven
 days after changing thresholds. Keep controlled tests identifiable by the
 `test=true` label and match that label out when doing review calculations.
 

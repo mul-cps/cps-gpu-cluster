@@ -413,20 +413,26 @@ spec:
         dashboard_uid: cps-storage-capacity
   - name: cps-workload-allocations
     rules:
+    - record: cps:workload_bound_pod_info
+      expr: |-
+        max by(namespace,pod,scope) (
+          label_replace(
+            label_replace(cps_workload_pod{placement="bound",workload_namespace!=""}, "namespace", "$1", "workload_namespace", "(.+)"),
+            "pod", "$1", "workload_pod", "(.+)"
+          )
+        )
     - record: cps:workload_cpu_requests
       expr: |-
         sum by(scope) (
           max by(namespace,pod,container) (kube_pod_container_resource_requests{resource="cpu"})
-          * on(namespace,pod) group_left(scope)
-          max by(namespace,pod,scope) (cps_workload_pod{placement="bound"})
+          * on(namespace,pod) group_left(scope) cps:workload_bound_pod_info
         )
         or on(scope) (0 * max by(scope) (cps_workload_pods_bound))
     - record: cps:workload_memory_requests_bytes
       expr: |-
         sum by(scope) (
           max by(namespace,pod,container) (kube_pod_container_resource_requests{resource="memory"})
-          * on(namespace,pod) group_left(scope)
-          max by(namespace,pod,scope) (cps_workload_pod{placement="bound"})
+          * on(namespace,pod) group_left(scope) cps:workload_bound_pod_info
         )
         or on(scope) (0 * max by(scope) (cps_workload_pods_bound))
     - record: cps:workload_bound_pvc_requests_bytes
@@ -434,7 +440,9 @@ spec:
         sum by(scope) (
           max by(namespace,persistentvolumeclaim) (kube_persistentvolumeclaim_resource_requests_storage_bytes)
           * on(namespace,persistentvolumeclaim) group_left(scope)
-          max by(namespace,persistentvolumeclaim,scope) (cps_workload_bound_claim)
+          max by(namespace,persistentvolumeclaim,scope) (
+            label_replace(cps_workload_bound_claim{workload_namespace!=""}, "namespace", "$1", "workload_namespace", "(.+)")
+          )
         )
         or on(scope) (0 * max by(scope) (cps_workload_pods_bound))
     - alert: CPSWorkloadAllocationTelemetryUnavailable
@@ -448,3 +456,27 @@ spec:
         summary: Notebook and compute allocation telemetry unavailable
         description: Check the scoped Pod and Job API permissions, ServiceMonitor target, and allocation exporter.
         dashboard_uid: cps-workload-allocations
+  - name: cps-digest-delivery
+    rules:
+    - alert: CPSWarningDigestMissed
+      expr: |-
+        (
+          max by(namespace,cronjob) (kube_cronjob_status_last_schedule_time{namespace="cattle-monitoring-system",cronjob="cps-warning-digest"})
+          >
+          (
+            max by(namespace,cronjob) (kube_cronjob_status_last_successful_time{namespace="cattle-monitoring-system",cronjob="cps-warning-digest"})
+            or on(namespace,cronjob)
+            (0 * max by(namespace,cronjob) (kube_cronjob_status_last_schedule_time{namespace="cattle-monitoring-system",cronjob="cps-warning-digest"}))
+          )
+        )
+        and on(namespace,cronjob)
+        (time() - max by(namespace,cronjob) (kube_cronjob_status_last_schedule_time{namespace="cattle-monitoring-system",cronjob="cps-warning-digest"}) > 1800)
+      for: 5m
+      labels:
+        severity: warning
+        owner: cluster-operations
+        component: monitoring
+      annotations:
+        summary: The scheduled business-day warning digest did not complete
+        description: Review digest job logs. Check Prometheus and SMTP, then preview and replay the missed business date.
+        dashboard_uid: cps-alert-operations
