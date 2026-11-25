@@ -38,13 +38,3 @@ spec:
             severity: warning
           annotations:
             summary: Gateway state backup CronJob is suspended
-        - alert: ComputeStateBackupJobFailed
-          expr: >-
-            (kube_job_status_failed{namespace="cps-compute"} > 0)
-            * on (namespace, job_name) group_left (owner_name)
-            kube_job_owner{namespace="cps-compute",owner_kind="CronJob",owner_name="compute-state-backup"}
-          for: 5m
-          labels:
-            severity: warning
-          annotations:
-            summary: A scheduled gateway state backup Job failed
