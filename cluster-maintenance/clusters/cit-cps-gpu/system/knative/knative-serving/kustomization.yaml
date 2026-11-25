@@ -8,3 +8,4 @@ resources:
 patches:
   - path: config-network.yaml
   - path: config-features.yaml
+  - path: webhook-settings.yaml
