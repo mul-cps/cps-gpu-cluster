@@ -95,3 +95,32 @@ tests:
     exp_samples:
     - labels: 'cps:workload_bound_pvc_requests_bytes{scope="compute-jobs"}'
       value: 1073741824
+- name: Compute backup failure clears after recovery
+  interval: 1m
+  input_series:
+    - series: 'kube_job_created{namespace="cps-compute",job_name="old"}'
+      values: '60+0x20'
+    - series: 'kube_job_owner{namespace="cps-compute",job_name="old",owner_kind="CronJob",owner_name="compute-state-backup"}'
+      values: '1+0x20'
+    - series: 'kube_job_failed{namespace="cps-compute",job_name="old",condition="true"}'
+      values: '1+0x20'
+    - series: 'kube_cronjob_status_last_successful_time{namespace="cps-compute",cronjob="compute-state-backup"}'
+      values: '0+0x9 600+0x10'
+  alert_rule_test:
+    - eval_time: 8m
+      alertname: CPSLatestBackupJobFailed
+      exp_alerts:
+        - exp_labels:
+            namespace: cps-compute
+            job_name: old
+            owner_name: compute-state-backup
+            severity: warning
+            owner: cluster-operations
+            component: operations
+          exp_annotations:
+            summary: Latest backup Job failed for compute-state-backup
+            description: Check the latest run and confirm a successful recovery. Previous failures remain in the archive.
+            dashboard_uid: cps-service-reliability
+    - eval_time: 12m
+      alertname: CPSLatestBackupJobFailed
+      exp_alerts: []

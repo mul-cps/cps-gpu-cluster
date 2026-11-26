@@ -80,6 +80,20 @@ spec:
         summary: "GPU XID error reported"
         description: "GPU {{ $labels.gpu }} ({{ $labels.UUID }}) on {{ $labels.Hostname }} last reported XID {{ $value }}. Check the node kernel journal and NVIDIA XID guidance for the code and its timestamp."
         
+    - alert: GPUKernelXIDError
+      expr: |
+        max by (node, pci, xid) (
+          (increase(cps_nvidia_xid_total[10m]) > 0)
+          or ((cps_nvidia_xid_total > 0) unless (cps_nvidia_xid_total offset 10m))
+        )
+      labels:
+        severity: critical
+        component: gpu
+        owner: cluster-operations
+      annotations:
+        summary: "New GPU XID {{ $labels.xid }} on {{ $labels.node }}"
+        description: "PCI device {{ $labels.pci }} reported a new kernel XID. Check the worker journal and identify the workload before deciding on diagnostics."
+
     # Low GPU Utilization (for cost optimization)
     - alert: GPULowUtilization
       expr: avg_over_time(DCGM_FI_DEV_GPU_UTIL[1h]) < 10

@@ -1,0 +1,32 @@
+rule_files:
+  - gpu.yaml
+evaluation_interval: 1m
+tests:
+  - interval: 1m
+    input_series:
+      - series: 'cps_nvidia_xid_total{node="gpu3",pci="0000:01:00",xid="31"}'
+        values: '_ _ 1+0x12 2+0x15'
+    alert_rule_test:
+      - eval_time: 2m
+        alertname: GPUKernelXIDError
+        exp_alerts:
+          - &xid
+            exp_labels:
+              node: gpu3
+              pci: '0000:01:00'
+              xid: '31'
+              severity: critical
+              component: gpu
+              owner: cluster-operations
+            exp_annotations:
+              summary: New GPU XID 31 on gpu3
+              description: PCI device 0000:01:00 reported a new kernel XID. Check the worker journal and identify the workload before deciding on diagnostics.
+      - eval_time: 13m
+        alertname: GPUKernelXIDError
+        exp_alerts: []
+      - eval_time: 15m
+        alertname: GPUKernelXIDError
+        exp_alerts: [*xid]
+      - eval_time: 26m
+        alertname: GPUKernelXIDError
+        exp_alerts: []

@@ -18,6 +18,7 @@ resources:
   - operator-dashboards.yaml
   - nvidia-official-dashboard.yaml
   - gpu-alerts.yaml
+  - alloy-monitor.yaml
   - cluster-health-alerts.yaml
   - alertmanager-receiver.yaml
   - gpu-dash-22515-community.yaml

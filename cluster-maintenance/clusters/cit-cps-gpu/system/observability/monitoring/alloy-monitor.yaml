@@ -1,0 +1,20 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: cps-alloy-kernel-gpu-events
+  namespace: cattle-monitoring-system
+spec:
+  namespaceSelector:
+    matchNames:
+      - alloy
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: alloy
+      app.kubernetes.io/instance: alloy
+  podMetricsEndpoints:
+    - port: http-metrics
+      interval: 30s
+      metricRelabelings:
+        - sourceLabels: [__name__, component_id]
+          regex: cps_nvidia_xid_total;loki.process.nvidia_xid|loki_source_file_files_active_total;loki.source.file.nvidia_xid
+          action: keep

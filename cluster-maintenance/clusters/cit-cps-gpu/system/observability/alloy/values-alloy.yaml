@@ -1,11 +1,22 @@
 controller:
   type: daemonset
+  volumes:
+    extra:
+      - name: kernel-logs
+        hostPath:
+          path: /var/log
+          type: Directory
 
 # Keep the running version when Fleet reconciles the chart.
 image:
   tag: v1.17.0
 
 alloy:
+  mounts:
+    extra:
+      - name: kernel-logs
+        mountPath: /host/var/log
+        readOnly: true
   configMap:
     create: true
     content: |
@@ -92,6 +103,50 @@ alloy:
           }
         }
         forward_to = [loki.write.default.receiver]
+      }
+
+      local.file_match "nvidia_xid" {
+        path_targets = [{
+          __path__ = "/host/var/log/kern.log",
+          job = "nvidia-xid",
+          node = sys.env("K8S_NODE_NAME"),
+        }]
+      }
+
+      loki.source.file "nvidia_xid" {
+        targets = local.file_match.nvidia_xid.targets
+        tail_from_end = true
+        forward_to = [loki.process.nvidia_xid.receiver]
+      }
+
+      loki.process "nvidia_xid" {
+        stage.match {
+          selector = "{job=\"nvidia-xid\"} !~ \"NVRM: Xid [(]PCI:[0-9A-Fa-f:.]+[)]: [0-9]+,\""
+          action = "drop"
+        }
+        stage.regex {
+          expression = "NVRM: Xid [(]PCI:(?P<pci>[0-9A-Fa-f:.]+)[)]: (?P<xid>[0-9]+),"
+        }
+        stage.labels {
+          values = {
+            pci = "",
+            xid = "",
+          }
+        }
+        stage.label_drop {
+          values = ["filename", "job"]
+        }
+        stage.metrics {
+          metric.counter {
+            name = "nvidia_xid_total"
+            prefix = "cps_"
+            description = "New NVIDIA XID lines read from the worker kernel log"
+            match_all = true
+            action = "inc"
+            max_idle_duration = "30m"
+          }
+        }
+        forward_to = []
       }
 
       loki.write "default" {
