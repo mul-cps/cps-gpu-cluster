@@ -154,3 +154,28 @@ Notebook home allocations include detached `claim-*` PVCs. Compute storage
 counts distinct claims currently referenced by bound compute Pods. GPU
 requests and limits come from admitted Pod declarations. Runtime-only
 allocations must be verified through the scheduler and GPU telemetry.
+
+### Worker image collection canary
+
+Use GPU2 first, followed by GPU3 after accepting GPU2. Read the target's live
+kubelet config and stats through the node proxy. Record root `availableBytes`,
+runtime image filesystem `usedBytes`, GPU readiness, attached Longhorn replicas,
+and node-local service dependencies. Require three other Ready GPU workers with
+GPU Fractioning ready. Take the existing worker maintenance lease and stop new
+placement on the target. Wait for notebook sessions, GPU Jobs and reservations
+to finish and coordinate any database or other service interruption before the
+restart.
+
+Copy `platform-staging/storage/worker-image-gc/90-image-gc.conf` to
+`/var/lib/rancher/k3s/agent/etc/kubelet.conf.d/90-image-gc.conf` on the selected
+worker. Save any previous same-name file and restart `k3s-agent` in the
+maintenance window. Verify the effective 75% high and 70% low values through
+`configz`. Restore the prior file or remove the canary drop-in and restart if
+the worker fails readiness, GPU or storage checks. Reopen placement after
+checking GPU allocation and release, Longhorn replica health, and a cold
+notebook spawn. Measure image consumption and free root space for seven days.
+If the 25% free-space target cannot be sustained, use the measured peak plus
+image unpack space to size a separate containerd filesystem with ICT.
+
+Only use kubelet-managed image collection. Keep Longhorn per-disk allocation
+headroom, physical free space, and backing-pool telemetry in the same review.
