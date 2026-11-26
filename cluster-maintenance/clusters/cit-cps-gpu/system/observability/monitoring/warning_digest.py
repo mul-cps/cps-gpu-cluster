@@ -66,10 +66,23 @@ def fetch_warnings(start, end):
 
 
 def summarize(warnings, start, end):
-    counts = Counter((item["alertname"], item.get("namespace") or item.get("pvc_namespace") or "cluster")
-                     for item in warnings)
+    counts = Counter()
+    filesystems = set()
+    for item in warnings:
+        name = item["alertname"]
+        namespace = item.get("namespace") or item.get("pvc_namespace") or "cluster"
+        if name == "NodeFilesystemSpaceFillingUp" and item.get("instance") and item.get("device"):
+            filesystem = (namespace, item.get("cluster_id"), item["instance"], item["device"], item.get("fstype"))
+            if filesystem in filesystems:
+                continue
+            filesystems.add(filesystem)
+        counts[name, namespace] += 1
+
     lines = [f"{start:%a %d %b %H:%M %Z} to {end:%a %d %b %H:%M %Z}",
-             f"{len(warnings)} warning series across {len(counts)} alert and namespace pairs", ""]
+             f"{len(warnings)} raw warning series across {len(counts)} alert and namespace pairs"]
+    if sum(counts.values()) != len(warnings):
+        lines.append(f"{sum(counts.values())} warnings after grouping filesystem aliases")
+    lines.append("")
     for (name, namespace), count in sorted(counts.items(), key=lambda entry: (-entry[1], entry[0]))[:50]:
         lines.append(f"{count:>4}  {name}  [{namespace}]")
     if len(counts) > 50:

@@ -81,3 +81,28 @@ def test_digest_can_replay_an_explicit_business_date(monkeypatch):
     start, end = digest.business_window(now, date(2026, 3, 30))
     assert start.day == 27
     assert end.day == 30
+
+
+def test_digest_groups_filesystem_aliases_but_keeps_raw_series_count(monkeypatch):
+    from datetime import datetime
+    from zoneinfo import ZoneInfo
+
+    monkeypatch.syspath_prepend(str(MONITORING))
+    digest = load("warning_digest")
+    start, end = digest.business_window(datetime(2026, 11, 26, 10, tzinfo=ZoneInfo("Europe/Vienna")))
+    fs = {"alertname": "NodeFilesystemSpaceFillingUp", "namespace": "monitoring",
+          "instance": "one", "device": "/dev/sda1", "fstype": "ext4"}
+    warnings = [
+        dict(fs, mountpoint="/"),
+        dict(fs, mountpoint="/run/nvidia/driver/etc/hosts"),
+        dict(fs, instance="two", mountpoint="/"),
+        dict(fs, device="/dev/sdb1", mountpoint="/scratch"),
+        dict(fs, device="", mountpoint="/unknown"),
+        {"alertname": "KubePodNotReady", "namespace": "compute", "pod": "a"},
+        {"alertname": "KubePodNotReady", "namespace": "compute", "pod": "b"},
+    ]
+    output = digest.summarize(warnings, start, end)
+    assert "7 raw warning series across 2 alert and namespace pairs" in output
+    assert "6 warnings after grouping filesystem aliases" in output
+    assert "4  NodeFilesystemSpaceFillingUp  [monitoring]" in output
+    assert "2  KubePodNotReady  [compute]" in output
