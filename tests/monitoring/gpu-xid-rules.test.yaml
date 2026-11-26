@@ -30,3 +30,24 @@ tests:
       - eval_time: 26m
         alertname: GPUKernelXIDError
         exp_alerts: []
+  - interval: 1m
+    input_series:
+      - series: 'DCGM_FI_DEV_XID_ERRORS{Hostname="gpu3",gpu="0"}'
+        values: '31+0x30'
+      - series: 'loki_source_file_files_active_total{node="gpu3",component_id="loki.source.file.nvidia_xid"}'
+        values: '0+0x11 1+0x16'
+    alert_rule_test:
+      - eval_time: 10m
+        alertname: GPUKernelXIDSourceMissing
+        exp_alerts:
+          - exp_labels:
+              node: gpu3
+              severity: warning
+              component: gpu
+              owner: cluster-operations
+            exp_annotations:
+              summary: GPU kernel event collection missing on gpu3
+              description: Check the Alloy Pod, its Prometheus scrape, and the worker kernel log.
+      - eval_time: 14m
+        alertname: GPUKernelXIDSourceMissing
+        exp_alerts: []

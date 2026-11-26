@@ -14,6 +14,9 @@ spec:
   podMetricsEndpoints:
     - port: http-metrics
       interval: 30s
+      relabelings:
+        - sourceLabels: [__meta_kubernetes_pod_node_name]
+          targetLabel: node
       metricRelabelings:
         - sourceLabels: [__name__, component_id]
           regex: cps_nvidia_xid_total;loki.process.nvidia_xid|loki_source_file_files_active_total;loki.source.file.nvidia_xid
